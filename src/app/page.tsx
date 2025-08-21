@@ -66,7 +66,7 @@ export default function Home() {
                    <p className="max-w-[600px] text-foreground/80 md:text-xl">Your mission to achieve the best educational material with high-quality notes, all free of cost.</p>
                    <div className="flex flex-col gap-2 min-[400px]:flex-row">
                      <Button size="lg" asChild>
-                       <Link href="/signup">Get Started</Link>
+                       <Link href="/downloads">Get Started</Link>
                      </Button>
                      <Button size="lg" variant="outline" asChild>
                        <Link href="/downloads">Explore Resources</Link>
