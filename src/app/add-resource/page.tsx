@@ -63,7 +63,11 @@ export default function AddResourcePage() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
     try {
-      await addResource(values);
+      await addResource({
+        ...values,
+        stream: values.stream || [],
+        subject: values.subject || [],
+      });
       toast({
         title: 'Success',
         description: 'Resource has been uploaded successfully.',
@@ -190,7 +194,7 @@ export default function AddResourcePage() {
                                             checked={field.value?.includes(item)}
                                             onCheckedChange={(checked) => {
                                             return checked
-                                                ? field.onChange([...field.value, item])
+                                                ? field.onChange([...(field.value || []), item])
                                                 : field.onChange(
                                                     field.value?.filter(
                                                     (value) => value !== item
