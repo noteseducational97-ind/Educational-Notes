@@ -51,9 +51,9 @@ export default function DownloadsPage() {
   const filteredResources = useMemo(() => {
     return resources.filter(resource => {
       const classMatch = selectedClass === 'All' || resource.class === selectedClass;
-      const streamMatch = selectedStream === 'All' || resource.stream === selectedStream;
-      const categoryMatch = selectedCategory === 'All' || resource.category === selectedCategory;
-      const subjectMatch = selectedSubject === 'All' || resource.subject === selectedSubject;
+      const streamMatch = selectedStream === 'All' || resource.stream === 'All' || resource.stream === selectedStream;
+      const categoryMatch = selectedCategory === 'All' || resource.category === 'All' || resource.category === selectedCategory;
+      const subjectMatch = selectedSubject === 'All' || resource.subject === 'All' || resource.subject === selectedSubject;
       return classMatch && streamMatch && categoryMatch && subjectMatch;
     });
   }, [resources, selectedClass, selectedStream, selectedCategory, selectedSubject]);
