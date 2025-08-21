@@ -81,10 +81,6 @@ export default function Header() {
                 <div className="hidden md:flex items-center gap-4">
                   {isAdmin && (
                     <>
-                      <Button variant="ghost" size="sm" onClick={() => router.push('/add-resource')}>
-                          <PlusCircle />
-                          Add Resource
-                      </Button>
                       <NavLink href="/admin">
                         <span className="flex items-center gap-1.5">
                             <Shield className="h-4 w-4" />
@@ -143,7 +139,7 @@ export default function Header() {
                         {isAdmin && (
                           <>
                             <SheetClose asChild>
-                              <Button variant="outline" onClick={() => router.push('/add-resource')}>
+                              <Button variant="outline" onClick={() => router.push('/admin/add-resource')}>
                                 <PlusCircle className="h-5 w-5" />
                                 Add Resource
                               </Button>
