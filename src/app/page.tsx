@@ -63,7 +63,7 @@ export default function Home() {
                   <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none text-primary">
                     Welcome To Educational Notes
                   </h1>
-                   <p className="max-w-[600px] text-muted-foreground md:text-xl">Your Mission To Archieve Best Educational Material with High Quality</p>
+                   <p className="max-w-[600px] text-muted-foreground md:text-xl">High Quality Notes with all things related to study but free of cost</p>
                 </div>
               </div>
               <Image
