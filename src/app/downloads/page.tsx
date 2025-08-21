@@ -52,7 +52,7 @@ export default function DownloadsPage() {
 
           <Card className="mb-8 shadow-lg">
             <CardHeader>
-                <CardTitle className="text-xl">Filter Resources</CardTitle>
+                <CardTitle className="text-xl">Select Your Criteria</CardTitle>
                 <CardDescription>Narrow down the study materials to find exactly what you need.</CardDescription>
             </CardHeader>
             <CardContent>
