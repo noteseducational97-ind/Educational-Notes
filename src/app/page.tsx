@@ -8,7 +8,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { sendEmailVerification } from 'firebase/auth';
 import { useToast } from '@/hooks/use-toast';
-import { ShieldCheck, Send, Download, Bookmark, Users } from 'lucide-react';
+import { ShieldCheck, Send, Download, Bookmark, Users, LogIn, UserPlus } from 'lucide-react';
 import Image from 'next/image';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
@@ -134,9 +134,20 @@ export default function Home() {
                     <p className="text-muted-foreground">
                         Create an account today and unlock a world of knowledge.
                     </p>
-                    <Button asChild size="lg">
-                      <Link href="/signup">Sign Up for Free</Link>
-                    </Button>
+                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                      <Button asChild size="lg">
+                        <Link href="/signup">
+                          <UserPlus />
+                          Sign Up
+                        </Link>
+                      </Button>
+                      <Button asChild size="lg" variant="secondary">
+                        <Link href="/login">
+                          <LogIn />
+                          Sign In
+                        </Link>
+                      </Button>
+                    </div>
                 </div>
             </div>
         </section>
