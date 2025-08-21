@@ -75,6 +75,7 @@ export default function Header() {
           )}
         </nav>
         <div className="ml-auto flex items-center gap-4">
+          <UserNav />
           <div className="md:hidden">
             <Sheet>
               <SheetTrigger asChild>
@@ -110,7 +111,6 @@ export default function Header() {
               </SheetContent>
             </Sheet>
           </div>
-          <UserNav />
         </div>
       </div>
     </header>
