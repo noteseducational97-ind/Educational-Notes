@@ -10,7 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { CheckCircle, PlusCircle, XCircle } from 'lucide-react';
+import { CheckCircle, PlusCircle, XCircle, Trash2 } from 'lucide-react';
 import AddResourceDialog from '@/components/admin/AddResourceDialog';
 
 type User = {
@@ -66,8 +66,8 @@ export default function AdminPage() {
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-3xl font-bold text-primary">Admin Panel</h1>
             <Button onClick={() => setIsAddResourceOpen(true)}>
-              <PlusCircle className="mr-2 h-4 w-4" />
-              Add Resource
+              <Trash2 className="mr-2 h-4 w-4" />
+              Remove Resource
             </Button>
           </div>
           <Card>
