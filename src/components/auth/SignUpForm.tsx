@@ -12,7 +12,8 @@ import {
   GoogleAuthProvider,
   sendEmailVerification,
 } from 'firebase/auth';
-import { auth } from '@/lib/firebase/client';
+import { doc, setDoc } from 'firebase/firestore';
+import { auth, db } from '@/lib/firebase/client';
 import { useToast } from '@/hooks/use-toast';
 
 import { Button } from '@/components/ui/button';
@@ -73,11 +74,23 @@ export default function SignUpForm() {
     setLoading(true);
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
-      await updateProfile(userCredential.user, {
+      const user = userCredential.user;
+      
+      // Update profile and save to Firestore
+      await updateProfile(user, {
         displayName: values.username,
       });
-      await sendEmailVerification(userCredential.user);
+
+      await setDoc(doc(db, "users", user.uid), {
+        uid: user.uid,
+        displayName: values.username,
+        email: values.email,
+        createdAt: new Date(),
+      });
+      
+      await sendEmailVerification(user);
       router.push('/verify-email');
+
     } catch (error: any) {
       toast({
         variant: 'destructive',
@@ -93,7 +106,16 @@ export default function SignUpForm() {
     setGoogleLoading(true);
     try {
       const provider = new GoogleAuthProvider();
-      await signInWithPopup(auth, provider);
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+
+      await setDoc(doc(db, "users", user.uid), {
+        uid: user.uid,
+        displayName: user.displayName,
+        email: user.email,
+        createdAt: new Date(),
+      }, { merge: true }); // Use merge to avoid overwriting existing data if user signs in with google after email signup
+
       router.push('/');
     } catch (error: any) {
       toast({
