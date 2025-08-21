@@ -11,7 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { CheckCircle, PlusCircle, XCircle, Users, BookCopy, Edit, Trash2 } from 'lucide-react';
+import { CheckCircle, PlusCircle, XCircle, Users, BookCopy, Edit, Trash2, Save } from 'lucide-react';
 import Link from 'next/link';
 import { getResources, Resource } from '@/lib/firebase/resources';
 import { format } from 'date-fns';
@@ -176,52 +176,65 @@ export default function AdminPage() {
                 </CardContent>
             </Card>
 
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2"><Users /> Registered Users</CardTitle>
-                <CardDescription>View and manage user accounts.</CardDescription>
-              </CardHeader>
-              <CardContent>
-                {loadingData ? (
-                  <div className="flex justify-center items-center h-64">
-                      <LoadingSpinner className="min-h-0" />
-                  </div>
-                ) : (
-                  <div className="w-full overflow-x-auto">
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>User</TableHead>
-                          <TableHead>Email</TableHead>
-                          <TableHead>Status</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {users.map((u) => (
-                          <TableRow key={u.uid}>
-                            <TableCell>
-                              <div className="flex items-center gap-3">
-                                <Avatar>
-                                  <AvatarImage src={u.photoURL ?? ''} alt={u.displayName ?? 'User'} />
-                                  <AvatarFallback>{getInitials(u.displayName)}</AvatarFallback>
-                                </Avatar>
-                                <span className="font-medium">{u.displayName || 'N/A'}</span>
-                              </div>
-                            </TableCell>
-                            <TableCell>{u.email}</TableCell>
-                            <TableCell>
-                              <Badge variant={u.disabled ? 'destructive' : 'secondary'}>
-                                {u.disabled ? 'Disabled' : 'Active'}
-                              </Badge>
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+            <div className="space-y-6">
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2"><Save /> Temporary Save Resources</CardTitle>
+                        <CardDescription>View resources that are temporarily saved.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <p className="text-muted-foreground">This section is under construction.</p>
+                    </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2"><Users /> Registered Users</CardTitle>
+                    <CardDescription>View and manage user accounts.</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    {loadingData ? (
+                      <div className="flex justify-center items-center h-64">
+                          <LoadingSpinner className="min-h-0" />
+                      </div>
+                    ) : (
+                      <div className="w-full overflow-x-auto">
+                        <Table>
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead>User</TableHead>
+                              <TableHead>Email</TableHead>
+                              <TableHead>Status</TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {users.map((u) => (
+                              <TableRow key={u.uid}>
+                                <TableCell>
+                                  <div className="flex items-center gap-3">
+                                    <Avatar>
+                                      <AvatarImage src={u.photoURL ?? ''} alt={u.displayName ?? 'User'} />
+                                      <AvatarFallback>{getInitials(u.displayName)}</AvatarFallback>
+                                    </Avatar>
+                                    <span className="font-medium">{u.displayName || 'N/A'}</span>
+                                  </div>
+                                </TableCell>
+                                <TableCell>{u.email}</TableCell>
+                                <TableCell>
+                                  <Badge variant={u.disabled ? 'destructive' : 'secondary'}>
+                                    {u.disabled ? 'Disabled' : 'Active'}
+                                  </Badge>
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+            </div>
+
           </div>
 
         </div>
