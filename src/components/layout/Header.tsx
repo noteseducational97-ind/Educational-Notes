@@ -2,9 +2,10 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Building, Home, BookText, Bookmark, Info } from 'lucide-react';
+import { Building, Home, BookText, Bookmark, Info, Shield } from 'lucide-react';
 import UserNav from './UserNav';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/hooks/use-auth';
 
 const navLinks = [
   { href: '/', label: 'Home', icon: Home },
@@ -15,6 +16,7 @@ const navLinks = [
 
 export default function Header() {
   const pathname = usePathname();
+  const { isAdmin } = useAuth();
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-card/80 backdrop-blur-sm">
@@ -36,6 +38,18 @@ export default function Header() {
               {label}
             </Link>
           ))}
+          {isAdmin && (
+             <Link
+              href="/admin"
+              className={cn(
+                'transition-colors hover:text-primary flex items-center',
+                pathname === '/admin' ? 'text-primary' : 'text-muted-foreground'
+              )}
+            >
+              <Shield className="mr-2 h-4 w-4" />
+              Admin
+            </Link>
+          )}
         </nav>
         <div className="ml-auto flex items-center space-x-4">
           <UserNav />
