@@ -22,17 +22,13 @@ if (serviceAccount.private_key) {
     serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, '\n');
 }
 
-let app: App;
-if (!getApps().length) {
-  app = initializeApp({
-    credential: cert(serviceAccount),
-  });
-} else {
-  app = getApp();
-}
+const app: App = getApps().length
+  ? getApp()
+  : initializeApp({
+      credential: cert(serviceAccount),
+    });
 
 const db = getFirestore(app);
 const auth = getAuth(app);
 
 export { app, db, auth };
-
