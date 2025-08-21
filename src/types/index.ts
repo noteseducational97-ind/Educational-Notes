@@ -5,8 +5,8 @@ export type Resource = {
   content: string;
   category: 'Question Bank' | 'Textbook Solutions' | 'Study Notes' | 'Video Tutorial';
   subject: 'Physics' | 'Chemistry' | 'Mathematics' | 'Biology' | 'History' | 'Computer Science';
-  class: 'class11' | 'class12';
-  stream: 'NEET' | 'JEE' | 'MHT-CET' | 'General';
+  class: 'class9' | 'class10' | 'class11' | 'class12';
+  stream: 'All' | 'Science' | 'Commerce' | 'Arts' | 'NEET' | 'JEE' | 'MHT-CET' | 'General';
   imageUrl: string;
   pdfUrl?: string;
   downloadUrl?: string;

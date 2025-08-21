@@ -28,8 +28,8 @@ const FormSchema = z.object({
   content: z.string().min(20, 'Content must be at least 20 characters.'),
   category: z.enum(['Question Bank', 'Textbook Solutions', 'Study Notes', 'Video Tutorial']),
   subject: z.enum(['Physics', 'Chemistry', 'Mathematics', 'Biology', 'History', 'Computer Science']),
-  class: z.enum(['class11', 'class12']),
-  stream: z.enum(['NEET', 'JEE', 'MHT-CET', 'General']),
+  class: z.enum(['class9', 'class10', 'class11', 'class12']),
+  stream: z.enum(['All', 'Science', 'Commerce', 'Arts', 'NEET', 'JEE', 'MHT-CET', 'General']),
   imageUrl: z.string().url('Please enter a valid image URL.'),
   pdfUrl: z.string().url('Please enter a valid PDF URL.').optional().or(z.literal('')),
   downloadUrl: z.string().url('Please enter a valid download URL.').optional().or(z.literal('')),
@@ -37,8 +37,8 @@ const FormSchema = z.object({
 
 const categories = ['Question Bank', 'Textbook Solutions', 'Study Notes', 'Video Tutorial'];
 const subjects = ['Physics', 'Chemistry', 'Mathematics', 'Biology', 'History', 'Computer Science'];
-const classes = ['class11', 'class12'];
-const streams = ['NEET', 'JEE', 'MHT-CET', 'General'];
+const classes = ['class9', 'class10', 'class11', 'class12'];
+const streams = ['All', 'Science', 'Commerce', 'Arts', 'NEET', 'JEE', 'MHT-CET', 'General'];
 
 export default function AddResourceAdminPage() {
   const { user, isAdmin, loading: authLoading } = useAuth();
