@@ -125,10 +125,7 @@ export default function Home() {
             <div className="container grid items-center justify-center gap-4 px-4 text-center md:px-6">
                 <div className="space-y-3">
                     <Quote className="mx-auto h-12 w-12 text-primary" />
-                    <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">An Investment in Knowledge Pays the Best Interest</h2>
-                    <p className="mx-auto max-w-[600px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                        - Benjamin Franklin
-                    </p>
+                    <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">Learning gives creativity, creativity leads to thinking, thinking provides knowledge, and knowledge makes you great.</h2>
                 </div>
             </div>
         </section>
