@@ -1,25 +1,8 @@
 'use client';
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@/hooks/use-auth';
 import Header from '@/components/layout/Header';
-import LoadingSpinner from '@/components/shared/LoadingSpinner';
 
 export default function AboutPage() {
-  const { user, loading } = useAuth();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (!loading && !user) {
-      router.push('/login');
-    }
-  }, [user, loading, router]);
-
-  if (loading || !user) {
-    return <LoadingSpinner />;
-  }
-
   return (
     <div className="flex min-h-screen flex-col">
       <Header />

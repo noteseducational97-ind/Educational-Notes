@@ -1,8 +1,6 @@
 
 'use client';
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/use-auth';
 import Header from '@/components/layout/Header';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
@@ -17,14 +15,7 @@ import Link from 'next/link';
 
 export default function Home() {
   const { user, loading } = useAuth();
-  const router = useRouter();
   const { toast } = useToast();
-
-  useEffect(() => {
-    if (!loading && !user) {
-      router.push('/login');
-    }
-  }, [user, loading, router]);
 
   const handleResendVerification = async () => {
     if (!user) return;
@@ -43,7 +34,7 @@ export default function Home() {
     }
   };
 
-  if (loading || !user) {
+  if (loading) {
     return <LoadingSpinner />;
   }
 
@@ -53,7 +44,7 @@ export default function Home() {
       <main className="flex-1">
         <section className="w-full py-12 md:py-24 lg:py-32 bg-secondary/50">
           <div className="container px-4 md:px-6">
-             {!user.emailVerified && (
+             {user && !user.emailVerified && (
               <Alert className="mb-8 border-yellow-500/50 text-yellow-700 dark:border-yellow-500/50 dark:bg-yellow-900/20">
                 <ShieldCheck className="h-4 w-4 !text-yellow-500" />
                 <AlertTitle className="font-bold !text-yellow-700 dark:!text-yellow-400">Verify your email address</AlertTitle>
@@ -73,7 +64,7 @@ export default function Home() {
                     Unlock Your Potential
                   </h1>
                    <p className="max-w-[600px] text-muted-foreground md:text-xl">
-                    Welcome back, <strong className="text-foreground">{user.displayName || 'learner'}</strong>! Dive into curated resources and achieve your learning goals.
+                    Welcome{user ? `, <strong className="text-foreground">${user.displayName || 'learner'}</strong>` : ''}! Dive into curated resources and achieve your learning goals.
                   </p>
                 </div>
               </div>

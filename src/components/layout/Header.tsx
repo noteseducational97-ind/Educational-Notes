@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Download, Bookmark, Info, Shield, Menu, PlusCircle } from 'lucide-react';
+import { Home, Download, Bookmark, Info, Shield, Menu, PlusCircle, LogIn, UserPlus } from 'lucide-react';
 import UserNav from './UserNav';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/use-auth';
@@ -16,6 +16,7 @@ import { Button } from '../ui/button';
 import React, { useState } from 'react';
 import AddResourceDialog from '../admin/AddResourceDialog';
 import { EducationalNotesLogo } from '../icons/EducationalNotesLogo';
+import LoadingSpinner from '../shared/LoadingSpinner';
 
 const navLinks = [
   { href: '/', label: 'Home', icon: Home },
@@ -26,7 +27,7 @@ const navLinks = [
 
 export default function Header() {
   const pathname = usePathname();
-  const { isAdmin } = useAuth();
+  const { user, loading, isAdmin } = useAuth();
   const [isAddResourceOpen, setIsAddResourceOpen] = useState(false);
 
   const onResourceAdded = () => {
@@ -76,23 +77,46 @@ export default function Header() {
             ))}
           </nav>
           <div className="ml-auto flex items-center gap-4">
-            <div className="hidden md:flex items-center gap-4">
-                {isAdmin && (
-                <>
-                    <Button variant="ghost" size="sm" onClick={() => setIsAddResourceOpen(true)}>
-                        <PlusCircle />
-                        Add Resource
-                    </Button>
-                    <NavLink href="/admin">
-                    <span className="flex items-center gap-1.5">
-                        <Shield className="h-4 w-4" />
-                        Admin
-                    </span>
-                    </NavLink>
-                </>
-                )}
-            </div>
-            <UserNav />
+            {loading ? (
+              <div className="h-8 w-20">
+                <LoadingSpinner className="min-h-0 h-full w-full"/>
+              </div>
+            ) : user ? (
+              <>
+                <div className="hidden md:flex items-center gap-4">
+                  {isAdmin && (
+                    <>
+                      <Button variant="ghost" size="sm" onClick={() => setIsAddResourceOpen(true)}>
+                          <PlusCircle />
+                          Add Resource
+                      </Button>
+                      <NavLink href="/admin">
+                        <span className="flex items-center gap-1.5">
+                            <Shield className="h-4 w-4" />
+                            Admin
+                        </span>
+                      </NavLink>
+                    </>
+                  )}
+                </div>
+                <UserNav />
+              </>
+            ) : (
+              <div className="hidden md:flex items-center gap-2">
+                <Button asChild variant="ghost">
+                  <Link href="/login">
+                    <LogIn/>
+                    Sign In
+                  </Link>
+                </Button>
+                <Button asChild>
+                  <Link href="/signup">
+                    <UserPlus />
+                    Sign Up
+                  </Link>
+                </Button>
+              </div>
+            )}
             <div className="md:hidden">
               <Sheet>
                 <SheetTrigger asChild>
@@ -118,17 +142,33 @@ export default function Header() {
                         {label}
                       </MobileNavLink>
                     ))}
-                    {isAdmin && (
+                    <hr className="my-2"/>
+                    {user ? (
                       <>
-                        <SheetClose asChild>
-                          <Button variant="outline" onClick={() => setIsAddResourceOpen(true)}>
-                            <PlusCircle className="h-5 w-5" />
-                            Add Resource
-                          </Button>
-                        </SheetClose>
-                        <MobileNavLink href="/admin">
-                          <Shield className="h-5 w-5" />
-                          Admin
+                        {isAdmin && (
+                          <>
+                            <SheetClose asChild>
+                              <Button variant="outline" onClick={() => setIsAddResourceOpen(true)}>
+                                <PlusCircle className="h-5 w-5" />
+                                Add Resource
+                              </Button>
+                            </SheetClose>
+                            <MobileNavLink href="/admin">
+                              <Shield className="h-5 w-5" />
+                              Admin
+                            </MobileNavLink>
+                          </>
+                        )}
+                      </>
+                    ) : (
+                      <>
+                        <MobileNavLink href="/login">
+                          <LogIn className="h-5 w-5" />
+                          Sign In
+                        </MobileNavLink>
+                        <MobileNavLink href="/signup">
+                          <UserPlus className="h-5 w-5" />
+                          Sign Up
                         </MobileNavLink>
                       </>
                     )}

@@ -19,7 +19,7 @@ export default function LoginPage() {
     }
   }, [user, loading, router]);
 
-  if (loading || user) {
+  if (loading || (!loading && user)) {
     return <LoadingSpinner />;
   }
 
