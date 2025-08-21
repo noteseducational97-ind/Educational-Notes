@@ -63,9 +63,7 @@ export default function Home() {
                   <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none text-primary">
                     Unlock Your Potential
                   </h1>
-                   <p className="max-w-[600px] text-muted-foreground md:text-xl">
-                    Welcome{user ? `, <strong className="text-foreground">${user.displayName || 'learner'}</strong>` : ''}! Dive into curated resources and achieve your learning goals.
-                  </p>
+                   <p className="max-w-[600px] text-muted-foreground md:text-xl" dangerouslySetInnerHTML={{ __html: user ? `Welcome, <strong class="text-foreground">${user.displayName || 'learner'}</strong>! Dive into curated resources and achieve your learning goals.` : 'Welcome! Dive into curated resources and achieve your learning goals.' }} />
                 </div>
               </div>
               <Image
