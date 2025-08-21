@@ -20,7 +20,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
-      // Directly check against the environment variable here
       setIsAdmin(user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL);
       setLoading(false);
     });

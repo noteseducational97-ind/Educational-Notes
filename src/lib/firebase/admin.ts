@@ -1,17 +1,30 @@
 'use server';
 
-import { initializeApp, getApps, cert, getApp } from 'firebase-admin/app';
+import { initializeApp, getApps, cert, getApp, App } from 'firebase-admin/app';
 import { getAuth } from 'firebase-admin/auth';
 
-const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY as string);
+const serviceAccountString = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
 
-if (!getApps().length) {
-  initializeApp({
-    credential: cert(serviceAccount),
-  });
+if (!serviceAccountString) {
+  throw new Error('FIREBASE_SERVICE_ACCOUNT_KEY environment variable is not set.');
 }
 
-const adminAuth = getAuth();
+// Correctly parse the JSON string and the private key within it
+const serviceAccount = JSON.parse(serviceAccountString);
+if (serviceAccount.private_key) {
+    serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, '\n');
+}
+
+let app: App;
+if (!getApps().length) {
+  app = initializeApp({
+    credential: cert(serviceAccount),
+  });
+} else {
+  app = getApp();
+}
+
+const adminAuth = getAuth(app);
 
 export const listAllUsers = async () => {
   try {
