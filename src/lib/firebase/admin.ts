@@ -9,11 +9,7 @@ if (!serviceAccountString) {
   throw new Error('FIREBASE_SERVICE_ACCOUNT_KEY environment variable is not set.');
 }
 
-// Correctly parse the JSON string and the private key within it
 const serviceAccount = JSON.parse(serviceAccountString);
-if (serviceAccount.private_key) {
-    serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, '\n');
-}
 
 let app: App;
 if (!getApps().length) {
