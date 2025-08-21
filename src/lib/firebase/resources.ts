@@ -87,6 +87,20 @@ export async function addToWatchlist(userId: string, resourceId: string) {
     }
 }
 
+export async function removeFromWatchlist(userId: string, resourceId: string) {
+    if (!userId) {
+        throw new Error('User is not authenticated.');
+    }
+    try {
+        const watchlistRef = db.collection('users').doc(userId).collection('watchlist').doc(resourceId);
+        await watchlistRef.delete();
+        revalidatePath('/save');
+    } catch (error: any) {
+        console.error('Error removing from watchlist: ', error);
+        throw new Error('Could not remove from watchlist.');
+    }
+}
+
 export async function getWatchlist(userId: string): Promise<Resource[]> {
     if (!userId) {
         return [];

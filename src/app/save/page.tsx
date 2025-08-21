@@ -4,7 +4,7 @@
 import { useEffect, useState } from 'react';
 import Header from '@/components/layout/Header';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { getWatchlist, Resource } from '@/lib/firebase/resources';
+import { getWatchlist, Resource, removeFromWatchlist } from '@/lib/firebase/resources';
 import { useAuth } from '@/hooks/use-auth';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import Link from 'next/link';
@@ -13,12 +13,16 @@ import { format } from 'date-fns';
 import { ArrowUpRight, Download, BookOpen, BookmarkX } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { useRouter } from 'next/navigation';
+import { useToast } from '@/hooks/use-toast';
+import { Button } from '@/components/ui/button';
 
 export default function SavePage() {
   const { user, loading: authLoading } = useAuth();
   const [watchlist, setWatchlist] = useState<Resource[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const { toast } = useToast();
+  const [removing, setRemoving] = useState<string | null>(null);
 
   useEffect(() => {
     if (!authLoading) {
@@ -40,6 +44,27 @@ export default function SavePage() {
       }
     }
   }, [user, authLoading, router]);
+
+  const handleRemoveFromWatchlist = async (resourceId: string, resourceTitle: string) => {
+    if (!user) return;
+    setRemoving(resourceId);
+    try {
+      await removeFromWatchlist(user.uid, resourceId);
+      setWatchlist((prev) => prev.filter((item) => item.id !== resourceId));
+      toast({
+        title: 'Removed',
+        description: `"${resourceTitle}" has been removed from your watchlist.`,
+      });
+    } catch (error: any) {
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: error.message,
+      });
+    } finally {
+      setRemoving(null);
+    }
+  };
 
   const getPreviewUrl = (resource: Resource) => {
     return resource.pdfUrl || resource.downloadUrl || '#';
@@ -113,9 +138,15 @@ export default function SavePage() {
                     </div>
                   </CardContent>
                   <CardFooter className="flex items-center justify-between">
-                    <p className="text-xs text-muted-foreground">
-                      Added on {format(new Date(resource.createdAt), 'PP')}
-                    </p>
+                     <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleRemoveFromWatchlist(resource.id, resource.title)}
+                        disabled={removing === resource.id}
+                      >
+                        <BookmarkX className="h-4 w-4 mr-1" />
+                        Remove
+                      </Button>
                      <Link
                       href={getDownloadUrl(resource)}
                       target="_blank"
