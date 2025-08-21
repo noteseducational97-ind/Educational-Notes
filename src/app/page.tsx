@@ -9,7 +9,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { sendEmailVerification } from 'firebase/auth';
 import { useToast } from '@/hooks/use-toast';
-import { ShieldCheck } from 'lucide-react';
+import { ShieldCheck, Send } from 'lucide-react';
 
 export default function Home() {
   const { user, loading } = useAuth();
@@ -55,6 +55,7 @@ export default function Home() {
               <AlertDescription className="flex flex-col sm:flex-row sm:items-center justify-between !text-yellow-600 dark:!text-yellow-400/80">
                 <span>Please check your inbox to verify your account for full access.</span>
                 <Button variant="link" onClick={handleResendVerification} className="p-0 h-auto text-yellow-700 hover:text-yellow-800 dark:text-yellow-400 dark:hover:text-yellow-300 mt-2 sm:mt-0">
+                  <Send />
                   Resend verification email
                 </Button>
               </AlertDescription>

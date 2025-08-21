@@ -11,7 +11,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Loader2, Mail, CheckCircle } from 'lucide-react';
+import { Loader2, Mail, CheckCircle, Send } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 const formSchema = z.object({
@@ -77,7 +77,7 @@ export default function ForgotPasswordForm() {
           )}
         />
         <Button type="submit" className="w-full" disabled={loading}>
-          {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          {loading ? <Loader2 className="animate-spin" /> : <Send />}
           Send Reset Link
         </Button>
       </form>

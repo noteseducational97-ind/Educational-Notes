@@ -12,7 +12,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Loader2, KeyRound, Mail } from 'lucide-react';
+import { Loader2, KeyRound, Mail, LogIn } from 'lucide-react';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email.' }),
@@ -124,7 +124,7 @@ export default function LoginForm() {
             )}
           />
           <Button type="submit" className="w-full" disabled={loading}>
-            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {loading ? <Loader2 className="animate-spin" /> : <LogIn />}
             Sign In
           </Button>
         </form>
@@ -138,7 +138,7 @@ export default function LoginForm() {
         </div>
       </div>
       <Button variant="outline" className="w-full" onClick={handleGoogleSignIn} disabled={googleLoading}>
-        {googleLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <GoogleIcon />}
+        {googleLoading ? <Loader2 className="animate-spin" /> : <GoogleIcon />}
         Sign in with Google
       </Button>
     </div>

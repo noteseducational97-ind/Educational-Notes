@@ -8,7 +8,7 @@ import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, MailCheck } from 'lucide-react';
+import { Loader2, MailCheck, Send, LogIn } from 'lucide-react';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 
 export default function VerifyEmailPage() {
@@ -72,7 +72,7 @@ export default function VerifyEmailPage() {
             Didn't receive the email?
           </p>
           <Button onClick={handleResendVerification} disabled={resendLoading || !user}>
-            {resendLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {resendLoading ? <Loader2 className="animate-spin" /> : <Send />}
             Resend Verification Email
           </Button>
         </CardContent>
@@ -81,7 +81,10 @@ export default function VerifyEmailPage() {
             After verifying, you can proceed to log in.
             </p>
              <Button variant="outline" asChild>
-                <Link href="/login">Go to Login</Link>
+                <Link href="/login">
+                    <LogIn />
+                    Go to Login
+                </Link>
             </Button>
         </CardFooter>
       </Card>

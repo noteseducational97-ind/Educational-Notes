@@ -65,10 +65,6 @@ export default function AdminPage() {
         <div className="container mx-auto px-4 py-8 md:px-6">
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-3xl font-bold text-foreground">Admin Panel</h1>
-            <Button onClick={() => setIsAddResourceOpen(true)}>
-              <PlusCircle className="mr-2 h-4 w-4" />
-              Add Resource
-            </Button>
           </div>
           <Card>
             <CardHeader>

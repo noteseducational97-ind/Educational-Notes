@@ -19,7 +19,7 @@ import {
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Loader2 } from 'lucide-react';
+import { Loader2, PlusCircle, XCircle } from 'lucide-react';
 
 const formSchema = z.object({
   title: z.string().min(3, { message: 'Title must be at least 3 characters.' }),
@@ -120,10 +120,11 @@ export default function AddResourceDialog({ isOpen, setIsOpen, onResourceAdded }
             />
             <DialogFooter>
               <Button type="button" variant="ghost" onClick={() => setIsOpen(false)}>
+                <XCircle />
                 Cancel
               </Button>
               <Button type="submit" disabled={loading}>
-                {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                {loading ? <Loader2 className="animate-spin" /> : <PlusCircle />}
                 Add Resource
               </Button>
             </DialogFooter>

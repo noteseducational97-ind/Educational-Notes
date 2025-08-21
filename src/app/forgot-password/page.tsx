@@ -4,7 +4,7 @@ import Link from 'next/link';
 import ForgotPasswordForm from '@/components/auth/ForgotPasswordForm';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Building } from 'lucide-react';
+import { Building, ArrowLeft } from 'lucide-react';
 
 export default function ForgotPasswordPage() {
   return (
@@ -26,7 +26,10 @@ export default function ForgotPasswordPage() {
           </CardContent>
           <CardFooter>
             <Button variant="link" asChild className="w-full">
-              <Link href="/login">Back to Login</Link>
+              <Link href="/login">
+                <ArrowLeft />
+                Back to Login
+              </Link>
             </Button>
           </CardFooter>
         </Card>

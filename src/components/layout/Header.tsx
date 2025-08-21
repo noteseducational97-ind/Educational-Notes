@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Building, Home, Download, Bookmark, Info, Shield, Menu } from 'lucide-react';
+import { Building, Home, Download, Bookmark, Info, Shield, Menu, PlusCircle } from 'lucide-react';
 import UserNav from './UserNav';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/use-auth';
@@ -13,7 +13,8 @@ import {
   SheetClose,
 } from '@/components/ui/sheet';
 import { Button } from '../ui/button';
-import React from 'react';
+import React, { useState } from 'react';
+import AddResourceDialog from '../admin/AddResourceDialog';
 
 const navLinks = [
   { href: '/', label: 'Home', icon: Home },
@@ -25,6 +26,11 @@ const navLinks = [
 export default function Header() {
   const pathname = usePathname();
   const { isAdmin } = useAuth();
+  const [isAddResourceOpen, setIsAddResourceOpen] = useState(false);
+
+  const onResourceAdded = () => {
+    // Maybe show a toast notification
+  }
 
   const NavLink = ({ href, children }: { href: string; children: React.ReactNode }) => (
     <Link
@@ -53,68 +59,87 @@ export default function Header() {
   )
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur-sm">
-      <div className="container mx-auto flex h-16 items-center px-4 md:px-6">
-        <Link href="/" className="mr-6 flex items-center space-x-2">
-          <Building className="h-6 w-6 text-primary" />
-          <span className="hidden font-bold sm:inline-block text-lg">Educational Notes</span>
-        </Link>
-        <nav className="hidden items-center space-x-6 text-sm md:flex">
-          {navLinks.map(({ href, label }) => (
-            <NavLink key={label} href={href}>
-              {label}
-            </NavLink>
-          ))}
-        </nav>
-        <div className="ml-auto flex items-center gap-4">
+    <>
+      <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur-sm">
+        <div className="container mx-auto flex h-16 items-center px-4 md:px-6">
+          <Link href="/" className="mr-6 flex items-center space-x-2">
+            <Building className="h-6 w-6 text-primary" />
+            <span className="hidden font-bold sm:inline-block text-lg">Educational Notes</span>
+          </Link>
           <nav className="hidden items-center space-x-6 text-sm md:flex">
-            {isAdmin && (
-              <NavLink href="/admin">
-                <span className="flex items-center gap-1.5">
-                  <Shield className="h-4 w-4" />
-                  Admin
-                </span>
+            {navLinks.map(({ href, label }) => (
+              <NavLink key={label} href={href}>
+                {label}
               </NavLink>
-            )}
+            ))}
           </nav>
-          <UserNav />
-          <div className="md:hidden">
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="icon">
-                  <Menu className="h-6 w-6" />
-                  <span className="sr-only">Toggle navigation menu</span>
+          <div className="ml-auto flex items-center gap-4">
+            {isAdmin && (
+              <nav className="hidden items-center space-x-6 text-sm md:flex">
+                 <Button variant="ghost" size="sm" onClick={() => setIsAddResourceOpen(true)}>
+                  <PlusCircle />
+                  Add Resource
                 </Button>
-              </SheetTrigger>
-              <SheetContent side="left">
-                <nav className="grid gap-6 text-lg font-medium">
-                  <SheetClose asChild>
-                    <Link
-                      href="/"
-                      className="mb-4 flex items-center gap-2 text-lg font-semibold"
-                    >
-                      <Building className="h-6 w-6 text-primary" />
-                      <span>Educational Notes</span>
-                    </Link>
-                  </SheetClose>
-                  {navLinks.map(({ href, label, icon: Icon }) => (
-                    <MobileNavLink key={label} href={href}>
-                      <Icon className="h-5 w-5" />
-                      {label}
-                    </MobileNavLink>
-                  ))}
-                  {isAdmin && (
-                    <MobileNavLink href="/admin">
-                      <Shield className="h-5 w-5" />
-                      Admin
-                    </MobileNavLink>
-                  )}
-                </nav>
-              </SheetContent>
-            </Sheet>
+                <NavLink href="/admin">
+                  <span className="flex items-center gap-1.5">
+                    <Shield className="h-4 w-4" />
+                    Admin
+                  </span>
+                </NavLink>
+              </nav>
+            )}
+            <UserNav />
+            <div className="md:hidden">
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button variant="ghost" size="icon">
+                    <Menu className="h-6 w-6" />
+                    <span className="sr-only">Toggle navigation menu</span>
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="left">
+                  <nav className="grid gap-6 text-lg font-medium">
+                    <SheetClose asChild>
+                      <Link
+                        href="/"
+                        className="mb-4 flex items-center gap-2 text-lg font-semibold"
+                      >
+                        <Building className="h-6 w-6 text-primary" />
+                        <span>Educational Notes</span>
+                      </Link>
+                    </SheetClose>
+                    {navLinks.map(({ href, label, icon: Icon }) => (
+                      <MobileNavLink key={label} href={href}>
+                        <Icon className="h-5 w-5" />
+                        {label}
+                      </MobileNavLink>
+                    ))}
+                    {isAdmin && (
+                      <>
+                        <SheetClose asChild>
+                          <Button variant="outline" onClick={() => setIsAddResourceOpen(true)}>
+                            <PlusCircle className="h-5 w-5" />
+                            Add Resource
+                          </Button>
+                        </SheetClose>
+                        <MobileNavLink href="/admin">
+                          <Shield className="h-5 w-5" />
+                          Admin
+                        </MobileNavLink>
+                      </>
+                    )}
+                  </nav>
+                </SheetContent>
+              </Sheet>
+            </div>
           </div>
         </div>
-      </div>
-    </header>
+      </header>
+      <AddResourceDialog 
+        isOpen={isAddResourceOpen}
+        setIsOpen={setIsAddResourceOpen}
+        onResourceAdded={onResourceAdded}
+      />
+    </>
   );
 }
