@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/select"
 import { Resource } from '@/lib/firebase/resources';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
+import { Badge } from '@/components/ui/badge';
 
 const classes = ['9', '10', '11', '12'];
 const streams = ['Science', 'Commerce', 'Arts'];
@@ -50,9 +51,9 @@ export default function DownloadsPage() {
   const filteredResources = useMemo(() => {
     return resources.filter(resource => {
       const classMatch = selectedClass === 'all-classes' || resource.class === selectedClass;
-      const streamMatch = selectedStream === 'all-streams' || resource.stream?.includes(selectedStream);
-      const categoryMatch = selectedCategory === 'all-categories' || resource.category?.includes(selectedCategory);
-      const subjectMatch = selectedSubject === 'all-subjects' || resource.subject?.includes(selectedSubject);
+      const streamMatch = selectedStream === 'all-streams' || resource.stream?.some(s => s === selectedStream);
+      const categoryMatch = selectedCategory === 'all-categories' || resource.category?.some(c => c === selectedCategory);
+      const subjectMatch = selectedSubject === 'all-subjects' || resource.subject?.some(s => s === selectedSubject);
       return classMatch && streamMatch && categoryMatch && subjectMatch;
     });
   }, [resources, selectedClass, selectedStream, selectedCategory, selectedSubject]);
