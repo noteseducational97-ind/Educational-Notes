@@ -59,9 +59,13 @@ export default function DownloadsPage() {
     });
   }, [resources, selectedClass, selectedStream, selectedCategory, selectedSubject]);
 
+  const getPreviewUrl = (resource: Resource) => {
+    return resource.pdfUrl || resource.downloadUrl || '#';
+  };
+
   const getDownloadUrl = (resource: Resource) => {
     return resource.downloadUrl || resource.pdfUrl || '#';
-  }
+  };
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -137,7 +141,7 @@ export default function DownloadsPage() {
               {filteredResources.map((resource: Resource) => (
                 <Card key={resource.id} className="flex flex-col hover:border-primary/50 transition-colors duration-300 overflow-hidden">
                   <Link
-                    href={getDownloadUrl(resource)}
+                    href={getPreviewUrl(resource)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="group block"
@@ -156,7 +160,7 @@ export default function DownloadsPage() {
                   <CardHeader>
                     <CardTitle className="text-xl">
                        <Link
-                        href={getDownloadUrl(resource)}
+                        href={getPreviewUrl(resource)}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="group inline-flex items-center gap-2 hover:text-primary transition-colors"
