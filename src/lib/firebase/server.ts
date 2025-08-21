@@ -1,5 +1,3 @@
-'use server';
-
 // This file is intended for server-side use only.
 import { initializeApp, getApps, cert, getApp } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
