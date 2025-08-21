@@ -45,7 +45,6 @@ export async function getResources(): Promise<Resource[]> {
 
         return querySnapshot.docs.map(doc => {
             const data = doc.data();
-            // Firestore Admin SDK returns a Timestamp object
             const createdAt = data.createdAt.toDate().toISOString();
 
             return {
@@ -69,6 +68,31 @@ export async function getResources(): Promise<Resource[]> {
     }
 }
 
+export async function getResourceById(id: string): Promise<Resource | null> {
+    try {
+        const docRef = db.collection('resources').doc(id);
+        const docSnap = await docRef.get();
+
+        if (!docSnap.exists) {
+            console.log('No such document!');
+            return null;
+        }
+
+        const data = docSnap.data();
+        if (!data) return null;
+
+        const createdAt = data.createdAt.toDate().toISOString();
+
+        return {
+            id: docSnap.id,
+            ...data,
+            createdAt,
+        } as Resource;
+    } catch (error) {
+        console.error("Error fetching resource by ID: ", error);
+        return null;
+    }
+}
 
 export async function addToWatchlist(userId: string, resourceId: string) {
     if (!userId) {
@@ -121,12 +145,10 @@ export async function getWatchlist(userId: string): Promise<Resource[]> {
             return [];
         }
         
-        // Fetch all resources that are in the watchlist
         const resourcesSnapshot = await db.collection('resources').where('id', 'in', resourceIds).get();
 
         const resourcesById = new Map(resourcesSnapshot.docs.map(doc => [doc.id, doc.data()]));
 
-        // Map over the original resourceIds to maintain the saved order
         return resourceIds.map(id => {
              const data = resourcesById.get(id);
              if (!data) return null;

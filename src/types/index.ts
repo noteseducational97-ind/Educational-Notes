@@ -4,7 +4,7 @@ export type Resource = {
   description: string;
   content: string;
   category: 'All' | 'Notes' | 'PYQ' | 'Syllabus';
-  subject: 'Physics' | 'Chemistry' | 'Mathematics' | 'Biology' | 'History' | 'Computer Science';
+  subject: 'All' | 'Physics' | 'Chemistry' | 'Mathematics' | 'Biology' | 'History' | 'Computer Science';
   class: 'class9' | 'class10' | 'class11' | 'class12';
   stream: 'All' | 'Science' | 'Commerce' | 'Arts';
   imageUrl: string;
