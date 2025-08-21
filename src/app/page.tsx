@@ -118,15 +118,17 @@ export default function Home() {
                             </CardContent>
                         </Card>
                     </Link>
-                     <Card>
-                        <CardHeader className="flex flex-row items-center justify-between pb-2">
-                            <CardTitle className="text-lg font-medium">Community Support</CardTitle>
-                            <Users className="h-6 w-6 text-primary"/>
-                        </CardHeader>
-                        <CardContent>
-                            <CardDescription>Connect with fellow learners, ask questions, and share knowledge in a supportive environment.</CardDescription>
-                        </CardContent>
-                    </Card>
+                     <Link href="/about" className="block hover:shadow-lg transition-shadow duration-300 rounded-xl">
+                        <Card className="h-full cursor-pointer">
+                            <CardHeader className="flex flex-row items-center justify-between pb-2">
+                                <CardTitle className="text-lg font-medium">Community Support</CardTitle>
+                                <Users className="h-6 w-6 text-primary"/>
+                            </CardHeader>
+                            <CardContent>
+                                <CardDescription>Connect with fellow learners, ask questions, and share knowledge in a supportive environment.</CardDescription>
+                            </CardContent>
+                        </Card>
+                    </Link>
                 </div>
             </div>
         </section>
