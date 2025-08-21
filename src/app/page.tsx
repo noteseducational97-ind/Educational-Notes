@@ -135,12 +135,14 @@ export default function Home() {
 
         <section className="w-full py-12 md:py-24">
           <div className="container px-4 md:px-6">
-            <blockquote className="mx-auto max-w-3xl text-center">
-              <p className="text-2xl font-semibold leading-tight text-foreground sm:text-3xl">
-                "Learning gives creativity, creativity leads to thinking, thinking provides knowledge, and knowledge makes you great."
-              </p>
-              <footer className="mt-4 text-right text-muted-foreground">- Dr. A.P.J. Abdul Kalam</footer>
-            </blockquote>
+            <div className="mx-auto max-w-3xl text-center border rounded-xl p-8 shadow-lg">
+                <blockquote >
+                <p className="text-2xl font-semibold leading-tight text-foreground sm:text-3xl">
+                    "Learning gives creativity, creativity leads to thinking, thinking provides knowledge, and knowledge makes you great."
+                </p>
+                <footer className="mt-4 text-right text-muted-foreground">- Dr. A.P.J. Abdul Kalam</footer>
+                </blockquote>
+            </div>
           </div>
         </section>
 
