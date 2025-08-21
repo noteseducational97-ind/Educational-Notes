@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect } from 'react';
@@ -9,7 +10,9 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { sendEmailVerification } from 'firebase/auth';
 import { useToast } from '@/hooks/use-toast';
-import { ShieldCheck, Send } from 'lucide-react';
+import { ShieldCheck, Send, BookOpen, Quote } from 'lucide-react';
+import Image from 'next/image';
+import { Card, CardContent } from '@/components/ui/card';
 
 export default function Home() {
   const { user, loading } = useAuth();
@@ -44,7 +47,7 @@ export default function Home() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-background dark:bg-gray-950">
+    <div className="flex min-h-screen flex-col bg-background">
       <Header />
       <main className="flex-1">
         <div className="container mx-auto px-4 py-8 md:px-6">
@@ -61,15 +64,43 @@ export default function Home() {
               </AlertDescription>
             </Alert>
           )}
-          <div className="flex flex-col items-center justify-center rounded-xl border border-border bg-card p-8 text-center shadow-lg md:p-12">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-foreground">Welcome, {user.displayName || 'User'}!</h1>
-            <p className="mt-4 max-w-2xl text-base md:text-lg text-muted-foreground">
-              This is your main dashboard. You have successfully authenticated and can now access all the features of the application.
-            </p>
-            <p className="mt-3 text-sm text-muted-foreground">
-              Logged in as: <strong>{user.email}</strong>
-            </p>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+            <div className="space-y-4">
+                <div className="flex items-center gap-4">
+                    <BookOpen className="h-10 w-10 text-primary" />
+                    <div>
+                        <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground">Welcome, {user.displayName || 'User'}!</h1>
+                        <p className="text-muted-foreground">Logged in as: <strong>{user.email}</strong></p>
+                    </div>
+                </div>
+              <Card className="bg-card/50 border-border/50 shadow-sm">
+                <CardContent className="p-6">
+                    <div className="flex items-start gap-4">
+                        <Quote className="h-8 w-8 text-primary/70 shrink-0 mt-1" />
+                        <blockquote className="space-y-2">
+                            <p className="text-lg font-medium text-foreground">
+                            "The beautiful thing about learning is that no one can take it away from you."
+                            </p>
+                            <footer className="text-sm text-muted-foreground">- B.B. King</footer>
+                        </blockquote>
+                    </div>
+                </CardContent>
+              </Card>
+            </div>
+            
+            <div>
+              <Image 
+                src="https://placehold.co/600x400.png"
+                alt="Person studying in a modern library"
+                data-ai-hint="person studying"
+                width={600}
+                height={400}
+                className="rounded-xl shadow-2xl object-cover aspect-video"
+              />
+            </div>
           </div>
+
         </div>
       </main>
     </div>
