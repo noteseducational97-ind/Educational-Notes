@@ -81,6 +81,7 @@ export async function addToWatchlist(userId: string, resourceId: string) {
             savedAt: FieldValue.serverTimestamp(),
         });
         revalidatePath('/save');
+        revalidatePath('/downloads');
     } catch (error: any) {
         console.error('Error adding to watchlist: ', error);
         throw new Error('Could not save to watchlist.');
@@ -95,6 +96,7 @@ export async function removeFromWatchlist(userId: string, resourceId: string) {
         const watchlistRef = db.collection('users').doc(userId).collection('watchlist').doc(resourceId);
         await watchlistRef.delete();
         revalidatePath('/save');
+        revalidatePath('/downloads');
     } catch (error: any) {
         console.error('Error removing from watchlist: ', error);
         throw new Error('Could not remove from watchlist.');
@@ -114,6 +116,10 @@ export async function getWatchlist(userId: string): Promise<Resource[]> {
         }
 
         const resourceIds = snapshot.docs.map(doc => doc.id);
+        
+        if (resourceIds.length === 0) {
+            return [];
+        }
         
         // Fetch all resources that are in the watchlist
         const resourcesSnapshot = await db.collection('resources').where('id', 'in', resourceIds).get();

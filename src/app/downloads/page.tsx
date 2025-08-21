@@ -3,11 +3,11 @@
 
 import Header from '@/components/layout/Header';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { getResources, Resource, addToWatchlist } from '@/lib/firebase/resources';
+import { getResources, Resource, addToWatchlist, removeFromWatchlist, getWatchlist } from '@/lib/firebase/resources';
 import { format } from 'date-fns';
-import { ArrowUpRight, Download, BookOpen, Bookmark } from 'lucide-react';
+import { ArrowUpRight, Download, BookOpen, Bookmark, BookmarkCheck } from 'lucide-react';
 import Link from 'next/link';
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useCallback } from 'react';
 import {
   Select,
   SelectContent,
@@ -34,42 +34,72 @@ export default function DownloadsPage() {
   const { user } = useAuth();
   const { toast } = useToast();
   const [saving, setSaving] = useState<string | null>(null);
+  const [watchlistIds, setWatchlistIds] = useState<Set<string>>(new Set());
 
   const [selectedClass, setSelectedClass] = useState('All');
   const [selectedStream, setSelectedStream] = useState('All');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedSubject, setSelectedSubject] = useState('All');
 
-  useEffect(() => {
-    async function fetchResources() {
-      try {
-        const fetchedResources = await getResources();
-        setResources(fetchedResources);
-      } catch (error) {
-        console.error("Failed to fetch resources", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchResources();
-  }, []);
+  const fetchInitialData = useCallback(async () => {
+    try {
+      setLoading(true);
+      const fetchedResources = await getResources();
+      setResources(fetchedResources);
 
-  const handleAddToWatchlist = async (resourceId: string, resourceTitle: string) => {
+      if (user) {
+        const watchlistItems = await getWatchlist(user.uid);
+        setWatchlistIds(new Set(watchlistItems.map(item => item.id)));
+      }
+    } catch (error) {
+      console.error("Failed to fetch data", error);
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Failed to load resources. Please try again later.',
+      });
+    } finally {
+      setLoading(false);
+    }
+  }, [user, toast]);
+
+  useEffect(() => {
+    fetchInitialData();
+  }, [fetchInitialData]);
+
+  const handleToggleWatchlist = async (resource: Resource) => {
     if (!user) {
         toast({
             variant: 'destructive',
             title: 'Not logged in',
-            description: 'You must be logged in to save items to your watchlist.',
+            description: 'You must be logged in to save items.',
         });
         return;
     }
-    setSaving(resourceId);
+    setSaving(resource.id);
+
+    const isSaved = watchlistIds.has(resource.id);
+
     try {
-        await addToWatchlist(user.uid, resourceId);
-        toast({
-            title: 'Saved!',
-            description: `"${resourceTitle}" has been added to your watchlist.`,
-        });
+        if (isSaved) {
+            await removeFromWatchlist(user.uid, resource.id);
+            setWatchlistIds(prev => {
+                const newSet = new Set(prev);
+                newSet.delete(resource.id);
+                return newSet;
+            });
+            toast({
+                title: 'Removed',
+                description: `"${resource.title}" has been removed from your watchlist.`,
+            });
+        } else {
+            await addToWatchlist(user.uid, resource.id);
+            setWatchlistIds(prev => new Set(prev).add(resource.id));
+            toast({
+                title: 'Saved!',
+                description: `"${resource.title}" has been added to your watchlist.`,
+            });
+        }
     } catch (error: any) {
         toast({
             variant: 'destructive',
@@ -170,75 +200,78 @@ export default function DownloadsPage() {
             <LoadingSpinner />
           ) : filteredResources.length > 0 ? (
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {filteredResources.map((resource: Resource) => (
-                <Card key={resource.id} className="flex flex-col hover:border-primary/50 transition-colors duration-300 overflow-hidden">
-                  <Link
-                    href={getPreviewUrl(resource)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group block"
-                  >
-                    <div className="relative aspect-video">
-                        <Image 
-                            src={resource.imageUrl || 'https://placehold.co/600x400.png'}
-                            alt={resource.title}
-                            fill
-                            className="object-cover group-hover:scale-105 transition-transform duration-300"
-                        />
-                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                    </div>
-                  </Link>
-                  <CardHeader>
-                    <CardTitle className="text-xl">
-                       <Link
-                        href={getPreviewUrl(resource)}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="group inline-flex items-center gap-2 hover:text-primary transition-colors"
-                      >
-                         <BookOpen className="h-5 w-5 text-primary/80" />
-                        {resource.title}
-                        <ArrowUpRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />
-                      </Link>
-                    </CardTitle>
-                     <CardDescription asChild>
-                      <div className="flex flex-wrap gap-2 pt-2">
-                        <Badge variant="secondary">Class {resource.class.replace('class','')}</Badge>
-                        {resource.stream && <Badge variant="outline">{resource.stream}</Badge>}
-                        {resource.subject && <Badge variant="default">{resource.subject}</Badge>}
+              {filteredResources.map((resource: Resource) => {
+                const isSaved = watchlistIds.has(resource.id);
+                return (
+                  <Card key={resource.id} className="flex flex-col hover:border-primary/50 transition-colors duration-300 overflow-hidden">
+                    <Link
+                      href={getPreviewUrl(resource)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group block"
+                    >
+                      <div className="relative aspect-video">
+                          <Image 
+                              src={resource.imageUrl || 'https://placehold.co/600x400.png'}
+                              alt={resource.title}
+                              fill
+                              className="object-cover group-hover:scale-105 transition-transform duration-300"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                       </div>
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="flex-grow">
-                    <p className='text-sm text-muted-foreground'>{resource.description}</p>
-                    <div className="flex flex-wrap gap-1 mt-2">
-                        {resource.category && <Badge variant="secondary">{resource.category}</Badge>}
-                    </div>
-                  </CardContent>
-                  <CardFooter className="flex items-center justify-between">
-                    <p className="text-xs text-muted-foreground">
-                      Added on {format(new Date(resource.createdAt), 'PP')}
-                    </p>
-                    <div className="flex items-center gap-2">
-                        {user && (
-                            <Button variant="ghost" size="sm" onClick={() => handleAddToWatchlist(resource.id, resource.title)} disabled={saving === resource.id}>
-                                <Bookmark className="h-4 w-4 mr-1" />
-                                Save
-                            </Button>
-                        )}
+                    </Link>
+                    <CardHeader>
+                      <CardTitle className="text-xl">
                         <Link
-                        href={getDownloadUrl(resource)}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="group inline-flex items-center gap-1 text-primary text-sm font-medium hover:underline"
+                          href={getPreviewUrl(resource)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="group inline-flex items-center gap-2 hover:text-primary transition-colors"
                         >
-                        <Download className="h-4 w-4" />
-                        Download
+                          <BookOpen className="h-5 w-5 text-primary/80" />
+                          {resource.title}
+                          <ArrowUpRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />
                         </Link>
-                    </div>
-                  </CardFooter>
-                </Card>
-              ))}
+                      </CardTitle>
+                      <CardDescription asChild>
+                        <div className="flex flex-wrap gap-2 pt-2">
+                          <Badge variant="secondary">Class {resource.class.replace('class','')}</Badge>
+                          {resource.stream && resource.stream !== 'All' && <Badge variant="outline">{resource.stream}</Badge>}
+                          {resource.subject && <Badge variant="default">{resource.subject}</Badge>}
+                        </div>
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="flex-grow">
+                      <p className='text-sm text-muted-foreground'>{resource.description}</p>
+                      <div className="flex flex-wrap gap-1 mt-2">
+                          {resource.category && resource.category !== 'All' && <Badge variant="secondary">{resource.category}</Badge>}
+                      </div>
+                    </CardContent>
+                    <CardFooter className="flex items-center justify-between">
+                      <p className="text-xs text-muted-foreground">
+                        Added on {format(new Date(resource.createdAt), 'PP')}
+                      </p>
+                      <div className="flex items-center gap-2">
+                          {user && (
+                              <Button variant={isSaved ? "secondary" : "ghost"} size="sm" onClick={() => handleToggleWatchlist(resource)} disabled={saving === resource.id}>
+                                  {isSaved ? <BookmarkCheck className="h-4 w-4 mr-1" /> : <Bookmark className="h-4 w-4 mr-1" />}
+                                  {isSaved ? 'Saved' : 'Save'}
+                              </Button>
+                          )}
+                          <Link
+                          href={getDownloadUrl(resource)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="group inline-flex items-center gap-1 text-primary text-sm font-medium hover:underline"
+                          >
+                          <Download className="h-4 w-4" />
+                          Download
+                          </Link>
+                      </div>
+                    </CardFooter>
+                  </Card>
+                )
+              })}
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-muted bg-card/50 p-12 text-center">
