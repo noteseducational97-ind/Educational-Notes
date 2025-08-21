@@ -5,8 +5,8 @@ import { format } from 'date-fns';
 import { ArrowUpRight } from 'lucide-react';
 import Link from 'next/link';
 
-export default async function ResourcesPage() {
-  const resources = await getResources();
+export default function ResourcesPage() {
+  const resources = getResources();
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -20,9 +20,9 @@ export default async function ResourcesPage() {
             </p>
           </div>
 
-          {resources.length > 0 ? (
+          {(resources as any).length > 0 ? (
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {resources.map((resource) => (
+              {(resources as any).map((resource: any) => (
                 <Card key={resource.id} className="flex flex-col">
                   <CardHeader>
                     <CardTitle className="text-xl">
