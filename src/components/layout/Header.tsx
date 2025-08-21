@@ -65,16 +65,18 @@ export default function Header() {
               {label}
             </NavLink>
           ))}
-          {isAdmin && (
-            <NavLink href="/admin">
-              <span className="flex items-center gap-1.5">
-                <Shield className="h-4 w-4" />
-                Admin
-              </span>
-            </NavLink>
-          )}
         </nav>
         <div className="ml-auto flex items-center gap-4">
+          <nav className="hidden items-center space-x-6 text-sm md:flex">
+            {isAdmin && (
+              <NavLink href="/admin">
+                <span className="flex items-center gap-1.5">
+                  <Shield className="h-4 w-4" />
+                  Admin
+                </span>
+              </NavLink>
+            )}
+          </nav>
           <UserNav />
           <div className="md:hidden">
             <Sheet>
