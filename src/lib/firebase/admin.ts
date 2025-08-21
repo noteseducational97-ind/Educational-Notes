@@ -12,7 +12,9 @@ if (!serviceAccountString) {
 const serviceAccount = JSON.parse(serviceAccountString);
 
 // Manually replace escaped newlines in the private key
-serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, '\n');
+if (serviceAccount.private_key) {
+    serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, '\n');
+}
 
 
 let app: App;
