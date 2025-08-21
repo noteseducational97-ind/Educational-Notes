@@ -61,12 +61,6 @@ export default function ProfileCard() {
             </div>
           </div>
         </CardHeader>
-        <CardContent>
-          <div className="mt-4 border-t border-border pt-4">
-            <h4 className="text-xl font-semibold">Account Management</h4>
-            <p className="text-muted-foreground mt-1">Manage your account settings and actions.</p>
-          </div>
-        </CardContent>
         <CardFooter className="flex flex-col sm:flex-row gap-2 border-t border-border pt-6">
           <Button onClick={handleChangePassword}>
             <KeyRound />
