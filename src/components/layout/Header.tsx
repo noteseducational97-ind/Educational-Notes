@@ -74,20 +74,22 @@ export default function Header() {
             ))}
           </nav>
           <div className="ml-auto flex items-center gap-4">
-            {isAdmin && (
-              <nav className="hidden items-center space-x-6 text-sm md:flex">
-                 <Button variant="ghost" size="sm" onClick={() => setIsAddResourceOpen(true)}>
-                  <PlusCircle />
-                  Add Resource
-                </Button>
-                <NavLink href="/admin">
-                  <span className="flex items-center gap-1.5">
-                    <Shield className="h-4 w-4" />
-                    Admin
-                  </span>
-                </NavLink>
-              </nav>
-            )}
+            <div className="hidden md:flex items-center gap-4">
+                {isAdmin && (
+                <>
+                    <Button variant="ghost" size="sm" onClick={() => setIsAddResourceOpen(true)}>
+                        <PlusCircle />
+                        Add Resource
+                    </Button>
+                    <NavLink href="/admin">
+                    <span className="flex items-center gap-1.5">
+                        <Shield className="h-4 w-4" />
+                        Admin
+                    </span>
+                    </NavLink>
+                </>
+                )}
+            </div>
             <UserNav />
             <div className="md:hidden">
               <Sheet>
