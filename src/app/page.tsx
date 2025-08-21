@@ -133,6 +133,16 @@ export default function Home() {
             </div>
         </section>
 
+        <section className="w-full py-12 md:py-24">
+          <div className="container px-4 md:px-6">
+            <blockquote className="mx-auto max-w-3xl text-center">
+              <p className="text-2xl font-semibold leading-tight text-foreground sm:text-3xl">
+                "Learning gives creativity, creativity leads to thinking, thinking provides knowledge, and knowledge makes you great."
+              </p>
+            </blockquote>
+          </div>
+        </section>
+
         <section className="w-full py-12 md:py-24 bg-primary/10">
             <div className="container grid items-center justify-center gap-4 px-4 text-center md:px-6">
                 <div className="space-y-3 max-w-2xl mx-auto">
