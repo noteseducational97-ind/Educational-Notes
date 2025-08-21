@@ -2,10 +2,10 @@ import Header from '@/components/layout/Header';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { getResources } from '@/lib/firebase/resources';
 import { format } from 'date-fns';
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight, Download } from 'lucide-react';
 import Link from 'next/link';
 
-export default async function ResourcesPage() {
+export default async function DownloadsPage() {
   const resources = await getResources();
 
   return (
@@ -14,7 +14,7 @@ export default async function ResourcesPage() {
       <main className="flex-1">
         <div className="container mx-auto px-4 py-8">
           <div className="mb-8 text-center">
-            <h1 className="text-4xl font-bold text-foreground tracking-tight">Resources</h1>
+            <h1 className="text-4xl font-bold text-foreground tracking-tight">Downloads</h1>
             <p className="mt-2 text-muted-foreground max-w-2xl mx-auto">
               A curated list of study materials and useful links to accelerate your learning.
             </p>
@@ -50,7 +50,7 @@ export default async function ResourcesPage() {
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-muted bg-card/50 p-12 text-center">
-              <h2 className="text-2xl font-semibold">No Resources Yet</h2>
+              <h2 className="text-2xl font-semibold">No Downloads Yet</h2>
               <p className="mt-2 text-muted-foreground">
                 Check back later, or if you're an admin, add some new study materials!
               </p>

@@ -21,7 +21,7 @@ export async function addResource(resource: Omit<Resource, 'id' | 'createdAt'>) 
     // This will help in case we want to show the resources on the admin page
     // and want to see the new one immediately.
     revalidatePath('/admin');
-    revalidatePath('/resources'); // Invalidate resources page to show new resource
+    revalidatePath('/downloads'); // Invalidate downloads page to show new resource
   } catch (error: any) {
     console.error('Error adding resource to Firestore: ', error);
     throw new Error('Could not add resource.');

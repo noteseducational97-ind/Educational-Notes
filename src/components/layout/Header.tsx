@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Building, Home, BookText, Bookmark, Info, Shield, Menu } from 'lucide-react';
+import { Building, Home, Download, Bookmark, Info, Shield, Menu } from 'lucide-react';
 import UserNav from './UserNav';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/use-auth';
@@ -17,7 +17,7 @@ import React from 'react';
 
 const navLinks = [
   { href: '/', label: 'Home', icon: Home },
-  { href: '/resources', label: 'Resources', icon: BookText },
+  { href: '/downloads', label: 'Downloads', icon: Download },
   { href: '/save', label: 'Save', icon: Bookmark },
   { href: '/about', label: 'About', icon: Info },
 ];
