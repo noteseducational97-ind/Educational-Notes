@@ -4,7 +4,8 @@ import Link from 'next/link';
 import ForgotPasswordForm from '@/components/auth/ForgotPasswordForm';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Building, ArrowLeft } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
+import { EducationalNotesLogo } from '@/components/icons/EducationalNotesLogo';
 
 export default function ForgotPasswordPage() {
   return (
@@ -12,7 +13,7 @@ export default function ForgotPasswordPage() {
       <div className="w-full max-w-md">
         <div className="flex justify-center mb-6">
           <Link href="/" className="flex items-center space-x-2 text-foreground">
-            <Building className="h-8 w-8 text-primary" />
+            <EducationalNotesLogo className="h-8 w-8 text-primary" />
             <span className="text-2xl font-bold">Educational Notes</span>
           </Link>
         </div>

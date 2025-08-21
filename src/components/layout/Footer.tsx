@@ -1,12 +1,12 @@
 import Link from 'next/link';
-import { Building } from 'lucide-react';
+import { EducationalNotesLogo } from '@/components/icons/EducationalNotesLogo';
 
 export default function Footer() {
   return (
     <footer className="w-full border-t border-border/40 bg-background/95 backdrop-blur-sm">
       <div className="container mx-auto flex flex-col items-center justify-between gap-4 px-4 py-6 md:px-6 sm:flex-row">
         <div className="flex items-center space-x-2">
-          <Building className="h-6 w-6 text-primary" />
+          <EducationalNotesLogo className="h-6 w-6 text-primary" />
           <span className="font-bold">Educational Notes</span>
         </div>
         <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 text-sm">

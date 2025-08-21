@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Building, Home, Download, Bookmark, Info, Shield, Menu, PlusCircle } from 'lucide-react';
+import { Home, Download, Bookmark, Info, Shield, Menu, PlusCircle } from 'lucide-react';
 import UserNav from './UserNav';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/use-auth';
@@ -15,6 +15,7 @@ import {
 import { Button } from '../ui/button';
 import React, { useState } from 'react';
 import AddResourceDialog from '../admin/AddResourceDialog';
+import { EducationalNotesLogo } from '../icons/EducationalNotesLogo';
 
 const navLinks = [
   { href: '/', label: 'Home', icon: Home },
@@ -63,7 +64,7 @@ export default function Header() {
       <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur-sm">
         <div className="container mx-auto flex h-16 items-center px-4 md:px-6">
           <Link href="/" className="mr-6 flex items-center space-x-2">
-            <Building className="h-6 w-6 text-primary" />
+            <EducationalNotesLogo className="h-6 w-6 text-primary" />
             <span className="hidden font-bold sm:inline-block text-lg">Educational Notes</span>
           </Link>
           <nav className="hidden items-center space-x-6 text-sm md:flex">
@@ -106,7 +107,7 @@ export default function Header() {
                         href="/"
                         className="mb-4 flex items-center gap-2 text-lg font-semibold"
                       >
-                        <Building className="h-6 w-6 text-primary" />
+                        <EducationalNotesLogo className="h-6 w-6 text-primary" />
                         <span>Educational Notes</span>
                       </Link>
                     </SheetClose>
