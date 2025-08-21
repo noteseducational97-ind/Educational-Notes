@@ -126,6 +126,7 @@ export default function Home() {
                 <div className="space-y-3">
                     <Quote className="mx-auto h-12 w-12 text-primary" />
                     <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">Learning gives creativity, creativity leads to thinking, thinking provides knowledge, and knowledge makes you great.</h2>
+                    <p className="text-muted-foreground">- A.P.J. Abdul Kalam</p>
                 </div>
             </div>
         </section>
