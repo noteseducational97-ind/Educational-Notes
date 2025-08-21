@@ -8,7 +8,6 @@ import { revalidatePath } from 'next/cache';
 export type Resource = {
   id: string;
   title: string;
-  description: string;
   url: string;
   createdAt: string;
   class: string;
@@ -17,12 +16,15 @@ export type Resource = {
   subject: string[];
 };
 
-export async function addResource(resource: Omit<Resource, 'id' | 'createdAt' | 'description'>) {
+// The type for the function argument should not have id or createdAt
+export type AddResourceData = Omit<Resource, 'id' | 'createdAt'>;
+
+export async function addResource(resource: AddResourceData) {
   try {
     await addDoc(collection(db, 'resources'), {
       ...resource,
-      // Keeping description for compatibility, can be removed later
-      description: `Resource for Class ${resource.class}`,
+      stream: resource.stream || [],
+      subject: resource.subject || [],
       createdAt: new Date(),
     });
     revalidatePath('/admin');
@@ -59,15 +61,14 @@ export async function getResources(): Promise<Resource[]> {
             return {
                 id: doc.id,
                 title: data.title,
-                description: data.description || '',
                 url: data.url,
                 createdAt: createdAtString,
                 class: data.class,
                 stream: data.stream || [],
                 category: data.category || [],
                 subject: data.subject || [],
-            };
-        }) as Resource[];
+            } as Resource;
+        });
     } catch (error) {
         console.error("Error fetching resources: ", error);
         return [];

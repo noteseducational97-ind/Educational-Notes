@@ -77,7 +77,7 @@ export default function AddResourcePage() {
       toast({
         variant: 'destructive',
         title: 'Error uploading resource',
-        description: error.message,
+        description: 'Could not add resource.',
       });
     } finally {
       setLoading(false);
@@ -225,7 +225,7 @@ export default function AddResourcePage() {
                         <FormItem>
                             <FormLabel>Subject</FormLabel>
                             <div className="flex flex-wrap gap-4">
-                            {selectedStreams.flatMap(stream => subjectsByStream[stream] || []).map((item) => (
+                            {selectedStreams.flatMap(stream => subjectsByStream[stream] || []).filter(Boolean).map((item) => (
                                 <FormField
                                 key={item}
                                 control={form.control}
@@ -271,9 +271,6 @@ export default function AddResourcePage() {
                 <CardFooter className="flex justify-end gap-4 border-t pt-6">
                     <Button type="button" variant="outline" asChild>
                         <Link href="/downloads"><ArrowLeft /> Back</Link>
-                    </Button>
-                    <Button type="button" variant="secondary" disabled>
-                        <Save /> Save
                     </Button>
                     <Button type="submit" disabled={loading}>
                         {loading ? <Loader2 className="animate-spin" /> : <Upload />}
