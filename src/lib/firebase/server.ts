@@ -1,5 +1,5 @@
 // This file is intended for server-side use only.
-import { initializeApp, getApps, cert, getApp } from 'firebase-admin/app';
+import { initializeApp, getApps, cert, getApp, App } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
 import { getAuth } from 'firebase-admin/auth';
 
@@ -21,11 +21,14 @@ if (serviceAccount.private_key) {
     serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, '\n');
 }
 
-const app = !getApps().length
-  ? initializeApp({
-      credential: cert(serviceAccount),
-    })
-  : getApp();
+let app: App;
+if (!getApps().length) {
+  app = initializeApp({
+    credential: cert(serviceAccount),
+  });
+} else {
+  app = getApp();
+}
 
 const db = getFirestore(app);
 const auth = getAuth(app);
