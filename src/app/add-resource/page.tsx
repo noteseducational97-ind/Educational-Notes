@@ -15,7 +15,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Loader2, ArrowLeft, Save, Upload } from 'lucide-react';
+import { Loader2, ArrowLeft, Upload } from 'lucide-react';
 import Link from 'next/link';
 
 const formSchema = z.object({
@@ -27,17 +27,12 @@ const formSchema = z.object({
   url: z.string().url('Please enter a valid URL.'),
 });
 
-const streamsByClass: { [key: string]: string[] } = {
-  '11': ['Science', 'Commerce', 'Arts'],
-  '12': ['Science', 'Commerce', 'Arts'],
-};
-
-const subjectsByStream: { [key: string]: string[] } = {
-    'Science': ['Physics', 'Chemistry', 'Maths', 'Biology'],
-    'Commerce': ['Accountancy', 'Business Studies', 'Economics'],
-    'Arts': ['History', 'Geography', 'Political Science', 'Sociology']
-}
-
+const allStreams = ['Science', 'Commerce', 'Arts'];
+const allSubjects = [
+    'Physics', 'Chemistry', 'Maths', 'Biology',
+    'Accountancy', 'Business Studies', 'Economics',
+    'History', 'Geography', 'Political Science', 'Sociology'
+];
 const categories = ['Notes', 'Previous Year Questions', 'Syllabus'];
 
 export default function AddResourcePage() {
@@ -56,9 +51,6 @@ export default function AddResourcePage() {
       url: '',
     },
   });
-
-  const selectedClass = form.watch('class');
-  const selectedStreams = form.watch('stream') || [];
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
@@ -135,44 +127,42 @@ export default function AddResourcePage() {
                         </FormItem>
                       )}
                     />
-                    
-                    {selectedClass && streamsByClass[selectedClass] && (
-                      <FormField
-                        control={form.control}
-                        name="stream"
-                        render={() => (
-                          <FormItem>
-                            <FormLabel>Stream</FormLabel>
-                            <div className="flex flex-wrap gap-4">
-                              {streamsByClass[selectedClass].map((item) => (
-                                <FormField
-                                  key={item}
-                                  control={form.control}
-                                  name="stream"
-                                  render={({ field }) => (
-                                    <FormItem key={item} className="flex flex-row items-start space-x-3 space-y-0">
-                                      <FormControl>
-                                        <Checkbox
-                                          checked={field.value?.includes(item)}
-                                          onCheckedChange={(checked) => {
-                                            return checked
-                                              ? field.onChange([...(field.value || []), item])
-                                              : field.onChange(field.value?.filter((value) => value !== item));
-                                          }}
-                                        />
-                                      </FormControl>
-                                      <FormLabel className="font-normal">{item}</FormLabel>
-                                    </FormItem>
-                                  )}
-                                />
-                              ))}
-                            </div>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    )}
                   </div>
+
+                  <FormField
+                    control={form.control}
+                    name="stream"
+                    render={() => (
+                      <FormItem>
+                        <FormLabel>Stream</FormLabel>
+                        <div className="flex flex-wrap gap-4">
+                          {allStreams.map((item) => (
+                            <FormField
+                              key={item}
+                              control={form.control}
+                              name="stream"
+                              render={({ field }) => (
+                                <FormItem key={item} className="flex flex-row items-start space-x-3 space-y-0">
+                                  <FormControl>
+                                    <Checkbox
+                                      checked={field.value?.includes(item)}
+                                      onCheckedChange={(checked) => {
+                                        return checked
+                                          ? field.onChange([...(field.value || []), item])
+                                          : field.onChange(field.value?.filter((value) => value !== item));
+                                      }}
+                                    />
+                                  </FormControl>
+                                  <FormLabel className="font-normal">{item}</FormLabel>
+                                </FormItem>
+                              )}
+                            />
+                          ))}
+                        </div>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
                   <FormField
                     control={form.control}
@@ -217,42 +207,40 @@ export default function AddResourcePage() {
                     )}
                   />
 
-                {selectedStreams.length > 0 && (
-                    <FormField
-                        control={form.control}
-                        name="subject"
-                        render={() => (
-                        <FormItem>
-                            <FormLabel>Subject</FormLabel>
-                            <div className="flex flex-wrap gap-4">
-                            {selectedStreams.flatMap(stream => subjectsByStream[stream] || []).filter(Boolean).map((item) => (
-                                <FormField
-                                key={item}
-                                control={form.control}
-                                name="subject"
-                                render={({ field }) => (
-                                    <FormItem key={item} className="flex flex-row items-start space-x-3 space-y-0">
-                                    <FormControl>
-                                        <Checkbox
-                                        checked={field.value?.includes(item)}
-                                        onCheckedChange={(checked) => {
-                                            return checked
-                                            ? field.onChange([...(field.value || []), item])
-                                            : field.onChange(field.value?.filter((value) => value !== item));
-                                        }}
-                                        />
-                                    </FormControl>
-                                    <FormLabel className="font-normal">{item}</FormLabel>
-                                    </FormItem>
-                                )}
-                                />
-                            ))}
-                            </div>
-                            <FormMessage />
-                        </FormItem>
-                        )}
-                    />
-                )}
+                  <FormField
+                      control={form.control}
+                      name="subject"
+                      render={() => (
+                      <FormItem>
+                          <FormLabel>Subject</FormLabel>
+                          <div className="flex flex-wrap gap-4">
+                          {allSubjects.map((item) => (
+                              <FormField
+                              key={item}
+                              control={form.control}
+                              name="subject"
+                              render={({ field }) => (
+                                  <FormItem key={item} className="flex flex-row items-start space-x-3 space-y-0">
+                                  <FormControl>
+                                      <Checkbox
+                                      checked={field.value?.includes(item)}
+                                      onCheckedChange={(checked) => {
+                                          return checked
+                                          ? field.onChange([...(field.value || []), item])
+                                          : field.onChange(field.value?.filter((value) => value !== item));
+                                      }}
+                                      />
+                                  </FormControl>
+                                  <FormLabel className="font-normal">{item}</FormLabel>
+                                  </FormItem>
+                              )}
+                              />
+                          ))}
+                          </div>
+                          <FormMessage />
+                      </FormItem>
+                      )}
+                  />
 
                   <FormField
                     control={form.control}
@@ -285,4 +273,3 @@ export default function AddResourcePage() {
     </div>
   );
 }
-
