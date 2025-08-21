@@ -9,7 +9,9 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle, XCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { CheckCircle, PlusCircle, XCircle } from 'lucide-react';
+import AddResourceDialog from '@/components/admin/AddResourceDialog';
 
 type User = {
     uid: string;
@@ -26,6 +28,7 @@ export default function AdminPage() {
   const router = useRouter();
   const [users, setUsers] = useState<User[]>([]);
   const [loadingUsers, setLoadingUsers] = useState(true);
+  const [isAddResourceOpen, setIsAddResourceOpen] = useState(false);
 
   useEffect(() => {
     if (!authLoading) {
@@ -51,12 +54,22 @@ export default function AdminPage() {
       .join('');
   };
 
+  const onResourceAdded = () => {
+    // Here you could refresh the resources list if they were displayed on this page
+  }
+
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
       <main className="flex-1">
         <div className="container mx-auto px-4 py-8">
-          <h1 className="text-3xl font-bold text-primary mb-6">Admin Panel</h1>
+          <div className="flex justify-between items-center mb-6">
+            <h1 className="text-3xl font-bold text-primary">Admin Panel</h1>
+            <Button onClick={() => setIsAddResourceOpen(true)}>
+              <PlusCircle className="mr-2 h-4 w-4" />
+              Add Resource
+            </Button>
+          </div>
           <Card>
             <CardHeader>
               <CardTitle>Registered Users</CardTitle>
@@ -112,6 +125,11 @@ export default function AdminPage() {
           </Card>
         </div>
       </main>
+      <AddResourceDialog 
+        isOpen={isAddResourceOpen}
+        setIsOpen={setIsAddResourceOpen}
+        onResourceAdded={onResourceAdded}
+      />
     </div>
   );
 }
