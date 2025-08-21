@@ -7,6 +7,7 @@ import { useAuth } from '@/hooks/use-auth';
 import SignUpForm from '@/components/auth/SignUpForm';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Building } from 'lucide-react';
 
 export default function SignUpPage() {
   const { user, loading } = useAuth();
@@ -23,24 +24,32 @@ export default function SignUpPage() {
   }
   
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4 py-8">
-      <Card className="w-full max-w-md shadow-lg">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold tracking-tight text-primary">Create an Account</CardTitle>
-          <CardDescription>Enter your details below to get started</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <SignUpForm />
-        </CardContent>
-        <CardFooter className="flex flex-col items-center">
-          <p className="text-sm text-muted-foreground">
-            Already have an account?{' '}
-            <Link href="/login" className="font-medium text-primary underline-offset-4 hover:underline">
-              Sign in
-            </Link>
-          </p>
-        </CardFooter>
-      </Card>
+    <div className="flex min-h-screen items-center justify-center bg-background p-4">
+       <div className="w-full max-w-md">
+        <div className="flex justify-center mb-6">
+          <Link href="/" className="flex items-center space-x-2 text-foreground">
+            <Building className="h-8 w-8 text-primary" />
+            <span className="text-2xl font-bold">Educational Notes</span>
+          </Link>
+        </div>
+        <Card className="w-full shadow-2xl">
+          <CardHeader className="text-center">
+            <CardTitle className="text-2xl font-bold tracking-tight">Create an Account</CardTitle>
+            <CardDescription>Enter your details below to get started</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <SignUpForm />
+          </CardContent>
+          <CardFooter className="flex flex-col items-center">
+            <p className="text-sm text-muted-foreground">
+              Already have an account?{' '}
+              <Link href="/login" className="font-medium text-primary underline-offset-4 hover:underline">
+                Sign in
+              </Link>
+            </p>
+          </CardFooter>
+        </Card>
+      </div>
     </div>
   );
 }

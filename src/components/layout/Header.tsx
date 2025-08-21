@@ -30,7 +30,7 @@ export default function Header() {
     <Link
       href={href}
       className={cn(
-        'transition-colors hover:text-primary',
+        'transition-colors hover:text-primary font-medium',
         pathname === href ? 'text-primary' : 'text-muted-foreground'
       )}
     >
@@ -53,13 +53,13 @@ export default function Header() {
   )
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-card/95 backdrop-blur-sm">
+    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur-sm">
       <div className="container mx-auto flex h-16 items-center px-4 md:px-6">
         <Link href="/" className="mr-6 flex items-center space-x-2">
           <Building className="h-6 w-6 text-primary" />
-          <span className="hidden font-bold sm:inline-block">Educational Notes</span>
+          <span className="hidden font-bold sm:inline-block text-lg">Educational Notes</span>
         </Link>
-        <nav className="hidden items-center space-x-6 text-sm font-medium md:flex">
+        <nav className="hidden items-center space-x-6 text-sm md:flex">
           {navLinks.map(({ href, label }) => (
             <NavLink key={label} href={href}>
               {label}
@@ -67,8 +67,8 @@ export default function Header() {
           ))}
           {isAdmin && (
             <NavLink href="/admin">
-              <span className="flex items-center">
-                <Shield className="mr-2 h-4 w-4" />
+              <span className="flex items-center gap-1.5">
+                <Shield className="h-4 w-4" />
                 Admin
               </span>
             </NavLink>

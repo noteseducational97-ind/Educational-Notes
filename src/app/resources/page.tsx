@@ -5,25 +5,25 @@ import { format } from 'date-fns';
 import { ArrowUpRight } from 'lucide-react';
 import Link from 'next/link';
 
-export default function ResourcesPage() {
-  const resources = getResources();
+export default async function ResourcesPage() {
+  const resources = await getResources();
 
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
       <main className="flex-1">
         <div className="container mx-auto px-4 py-8">
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold text-primary">Resources</h1>
-            <p className="mt-2 text-muted-foreground">
-              A curated list of study materials and useful links.
+          <div className="mb-8 text-center">
+            <h1 className="text-4xl font-bold text-foreground tracking-tight">Resources</h1>
+            <p className="mt-2 text-muted-foreground max-w-2xl mx-auto">
+              A curated list of study materials and useful links to accelerate your learning.
             </p>
           </div>
 
-          {(resources as any).length > 0 ? (
+          {resources.length > 0 ? (
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {(resources as any).map((resource: any) => (
-                <Card key={resource.id} className="flex flex-col">
+              {resources.map((resource: any) => (
+                <Card key={resource.id} className="flex flex-col hover:border-primary/50 transition-colors duration-300">
                   <CardHeader>
                     <CardTitle className="text-xl">
                        <Link
@@ -42,14 +42,14 @@ export default function ResourcesPage() {
                   </CardContent>
                   <CardFooter>
                     <p className="text-xs text-muted-foreground">
-                      Added on {format(resource.createdAt, 'PPP')}
+                      Added on {format(new Date(resource.createdAt), 'PPP')}
                     </p>
                   </CardFooter>
                 </Card>
               ))}
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center rounded-lg border bg-card p-10 text-center shadow-sm">
+            <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-muted bg-card/50 p-12 text-center">
               <h2 className="text-2xl font-semibold">No Resources Yet</h2>
               <p className="mt-2 text-muted-foreground">
                 Check back later, or if you're an admin, add some new study materials!

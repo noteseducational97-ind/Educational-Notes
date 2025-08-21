@@ -40,9 +40,10 @@ export async function getResources(): Promise<Resource[]> {
                 title: data.title,
                 description: data.description,
                 url: data.url,
-                createdAt: data.createdAt.toDate(),
+                // Convert Firestore Timestamp to a serializable format (ISO string)
+                createdAt: data.createdAt.toDate().toISOString(),
             };
-        });
+        }) as Resource[];
     } catch (error) {
         console.error("Error fetching resources: ", error);
         return [];

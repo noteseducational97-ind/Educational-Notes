@@ -4,6 +4,12 @@ import { AuthProvider } from '@/providers/auth-provider';
 import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
 import Footer from '@/components/layout/Footer';
+import { Inter } from 'next/font/google';
+
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-sans',
+});
 
 export const metadata: Metadata = {
   title: 'Educational Notes',
@@ -16,8 +22,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={cn('min-h-screen bg-background font-sans antialiased')}>
+    <html lang="en" className="dark" style={{ colorScheme: 'dark' }} suppressHydrationWarning>
+      <body className={cn('min-h-screen bg-background font-sans antialiased', inter.variable)}>
         <AuthProvider>
           <div className="relative flex min-h-dvh flex-col">
             <main className="flex-1">{children}</main>
