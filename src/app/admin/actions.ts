@@ -9,7 +9,7 @@ const FormSchema = z.object({
   title: z.string().min(3, 'Title must be at least 3 characters.'),
   description: z.string().min(10, 'Description must be at least 10 characters.'),
   content: z.string().min(20, 'Content must be at least 20 characters.'),
-  category: z.enum(['Question Bank', 'Textbook Solutions', 'Study Notes', 'Video Tutorial']),
+  category: z.enum(['All', 'Notes', 'PYQ', 'Syllabus']),
   subject: z.enum(['Physics', 'Chemistry', 'Mathematics', 'Biology', 'History', 'Computer Science']),
   class: z.enum(['class9', 'class10', 'class11', 'class12']),
   stream: z.enum(['All', 'Science', 'Commerce', 'Arts']),

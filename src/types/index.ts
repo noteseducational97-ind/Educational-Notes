@@ -3,7 +3,7 @@ export type Resource = {
   title: string;
   description: string;
   content: string;
-  category: 'Question Bank' | 'Textbook Solutions' | 'Study Notes' | 'Video Tutorial';
+  category: 'All' | 'Notes' | 'PYQ' | 'Syllabus';
   subject: 'Physics' | 'Chemistry' | 'Mathematics' | 'Biology' | 'History' | 'Computer Science';
   class: 'class9' | 'class10' | 'class11' | 'class12';
   stream: 'All' | 'Science' | 'Commerce' | 'Arts';
