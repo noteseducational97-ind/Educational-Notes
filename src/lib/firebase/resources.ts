@@ -1,26 +1,30 @@
 
 'use server';
 
-import { collection, addDoc, getDocs, orderBy, query, Timestamp } from 'firebase/firestore';
+import { addDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase/server'; // Use server-side db
 import { revalidatePath } from 'next/cache';
 import type { Resource as ResourceType } from '@/types';
+import { FieldValue } from 'firebase-admin/firestore';
 
 export type Resource = ResourceType & {
   createdAt: string;
 };
 
 // The type for the function argument should not have id or createdAt
-export type AddResourceData = Omit<Resource, 'id' | 'createdAt'>;
+export type AddResourceData = Omit<ResourceType, 'id' | 'createdAt'>;
 
 export async function addResource(resource: AddResourceData) {
   try {
-    await addDoc(collection(db, 'resources'), {
-      ...resource,
-      stream: resource.stream || [],
-      subject: resource.subject || [],
-      createdAt: new Date(),
+    const resourcesCollection = db.collection('resources');
+    const slug = resource.title.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
+    
+    await resourcesCollection.doc(slug).set({
+        ...resource,
+        id: slug,
+        createdAt: FieldValue.serverTimestamp(),
     });
+    
     revalidatePath('/admin');
     revalidatePath('/downloads');
   } catch (error: any)
@@ -32,27 +36,17 @@ export async function addResource(resource: AddResourceData) {
 
 export async function getResources(): Promise<Resource[]> {
     try {
-        const resourcesCollection = collection(db, 'resources');
-        const q = query(resourcesCollection, orderBy('createdAt', 'desc'));
-        const querySnapshot = await getDocs(q);
+        const resourcesCollection = db.collection('resources');
+        const querySnapshot = await resourcesCollection.orderBy('createdAt', 'desc').get();
         
+        if (querySnapshot.empty) {
+            return [];
+        }
+
         return querySnapshot.docs.map(doc => {
             const data = doc.data();
-            const createdAt = data.createdAt;
-            let createdAtString: string;
-
-            if (createdAt instanceof Timestamp) {
-                createdAtString = createdAt.toDate().toISOString();
-            } else if (createdAt?.toDate) { // Handles Firestore Timestamps from other SDK versions
-                createdAtString = createdAt.toDate().toISOString();
-            } else if (typeof createdAt === 'string') {
-                createdAtString = new Date(createdAt).toISOString();
-            } else if (typeof createdAt === 'number') {
-                createdAtString = new Date(createdAt).toISOString();
-            } else {
-                // Fallback for any other unexpected type, or if createdAt is missing
-                createdAtString = new Date().toISOString();
-            }
+            // Firestore Admin SDK returns a Timestamp object
+            const createdAt = data.createdAt.toDate().toISOString();
 
             return {
                 id: doc.id,
@@ -66,7 +60,7 @@ export async function getResources(): Promise<Resource[]> {
                 imageUrl: data.imageUrl,
                 pdfUrl: data.pdfUrl,
                 downloadUrl: data.downloadUrl,
-                createdAt: createdAtString,
+                createdAt: createdAt,
             } as Resource;
         });
     } catch (error) {
