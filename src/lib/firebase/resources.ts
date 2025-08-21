@@ -9,7 +9,7 @@ export type Resource = {
   title: string;
   description: string;
   url: string;
-  createdAt: Date;
+  createdAt: string;
 };
 
 export async function addResource(resource: Omit<Resource, 'id' | 'createdAt'>) {
