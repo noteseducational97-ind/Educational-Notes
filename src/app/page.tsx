@@ -139,6 +139,7 @@ export default function Home() {
               <p className="text-2xl font-semibold leading-tight text-foreground sm:text-3xl">
                 "Learning gives creativity, creativity leads to thinking, thinking provides knowledge, and knowledge makes you great."
               </p>
+              <footer className="mt-4 text-right text-muted-foreground">- Dr. A.P.J. Abdul Kalam</footer>
             </blockquote>
           </div>
         </section>
