@@ -68,3 +68,60 @@ export async function getResources(): Promise<Resource[]> {
         return [];
     }
 }
+
+
+export async function addToWatchlist(userId: string, resourceId: string) {
+    if (!userId) {
+        throw new Error('User is not authenticated.');
+    }
+    try {
+        const watchlistRef = db.collection('users').doc(userId).collection('watchlist').doc(resourceId);
+        await watchlistRef.set({
+            resourceId: resourceId,
+            savedAt: FieldValue.serverTimestamp(),
+        });
+        revalidatePath('/save');
+    } catch (error: any) {
+        console.error('Error adding to watchlist: ', error);
+        throw new Error('Could not save to watchlist.');
+    }
+}
+
+export async function getWatchlist(userId: string): Promise<Resource[]> {
+    if (!userId) {
+        return [];
+    }
+    try {
+        const watchlistRef = db.collection('users').doc(userId).collection('watchlist');
+        const snapshot = await watchlistRef.orderBy('savedAt', 'desc').get();
+
+        if (snapshot.empty) {
+            return [];
+        }
+
+        const resourceIds = snapshot.docs.map(doc => doc.id);
+        
+        // Fetch all resources that are in the watchlist
+        const resourcesSnapshot = await db.collection('resources').where('id', 'in', resourceIds).get();
+
+        const resourcesById = new Map(resourcesSnapshot.docs.map(doc => [doc.id, doc.data()]));
+
+        // Map over the original resourceIds to maintain the saved order
+        return resourceIds.map(id => {
+             const data = resourcesById.get(id);
+             if (!data) return null;
+
+             const createdAt = data.createdAt.toDate().toISOString();
+             return {
+                id: id,
+                ...data,
+                createdAt
+             } as Resource;
+        }).filter((r): r is Resource => r !== null);
+
+
+    } catch (error) {
+        console.error("Error fetching watchlist: ", error);
+        return [];
+    }
+}
