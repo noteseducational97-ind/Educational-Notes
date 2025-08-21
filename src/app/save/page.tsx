@@ -25,8 +25,8 @@ export default function SavePage() {
       <Header />
       <main className="flex-1">
         <div className="container mx-auto px-4 py-8">
-          <h1 className="text-3xl font-bold text-primary">Saved Items</h1>
-          <p className="mt-4 text-muted-foreground">This is a protected page for saved items. Content coming soon!</p>
+          <h1 className="text-3xl font-bold text-primary">Watchlist</h1>
+          <p className="mt-4 text-muted-foreground">This is a protected page for your watchlist. Content coming soon!</p>
         </div>
       </main>
     </div>
