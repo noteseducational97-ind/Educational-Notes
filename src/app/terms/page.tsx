@@ -1,10 +1,20 @@
+
+'use client';
+import { useEffect, useState } from 'react';
+
 export default function TermsPage() {
+  const [date, setDate] = useState('');
+
+  useEffect(() => {
+    setDate(new Date().toLocaleDateString());
+  }, []);
+
   return (
     <div className="w-full bg-background">
       <div className="container mx-auto max-w-4xl px-4 py-12 sm:py-16 md:py-20">
         <div className="prose prose-lg dark:prose-invert mx-auto">
             <h1 className="text-4xl font-bold tracking-tight text-primary sm:text-5xl">Terms of Service</h1>
-            <p className="mt-6 text-lg leading-8 text-muted-foreground">Last updated: {new Date().toLocaleDateString()}</p>
+            <p className="mt-6 text-lg leading-8 text-muted-foreground">Last updated: {date}</p>
 
             <div className="mt-10 space-y-8 text-muted-foreground">
                 <p>Welcome to Educational Notes!</p>
