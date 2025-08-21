@@ -14,7 +14,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'Educational Notes',
+  title: 'AuthZen',
   description: 'Modern and professional authentication flows.',
 };
 
@@ -34,7 +34,7 @@ export default function RootLayout({
         >
           <AuthProvider>
             <div className="relative flex min-h-dvh flex-col">
-              <main className="flex-1">{children}</main>
+              {children}
               <Footer />
             </div>
             <Toaster />

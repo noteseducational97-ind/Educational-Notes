@@ -1,3 +1,4 @@
+
 import Header from '@/components/layout/Header';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { getResources } from '@/lib/firebase/resources';
@@ -9,7 +10,7 @@ export default async function DownloadsPage() {
   const resources = await getResources();
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col bg-background">
       <Header />
       <main className="flex-1">
         <div className="container mx-auto px-4 py-8">
@@ -40,10 +41,19 @@ export default async function DownloadsPage() {
                   <CardContent className="flex-grow">
                     <CardDescription>{resource.description}</CardDescription>
                   </CardContent>
-                  <CardFooter>
+                  <CardFooter className="flex items-center justify-between">
                     <p className="text-xs text-muted-foreground">
                       Added on {format(new Date(resource.createdAt), 'PPP')}
                     </p>
+                    <Link
+                      href={resource.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group inline-flex items-center gap-1 text-primary text-sm font-medium hover:underline"
+                    >
+                      <Download className="h-4 w-4" />
+                      Download
+                    </Link>
                   </CardFooter>
                 </Card>
               ))}

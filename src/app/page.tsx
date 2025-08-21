@@ -8,9 +8,9 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { sendEmailVerification } from 'firebase/auth';
 import { useToast } from '@/hooks/use-toast';
-import { ShieldCheck, Send, BookOpen, Quote, Download, Bookmark, Users } from 'lucide-react';
+import { ShieldCheck, Send, Download, Bookmark, Users } from 'lucide-react';
 import Image from 'next/image';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
 
 export default function Home() {
@@ -42,7 +42,7 @@ export default function Home() {
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
       <main className="flex-1">
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-secondary/50">
+        <section className="w-full py-20 md:py-32 lg:py-40 bg-gradient-to-br from-primary/20 to-background">
           <div className="container px-4 md:px-6">
              {user && !user.emailVerified && (
               <Alert className="mb-8 border-yellow-500/50 text-yellow-700 dark:border-yellow-500/50 dark:bg-yellow-900/20">
@@ -57,17 +57,25 @@ export default function Home() {
                 </AlertDescription>
               </Alert>
             )}
-            <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px]">
+            <div className="grid gap-6 lg:grid-cols-[1fr_500px] lg:gap-12 xl:grid-cols-[1fr_600px]">
               <div className="flex flex-col justify-center space-y-4">
-                <div className="space-y-2">
-                  <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none text-primary">
-                    Welcome To Educational Notes
+                <div className="space-y-4">
+                  <h1 className="text-4xl font-bold tracking-tighter text-primary sm:text-5xl xl:text-6xl/none">
+                    Welcome To AuthZen
                   </h1>
-                   <p className="max-w-[600px] text-muted-foreground md:text-xl">Your Mission To Achieve Best Educational Material with High Quality Notes with all things related to study but free of cost</p>
+                   <p className="max-w-[600px] text-foreground/80 md:text-xl">Your mission to achieve the best educational material with high-quality notes, all free of cost.</p>
+                   <div className="flex flex-col gap-2 min-[400px]:flex-row">
+                     <Button size="lg" asChild>
+                       <Link href="/signup">Get Started</Link>
+                     </Button>
+                     <Button size="lg" variant="outline" asChild>
+                       <Link href="/downloads">Explore Resources</Link>
+                     </Button>
+                   </div>
                 </div>
               </div>
               <Image
-                src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=2070&auto=format&fit=crop"
+                src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=2070&auto=format&fit=crop"
                 width="600"
                 height="400"
                 alt="A group of diverse students studying together outdoors on a university campus."
@@ -80,53 +88,55 @@ export default function Home() {
         
         <section className="w-full py-12 md:py-24">
             <div className="container px-4 md:px-6">
-                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="flex flex-col items-center justify-center space-y-4 text-center mb-12">
+                  <div className="inline-block rounded-lg bg-secondary px-3 py-1 text-sm">Key Features</div>
+                  <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Everything You Need to Succeed</h2>
+                  <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                    Our platform provides curated resources, community support, and tools to help you on your learning journey.
+                  </p>
+              </div>
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between pb-2">
-                            <CardTitle className="text-sm font-medium">Curated Resources</CardTitle>
-                            <Download className="h-4 w-4 text-muted-foreground"/>
+                            <CardTitle className="text-lg font-medium">Curated Resources</CardTitle>
+                            <Download className="h-6 w-6 text-primary"/>
                         </CardHeader>
                         <CardContent>
-                           <p className="text-xs text-muted-foreground">Access a library of hand-picked study materials.</p>
-                           <Button asChild variant="link" className="px-0">
-                               <Link href="/downloads">Explore Downloads</Link>
-                           </Button>
+                           <CardDescription>Access a library of hand-picked study materials, notes, and guides to supplement your learning.</CardDescription>
                         </CardContent>
                     </Card>
                      <Card>
                         <CardHeader className="flex flex-row items-center justify-between pb-2">
-                            <CardTitle className="text-sm font-medium">Personal Watchlist</CardTitle>
-                            <Bookmark className="h-4 w-4 text-muted-foreground"/>
+                            <CardTitle className="text-lg font-medium">Personal Watchlist</CardTitle>
+                            <Bookmark className="h-6 w-6 text-primary"/>
                         </CardHeader>
                         <CardContent>
-                           <p className="text-xs text-muted-foreground">Save and organize your most important materials.</p>
-                           <Button asChild variant="link" className="px-0">
-                               <Link href="/save">Go to Watchlist</Link>
-                           </Button>
+                            <CardDescription>Save and organize your most important materials for quick and easy access whenever you need them.</CardDescription>
                         </CardContent>
                     </Card>
                      <Card>
                         <CardHeader className="flex flex-row items-center justify-between pb-2">
-                            <CardTitle className="text-sm font-medium">Community Support</CardTitle>
-                            <Users className="h-4 w-4 text-muted-foreground"/>
+                            <CardTitle className="text-lg font-medium">Community Support</CardTitle>
+                            <Users className="h-6 w-6 text-primary"/>
                         </CardHeader>
                         <CardContent>
-                           <p className="text-xs text-muted-foreground">Connect with fellow learners and grow together.</p>
-                           <Button asChild variant="link" className="px-0">
-                               <Link href="/about">Learn More</Link>
-                           </Button>
+                            <CardDescription>Connect with fellow learners, ask questions, and share knowledge in a supportive environment.</CardDescription>
                         </CardContent>
                     </Card>
                 </div>
             </div>
         </section>
 
-        <section className="w-full py-12 md:py-24 bg-secondary/50">
+        <section className="w-full py-12 md:py-24 bg-primary/10">
             <div className="container grid items-center justify-center gap-4 px-4 text-center md:px-6">
-                <div className="space-y-3">
-                    <Quote className="mx-auto h-12 w-12 text-primary" />
-                    <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">Learning gives creativity, creativity leads to thinking, thinking provides knowledge, and knowledge makes you great.</h2>
-                    <p className="text-muted-foreground">- A.P.J. Abdul Kalam</p>
+                <div className="space-y-3 max-w-2xl mx-auto">
+                    <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">Ready to start your journey?</h2>
+                    <p className="text-muted-foreground">
+                        Create an account today and unlock a world of knowledge.
+                    </p>
+                    <Button asChild size="lg">
+                      <Link href="/signup">Sign Up for Free</Link>
+                    </Button>
                 </div>
             </div>
         </section>

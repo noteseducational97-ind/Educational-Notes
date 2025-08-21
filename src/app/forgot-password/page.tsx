@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -14,7 +15,7 @@ export default function ForgotPasswordPage() {
         <div className="flex justify-center mb-6">
           <Link href="/" className="flex items-center space-x-2 text-foreground">
             <EducationalNotesLogo className="h-8 w-8 text-primary" />
-            <span className="text-2xl font-bold">Educational Notes</span>
+            <span className="text-2xl font-bold">AuthZen</span>
           </Link>
         </div>
         <Card className="w-full shadow-2xl">

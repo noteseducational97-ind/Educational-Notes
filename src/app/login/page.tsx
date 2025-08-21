@@ -30,13 +30,13 @@ export default function LoginPage() {
         <div className="flex justify-center mb-6">
           <Link href="/" className="flex items-center space-x-2 text-foreground">
             <EducationalNotesLogo className="h-8 w-8 text-primary" />
-            <span className="text-2xl font-bold">Educational Notes</span>
+            <span className="text-2xl font-bold">AuthZen</span>
           </Link>
         </div>
         <Card className="w-full shadow-2xl">
           <CardHeader className="text-center">
             <CardTitle className="text-2xl font-bold tracking-tight">Welcome Back!</CardTitle>
-            <CardDescription>Sign in to your Educational Notes account</CardDescription>
+            <CardDescription>Sign in to your AuthZen account</CardDescription>
           </CardHeader>
           <CardContent>
             <LoginForm />
