@@ -84,10 +84,25 @@ export async function getResourceById(id: string): Promise<Resource | null> {
             const tempData = tempDocSnap.data();
             if (!tempData) return null;
             const savedAt = tempData.savedAt.toDate().toISOString();
-            return {
+            
+            const temporaryResource = {
                 id: tempDocSnap.id,
                 ...tempData,
-                createdAt: savedAt, // use savedAt as createdAt for consistency
+                createdAt: savedAt, // use savedAt as createdAt for consistency on client
+            };
+            // Ensure all fields from the Resource type are present, even if undefined
+            return {
+                title: temporaryResource.title,
+                description: temporaryResource.description,
+                content: temporaryResource.content,
+                category: temporaryResource.category,
+                subject: temporaryResource.subject,
+                class: temporaryResource.class,
+                stream: temporaryResource.stream,
+                imageUrl: temporaryResource.imageUrl,
+                pdfUrl: temporaryResource.pdfUrl,
+                downloadUrl: temporaryResource.downloadUrl,
+                ...temporaryResource,
             } as Resource;
         }
 

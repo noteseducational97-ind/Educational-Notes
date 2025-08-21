@@ -26,7 +26,7 @@ const FormSchema = z.object({
   title: z.string().min(3, 'Title must be at least 3 characters.'),
   description: z.string().min(10, 'Description must be at least 10 characters.'),
   content: z.string().min(20, 'Content must be at least 20 characters.'),
-  category: z.enum(['All', 'Notes', 'PYQ', 'Syllabus']),
+  category: z.enum(['Notes', 'PYQ', 'Syllabus']),
   subject: z.enum(['Physics', 'Chemistry', 'Mathematics', 'Biology', 'History', 'Computer Science']),
   class: z.enum(['class9', 'class10', 'class11', 'class12']),
   stream: z.enum(['All', 'Science', 'Commerce', 'Arts']),
@@ -35,7 +35,7 @@ const FormSchema = z.object({
   downloadUrl: z.string().url('Please enter a valid download URL.').optional().or(z.literal('')),
 });
 
-const categories = ['All', 'Notes', 'PYQ', 'Syllabus'];
+const categories = ['Notes', 'PYQ', 'Syllabus'];
 const subjects = ['Physics', 'Chemistry', 'Mathematics', 'Biology', 'History', 'Computer Science'];
 const classes = ['class9', 'class10', 'class11', 'class12'];
 const streams = ['All', 'Science', 'Commerce', 'Arts'];
@@ -110,7 +110,11 @@ export default function AddResourceAdminPage() {
                 title: 'Draft Saved!',
                 description: `"${values.title}" has been saved as a draft.`,
             });
-            router.push(`/admin/edit-resource/${result.id}`);
+            if (result.id) {
+                router.push(`/admin/edit-resource/${result.id}`);
+            } else {
+                router.push('/admin');
+            }
         } else {
             toast({
                 variant: 'destructive',

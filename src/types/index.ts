@@ -3,11 +3,12 @@ export type Resource = {
   title: string;
   description: string;
   content: string;
-  category: 'All' | 'Notes' | 'PYQ' | 'Syllabus';
-  subject: 'All' | 'Physics' | 'Chemistry' | 'Mathematics' | 'Biology' | 'History' | 'Computer Science';
+  category: 'Notes' | 'PYQ' | 'Syllabus';
+  subject: 'Physics' | 'Chemistry' | 'Mathematics' | 'Biology' | 'History' | 'Computer Science';
   class: 'class9' | 'class10' | 'class11' | 'class12';
   stream: 'All' | 'Science' | 'Commerce' | 'Arts';
   imageUrl: string;
   pdfUrl?: string;
   downloadUrl?: string;
+  createdAt: string; // Should be an ISO string
 };
