@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -51,6 +51,15 @@ export default function AddResourcePage() {
       url: '',
     },
   });
+
+  const selectedClass = form.watch('class');
+  const isStreamDisabled = !['11', '12'].includes(selectedClass);
+
+  useEffect(() => {
+    if (isStreamDisabled) {
+      form.setValue('stream', []);
+    }
+  }, [isStreamDisabled, form]);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
@@ -151,6 +160,7 @@ export default function AddResourcePage() {
                                           ? field.onChange([...(field.value || []), item])
                                           : field.onChange(field.value?.filter((value) => value !== item));
                                       }}
+                                      disabled={isStreamDisabled}
                                     />
                                   </FormControl>
                                   <FormLabel className="font-normal">{item}</FormLabel>
