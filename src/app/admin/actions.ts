@@ -12,7 +12,7 @@ const FormSchema = z.object({
   category: z.enum(['Question Bank', 'Textbook Solutions', 'Study Notes', 'Video Tutorial']),
   subject: z.enum(['Physics', 'Chemistry', 'Mathematics', 'Biology', 'History', 'Computer Science']),
   class: z.enum(['class9', 'class10', 'class11', 'class12']),
-  stream: z.enum(['All', 'Science', 'Commerce', 'Arts', 'NEET', 'JEE', 'MHT-CET', 'General']),
+  stream: z.enum(['All', 'Science', 'Commerce', 'Arts']),
   imageUrl: z.string().url('Please enter a valid image URL.'),
   pdfUrl: z.string().url('Please enter a valid PDF URL.').optional().or(z.literal('')),
   downloadUrl: z.string().url('Please enter a valid download URL.').optional().or(z.literal('')),
