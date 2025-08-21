@@ -61,7 +61,7 @@ export default function Home() {
               <div className="flex flex-col justify-center space-y-4">
                 <div className="space-y-4">
                   <h1 className="text-4xl font-bold tracking-tighter text-primary sm:text-5xl xl:text-6xl/none">
-                    Welcome To AuthZen
+                    Welcome To Educational Notes
                   </h1>
                    <p className="max-w-[600px] text-foreground/80 md:text-xl">Your mission to achieve the best educational material with high-quality notes, all free of cost.</p>
                    <div className="flex flex-col gap-2 min-[400px]:flex-row">

@@ -67,7 +67,7 @@ export default function Header() {
         <div className="container mx-auto flex h-16 items-center px-4 md:px-6">
           <Link href="/" className="mr-6 flex items-center space-x-2">
             <EducationalNotesLogo className="h-6 w-6 text-primary" />
-            <span className="hidden font-bold sm:inline-block text-lg">AuthZen</span>
+            <span className="hidden font-bold sm:inline-block text-lg">Educational Notes</span>
           </Link>
           <nav className="hidden items-center space-x-6 text-sm md:flex">
             {navLinks.map(({ href, label, icon: Icon }) => (
@@ -133,7 +133,7 @@ export default function Header() {
                         className="mb-4 flex items-center gap-2 text-lg font-semibold"
                       >
                         <EducationalNotesLogo className="h-6 w-6 text-primary" />
-                        <span>AuthZen</span>
+                        <span>Educational Notes</span>
                       </Link>
                     </SheetClose>
                     {navLinks.map(({ href, label, icon: Icon }) => (

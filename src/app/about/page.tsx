@@ -12,7 +12,7 @@ export default function AboutPage() {
         <div className="container mx-auto px-4 py-8">
           <Card>
             <CardHeader>
-              <CardTitle className="text-3xl font-bold text-primary">About AuthZen</CardTitle>
+              <CardTitle className="text-3xl font-bold text-primary">About Educational Notes</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="mt-4 text-muted-foreground">This is a protected page with information about the app. Content coming soon!</p>

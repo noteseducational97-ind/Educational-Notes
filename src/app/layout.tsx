@@ -14,7 +14,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'AuthZen',
+  title: 'Educational Notes',
   description: 'Modern and professional authentication flows.',
 };
 
