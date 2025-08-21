@@ -17,6 +17,8 @@ export async function addResource(resource: AddResourceData) {
   try {
     await addDoc(collection(db, 'resources'), {
       ...resource,
+      stream: resource.stream || [],
+      subject: resource.subject || [],
       createdAt: new Date(),
     });
     revalidatePath('/admin');
@@ -30,27 +32,25 @@ export async function addResource(resource: AddResourceData) {
 
 export async function getResources(): Promise<Resource[]> {
     try {
-        if (!process.env.FIREBASE_SERVICE_ACCOUNT_KEY) {
-            console.warn("Firebase service account key is not set. Skipping resource fetch.");
-            return [];
-        }
         const resourcesCollection = collection(db, 'resources');
         const q = query(resourcesCollection, orderBy('createdAt', 'desc'));
         const querySnapshot = await getDocs(q);
+        
         return querySnapshot.docs.map(doc => {
             const data = doc.data();
             const createdAt = data.createdAt;
             let createdAtString: string;
+
             if (createdAt instanceof Timestamp) {
                 createdAtString = createdAt.toDate().toISOString();
-            } else if (createdAt && typeof createdAt.toDate === 'function') {
+            } else if (createdAt?.toDate) { // Handles Firestore Timestamps from other SDK versions
                 createdAtString = createdAt.toDate().toISOString();
             } else if (typeof createdAt === 'string') {
-                createdAtString = createdAt;
-            } else if (createdAt) {
-                 // Fallback for other potential date representations
+                createdAtString = new Date(createdAt).toISOString();
+            } else if (typeof createdAt === 'number') {
                 createdAtString = new Date(createdAt).toISOString();
             } else {
+                // Fallback for any other unexpected type, or if createdAt is missing
                 createdAtString = new Date().toISOString();
             }
 
