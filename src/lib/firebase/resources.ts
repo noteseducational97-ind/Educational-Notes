@@ -47,8 +47,12 @@ export async function getResources(): Promise<Resource[]> {
                 createdAtString = createdAt.toDate().toISOString();
             } else if (createdAt && typeof createdAt.toDate === 'function') {
                 createdAtString = createdAt.toDate().toISOString();
-            }
-             else {
+            } else if (typeof createdAt === 'string') {
+                createdAtString = createdAt;
+            } else if (createdAt) {
+                 // Fallback for other potential date representations
+                createdAtString = new Date(createdAt).toISOString();
+            } else {
                 createdAtString = new Date().toISOString();
             }
 
