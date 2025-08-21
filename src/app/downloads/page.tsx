@@ -28,10 +28,10 @@ export default function DownloadsPage() {
   const [resources, setResources] = useState<Resource[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const [selectedClass, setSelectedClass] = useState('');
-  const [selectedStream, setSelectedStream] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [selectedSubject, setSelectedSubject] = useState('');
+  const [selectedClass, setSelectedClass] = useState('all-classes');
+  const [selectedStream, setSelectedStream] = useState('all-streams');
+  const [selectedCategory, setSelectedCategory] = useState('all-categories');
+  const [selectedSubject, setSelectedSubject] = useState('all-subjects');
 
   useEffect(() => {
     async function fetchResources() {
@@ -49,10 +49,10 @@ export default function DownloadsPage() {
 
   const filteredResources = useMemo(() => {
     return resources.filter(resource => {
-      const classMatch = !selectedClass || resource.class === selectedClass;
-      const streamMatch = !selectedStream || resource.stream?.includes(selectedStream);
-      const categoryMatch = !selectedCategory || resource.category?.includes(selectedCategory);
-      const subjectMatch = !selectedSubject || resource.subject?.includes(selectedSubject);
+      const classMatch = selectedClass === 'all-classes' || resource.class === selectedClass;
+      const streamMatch = selectedStream === 'all-streams' || resource.stream?.includes(selectedStream);
+      const categoryMatch = selectedCategory === 'all-categories' || resource.category?.includes(selectedCategory);
+      const subjectMatch = selectedSubject === 'all-subjects' || resource.subject?.includes(selectedSubject);
       return classMatch && streamMatch && categoryMatch && subjectMatch;
     });
   }, [resources, selectedClass, selectedStream, selectedCategory, selectedSubject]);
@@ -82,7 +82,7 @@ export default function DownloadsPage() {
                         </SelectTrigger>
                         <SelectContent>
                             <SelectGroup>
-                                <SelectItem value="">All Classes</SelectItem>
+                                <SelectItem value="all-classes">All Classes</SelectItem>
                                 {classes.map(c => <SelectItem key={c} value={c}>Class {c}</SelectItem>)}
                             </SelectGroup>
                         </SelectContent>
@@ -93,7 +93,7 @@ export default function DownloadsPage() {
                         </SelectTrigger>
                         <SelectContent>
                             <SelectGroup>
-                                <SelectItem value="">All Streams</SelectItem>
+                                <SelectItem value="all-streams">All Streams</SelectItem>
                                 {streams.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
                             </SelectGroup>
                         </SelectContent>
@@ -104,7 +104,7 @@ export default function DownloadsPage() {
                         </SelectTrigger>
                         <SelectContent>
                             <SelectGroup>
-                                <SelectItem value="">All Categories</SelectItem>
+                                <SelectItem value="all-categories">All Categories</SelectItem>
                                 {categories.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
                             </SelectGroup>
                         </SelectContent>
@@ -115,7 +115,7 @@ export default function DownloadsPage() {
                         </SelectTrigger>
                         <SelectContent>
                             <SelectGroup>
-                                 <SelectItem value="">All Subjects</SelectItem>
+                                 <SelectItem value="all-subjects">All Subjects</SelectItem>
                                 {subjects.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
                             </SelectGroup>
                         </SelectContent>
