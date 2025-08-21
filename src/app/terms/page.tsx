@@ -7,11 +7,11 @@ export default function TermsPage() {
             <p className="mt-6 text-lg leading-8 text-muted-foreground">Last updated: {new Date().toLocaleDateString()}</p>
 
             <div className="mt-10 space-y-8 text-muted-foreground">
-                <p>Welcome to AuthZen!</p>
-                <p>These terms and conditions outline the rules and regulations for the use of AuthZen's Website. By accessing this website we assume you accept these terms and conditions. Do not continue to use AuthZen if you do not agree to take all of the terms and conditions stated on this page.</p>
+                <p>Welcome to Educational Notes!</p>
+                <p>These terms and conditions outline the rules and regulations for the use of Educational Notes's Website. By accessing this website we assume you accept these terms and conditions. Do not continue to use Educational Notes if you do not agree to take all of the terms and conditions stated on this page.</p>
                 
                 <h2 className="text-2xl font-semibold !mt-12 !mb-4 text-foreground">1. License</h2>
-                <p>Unless otherwise stated, AuthZen and/or its licensors own the intellectual property rights for all material on AuthZen. All intellectual property rights are reserved. You may access this from AuthZen for your own personal use subjected to restrictions set in these terms and conditions.</p>
+                <p>Unless otherwise stated, Educational Notes and/or its licensors own the intellectual property rights for all material on Educational Notes. All intellectual property rights are reserved. You may access this from Educational Notes for your own personal use subjected to restrictions set in these terms and conditions.</p>
                 
                 <h2 className="text-2xl font-semibold !mt-12 !mb-4 text-foreground">2. Content Liability</h2>
                 <p>This is a placeholder for your Terms of Service. You should replace this with your own terms. We shall not be hold responsible for any content that appears on your Website. You agree to protect and defend us against all claims that is rising on your Website. No link(s) should appear on any Website that may be interpreted as libelous, obscene or criminal, or which infringes, otherwise violates, or advocates the infringement or other violation of, any third party rights.</p>

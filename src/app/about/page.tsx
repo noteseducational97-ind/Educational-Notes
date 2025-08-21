@@ -25,7 +25,7 @@ export default function AboutPage() {
       <Header />
       <main className="flex-1">
         <div className="container mx-auto px-4 py-8">
-          <h1 className="text-3xl font-bold text-primary">About AuthZen</h1>
+          <h1 className="text-3xl font-bold text-primary">About Educational Notes</h1>
           <p className="mt-4 text-muted-foreground">This is a protected page with information about the app. Content coming soon!</p>
         </div>
       </main>

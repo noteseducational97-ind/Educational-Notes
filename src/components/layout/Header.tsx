@@ -23,7 +23,7 @@ export default function Header() {
       <div className="container mx-auto flex h-16 items-center px-4">
         <Link href="/" className="mr-6 flex items-center space-x-2">
           <Building className="h-6 w-6 text-primary" />
-          <span className="font-bold">AuthZen</span>
+          <span className="font-bold">Educational Notes</span>
         </Link>
         <nav className="hidden items-center space-x-6 text-sm font-medium md:flex">
           {navLinks.map(({ href, label, icon: Icon }) => (

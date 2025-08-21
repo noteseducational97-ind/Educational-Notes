@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 import Footer from '@/components/layout/Footer';
 
 export const metadata: Metadata = {
-  title: 'AuthZen',
+  title: 'Educational Notes',
   description: 'Modern and professional authentication flows.',
 };
 
