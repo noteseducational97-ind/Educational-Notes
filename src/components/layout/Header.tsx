@@ -37,7 +37,7 @@ export default function Header() {
     <Link
       href={href}
       className={cn(
-        'transition-colors hover:text-primary font-medium',
+        'transition-colors hover:text-primary font-medium flex items-center gap-1.5',
         pathname === href ? 'text-primary' : 'text-muted-foreground'
       )}
     >
@@ -68,8 +68,9 @@ export default function Header() {
             <span className="hidden font-bold sm:inline-block text-lg">Educational Notes</span>
           </Link>
           <nav className="hidden items-center space-x-6 text-sm md:flex">
-            {navLinks.map(({ href, label }) => (
+            {navLinks.map(({ href, label, icon: Icon }) => (
               <NavLink key={label} href={href}>
+                <Icon className="h-4 w-4" />
                 {label}
               </NavLink>
             ))}
