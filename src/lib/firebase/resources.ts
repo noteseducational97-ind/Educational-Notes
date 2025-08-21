@@ -1,3 +1,4 @@
+
 'use server';
 
 import { collection, addDoc, getDocs, serverTimestamp, orderBy, query } from 'firebase/firestore';
@@ -10,18 +11,22 @@ export type Resource = {
   description: string;
   url: string;
   createdAt: string;
+  class: string;
+  stream: string[];
+  category: string[];
+  subject: string[];
 };
 
-export async function addResource(resource: Omit<Resource, 'id' | 'createdAt'>) {
+export async function addResource(resource: Omit<Resource, 'id' | 'createdAt' | 'description'>) {
   try {
     await addDoc(collection(db, 'resources'), {
       ...resource,
+      // Keeping description for compatibility, can be removed later
+      description: `Resource for Class ${resource.class}`,
       createdAt: serverTimestamp(),
     });
-    // This will help in case we want to show the resources on the admin page
-    // and want to see the new one immediately.
     revalidatePath('/admin');
-    revalidatePath('/downloads'); // Invalidate downloads page to show new resource
+    revalidatePath('/downloads');
   } catch (error: any) {
     console.error('Error adding resource to Firestore: ', error);
     throw new Error('Could not add resource.');
@@ -38,10 +43,13 @@ export async function getResources(): Promise<Resource[]> {
             return {
                 id: doc.id,
                 title: data.title,
-                description: data.description,
+                description: data.description || '',
                 url: data.url,
-                // Convert Firestore Timestamp to a serializable format (ISO string)
                 createdAt: data.createdAt.toDate().toISOString(),
+                class: data.class,
+                stream: data.stream || [],
+                category: data.category || [],
+                subject: data.subject || [],
             };
         }) as Resource[];
     } catch (error) {

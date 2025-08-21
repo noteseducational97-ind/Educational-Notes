@@ -2,7 +2,7 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { Home, Download, Bookmark, Info, Shield, Menu, PlusCircle, LogIn, UserPlus } from 'lucide-react';
 import UserNav from './UserNav';
 import { cn } from '@/lib/utils';
@@ -14,8 +14,7 @@ import {
   SheetClose,
 } from '@/components/ui/sheet';
 import { Button } from '../ui/button';
-import React, { useState } from 'react';
-import AddResourceDialog from '../admin/AddResourceDialog';
+import React from 'react';
 import { EducationalNotesLogo } from '../icons/EducationalNotesLogo';
 import LoadingSpinner from '../shared/LoadingSpinner';
 
@@ -28,12 +27,8 @@ const navLinks = [
 
 export default function Header() {
   const pathname = usePathname();
+  const router = useRouter();
   const { user, loading, isAdmin } = useAuth();
-  const [isAddResourceOpen, setIsAddResourceOpen] = useState(false);
-
-  const onResourceAdded = () => {
-    // Maybe show a toast notification
-  }
 
   const NavLink = ({ href, children }: { href: string; children: React.ReactNode }) => (
     <Link
@@ -86,7 +81,7 @@ export default function Header() {
                 <div className="hidden md:flex items-center gap-4">
                   {isAdmin && (
                     <>
-                      <Button variant="ghost" size="sm" onClick={() => setIsAddResourceOpen(true)}>
+                      <Button variant="ghost" size="sm" onClick={() => router.push('/add-resource')}>
                           <PlusCircle />
                           Add Resource
                       </Button>
@@ -148,7 +143,7 @@ export default function Header() {
                         {isAdmin && (
                           <>
                             <SheetClose asChild>
-                              <Button variant="outline" onClick={() => setIsAddResourceOpen(true)}>
+                              <Button variant="outline" onClick={() => router.push('/add-resource')}>
                                 <PlusCircle className="h-5 w-5" />
                                 Add Resource
                               </Button>
@@ -179,11 +174,6 @@ export default function Header() {
           </div>
         </div>
       </header>
-      <AddResourceDialog 
-        isOpen={isAddResourceOpen}
-        setIsOpen={setIsAddResourceOpen}
-        onResourceAdded={onResourceAdded}
-      />
     </>
   );
 }

@@ -1,3 +1,4 @@
+
 'use client';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -11,7 +12,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { CheckCircle, PlusCircle, XCircle } from 'lucide-react';
-import AddResourceDialog from '@/components/admin/AddResourceDialog';
+import Link from 'next/link';
 
 type User = {
     uid: string;
@@ -28,7 +29,6 @@ export default function AdminPage() {
   const router = useRouter();
   const [users, setUsers] = useState<User[]>([]);
   const [loadingUsers, setLoadingUsers] = useState(true);
-  const [isAddResourceOpen, setIsAddResourceOpen] = useState(false);
 
   useEffect(() => {
     if (!authLoading) {
@@ -54,10 +54,6 @@ export default function AdminPage() {
       .join('');
   };
 
-  const onResourceAdded = () => {
-    // Here you could refresh the resources list if they were displayed on this page
-  }
-
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
@@ -65,6 +61,12 @@ export default function AdminPage() {
         <div className="container mx-auto px-4 py-8 md:px-6">
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-3xl font-bold text-foreground">Admin Panel</h1>
+            <Button asChild>
+                <Link href="/add-resource">
+                    <PlusCircle />
+                    Add New Resource
+                </Link>
+            </Button>
           </div>
           <Card>
             <CardHeader>
@@ -123,11 +125,6 @@ export default function AdminPage() {
           </Card>
         </div>
       </main>
-      <AddResourceDialog 
-        isOpen={isAddResourceOpen}
-        setIsOpen={setIsAddResourceOpen}
-        onResourceAdded={onResourceAdded}
-      />
     </div>
   );
 }

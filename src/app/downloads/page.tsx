@@ -5,9 +5,9 @@ import Header from '@/components/layout/Header';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { getResources } from '@/lib/firebase/resources';
 import { format } from 'date-fns';
-import { ArrowUpRight, Download, BookOpen, ChevronDown } from 'lucide-react';
+import { ArrowUpRight, Download, BookOpen } from 'lucide-react';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import {
   Select,
   SelectContent,
@@ -19,10 +19,19 @@ import {
 import { Resource } from '@/lib/firebase/resources';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 
+const classes = ['9', '10', '11', '12'];
+const streams = ['Science', 'Commerce', 'Arts'];
+const categories = ['Notes', 'Previous Year Questions', 'Syllabus'];
+const subjects = ['Physics', 'Chemistry', 'Maths', 'Biology', 'Accountancy', 'Business Studies', 'Economics', 'History', 'Geography', 'Political Science', 'Sociology'];
 
 export default function DownloadsPage() {
   const [resources, setResources] = useState<Resource[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const [selectedClass, setSelectedClass] = useState('');
+  const [selectedStream, setSelectedStream] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedSubject, setSelectedSubject] = useState('');
 
   useEffect(() => {
     async function fetchResources() {
@@ -37,6 +46,16 @@ export default function DownloadsPage() {
     }
     fetchResources();
   }, []);
+
+  const filteredResources = useMemo(() => {
+    return resources.filter(resource => {
+      const classMatch = !selectedClass || resource.class === selectedClass;
+      const streamMatch = !selectedStream || resource.stream?.includes(selectedStream);
+      const categoryMatch = !selectedCategory || resource.category?.includes(selectedCategory);
+      const subjectMatch = !selectedSubject || resource.subject?.includes(selectedSubject);
+      return classMatch && streamMatch && categoryMatch && subjectMatch;
+    });
+  }, [resources, selectedClass, selectedStream, selectedCategory, selectedSubject]);
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -57,53 +76,47 @@ export default function DownloadsPage() {
             </CardHeader>
             <CardContent>
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-                    <Select>
+                    <Select onValueChange={setSelectedClass} value={selectedClass}>
                         <SelectTrigger>
                             <SelectValue placeholder="Select Class" />
                         </SelectTrigger>
                         <SelectContent>
                             <SelectGroup>
-                                <SelectItem value="9">Class 9</SelectItem>
-                                <SelectItem value="10">Class 10</SelectItem>
-                                <SelectItem value="11">Class 11</SelectItem>
-                                <SelectItem value="12">Class 12</SelectItem>
+                                <SelectItem value="">All Classes</SelectItem>
+                                {classes.map(c => <SelectItem key={c} value={c}>Class {c}</SelectItem>)}
                             </SelectGroup>
                         </SelectContent>
                     </Select>
-                    <Select>
+                    <Select onValueChange={setSelectedStream} value={selectedStream}>
                         <SelectTrigger>
                             <SelectValue placeholder="Select Stream" />
                         </SelectTrigger>
                         <SelectContent>
                             <SelectGroup>
-                                <SelectItem value="science">Science</SelectItem>
-                                <SelectItem value="commerce">Commerce</SelectItem>
-                                <SelectItem value="arts">Arts</SelectItem>
+                                <SelectItem value="">All Streams</SelectItem>
+                                {streams.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
                             </SelectGroup>
                         </SelectContent>
                     </Select>
-                    <Select>
+                    <Select onValueChange={setSelectedCategory} value={selectedCategory}>
                         <SelectTrigger>
                             <SelectValue placeholder="Select Category" />
                         </SelectTrigger>
                         <SelectContent>
                             <SelectGroup>
-                                <SelectItem value="notes">Notes</SelectItem>
-                                <SelectItem value="pyq">Previous Year Questions</SelectItem>
-                                <SelectItem value="syllabus">Syllabus</SelectItem>
+                                <SelectItem value="">All Categories</SelectItem>
+                                {categories.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
                             </SelectGroup>
                         </SelectContent>
                     </Select>
-                    <Select>
+                    <Select onValueChange={setSelectedSubject} value={selectedSubject}>
                         <SelectTrigger>
                             <SelectValue placeholder="Select Subject" />
                         </SelectTrigger>
                         <SelectContent>
                             <SelectGroup>
-                                <SelectItem value="physics">Physics</SelectItem>
-                                <SelectItem value="chemistry">Chemistry</SelectItem>
-                                <SelectItem value="maths">Maths</SelectItem>
-                                <SelectItem value="biology">Biology</SelectItem>
+                                 <SelectItem value="">All Subjects</SelectItem>
+                                {subjects.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
                             </SelectGroup>
                         </SelectContent>
                     </Select>
@@ -113,9 +126,9 @@ export default function DownloadsPage() {
 
           {loading ? (
             <LoadingSpinner />
-          ) : resources.length > 0 ? (
+          ) : filteredResources.length > 0 ? (
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {resources.map((resource: any) => (
+              {filteredResources.map((resource: any) => (
                 <Card key={resource.id} className="flex flex-col hover:border-primary/50 transition-colors duration-300">
                   <CardHeader>
                     <CardTitle className="text-xl">
@@ -130,9 +143,16 @@ export default function DownloadsPage() {
                         <ArrowUpRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />
                       </Link>
                     </CardTitle>
+                    <CardDescription className="flex flex-wrap gap-2 pt-2">
+                        <Badge variant="secondary">Class {resource.class}</Badge>
+                        {resource.stream?.map((s: string) => <Badge key={s} variant="outline">{s}</Badge>)}
+                        {resource.subject?.map((s: string) => <Badge key={s} variant="default">{s}</Badge>)}
+                    </CardDescription>
                   </CardHeader>
                   <CardContent className="flex-grow">
-                    <CardDescription>{resource.description}</CardDescription>
+                    <div className="flex flex-wrap gap-1">
+                        {resource.category?.map((c: string) => <Badge key={c} variant="secondary">{c}</Badge>)}
+                    </div>
                   </CardContent>
                   <CardFooter className="flex items-center justify-between">
                     <p className="text-xs text-muted-foreground">
@@ -153,9 +173,9 @@ export default function DownloadsPage() {
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-muted bg-card/50 p-12 text-center">
-              <h2 className="text-2xl font-semibold">No Downloads Yet</h2>
+              <h2 className="text-2xl font-semibold">No Matching Resources Found</h2>
               <p className="mt-2 text-muted-foreground">
-                Check back later, or if you're an admin, add some new study materials!
+                Try adjusting your filters or check back later.
               </p>
             </div>
           )}
