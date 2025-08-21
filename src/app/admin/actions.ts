@@ -131,7 +131,7 @@ export async function deleteResourceAction(id: string) {
   }
 }
 
-export async function saveTemporaryResourceAction(id: string, data: AddResourceInput) {
+export async function saveTemporaryResourceAction(data: AddResourceInput, id?: string) {
   const validatedFields = FormSchema.safeParse(data);
 
   if (!validatedFields.success) {
@@ -140,19 +140,24 @@ export async function saveTemporaryResourceAction(id: string, data: AddResourceI
       error: 'Invalid fields. Please check the form and try again.',
     };
   }
+  
+  const resourceId = id || createSlug(validatedFields.data.title);
+  if (!resourceId) {
+    return { success: false, error: 'Cannot save a draft without a title.' };
+  }
 
-  const resourceRef = db.collection('temporary_resources').doc(id);
+  const resourceRef = db.collection('temporary_resources').doc(resourceId);
 
   try {
     await resourceRef.set({
       ...validatedFields.data,
-      id: id,
+      id: resourceId,
       savedAt: new Date(),
     }, { merge: true });
 
     revalidatePath('/admin');
 
-    return { success: true, id: id };
+    return { success: true, id: resourceId, isNew: !id };
   } catch (error) {
     console.error('Error saving temporary resource to Firestore: ', error);
     return {

@@ -128,7 +128,7 @@ export default function EditResourceAdminPage() {
     setIsSavingTemp(true);
     try {
         const values = form.getValues();
-        const result = await saveTemporaryResourceAction(resourceId, values);
+        const result = await saveTemporaryResourceAction(values, resourceId);
         if (result.success) {
             toast({
                 title: 'Saved Temporarily!',
