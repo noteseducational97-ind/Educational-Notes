@@ -2,7 +2,8 @@
 'use client';
 import { useEffect, useState } from 'react';
 
-export default function TermsPage() {
+// Accept params to prevent Next.js from trying to enumerate them.
+export default function TermsPage(props: any) {
   const [date, setDate] = useState('');
 
   useEffect(() => {
