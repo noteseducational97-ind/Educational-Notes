@@ -27,7 +27,7 @@ export default function UserNav() {
   const handleSignOut = async () => {
     try {
       await signOut(auth);
-      router.push('/login');
+      router.push('/');
     } catch (error: any) {
       toast({
         variant: 'destructive',
