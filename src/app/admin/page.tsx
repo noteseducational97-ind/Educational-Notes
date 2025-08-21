@@ -11,9 +11,9 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { CheckCircle, PlusCircle, XCircle, Users, BookCopy, Edit, Trash2, Save } from 'lucide-react';
+import { CheckCircle, PlusCircle, XCircle, Users, BookCopy, Edit, Trash2, Archive, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
-import { getResources, Resource } from '@/lib/firebase/resources';
+import { getResources, getTemporaryResources, Resource } from '@/lib/firebase/resources';
 import { format } from 'date-fns';
 import { deleteResourceAction } from './actions';
 import { useToast } from '@/hooks/use-toast';
@@ -46,6 +46,7 @@ export default function AdminPage() {
 
   const [users, setUsers] = useState<User[]>([]);
   const [resources, setResources] = useState<Resource[]>([]);
+  const [tempResources, setTempResources] = useState<Resource[]>([]);
   const [loadingData, setLoadingData] = useState(true);
   
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -55,10 +56,11 @@ export default function AdminPage() {
       if (!user || !isAdmin) {
         router.push('/');
       } else {
-        Promise.all([listAllUsers(), getResources()])
-          .then(([userResults, resourceResults]) => {
+        Promise.all([listAllUsers(), getResources(), getTemporaryResources()])
+          .then(([userResults, resourceResults, tempResourceResults]) => {
             setUsers(userResults);
             setResources(resourceResults);
+            setTempResources(tempResourceResults);
           })
           .finally(() => setLoadingData(false));
       }
@@ -179,11 +181,45 @@ export default function AdminPage() {
             <div className="space-y-6">
                 <Card>
                     <CardHeader>
-                        <CardTitle className="flex items-center gap-2"><Save /> Temporary Save Resources</CardTitle>
-                        <CardDescription>View resources that are temporarily saved.</CardDescription>
+                        <CardTitle className="flex items-center gap-2"><Archive /> Temporary Save Resources</CardTitle>
+                        <CardDescription>View and manage resources saved as drafts.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <p className="text-muted-foreground">This section is under construction.</p>
+                      {loadingData ? (
+                        <div className="flex justify-center items-center h-48">
+                           <LoadingSpinner className="min-h-0" />
+                       </div>
+                      ) : tempResources.length > 0 ? (
+                        <div className="w-full overflow-x-auto">
+                          <Table>
+                            <TableHeader>
+                              <TableRow>
+                                <TableHead>Title</TableHead>
+                                <TableHead>Saved At</TableHead>
+                                <TableHead>Actions</TableHead>
+                              </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                              {tempResources.map((resource) => (
+                                <TableRow key={resource.id}>
+                                  <TableCell className="font-medium">{resource.title}</TableCell>
+                                  <TableCell>{format(new Date(resource.createdAt), 'PPp')}</TableCell>
+                                  <TableCell>
+                                    <Button variant="outline" size="sm" asChild>
+                                      <Link href={`/admin/edit-resource/${resource.id}`}>
+                                        <ArrowRight className="h-4 w-4" />
+                                        Continue Editing
+                                      </Link>
+                                    </Button>
+                                  </TableCell>
+                                </TableRow>
+                              ))}
+                            </TableBody>
+                          </Table>
+                        </div>
+                      ) : (
+                          <p className="text-muted-foreground">No temporarily saved resources found.</p>
+                      )}
                     </CardContent>
                 </Card>
 

@@ -130,3 +130,34 @@ export async function deleteResourceAction(id: string) {
     };
   }
 }
+
+export async function saveTemporaryResourceAction(id: string, data: AddResourceInput) {
+  const validatedFields = FormSchema.safeParse(data);
+
+  if (!validatedFields.success) {
+    return {
+      success: false,
+      error: 'Invalid fields. Please check the form and try again.',
+    };
+  }
+
+  const resourceRef = db.collection('temporary_resources').doc(id);
+
+  try {
+    await resourceRef.set({
+      ...validatedFields.data,
+      id: id,
+      savedAt: new Date(),
+    }, { merge: true });
+
+    revalidatePath('/admin');
+
+    return { success: true, id: id };
+  } catch (error) {
+    console.error('Error saving temporary resource to Firestore: ', error);
+    return {
+      success: false,
+      error: 'Something went wrong on the server. Could not save the temporary resource.',
+    };
+  }
+}

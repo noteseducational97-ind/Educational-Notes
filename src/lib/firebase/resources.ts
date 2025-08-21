@@ -74,8 +74,21 @@ export async function getResourceById(id: string): Promise<Resource | null> {
         const docSnap = await docRef.get();
 
         if (!docSnap.exists) {
-            console.log('No such document!');
-            return null;
+            // Check temporary resources if not found in main collection
+            const tempDocRef = db.collection('temporary_resources').doc(id);
+            const tempDocSnap = await tempDocRef.get();
+            if(!tempDocSnap.exists) {
+              console.log('No such document in resources or temporary_resources!');
+              return null;
+            }
+            const tempData = tempDocSnap.data();
+            if (!tempData) return null;
+            const savedAt = tempData.savedAt.toDate().toISOString();
+            return {
+                id: tempDocSnap.id,
+                ...tempData,
+                createdAt: savedAt, // use savedAt as createdAt for consistency
+            } as Resource;
         }
 
         const data = docSnap.data();
@@ -91,6 +104,41 @@ export async function getResourceById(id: string): Promise<Resource | null> {
     } catch (error) {
         console.error("Error fetching resource by ID: ", error);
         return null;
+    }
+}
+
+export async function getTemporaryResources(): Promise<Resource[]> {
+    try {
+        const tempResourcesCollection = db.collection('temporary_resources');
+        const querySnapshot = await tempResourcesCollection.orderBy('savedAt', 'desc').get();
+        
+        if (querySnapshot.empty) {
+            return [];
+        }
+
+        return querySnapshot.docs.map(doc => {
+            const data = doc.data();
+            // In temp collection, we use `savedAt`
+            const createdAt = data.savedAt.toDate().toISOString();
+
+            return {
+                id: doc.id,
+                title: data.title,
+                description: data.description,
+                content: data.content,
+                category: data.category,
+                subject: data.subject,
+                class: data.class,
+                stream: data.stream,
+                imageUrl: data.imageUrl,
+                pdfUrl: data.pdfUrl,
+                downloadUrl: data.downloadUrl,
+                createdAt: createdAt, // Aliasing savedAt to createdAt
+            } as Resource;
+        });
+    } catch (error) {
+        console.error("Error fetching temporary resources: ", error);
+        return [];
     }
 }
 
