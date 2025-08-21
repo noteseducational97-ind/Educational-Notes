@@ -24,7 +24,9 @@ const formSchema = z.object({
   stream: z.array(z.string()).optional(),
   category: z.array(z.string()).nonempty({ message: 'Select at least one category.' }),
   subject: z.array(z.string()).optional(),
-  url: z.string().url('Please enter a valid URL.'),
+  imageUrl: z.string().url('Please enter a valid image URL.'),
+  pdfUrl: z.string().url('Please enter a valid PDF URL.').optional().or(z.literal('')),
+  downloadUrl: z.string().url('Please enter a valid download URL.').optional().or(z.literal('')),
 });
 
 const allStreams = ['Science', 'Commerce', 'Arts'];
@@ -48,7 +50,9 @@ export default function AddResourcePage() {
       stream: [],
       category: [],
       subject: [],
-      url: '',
+      imageUrl: '',
+      pdfUrl: '',
+      downloadUrl: '',
     },
   });
 
@@ -251,15 +255,40 @@ export default function AddResourcePage() {
                       </FormItem>
                       )}
                   />
-
                   <FormField
                     control={form.control}
-                    name="url"
+                    name="imageUrl"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Link for Download</FormLabel>
+                        <FormLabel>Image URL</FormLabel>
                         <FormControl>
-                          <Input placeholder="https://example.com/resource-download-link" {...field} />
+                          <Input placeholder="https://example.com/image.png" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="pdfUrl"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>PDF URL (Optional)</FormLabel>
+                        <FormControl>
+                          <Input placeholder="https://example.com/preview.pdf" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="downloadUrl"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>External Download URL (Optional)</FormLabel>
+                        <FormControl>
+                          <Input placeholder="https://example.com/download-link" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>

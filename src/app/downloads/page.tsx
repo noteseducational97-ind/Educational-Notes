@@ -19,6 +19,7 @@ import {
 import { Resource } from '@/lib/firebase/resources';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { Badge } from '@/components/ui/badge';
+import Image from 'next/image';
 
 const classes = ['9', '10', '11', '12'];
 const streams = ['Science', 'Commerce', 'Arts'];
@@ -57,6 +58,10 @@ export default function DownloadsPage() {
       return classMatch && streamMatch && categoryMatch && subjectMatch;
     });
   }, [resources, selectedClass, selectedStream, selectedCategory, selectedSubject]);
+
+  const getDownloadUrl = (resource: Resource) => {
+    return resource.downloadUrl || resource.pdfUrl || '#';
+  }
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -129,12 +134,29 @@ export default function DownloadsPage() {
             <LoadingSpinner />
           ) : filteredResources.length > 0 ? (
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {filteredResources.map((resource: any) => (
-                <Card key={resource.id} className="flex flex-col hover:border-primary/50 transition-colors duration-300">
+              {filteredResources.map((resource: Resource) => (
+                <Card key={resource.id} className="flex flex-col hover:border-primary/50 transition-colors duration-300 overflow-hidden">
+                  <Link
+                    href={getDownloadUrl(resource)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group block"
+                  >
+                    <div className="relative aspect-video">
+                        <Image 
+                            src={resource.imageUrl || 'https://placehold.co/600x400.png'}
+                            alt={resource.title}
+                            layout="fill"
+                            objectFit="cover"
+                            className="group-hover:scale-105 transition-transform duration-300"
+                        />
+                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                    </div>
+                  </Link>
                   <CardHeader>
                     <CardTitle className="text-xl">
                        <Link
-                        href={resource.url}
+                        href={getDownloadUrl(resource)}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="group inline-flex items-center gap-2 hover:text-primary transition-colors"
@@ -160,7 +182,7 @@ export default function DownloadsPage() {
                       Added on {format(new Date(resource.createdAt), 'PPP')}
                     </p>
                     <Link
-                      href={resource.url}
+                      href={getDownloadUrl(resource)}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="group inline-flex items-center gap-1 text-primary text-sm font-medium hover:underline"

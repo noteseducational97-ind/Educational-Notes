@@ -8,12 +8,14 @@ import { revalidatePath } from 'next/cache';
 export type Resource = {
   id: string;
   title: string;
-  url: string;
   createdAt: string;
   class: string;
   stream: string[];
   category: string[];
   subject: string[];
+  imageUrl: string;
+  pdfUrl?: string;
+  downloadUrl?: string;
 };
 
 // The type for the function argument should not have id or createdAt
@@ -38,6 +40,10 @@ export async function addResource(resource: AddResourceData) {
 
 export async function getResources(): Promise<Resource[]> {
     try {
+        if (!process.env.FIREBASE_SERVICE_ACCOUNT_KEY) {
+            console.warn("Firebase service account key is not set. Skipping resource fetch.");
+            return [];
+        }
         const resourcesCollection = collection(db, 'resources');
         const q = query(resourcesCollection, orderBy('createdAt', 'desc'));
         const querySnapshot = await getDocs(q);
@@ -61,12 +67,14 @@ export async function getResources(): Promise<Resource[]> {
             return {
                 id: doc.id,
                 title: data.title,
-                url: data.url,
                 createdAt: createdAtString,
                 class: data.class,
                 stream: data.stream || [],
                 category: data.category || [],
                 subject: data.subject || [],
+                imageUrl: data.imageUrl,
+                pdfUrl: data.pdfUrl,
+                downloadUrl: data.downloadUrl,
             } as Resource;
         });
     } catch (error) {
@@ -74,4 +82,3 @@ export async function getResources(): Promise<Resource[]> {
         return [];
     }
 }
-
