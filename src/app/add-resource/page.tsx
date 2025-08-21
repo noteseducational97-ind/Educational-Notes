@@ -17,25 +17,25 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { Checkbox } from '@/components/ui/checkbox';
 import { Loader2, ArrowLeft, Upload } from 'lucide-react';
 import Link from 'next/link';
+import { Textarea } from '@/components/ui/textarea';
 
 const formSchema = z.object({
   title: z.string().min(3, 'Title must be at least 3 characters.'),
+  description: z.string().min(10, 'Description must be at least 10 characters.'),
+  content: z.string().min(20, 'Content must be at least 20 characters.'),
   class: z.string().min(1, 'Please select a class.'),
-  stream: z.array(z.string()).optional(),
-  category: z.array(z.string()).nonempty({ message: 'Select at least one category.' }),
-  subject: z.array(z.string()).optional(),
+  stream: z.enum(['All', 'Science', 'Commerce', 'Arts']),
+  category: z.enum(['All', 'Notes', 'PYQ', 'Syllabus']),
+  subject: z.enum(['Physics', 'Chemistry', 'Mathematics', 'Biology', 'History', 'Computer Science']),
   imageUrl: z.string().url('Please enter a valid image URL.'),
   pdfUrl: z.string().url('Please enter a valid PDF URL.').optional().or(z.literal('')),
   downloadUrl: z.string().url('Please enter a valid download URL.').optional().or(z.literal('')),
 });
 
-const allStreams = ['Science', 'Commerce', 'Arts'];
-const allSubjects = [
-    'Physics', 'Chemistry', 'Maths', 'Biology',
-    'Accountancy', 'Business Studies', 'Economics',
-    'History', 'Geography', 'Political Science', 'Sociology'
-];
-const categories = ['Notes', 'Previous Year Questions', 'Syllabus'];
+const categories = ['All', 'Notes', 'PYQ', 'Syllabus'];
+const subjects = ['Physics', 'Chemistry', 'Mathematics', 'Biology', 'History', 'Computer Science'];
+const classes = ['class9', 'class10', 'class11', 'class12'];
+const streams = ['All', 'Science', 'Commerce', 'Arts'];
 
 export default function AddResourcePage() {
   const [loading, setLoading] = useState(false);
@@ -46,33 +46,18 @@ export default function AddResourcePage() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: '',
-      class: '',
-      stream: [],
-      category: [],
-      subject: [],
+      description: '',
+      content: '',
       imageUrl: '',
       pdfUrl: '',
       downloadUrl: '',
     },
   });
 
-  const selectedClass = form.watch('class');
-  const isStreamDisabled = !['11', '12'].includes(selectedClass);
-
-  useEffect(() => {
-    if (isStreamDisabled) {
-      form.setValue('stream', []);
-    }
-  }, [isStreamDisabled, form]);
-
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
     try {
-      await addResource({
-        ...values,
-        stream: values.stream || [],
-        subject: values.subject || [],
-      });
+      await addResource(values);
       toast({
         title: 'Success',
         description: 'Resource has been uploaded successfully.',
@@ -115,26 +100,73 @@ export default function AddResourcePage() {
                       </FormItem>
                     )}
                   />
+                  <FormField
+                    control={form.control}
+                    name="description"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Short Description</FormLabel>
+                        <FormControl>
+                          <Textarea placeholder="A brief summary of the resource." {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="content"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Full Content / Details</FormLabel>
+                        <FormControl>
+                          <Textarea placeholder="Detailed explanation or content of the resource." rows={6} {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <FormField
-                      control={form.control}
-                      name="class"
-                      render={({ field }) => (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                     <FormField control={form.control} name="category" render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Category</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl><SelectTrigger><SelectValue placeholder="Select a category" /></SelectTrigger></FormControl>
+                            <SelectContent>{categories.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField control={form.control} name="subject" render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Subject</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl><SelectTrigger><SelectValue placeholder="Select a subject" /></SelectTrigger></FormControl>
+                            <SelectContent>{subjects.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField control={form.control} name="class" render={({ field }) => (
                         <FormItem>
                           <FormLabel>Class</FormLabel>
                           <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select a class" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value="9">Class 9</SelectItem>
-                              <SelectItem value="10">Class 10</SelectItem>
-                              <SelectItem value="11">Class 11</SelectItem>
-                              <SelectItem value="12">Class 12</SelectItem>
-                            </SelectContent>
+                            <FormControl><SelectTrigger><SelectValue placeholder="Select a class" /></SelectTrigger></FormControl>
+                            <SelectContent>{classes.map(c => <SelectItem key={c} value={c}>Class {c.replace('class', '')}</SelectItem>)}</SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                     <FormField control={form.control} name="stream" render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Stream / Exam</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl><SelectTrigger><SelectValue placeholder="Select a stream" /></SelectTrigger></FormControl>
+                            <SelectContent>{streams.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
                           </Select>
                           <FormMessage />
                         </FormItem>
@@ -142,119 +174,6 @@ export default function AddResourcePage() {
                     />
                   </div>
 
-                  <FormField
-                    control={form.control}
-                    name="stream"
-                    render={() => (
-                      <FormItem>
-                        <FormLabel>Stream</FormLabel>
-                        <div className="flex flex-wrap gap-4">
-                          {allStreams.map((item) => (
-                            <FormField
-                              key={item}
-                              control={form.control}
-                              name="stream"
-                              render={({ field }) => (
-                                <FormItem key={item} className="flex flex-row items-start space-x-3 space-y-0">
-                                  <FormControl>
-                                    <Checkbox
-                                      checked={field.value?.includes(item)}
-                                      onCheckedChange={(checked) => {
-                                        return checked
-                                          ? field.onChange([...(field.value || []), item])
-                                          : field.onChange(field.value?.filter((value) => value !== item));
-                                      }}
-                                      disabled={isStreamDisabled}
-                                    />
-                                  </FormControl>
-                                  <FormLabel className="font-normal">{item}</FormLabel>
-                                </FormItem>
-                              )}
-                            />
-                          ))}
-                        </div>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="category"
-                    render={() => (
-                      <FormItem>
-                        <FormLabel>Category</FormLabel>
-                         <div className="flex flex-wrap gap-4">
-                            {categories.map((item) => (
-                                <FormField
-                                key={item}
-                                control={form.control}
-                                name="category"
-                                render={({ field }) => {
-                                    return (
-                                    <FormItem key={item} className="flex flex-row items-start space-x-3 space-y-0">
-                                        <FormControl>
-                                        <Checkbox
-                                            checked={field.value?.includes(item)}
-                                            onCheckedChange={(checked) => {
-                                            return checked
-                                                ? field.onChange([...(field.value || []), item])
-                                                : field.onChange(
-                                                    field.value?.filter(
-                                                    (value) => value !== item
-                                                    )
-                                                )
-                                            }}
-                                        />
-                                        </FormControl>
-                                        <FormLabel className="font-normal">
-                                        {item}
-                                        </FormLabel>
-                                    </FormItem>
-                                    )
-                                }}
-                                />
-                            ))}
-                        </div>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                      control={form.control}
-                      name="subject"
-                      render={() => (
-                      <FormItem>
-                          <FormLabel>Subject</FormLabel>
-                          <div className="flex flex-wrap gap-4">
-                          {allSubjects.map((item) => (
-                              <FormField
-                              key={item}
-                              control={form.control}
-                              name="subject"
-                              render={({ field }) => (
-                                  <FormItem key={item} className="flex flex-row items-start space-x-3 space-y-0">
-                                  <FormControl>
-                                      <Checkbox
-                                      checked={field.value?.includes(item)}
-                                      onCheckedChange={(checked) => {
-                                          return checked
-                                          ? field.onChange([...(field.value || []), item])
-                                          : field.onChange(field.value?.filter((value) => value !== item));
-                                      }}
-                                      />
-                                  </FormControl>
-                                  <FormLabel className="font-normal">{item}</FormLabel>
-                                  </FormItem>
-                              )}
-                              />
-                          ))}
-                          </div>
-                          <FormMessage />
-                      </FormItem>
-                      )}
-                  />
                   <FormField
                     control={form.control}
                     name="imageUrl"

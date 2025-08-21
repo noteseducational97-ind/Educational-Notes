@@ -4,18 +4,10 @@
 import { collection, addDoc, getDocs, orderBy, query, Timestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase/server'; // Use server-side db
 import { revalidatePath } from 'next/cache';
+import type { Resource as ResourceType } from '@/types';
 
-export type Resource = {
-  id: string;
-  title: string;
+export type Resource = ResourceType & {
   createdAt: string;
-  class: string;
-  stream: string[];
-  category: string[];
-  subject: string[];
-  imageUrl: string;
-  pdfUrl?: string;
-  downloadUrl?: string;
 };
 
 // The type for the function argument should not have id or createdAt
@@ -25,8 +17,6 @@ export async function addResource(resource: AddResourceData) {
   try {
     await addDoc(collection(db, 'resources'), {
       ...resource,
-      stream: resource.stream || [],
-      subject: resource.subject || [],
       createdAt: new Date(),
     });
     revalidatePath('/admin');
@@ -67,14 +57,16 @@ export async function getResources(): Promise<Resource[]> {
             return {
                 id: doc.id,
                 title: data.title,
-                createdAt: createdAtString,
+                description: data.description,
+                content: data.content,
+                category: data.category,
+                subject: data.subject,
                 class: data.class,
-                stream: data.stream || [],
-                category: data.category || [],
-                subject: data.subject || [],
+                stream: data.stream,
                 imageUrl: data.imageUrl,
                 pdfUrl: data.pdfUrl,
                 downloadUrl: data.downloadUrl,
+                createdAt: createdAtString,
             } as Resource;
         });
     } catch (error) {

@@ -3,7 +3,7 @@
 
 import Header from '@/components/layout/Header';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { getResources } from '@/lib/firebase/resources';
+import { getResources, Resource } from '@/lib/firebase/resources';
 import { format } from 'date-fns';
 import { ArrowUpRight, Download, BookOpen } from 'lucide-react';
 import Link from 'next/link';
@@ -16,24 +16,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { Resource } from '@/lib/firebase/resources';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { Badge } from '@/components/ui/badge';
 import Image from 'next/image';
 
-const classes = ['9', '10', '11', '12'];
-const streams = ['Science', 'Commerce', 'Arts'];
-const categories = ['Notes', 'Previous Year Questions', 'Syllabus'];
-const subjects = ['Physics', 'Chemistry', 'Maths', 'Biology', 'Accountancy', 'Business Studies', 'Economics', 'History', 'Geography', 'Political Science', 'Sociology'];
+const classes = ['All', 'class9', 'class10', 'class11', 'class12'];
+const streams = ['All', 'Science', 'Commerce', 'Arts'];
+const categories = ['All', 'Notes', 'PYQ', 'Syllabus'];
+const subjects = ['All', 'Physics', 'Chemistry', 'Mathematics', 'Biology', 'History', 'Computer Science'];
 
 export default function DownloadsPage() {
   const [resources, setResources] = useState<Resource[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const [selectedClass, setSelectedClass] = useState('all-classes');
-  const [selectedStream, setSelectedStream] = useState('all-streams');
-  const [selectedCategory, setSelectedCategory] = useState('all-categories');
-  const [selectedSubject, setSelectedSubject] = useState('all-subjects');
+  const [selectedClass, setSelectedClass] = useState('All');
+  const [selectedStream, setSelectedStream] = useState('All');
+  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [selectedSubject, setSelectedSubject] = useState('All');
 
   useEffect(() => {
     async function fetchResources() {
@@ -51,10 +50,10 @@ export default function DownloadsPage() {
 
   const filteredResources = useMemo(() => {
     return resources.filter(resource => {
-      const classMatch = selectedClass === 'all-classes' || resource.class === selectedClass;
-      const streamMatch = selectedStream === 'all-streams' || resource.stream?.some(s => s === selectedStream);
-      const categoryMatch = selectedCategory === 'all-categories' || resource.category?.some(c => c === selectedCategory);
-      const subjectMatch = selectedSubject === 'all-subjects' || resource.subject?.some(s => s === selectedSubject);
+      const classMatch = selectedClass === 'All' || resource.class === selectedClass;
+      const streamMatch = selectedStream === 'All' || resource.stream === selectedStream;
+      const categoryMatch = selectedCategory === 'All' || resource.category === selectedCategory;
+      const subjectMatch = selectedSubject === 'All' || resource.subject === selectedSubject;
       return classMatch && streamMatch && categoryMatch && subjectMatch;
     });
   }, [resources, selectedClass, selectedStream, selectedCategory, selectedSubject]);
@@ -92,8 +91,8 @@ export default function DownloadsPage() {
                         </SelectTrigger>
                         <SelectContent>
                             <SelectGroup>
-                                <SelectItem value="all-classes">All Classes</SelectItem>
-                                {classes.map(c => <SelectItem key={c} value={c}>Class {c}</SelectItem>)}
+                                <SelectItem value="All">All Classes</SelectItem>
+                                {classes.filter(c => c !== 'All').map(c => <SelectItem key={c} value={c}>Class {c.replace('class','')}</SelectItem>)}
                             </SelectGroup>
                         </SelectContent>
                     </Select>
@@ -103,8 +102,8 @@ export default function DownloadsPage() {
                         </SelectTrigger>
                         <SelectContent>
                             <SelectGroup>
-                                <SelectItem value="all-streams">All Streams</SelectItem>
-                                {streams.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+                                 <SelectItem value="All">All Streams</SelectItem>
+                                {streams.filter(s => s !== 'All').map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
                             </SelectGroup>
                         </SelectContent>
                     </Select>
@@ -114,8 +113,8 @@ export default function DownloadsPage() {
                         </SelectTrigger>
                         <SelectContent>
                             <SelectGroup>
-                                <SelectItem value="all-categories">All Categories</SelectItem>
-                                {categories.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                                <SelectItem value="All">All Categories</SelectItem>
+                                {categories.filter(c => c !== 'All').map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
                             </SelectGroup>
                         </SelectContent>
                     </Select>
@@ -125,8 +124,8 @@ export default function DownloadsPage() {
                         </SelectTrigger>
                         <SelectContent>
                             <SelectGroup>
-                                 <SelectItem value="all-subjects">All Subjects</SelectItem>
-                                {subjects.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+                                 <SelectItem value="All">All Subjects</SelectItem>
+                                {subjects.filter(s => s !== 'All').map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
                             </SelectGroup>
                         </SelectContent>
                     </Select>
@@ -150,9 +149,8 @@ export default function DownloadsPage() {
                         <Image 
                             src={resource.imageUrl || 'https://placehold.co/600x400.png'}
                             alt={resource.title}
-                            layout="fill"
-                            objectFit="cover"
-                            className="group-hover:scale-105 transition-transform duration-300"
+                            fill
+                            className="object-cover group-hover:scale-105 transition-transform duration-300"
                         />
                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                     </div>
@@ -171,14 +169,15 @@ export default function DownloadsPage() {
                       </Link>
                     </CardTitle>
                     <CardDescription className="flex flex-wrap gap-2 pt-2">
-                        <Badge variant="secondary">Class {resource.class}</Badge>
-                        {resource.stream?.map((s: string) => <Badge key={s} variant="outline">{s}</Badge>)}
-                        {resource.subject?.map((s: string) => <Badge key={s} variant="default">{s}</Badge>)}
+                        <Badge variant="secondary">Class {resource.class.replace('class','')}</Badge>
+                        {resource.stream && <Badge variant="outline">{resource.stream}</Badge>}
+                        {resource.subject && <Badge variant="default">{resource.subject}</Badge>}
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="flex-grow">
-                    <div className="flex flex-wrap gap-1">
-                        {resource.category?.map((c: string) => <Badge key={c} variant="secondary">{c}</Badge>)}
+                    <p className='text-sm text-muted-foreground'>{resource.description}</p>
+                    <div className="flex flex-wrap gap-1 mt-2">
+                        {resource.category && <Badge variant="secondary">{resource.category}</Badge>}
                     </div>
                   </CardContent>
                   <CardFooter className="flex items-center justify-between">
