@@ -65,10 +65,6 @@ export default function AdminPage() {
         <div className="container mx-auto px-4 py-8">
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-3xl font-bold text-primary">Admin Panel</h1>
-            <Button onClick={() => setIsAddResourceOpen(true)}>
-              <Trash2 className="mr-2 h-4 w-4" />
-              Remove Resource
-            </Button>
           </div>
           <Card>
             <CardHeader>
