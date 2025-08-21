@@ -67,11 +67,11 @@ export default function Home() {
                 </div>
               </div>
               <Image
-                src="https://placehold.co/600x400.png"
+                src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=2070&auto=format&fit=crop"
                 width="600"
                 height="400"
-                alt="Person studying in a modern, sunlit room"
-                data-ai-hint="person studying"
+                alt="A group of diverse students studying together outdoors on a university campus."
+                data-ai-hint="students studying campus"
                 className="mx-auto aspect-video overflow-hidden rounded-xl object-cover sm:w-full lg:order-last lg:aspect-square shadow-2xl"
               />
             </div>
