@@ -107,15 +107,17 @@ export default function Home() {
                             </CardContent>
                         </Card>
                     </Link>
-                     <Card>
-                        <CardHeader className="flex flex-row items-center justify-between pb-2">
-                            <CardTitle className="text-lg font-medium">Personal Watchlist</CardTitle>
-                            <Bookmark className="h-6 w-6 text-primary"/>
-                        </CardHeader>
-                        <CardContent>
-                            <CardDescription>Save and organize your most important materials for quick and easy access whenever you need them.</CardDescription>
-                        </CardContent>
-                    </Card>
+                    <Link href="/save" className="block hover:shadow-lg transition-shadow duration-300 rounded-xl">
+                        <Card className="h-full cursor-pointer">
+                            <CardHeader className="flex flex-row items-center justify-between pb-2">
+                                <CardTitle className="text-lg font-medium">Personal Watchlist</CardTitle>
+                                <Bookmark className="h-6 w-6 text-primary"/>
+                            </CardHeader>
+                            <CardContent>
+                                <CardDescription>Save and organize your most important materials for quick and easy access whenever you need them.</CardDescription>
+                            </CardContent>
+                        </Card>
+                    </Link>
                      <Card>
                         <CardHeader className="flex flex-row items-center justify-between pb-2">
                             <CardTitle className="text-lg font-medium">Community Support</CardTitle>
