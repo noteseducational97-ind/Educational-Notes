@@ -83,13 +83,16 @@ export async function getResourceById(id: string): Promise<Resource | null> {
             }
             const tempData = tempDocSnap.data();
             if (!tempData) return null;
-            const savedAt = tempData.savedAt.toDate().toISOString();
+
+            // This is the key fix: de-structure to omit the raw `savedAt` timestamp object
+            const { savedAt, ...restOfTempData } = tempData;
             
             const temporaryResource = {
                 id: tempDocSnap.id,
-                ...tempData,
-                createdAt: savedAt, // use savedAt as createdAt for consistency on client
+                ...restOfTempData,
+                createdAt: savedAt.toDate().toISOString(), // use savedAt as createdAt for consistency on client
             };
+
             // Ensure all fields from the Resource type are present, even if undefined
             return {
                 title: temporaryResource.title,
