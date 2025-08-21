@@ -118,8 +118,8 @@ export async function getTemporaryResources(): Promise<Resource[]> {
 
         return querySnapshot.docs.map(doc => {
             const data = doc.data();
-            // In temp collection, we use `savedAt`
-            const createdAt = data.savedAt.toDate().toISOString();
+            // In temp collection, we use `savedAt` which is a Firestore Timestamp
+            const savedAt = data.savedAt.toDate().toISOString();
 
             return {
                 id: doc.id,
@@ -133,7 +133,7 @@ export async function getTemporaryResources(): Promise<Resource[]> {
                 imageUrl: data.imageUrl,
                 pdfUrl: data.pdfUrl,
                 downloadUrl: data.downloadUrl,
-                createdAt: createdAt, // Aliasing savedAt to createdAt
+                createdAt: savedAt, // Aliasing savedAt to createdAt for client component
             } as Resource;
         });
     } catch (error) {
