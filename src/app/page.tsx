@@ -96,15 +96,17 @@ export default function Home() {
                   </p>
               </div>
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between pb-2">
-                            <CardTitle className="text-lg font-medium">Curated Resources</CardTitle>
-                            <Download className="h-6 w-6 text-primary"/>
-                        </CardHeader>
-                        <CardContent>
-                           <CardDescription>Access a library of hand-picked study materials, notes, and guides to supplement your learning.</CardDescription>
-                        </CardContent>
-                    </Card>
+                    <Link href="/downloads" className="block hover:shadow-lg transition-shadow duration-300 rounded-xl">
+                        <Card className="h-full cursor-pointer">
+                            <CardHeader className="flex flex-row items-center justify-between pb-2">
+                                <CardTitle className="text-lg font-medium">Curated Resources</CardTitle>
+                                <Download className="h-6 w-6 text-primary"/>
+                            </CardHeader>
+                            <CardContent>
+                               <CardDescription>Access a library of hand-picked study materials, notes, and guides to supplement your learning.</CardDescription>
+                            </CardContent>
+                        </Card>
+                    </Link>
                      <Card>
                         <CardHeader className="flex flex-row items-center justify-between pb-2">
                             <CardTitle className="text-lg font-medium">Personal Watchlist</CardTitle>
