@@ -168,10 +168,12 @@ export default function DownloadsPage() {
                         <ArrowUpRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />
                       </Link>
                     </CardTitle>
-                    <CardDescription className="flex flex-wrap gap-2 pt-2">
+                    <CardDescription asChild>
+                      <div className="flex flex-wrap gap-2 pt-2">
                         <Badge variant="secondary">Class {resource.class.replace('class','')}</Badge>
                         {resource.stream && <Badge variant="outline">{resource.stream}</Badge>}
                         {resource.subject && <Badge variant="default">{resource.subject}</Badge>}
+                      </div>
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="flex-grow">
