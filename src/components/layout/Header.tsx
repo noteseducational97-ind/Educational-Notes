@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Home, Download, Bookmark, Info, Shield, Menu, PlusCircle, LogIn, UserPlus } from 'lucide-react';
+import { Home, Download, Bookmark, Info, Shield, Menu, PlusCircle, LogIn, UserPlus, BookCopy } from 'lucide-react';
 import UserNav from './UserNav';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/use-auth';
@@ -138,6 +138,10 @@ export default function Header() {
                       <>
                         {isAdmin && (
                           <>
+                             <MobileNavLink href="/admin/uploaded-resources">
+                              <BookCopy className="h-5 w-5" />
+                              Uploaded Resources
+                            </MobileNavLink>
                             <SheetClose asChild>
                               <Button variant="outline" onClick={() => router.push('/admin/add-resource')}>
                                 <PlusCircle className="h-5 w-5" />

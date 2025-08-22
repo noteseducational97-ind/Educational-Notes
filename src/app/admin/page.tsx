@@ -105,19 +105,27 @@ export default function AdminPage() {
         <div className="container mx-auto px-4 py-8 md:px-6">
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-3xl font-bold text-foreground">Admin Dashboard</h1>
-            <Button asChild>
-                <Link href="/admin/add-resource">
-                    <PlusCircle />
-                    Add New Resource
-                </Link>
-            </Button>
+            <div className="flex gap-2">
+               <Button asChild>
+                  <Link href="/admin/uploaded-resources">
+                      <BookCopy />
+                      Uploaded Resources
+                  </Link>
+              </Button>
+              <Button asChild>
+                  <Link href="/admin/add-resource">
+                      <PlusCircle />
+                      Add New Resource
+                  </Link>
+              </Button>
+            </div>
           </div>
 
           <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-2">
             <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2"><BookCopy /> Resources</CardTitle>
-                  <CardDescription>Manage all study materials.</CardDescription>
+                  <CardTitle className="flex items-center gap-2"><BookCopy /> Resources Overview</CardTitle>
+                  <CardDescription>A quick look at the latest published resources.</CardDescription>
                 </CardHeader>
                 <CardContent>
                   {loadingData ? (
@@ -136,7 +144,7 @@ export default function AdminPage() {
                           </TableRow>
                         </TableHeader>
                         <TableBody>
-                          {resources.map((resource) => (
+                          {resources.slice(0, 5).map((resource) => (
                             <TableRow key={resource.id}>
                               <TableCell className="font-medium">{resource.title}</TableCell>
                               <TableCell><Badge variant="secondary">{resource.category}</Badge></TableCell>
