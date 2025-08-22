@@ -358,7 +358,7 @@ export default function DownloadsPage() {
           <AlertDialogHeader>
             <AlertDialogTitle>Authentication Required</AlertDialogTitle>
             <AlertDialogDescription>
-              You need to be signed in to download resources. Please sign in to continue.
+              You need to be signed in to download PDF. Please sign in to continue.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
