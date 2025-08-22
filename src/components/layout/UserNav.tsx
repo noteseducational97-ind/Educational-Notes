@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useRouter } from 'next/navigation';
@@ -80,14 +79,6 @@ export default function UserNav() {
             <span>Settings</span>
           </Link>
         </DropdownMenuItem>
-        {isAdmin && (
-           <DropdownMenuItem className="cursor-pointer" asChild>
-              <Link href="/admin">
-                <Shield className="mr-2 h-4 w-4" />
-                <span>Admin</span>
-              </Link>
-            </DropdownMenuItem>
-        )}
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
           <LogOut className="mr-2 h-4 w-4" />
