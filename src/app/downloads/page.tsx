@@ -51,14 +51,12 @@ export default function DownloadsPage() {
   const fetchInitialData = useCallback(async () => {
     try {
       setLoading(true);
-      // Pass user auth status to getResources
       const fetchedResources = await getResources({ includePrivate: !!user });
       setResources(fetchedResources);
+      
+      const watchlistItems = await getWatchlist(user?.uid);
+      setWatchlistIds(new Set(watchlistItems.map(item => item.id)));
 
-      if (user) {
-        const watchlistItems = await getWatchlist(user.uid);
-        setWatchlistIds(new Set(watchlistItems.map(item => item.id)));
-      }
     } catch (error) {
       console.error("Failed to fetch data", error);
       toast({
@@ -72,26 +70,16 @@ export default function DownloadsPage() {
   }, [user, toast]);
 
   useEffect(() => {
-    // Re-fetch data if user logs in or out
     fetchInitialData();
-  }, [fetchInitialData, user]);
+  }, [fetchInitialData]);
   
   const handleToggleWatchlist = async (resource: Resource) => {
-    if (!user) {
-        toast({
-            variant: 'destructive',
-            title: 'Not logged in',
-            description: 'You must be logged in to save items.',
-        });
-        return;
-    }
     setSaving(resource.id);
-
     const isSaved = watchlistIds.has(resource.id);
 
     try {
         if (isSaved) {
-            await removeFromWatchlist(user.uid, resource.id);
+            await removeFromWatchlist(user?.uid, resource.id);
             setWatchlistIds(prev => {
                 const newSet = new Set(prev);
                 newSet.delete(resource.id);
@@ -102,7 +90,7 @@ export default function DownloadsPage() {
                 description: `"${resource.title}" has been removed from your watchlist.`,
             });
         } else {
-            await addToWatchlist(user.uid, resource.id);
+            await addToWatchlist(user?.uid, resource.id);
             setWatchlistIds(prev => new Set(prev).add(resource.id));
             toast({
                 title: 'Saved!',
@@ -278,12 +266,10 @@ export default function DownloadsPage() {
                       </p>
                     </CardContent>
                     <CardFooter className="flex items-center justify-between mt-auto border-t pt-4">
-                      {user && (
-                          <Button variant={isSaved ? "secondary" : "ghost"} size="sm" onClick={() => handleToggleWatchlist(resource)} disabled={saving === resource.id}>
-                              {isSaved ? <BookmarkCheck className="h-4 w-4 mr-1" /> : <Bookmark className="h-4 w-4 mr-1" />}
-                              {isSaved ? 'Saved' : 'Save'}
-                          </Button>
-                      )}
+                      <Button variant={isSaved ? "secondary" : "ghost"} size="sm" onClick={() => handleToggleWatchlist(resource)} disabled={saving === resource.id}>
+                          {isSaved ? <BookmarkCheck className="h-4 w-4 mr-1" /> : <Bookmark className="h-4 w-4 mr-1" />}
+                          {isSaved ? 'Saved' : 'Save'}
+                      </Button>
                       <div className="flex items-center gap-2 ml-auto">
                            <Button asChild size="sm" variant="outline" disabled={disabled}>
                               <Link

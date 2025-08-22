@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useCallback } from 'react';
 import Header from '@/components/layout/Header';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { getWatchlist, Resource, removeFromWatchlist } from '@/lib/firebase/resources';
@@ -25,32 +25,34 @@ export default function SavePage() {
   const { toast } = useToast();
   const [removing, setRemoving] = useState<string | null>(null);
 
+  const fetchWatchlist = useCallback(async () => {
+    try {
+      setLoading(true);
+      const items = await getWatchlist(user?.uid);
+      setWatchlistItems(items);
+    } catch (error) {
+      console.error('Failed to fetch watchlist', error);
+       toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Failed to load your watchlist. Please try again.',
+      });
+    } finally {
+      setLoading(false);
+    }
+  }, [user, toast]);
+
+
   useEffect(() => {
     if (!authLoading) {
-      if (!user) {
-        router.push('/login');
-      } else {
-        const fetchWatchlist = async () => {
-          try {
-            setLoading(true);
-            const items = await getWatchlist(user.uid);
-            setWatchlistItems(items);
-          } catch (error) {
-            console.error('Failed to fetch watchlist', error);
-          } finally {
-            setLoading(false);
-          }
-        };
-        fetchWatchlist();
-      }
+      fetchWatchlist();
     }
-  }, [user, authLoading, router]);
+  }, [user, authLoading, fetchWatchlist]);
 
   const handleRemoveFromWatchlist = async (resourceId: string, resourceTitle: string) => {
-    if (!user) return;
     setRemoving(resourceId);
     try {
-      await removeFromWatchlist(user.uid, resourceId);
+      await removeFromWatchlist(user?.uid, resourceId);
       setWatchlistItems((prev) => prev.filter((item) => item.id !== resourceId));
       toast({
         title: 'Removed',

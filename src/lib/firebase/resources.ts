@@ -13,6 +13,8 @@ export type Resource = ResourceType & {
 // The type for the function argument should not have id or createdAt
 export type AddResourceData = Omit<ResourceType, 'id' | 'createdAt'>;
 
+const GUEST_WATCHLIST_KEY = 'guest-watchlist';
+
 export async function addResource(resource: AddResourceData) {
   try {
     const resourcesCollection = db.collection('resources');
@@ -132,57 +134,74 @@ export async function getResourceById(id: string): Promise<Resource | null> {
 }
 
 
-export async function addToWatchlist(userId: string, resourceId: string) {
-    if (!userId) {
-        throw new Error('User is not authenticated.');
-    }
-    try {
-        const watchlistRef = db.collection('users').doc(userId).collection('watchlist').doc(resourceId);
-        await watchlistRef.set({
-            resourceId: resourceId,
-            savedAt: FieldValue.serverTimestamp(),
-        });
-        revalidatePath('/save');
-        revalidatePath('/downloads');
-    } catch (error: any) {
-        console.error('Error adding to watchlist: ', error);
-        throw new Error('Could not save to watchlist.');
-    }
-}
-
-export async function removeFromWatchlist(userId: string, resourceId: string) {
-    if (!userId) {
-        throw new Error('User is not authenticated.');
-    }
-    try {
-        const watchlistRef = db.collection('users').doc(userId).collection('watchlist').doc(resourceId);
-        await watchlistRef.delete();
-        revalidatePath('/save');
-        revalidatePath('/downloads');
-    } catch (error: any) {
-        console.error('Error removing from watchlist: ', error);
-        throw new Error('Could not remove from watchlist.');
+export async function addToWatchlist(userId: string | undefined, resourceId: string) {
+    if (userId) {
+        // Logged-in user: use Firestore
+        try {
+            const watchlistRef = db.collection('users').doc(userId).collection('watchlist').doc(resourceId);
+            await watchlistRef.set({
+                resourceId: resourceId,
+                savedAt: FieldValue.serverTimestamp(),
+            });
+            revalidatePath('/save');
+            revalidatePath('/downloads');
+        } catch (error: any) {
+            console.error('Error adding to Firestore watchlist: ', error);
+            throw new Error('Could not save to your cloud watchlist.');
+        }
+    } else {
+         // This part will be handled on the client-side using another function
+         // We throw an error or handle it as a no-op on the server if called for a guest
+        console.log("addToWatchlist called on server for guest. This should be a client-side action.");
     }
 }
 
-export async function getWatchlist(userId: string): Promise<Resource[]> {
-    if (!userId) {
+export async function removeFromWatchlist(userId: string | undefined, resourceId: string) {
+    if (userId) {
+        // Logged-in user: use Firestore
+        try {
+            const watchlistRef = db.collection('users').doc(userId).collection('watchlist').doc(resourceId);
+            await watchlistRef.delete();
+            revalidatePath('/save');
+            revalidatePath('/downloads');
+        } catch (error: any) {
+            console.error('Error removing from Firestore watchlist: ', error);
+            throw new Error('Could not remove from your cloud watchlist.');
+        }
+    } else {
+        // This part will be handled on the client-side
+        console.log("removeFromWatchlist called on server for guest. This should be a client-side action.");
+    }
+}
+
+export async function getWatchlist(userId?: string): Promise<Resource[]> {
+    let resourceIds: string[] = [];
+    let savedOrderMap = new Map<string, number>();
+
+    if (userId) {
+        // Logged-in user: fetch from Firestore
+        try {
+            const watchlistRef = db.collection('users').doc(userId).collection('watchlist');
+            const snapshot = await watchlistRef.orderBy('savedAt', 'desc').get();
+            if (!snapshot.empty) {
+                resourceIds = snapshot.docs.map(doc => doc.id);
+                snapshot.docs.forEach((doc, index) => savedOrderMap.set(doc.id, index));
+            }
+        } catch (error) {
+            console.error("Error fetching Firestore watchlist: ", error);
+            return [];
+        }
+    } else {
+       // Guest user logic needs to happen on the client.
+       // This function on the server will return an empty array for guests.
+       return [];
+    }
+    
+    if (resourceIds.length === 0) {
         return [];
     }
+
     try {
-        const watchlistRef = db.collection('users').doc(userId).collection('watchlist');
-        const snapshot = await watchlistRef.orderBy('savedAt', 'desc').get();
-
-        if (snapshot.empty) {
-            return [];
-        }
-
-        const resourceIds = snapshot.docs.map(doc => doc.id);
-        
-        if (resourceIds.length === 0) {
-            return [];
-        }
-
         const allResources: Resource[] = [];
         const batchSize = 30; // Firestore 'in' query limit
         for (let i = 0; i < resourceIds.length; i += batchSize) {
@@ -218,15 +237,17 @@ export async function getWatchlist(userId: string): Promise<Resource[]> {
             allResources.push(...batchResources);
         }
 
-        const savedOrder = new Map(snapshot.docs.map((doc, index) => [doc.id, index]));
-        allResources.sort((a, b) => (savedOrder.get(a.id) ?? 0) - (savedOrder.get(b.id) ?? 0));
+        if (userId) {
+             // Sort based on Firestore save order
+            allResources.sort((a, b) => (savedOrderMap.get(a.id) ?? 0) - (savedOrderMap.get(b.id) ?? 0));
+        }
         
         const filteredWatchlist = allResources.filter(item => !item.isComingSoon);
 
         return filteredWatchlist;
 
     } catch (error) {
-        console.error("Error fetching watchlist: ", error);
+        console.error("Error fetching resources for watchlist: ", error);
         return [];
     }
 }
