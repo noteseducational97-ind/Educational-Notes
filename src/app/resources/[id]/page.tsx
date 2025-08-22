@@ -5,7 +5,7 @@ import Header from '@/components/layout/Header';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Download, CalendarIcon, BookOpen, ExternalLink, FileText, HelpCircle } from 'lucide-react';
+import { Download, CalendarIcon, BookOpen, ExternalLink, FileText, HelpCircle, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
@@ -31,6 +31,14 @@ export default async function ResourceDetailPage({ params }: Props) {
       <Header />
       <main className="flex-1 py-8">
         <div className="container mx-auto max-w-5xl px-4">
+            <div className="mb-4">
+                <Button asChild variant="outline">
+                    <Link href="/downloads">
+                        <ArrowLeft className="mr-2 h-4 w-4" />
+                        Back to Downloads
+                    </Link>
+                </Button>
+            </div>
             <Card className="overflow-hidden shadow-xl">
                 <CardHeader className="p-0">
                      <div className="bg-primary/10 p-6 md:p-8">
