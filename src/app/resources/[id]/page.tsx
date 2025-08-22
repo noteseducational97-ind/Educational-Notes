@@ -45,12 +45,6 @@ export default async function ResourceDetailPage({ params }: Props) {
                 <CardContent className="p-6 md:p-8 grid md:grid-cols-3 gap-8">
                     <div className="md:col-span-2 space-y-8">
                         <div>
-                            <h2 className="text-2xl font-semibold mb-4 border-b pb-2">Description</h2>
-                            <div className="prose dark:prose-invert max-w-none text-muted-foreground">
-                                <p>{resource.content}</p>
-                            </div>
-                        </div>
-                        <div>
                              <h2 className="text-2xl font-semibold mb-4 border-b pb-2">PDF Preview</h2>
                              <div className="aspect-w-16 aspect-h-9 border rounded-lg overflow-hidden">
                                  <iframe 
@@ -92,6 +86,12 @@ export default async function ResourceDetailPage({ params }: Props) {
                                  <span className='font-semibold'>Stream:</span>
                                  {resource.stream.map(s => <Badge key={s}>{s}</Badge>)}
                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 className="text-lg font-semibold mb-2">Description</h3>
+                            <div className="prose dark:prose-invert max-w-none text-sm text-muted-foreground">
+                                <p>{resource.content}</p>
                             </div>
                         </div>
                         <div>
