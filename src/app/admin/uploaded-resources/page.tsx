@@ -89,7 +89,7 @@ export default function UploadedResourcesPage() {
         <div className="container mx-auto px-4 py-8 md:px-6">
             <div className="flex justify-between items-center mb-6">
                 <div className="flex flex-col">
-                    <h1 className="text-3xl font-bold text-foreground">Uploaded Resources</h1>
+                    <h1 className="text-3xl font-bold text-foreground">Resource Management</h1>
                     <p className="text-muted-foreground">Manage all your published study materials.</p>
                 </div>
                 <div className="flex gap-2">

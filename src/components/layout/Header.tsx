@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Home, Download, Bookmark, Info, Shield, Menu, PlusCircle, LogIn, UserPlus, BookCopy, UserCog } from 'lucide-react';
+import { Home, Download, Bookmark, Info, Shield, Menu, PlusCircle, LogIn, UserPlus, BookCopy, UserCog, LayoutDashboard } from 'lucide-react';
 import UserNav from './UserNav';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/use-auth';
@@ -83,8 +83,8 @@ export default function Header() {
                 {isAdmin && (
                    <Button asChild variant="ghost">
                       <Link href="/admin">
-                        <UserCog />
-                        Admin Panel
+                        <LayoutDashboard />
+                        Admin
                       </Link>
                   </Button>
                 )}
@@ -138,19 +138,17 @@ export default function Header() {
                         {isAdmin && (
                           <>
                             <MobileNavLink href="/admin">
-                               <UserCog className="h-5 w-5" />
+                               <LayoutDashboard className="h-5 w-5" />
                                Admin
+                            </MobileNavLink>
+                            <MobileNavLink href="/admin/users">
+                               <Users className="h-5 w-5" />
+                               Manage Users
                             </MobileNavLink>
                             <MobileNavLink href="/admin/uploaded-resources">
                               <BookCopy className="h-5 w-5" />
-                              Uploaded Resources
+                              Manage Resources
                             </MobileNavLink>
-                            <SheetClose asChild>
-                               <Button variant="outline" className="w-full justify-start text-lg p-6" onClick={() => router.push('/admin/add-resource')}>
-                                <PlusCircle className="h-5 w-5 mr-4" />
-                                Add Resource
-                              </Button>
-                            </SheetClose>
                           </>
                         )}
                       </>
