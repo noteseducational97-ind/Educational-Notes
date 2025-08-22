@@ -5,7 +5,7 @@ import Header from '@/components/layout/Header';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Download, CalendarIcon, BookOpen, ExternalLink } from 'lucide-react';
+import { Download, CalendarIcon, BookOpen, ExternalLink, FileText, HelpCircle } from 'lucide-react';
 import Link from 'next/link';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
@@ -105,6 +105,14 @@ export default async function ResourceDetailPage({ params }: Props) {
                                         Download PDF
                                     </Link>
                                 </Button>
+                                <Button variant="secondary">
+                                    <FileText className="mr-2 h-4 w-4" />
+                                    Test Maker
+                                </Button>
+                                <Button variant="secondary">
+                                    <HelpCircle className="mr-2 h-4 w-4" />
+                                    Answer Question
+                                </Button>
                             </div>
                         </div>
                     </aside>
@@ -120,4 +128,3 @@ export default async function ResourceDetailPage({ params }: Props) {
 export async function generateStaticParams() {
     return [];
 }
-
