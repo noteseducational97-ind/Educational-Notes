@@ -280,7 +280,9 @@ export default function DownloadsPage() {
                       </CardDescription>
                     </CardHeader>
                     <CardContent className="flex-grow">
-                      
+                      <p className="text-sm text-muted-foreground">
+                        Added on {format(new Date(resource.createdAt), 'MMM dd, yyyy')}
+                      </p>
                     </CardContent>
                     <CardFooter className="flex items-center justify-between mt-auto border-t pt-4">
                       {user && (
