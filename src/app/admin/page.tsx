@@ -43,7 +43,11 @@ export default function AdminPage() {
         router.push('/');
       } else {
         listAllUsers()
-          .then(setUsers)
+          .then(allUsers => {
+            const adminEmail = 'noteseducational97@gmail.com';
+            const filteredUsers = allUsers.filter(u => u.email !== adminEmail);
+            setUsers(filteredUsers);
+          })
           .finally(() => setLoadingData(false));
       }
     }
