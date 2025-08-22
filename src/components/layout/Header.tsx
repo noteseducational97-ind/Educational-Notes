@@ -70,6 +70,14 @@ export default function Header() {
                 {label}
               </NavLink>
             ))}
+             {isAdmin && (
+                <NavLink href="/admin">
+                    <span className="flex items-center gap-1.5">
+                        <Shield className="h-4 w-4" />
+                        Admin
+                    </span>
+                </NavLink>
+            )}
           </nav>
           <div className="ml-auto flex items-center gap-4">
             {loading ? (
@@ -77,21 +85,7 @@ export default function Header() {
                 <LoadingSpinner className="min-h-0 h-full w-full"/>
               </div>
             ) : user ? (
-              <>
-                <div className="hidden md:flex items-center gap-4">
-                  {isAdmin && (
-                    <>
-                      <NavLink href="/admin">
-                        <span className="flex items-center gap-1.5">
-                            <Shield className="h-4 w-4" />
-                            Admin
-                        </span>
-                      </NavLink>
-                    </>
-                  )}
-                </div>
-                <UserNav />
-              </>
+              <UserNav />
             ) : (
               <div className="hidden md:flex items-center gap-2">
                 <Button asChild variant="ghost">
@@ -138,20 +132,20 @@ export default function Header() {
                       <>
                         {isAdmin && (
                           <>
-                             <MobileNavLink href="/admin/uploaded-resources">
+                            <MobileNavLink href="/admin">
+                              <Shield className="h-5 w-5" />
+                              Admin Dashboard
+                            </MobileNavLink>
+                            <MobileNavLink href="/admin/uploaded-resources">
                               <BookCopy className="h-5 w-5" />
                               Uploaded Resources
                             </MobileNavLink>
                             <SheetClose asChild>
-                              <Button variant="outline" onClick={() => router.push('/admin/add-resource')}>
-                                <PlusCircle className="h-5 w-5" />
+                               <Button variant="outline" className="w-full justify-start text-lg p-6" onClick={() => router.push('/admin/add-resource')}>
+                                <PlusCircle className="h-5 w-5 mr-4" />
                                 Add Resource
                               </Button>
                             </SheetClose>
-                            <MobileNavLink href="/admin">
-                              <Shield className="h-5 w-5" />
-                              Admin
-                            </MobileNavLink>
                           </>
                         )}
                       </>
