@@ -42,7 +42,7 @@ export default function Home() {
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
       <main className="flex-1">
-        <section className="w-full py-20 md:py-32 lg:py-40 bg-gradient-to-br from-primary/20 to-background">
+        <section className="w-full py-20 md:py-32 lg:py-40 bg-gradient-to-br from-primary/10 to-background">
           <div className="container px-4 md:px-6">
              {user && !user.emailVerified && (
               <Alert className="mb-8 border-yellow-500/50 text-yellow-700 dark:border-yellow-500/50 dark:bg-yellow-900/20">
