@@ -192,12 +192,13 @@ export default function AdminPage() {
                               disabled={isProcessing === u.uid}
                             >
                               <Edit className="h-4 w-4 mr-2" />
-                              Edit
+                              {u.disabled ? 'Enable' : 'Disable'}
                             </Button>
                             <AlertDialog>
                               <AlertDialogTrigger asChild>
                                 <Button variant="destructive" size="sm" disabled={isProcessing === u.uid}>
-                                  <Trash2 className="h-4 w-4" />
+                                  <Trash2 className="h-4 w-4 mr-2" />
+                                  Remove
                                 </Button>
                               </AlertDialogTrigger>
                               <AlertDialogContent>
