@@ -17,6 +17,8 @@ import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
+const GUEST_WATCHLIST_KEY = 'guest-watchlist';
+
 export default function SavePage() {
   const { user, loading: authLoading } = useAuth();
   const [watchlistItems, setWatchlistItems] = useState<Resource[]>([]);
@@ -28,7 +30,13 @@ export default function SavePage() {
   const fetchWatchlist = useCallback(async () => {
     try {
       setLoading(true);
-      const items = await getWatchlist(user?.uid);
+      let items;
+      if (user) {
+        items = await getWatchlist(user.uid);
+      } else {
+        const guestResourceIds = JSON.parse(localStorage.getItem(GUEST_WATCHLIST_KEY) || '[]');
+        items = await getWatchlist(undefined, guestResourceIds);
+      }
       setWatchlistItems(items);
     } catch (error) {
       console.error('Failed to fetch watchlist', error);
@@ -44,15 +52,23 @@ export default function SavePage() {
 
 
   useEffect(() => {
-    if (!authLoading) {
-      fetchWatchlist();
+    // This effect should only run on the client
+    if (typeof window !== 'undefined') {
+        fetchWatchlist();
     }
-  }, [user, authLoading, fetchWatchlist]);
+  }, [user, fetchWatchlist]);
 
   const handleRemoveFromWatchlist = async (resourceId: string, resourceTitle: string) => {
     setRemoving(resourceId);
     try {
-      await removeFromWatchlist(user?.uid, resourceId);
+        if (user) {
+            await removeFromWatchlist(user.uid, resourceId);
+        } else {
+            const guestWatchlist = new Set(JSON.parse(localStorage.getItem(GUEST_WATCHLIST_KEY) || '[]'));
+            guestWatchlist.delete(resourceId);
+            localStorage.setItem(GUEST_WATCHLIST_KEY, JSON.stringify(Array.from(guestWatchlist)));
+        }
+        
       setWatchlistItems((prev) => prev.filter((item) => item.id !== resourceId));
       toast({
         title: 'Removed',

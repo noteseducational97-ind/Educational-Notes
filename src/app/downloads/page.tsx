@@ -34,6 +34,7 @@ const allSubjects = [
     'History', 'Geography', 'Political Science', 'Sociology'
 ];
 const allCategories = ['Notes', 'Previous Year Questions', 'Syllabus'];
+const GUEST_WATCHLIST_KEY = 'guest-watchlist';
 
 export default function DownloadsPage() {
   const [resources, setResources] = useState<Resource[]>([]);
@@ -51,11 +52,18 @@ export default function DownloadsPage() {
   const fetchInitialData = useCallback(async () => {
     try {
       setLoading(true);
+      // Fetch resources based on login state
       const fetchedResources = await getResources({ includePrivate: !!user });
       setResources(fetchedResources);
       
-      const watchlistItems = await getWatchlist(user?.uid);
-      setWatchlistIds(new Set(watchlistItems.map(item => item.id)));
+      // Fetch watchlist based on login state
+      if (user) {
+        const watchlistItems = await getWatchlist(user.uid);
+        setWatchlistIds(new Set(watchlistItems.map(item => item.id)));
+      } else {
+        const guestWatchlist = JSON.parse(localStorage.getItem(GUEST_WATCHLIST_KEY) || '[]');
+        setWatchlistIds(new Set(guestWatchlist));
+      }
 
     } catch (error) {
       console.error("Failed to fetch data", error);
@@ -70,6 +78,7 @@ export default function DownloadsPage() {
   }, [user, toast]);
 
   useEffect(() => {
+    // Only run on the client
     fetchInitialData();
   }, [fetchInitialData]);
   
@@ -78,25 +87,40 @@ export default function DownloadsPage() {
     const isSaved = watchlistIds.has(resource.id);
 
     try {
-        if (isSaved) {
-            await removeFromWatchlist(user?.uid, resource.id);
-            setWatchlistIds(prev => {
-                const newSet = new Set(prev);
-                newSet.delete(resource.id);
-                return newSet;
-            });
-            toast({
-                title: 'Removed',
-                description: `"${resource.title}" has been removed from your watchlist.`,
-            });
+        if (user) {
+            // Logged-in user logic
+            if (isSaved) {
+                await removeFromWatchlist(user.uid, resource.id);
+            } else {
+                await addToWatchlist(user.uid, resource.id);
+            }
         } else {
-            await addToWatchlist(user?.uid, resource.id);
-            setWatchlistIds(prev => new Set(prev).add(resource.id));
-            toast({
-                title: 'Saved!',
-                description: `"${resource.title}" has been added to your watchlist.`,
-            });
+            // Guest user logic with localStorage
+            const guestWatchlist = new Set(JSON.parse(localStorage.getItem(GUEST_WATCHLIST_KEY) || '[]'));
+            if (isSaved) {
+                guestWatchlist.delete(resource.id);
+            } else {
+                guestWatchlist.add(resource.id);
+            }
+            localStorage.setItem(GUEST_WATCHLIST_KEY, JSON.stringify(Array.from(guestWatchlist)));
         }
+
+        // Update local state to reflect the change immediately
+        setWatchlistIds(prev => {
+            const newSet = new Set(prev);
+            if (isSaved) {
+                newSet.delete(resource.id);
+            } else {
+                newSet.add(resource.id);
+            }
+            return newSet;
+        });
+
+        toast({
+            title: isSaved ? 'Removed' : 'Saved!',
+            description: `"${resource.title}" has been ${isSaved ? 'removed from' : 'added to'} your watchlist.`,
+        });
+
     } catch (error: any) {
         toast({
             variant: 'destructive',
@@ -247,15 +271,15 @@ export default function DownloadsPage() {
                       </CardTitle>
                       <CardDescription asChild>
                         <div className="flex flex-wrap gap-2 pt-2">
+                          <div className='flex flex-wrap gap-1'>
+                             {resource.category.map(c => <Badge key={c} variant="secondary">{c}</Badge>)}
+                          </div>
                           {resource.class && <Badge variant="secondary">Class {resource.class}</Badge>}
                           <div className='flex flex-wrap gap-1'>
                              {resource.stream.map(s => <Badge key={s} variant="outline">{s}</Badge>)}
                           </div>
                           <div className='flex flex-wrap gap-1 mt-1'>
                              {resource.subject.map(s => <Badge key={s} variant="default">{s}</Badge>)}
-                          </div>
-                          <div className='flex flex-wrap gap-1'>
-                             {resource.category.map(c => <Badge key={c} variant="secondary">{c}</Badge>)}
                           </div>
                         </div>
                       </CardDescription>
