@@ -163,7 +163,7 @@ export default function AdminPage() {
                         <TableHead>User</TableHead>
                         <TableHead>Email</TableHead>
                         <TableHead>Status</TableHead>
-                        <TableHead>Actions</TableHead>
+                        <TableHead className="text-center">Actions</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -184,7 +184,7 @@ export default function AdminPage() {
                               {u.disabled ? 'Disabled' : 'Active'}
                             </Badge>
                           </TableCell>
-                           <TableCell className="flex justify-start gap-2">
+                           <TableCell className="flex justify-center gap-2">
                             <Button 
                               variant="outline" 
                               size="sm"
