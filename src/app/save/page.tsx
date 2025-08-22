@@ -159,7 +159,7 @@ export default function SavePage() {
                         )}
                     </div>
                   </Link>
-                   <CardHeader>
+                   <CardHeader className="flex-grow">
                     <CardTitle className="text-xl">
                        <Link
                         href={`/resources/${resource.id}`}
@@ -185,11 +185,6 @@ export default function SavePage() {
                       </div>
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="flex-grow">
-                     <p className="text-sm text-muted-foreground truncate">
-                        {resource.content}
-                      </p>
-                  </CardContent>
                   <CardFooter className="flex items-center justify-between mt-auto border-t pt-4">
                      <Button
                         variant="ghost"

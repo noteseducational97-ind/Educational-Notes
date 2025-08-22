@@ -270,7 +270,7 @@ export default function DownloadsPage() {
                           )}
                       </div>
                     </Link>
-                    <CardHeader>
+                    <CardHeader className="flex-grow">
                       <CardTitle className="text-xl">
                         <Link
                           href={`/resources/${resource.id}`}
@@ -296,11 +296,6 @@ export default function DownloadsPage() {
                         </div>
                       </CardDescription>
                     </CardHeader>
-                    <CardContent className="flex-grow">
-                       <p className="text-sm text-muted-foreground truncate">
-                        {resource.content}
-                      </p>
-                    </CardContent>
                     <CardFooter className="flex items-center justify-between mt-auto border-t pt-4">
                       <Button variant={isSaved ? "secondary" : "outline"} size="sm" onClick={() => handleToggleWatchlist(resource)} disabled={saving === resource.id}>
                           {isSaved ? <BookmarkCheck className="h-4 w-4 mr-1" /> : <Bookmark className="h-4 w-4 mr-1" />}
