@@ -46,9 +46,9 @@ export default function AboutPage() {
                 <div className="grid md:grid-cols-[200px_1fr] gap-8 items-start">
                     <div className="w-full aspect-square relative rounded-lg overflow-hidden shadow-lg">
                         <Image
-                            src="https://images.pexels.com/photos/5726838/pexels-photo-5726838.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+                            src="https://images.pexels.com/photos/2280547/pexels-photo-2280547.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
                             alt="Pravin Khachane"
-                            data-ai-hint="physics"
+                            data-ai-hint="physics exam"
                             fill
                             className="object-cover"
                         />
