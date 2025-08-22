@@ -10,13 +10,22 @@ import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import Link from 'next/link';
 import Image from 'next/image';
 import { format } from 'date-fns';
-import { ArrowUpRight, Download, BookOpen, BookmarkX, Lock } from 'lucide-react';
+import { ArrowUpRight, Download, BookOpen, BookmarkX, Lock, LogIn } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { ToastAction } from '@/components/ui/toast';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 const GUEST_WATCHLIST_KEY = 'guest-watchlist';
 
@@ -27,6 +36,7 @@ export default function SavePage() {
   const router = useRouter();
   const { toast } = useToast();
   const [removing, setRemoving] = useState<string | null>(null);
+  const [showLoginDialog, setShowLoginDialog] = useState(false);
 
   const fetchWatchlist = useCallback(async () => {
     try {
@@ -98,15 +108,7 @@ export default function SavePage() {
 
   const handleDownloadClick = () => {
     if (!user) {
-      toast({
-        title: 'Sign in to download',
-        description: 'You need to be logged in to download notes.',
-        action: (
-            <ToastAction altText="Sign In" onClick={() => router.push('/login')}>
-                Sign In
-            </ToastAction>
-        )
-      })
+      setShowLoginDialog(true);
     }
   }
 
@@ -244,6 +246,23 @@ export default function SavePage() {
           )}
         </div>
       </main>
+      <AlertDialog open={showLoginDialog} onOpenChange={setShowLoginDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Authentication Required</AlertDialogTitle>
+            <AlertDialogDescription>
+              You need to be signed in to download resources. Please sign in to continue.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={() => router.push('/login')}>
+              <LogIn className="mr-2 h-4 w-4" />
+              Sign In
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

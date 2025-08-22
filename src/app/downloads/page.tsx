@@ -5,7 +5,7 @@ import Header from '@/components/layout/Header';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { getResources, Resource, addToWatchlist, removeFromWatchlist, getWatchlist } from '@/lib/firebase/resources';
 import { format } from 'date-fns';
-import { ArrowUpRight, Download, BookOpen, Bookmark, BookmarkCheck, Clock, Lock } from 'lucide-react';
+import { ArrowUpRight, Download, BookOpen, Bookmark, BookmarkCheck, Clock, Lock, LogIn } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState, useMemo, useCallback } from 'react';
 import {
@@ -25,8 +25,18 @@ import { useToast } from '@/hooks/use-toast';
 import { Label } from '@/components/ui/label';
 import { MultiSelect } from '@/components/ui/multi-select';
 import { cn } from '@/lib/utils';
-import { ToastAction } from '@/components/ui/toast';
 import { useRouter } from 'next/navigation';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+
 
 const allStreams = ['Science', 'MHT-CET', 'NEET', 'Commerce'];
 const allclasses = ['All', '9', '10', '11', '12'];
@@ -46,6 +56,7 @@ export default function DownloadsPage() {
   const router = useRouter();
   const [saving, setSaving] = useState<string | null>(null);
   const [watchlistIds, setWatchlistIds] = useState<Set<string>>(new Set());
+  const [showLoginDialog, setShowLoginDialog] = useState(false);
 
   const [selectedStreams, setSelectedStreams] = useState<string[]>([]);
   const [selectedClass, setSelectedClass] = useState('All');
@@ -158,15 +169,7 @@ export default function DownloadsPage() {
 
   const handleDownloadClick = () => {
     if (!user) {
-      toast({
-        title: 'Sign in to download',
-        description: 'You need to be logged in to download notes.',
-        action: (
-            <ToastAction altText="Sign In" onClick={() => router.push('/login')}>
-                Sign In
-            </ToastAction>
-        )
-      })
+      setShowLoginDialog(true);
     }
   }
 
@@ -350,6 +353,23 @@ export default function DownloadsPage() {
           )}
         </div>
       </main>
+      <AlertDialog open={showLoginDialog} onOpenChange={setShowLoginDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Authentication Required</AlertDialogTitle>
+            <AlertDialogDescription>
+              You need to be signed in to download resources. Please sign in to continue.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={() => router.push('/login')}>
+              <LogIn className="mr-2 h-4 w-4" />
+              Sign In
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
