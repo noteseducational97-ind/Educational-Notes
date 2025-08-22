@@ -25,7 +25,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 
-const allStreams = ['All', 'Science', 'MHT-CET', 'NEET', 'Commerce'];
+const allStreams = ['Science', 'MHT-CET', 'NEET', 'Commerce'];
 const scienceClasses = ['All', '9', '10', '11', '12'];
 const commerceClasses = ['All', '11', '12'];
 const allSubjects = [
@@ -43,7 +43,7 @@ export default function DownloadsPage() {
   const [saving, setSaving] = useState<string | null>(null);
   const [watchlistIds, setWatchlistIds] = useState<Set<string>>(new Set());
 
-  const [selectedStream, setSelectedStream] = useState('All');
+  const [selectedStreams, setSelectedStreams] = useState<string[]>([]);
   const [selectedClass, setSelectedClass] = useState('All');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedSubjects, setSelectedSubjects] = useState<string[]>([]);
@@ -73,7 +73,7 @@ export default function DownloadsPage() {
   useEffect(() => {
     fetchInitialData();
   }, [fetchInitialData]);
-
+  
   const handleToggleWatchlist = async (resource: Resource) => {
     if (!user) {
         toast({
@@ -120,13 +120,13 @@ export default function DownloadsPage() {
 
   const filteredResources = useMemo(() => {
     return resources.filter(resource => {
-      const streamMatch = selectedStream === 'All' || resource.stream.includes(selectedStream);
+      const streamMatch = selectedStreams.length === 0 || resource.stream.some(s => selectedStreams.includes(s));
       const classMatch = selectedClass === 'All' || !resource.class || resource.class === selectedClass;
       const categoryMatch = selectedCategories.length === 0 || resource.category.some(c => selectedCategories.includes(c));
       const subjectMatch = selectedSubjects.length === 0 || resource.subject.some(s => selectedSubjects.includes(s));
       return streamMatch && classMatch && categoryMatch && subjectMatch;
     });
-  }, [resources, selectedStream, selectedClass, selectedCategories, selectedSubjects]);
+  }, [resources, selectedStreams, selectedClass, selectedCategories, selectedSubjects]);
 
   const getPreviewUrl = (resource: Resource) => {
     return resource.pdfUrl || '#';
@@ -136,18 +136,27 @@ export default function DownloadsPage() {
     return resource.pdfUrl || '#';
   };
   
-  const handleStreamChange = (value: string) => {
-    setSelectedStream(value);
-    setSelectedClass('All');
-  }
+  const showClassFilter = useMemo(() => {
+    return selectedStreams.includes('Science') || selectedStreams.includes('Commerce');
+  }, [selectedStreams]);
+
+  useEffect(() => {
+    if (!showClassFilter) {
+      setSelectedClass('All');
+    }
+  }, [showClassFilter]);
+
 
   const getClassOptions = () => {
-    if (selectedStream === 'Science') return scienceClasses;
-    if (selectedStream === 'Commerce') return commerceClasses;
-    return [];
-  }
-
-  const showClassFilter = selectedStream === 'Science' || selectedStream === 'Commerce';
+    const options = new Set<string>(['All']);
+    if (selectedStreams.includes('Science')) {
+        scienceClasses.forEach(c => options.add(c));
+    }
+    if (selectedStreams.includes('Commerce')) {
+        commerceClasses.forEach(c => options.add(c));
+    }
+    return Array.from(options);
+  };
 
 
   return (
@@ -168,20 +177,31 @@ export default function DownloadsPage() {
                 <CardDescription>Narrow down the study materials to find exactly what you need.</CardDescription>
             </CardHeader>
             <CardContent className='space-y-6'>
-                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                    <Select onValueChange={handleStreamChange} value={selectedStream}>
-                        <SelectTrigger>
-                            <SelectValue placeholder="Select Stream" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectGroup>
-                                {allStreams.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
-                            </SelectGroup>
-                        </SelectContent>
-                    </Select>
+                <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+                    <div>
+                        <Label className='text-base font-medium'>Stream(s)</Label>
+                        <div className='flex flex-wrap gap-x-4 gap-y-2 pt-2'>
+                            {allStreams.map(stream => (
+                            <div key={stream} className='flex items-center space-x-2'>
+                                <Checkbox
+                                    id={`stream-${stream}`}
+                                    checked={selectedStreams.includes(stream)}
+                                    onCheckedChange={(checked) => {
+                                        setSelectedStreams(prev => 
+                                            checked ? [...prev, stream] : prev.filter(s => s !== stream)
+                                        );
+                                    }}
+                                />
+                                <Label htmlFor={`stream-${stream}`} className='font-normal'>{stream}</Label>
+                            </div>
+                            ))}
+                        </div>
+                    </div>
                     {showClassFilter && (
-                      <Select onValueChange={setSelectedClass} value={selectedClass}>
-                          <SelectTrigger>
+                      <div>
+                        <Label className='text-base font-medium'>Class</Label>
+                        <Select onValueChange={setSelectedClass} value={selectedClass}>
+                          <SelectTrigger className='mt-2'>
                               <SelectValue placeholder="Select Class" />
                           </SelectTrigger>
                           <SelectContent>
@@ -189,7 +209,8 @@ export default function DownloadsPage() {
                                   {getClassOptions().map(c => <SelectItem key={c} value={c}>{c === 'All' ? 'All Classes' : `Class ${c}`}</SelectItem>)}
                               </SelectGroup>
                           </SelectContent>
-                      </Select>
+                        </Select>
+                      </div>
                     )}
                 </div>
                 <div>
