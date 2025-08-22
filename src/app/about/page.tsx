@@ -43,14 +43,6 @@ export default function AboutPage() {
                 <CardTitle className="text-3xl font-bold text-primary">Sponsored by Passionate Educators</CardTitle>
             </CardHeader>
             <CardContent className="space-y-12">
-                <div className="grid md:grid-cols-[1fr] gap-8 items-start">
-                    <div className="space-y-2">
-                        <h3 className="text-2xl font-semibold text-foreground">Pravin Khachane (M.Sc., B.Ed.) – Physics</h3>
-                        <p className="text-muted-foreground leading-relaxed">
-                            With over 30 years of teaching experience, Pravin Sir is a visionary in science education. His ability to simplify complex physics concepts and connect with students has made him a beloved mentor across Maharashtra.
-                        </p>
-                    </div>
-                </div>
                  <div className="grid md:grid-cols-[200px_1fr] gap-8 items-start">
                     <div className="w-full aspect-square relative rounded-lg overflow-hidden shadow-lg">
                         <Image
