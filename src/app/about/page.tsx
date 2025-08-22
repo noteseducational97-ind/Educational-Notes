@@ -37,6 +37,26 @@ export default function AboutPage() {
                 </div>
             </CardContent>
           </Card>
+
+          <Card className="mt-8">
+            <CardHeader>
+                <CardTitle className="text-3xl font-bold text-primary">Sponsored by Passionate Educators</CardTitle>
+            </CardHeader>
+            <CardContent className="grid md:grid-cols-2 gap-8">
+                <div className="space-y-2">
+                    <h3 className="text-2xl font-semibold text-foreground">Pravin Khachane (M.Sc., B.Ed.) – Physics</h3>
+                    <p className="text-muted-foreground leading-relaxed">
+                        With over 30 years of teaching experience, Pravin Sir is a visionary in science education. His ability to simplify complex physics concepts and connect with students has made him a beloved mentor across Maharashtra.
+                    </p>
+                </div>
+                <div className="space-y-2">
+                    <h3 className="text-2xl font-semibold text-foreground">Mangesh Shete Sir (M.Sc., B.Ed.) – Chemistry</h3>
+                    <p className="text-muted-foreground leading-relaxed">
+                        A master of chemistry and a champion of student-first learning, Mangesh Sir has spent three decades nurturing curiosity, confidence, and academic excellence. His empathetic approach continues to inspire thousands.
+                    </p>
+                </div>
+            </CardContent>
+          </Card>
         </div>
       </main>
     </div>
