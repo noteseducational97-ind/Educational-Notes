@@ -127,16 +127,19 @@ export async function deleteResourceAction(id: string) {
   }
   
   try {
+    // Also remove from users' watchlists (optional but good practice)
+    const watchlistSnapshot = await db.collectionGroup('watchlist').where('resourceId', '==', id).get();
+    if (!watchlistSnapshot.empty) {
+        const batch = db.batch();
+        watchlistSnapshot.docs.forEach(doc => {
+            batch.delete(doc.ref);
+        });
+        await batch.commit();
+    }
+    
+    // Now delete the resource itself
     await db.collection('resources').doc(id).delete();
     
-    // Also remove from users' watchlists (optional but good practice)
-    const watchlistQuery = await db.collectionGroup('watchlist').where('resourceId', '==', id).get();
-    const batch = db.batch();
-    watchlistQuery.docs.forEach(doc => {
-        batch.delete(doc.ref);
-    });
-    await batch.commit();
-
     revalidatePath('/admin/uploaded-resources');
     revalidatePath('/downloads');
     revalidatePath('/save');
