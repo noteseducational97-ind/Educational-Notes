@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { createContext, useState, useEffect, ReactNode } from 'react';
@@ -20,7 +21,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
-      setIsAdmin(user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL);
+      if (user) {
+        // Correct way to check for admin email
+        setIsAdmin(user.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL);
+      } else {
+        setIsAdmin(false);
+      }
       setLoading(false);
     });
 
