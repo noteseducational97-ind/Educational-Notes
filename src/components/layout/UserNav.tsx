@@ -16,11 +16,11 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
-import { LogOut, User as UserIcon, Settings } from 'lucide-react';
+import { LogOut, User as UserIcon, Settings, Shield } from 'lucide-react';
 import Link from 'next/link';
 
 export default function UserNav() {
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
   const router = useRouter();
   const { toast } = useToast();
 
@@ -80,6 +80,14 @@ export default function UserNav() {
             <span>Settings</span>
           </Link>
         </DropdownMenuItem>
+        {isAdmin && (
+           <DropdownMenuItem className="cursor-pointer" asChild>
+              <Link href="/admin">
+                <Shield className="mr-2 h-4 w-4" />
+                <span>Admin</span>
+              </Link>
+            </DropdownMenuItem>
+        )}
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
           <LogOut className="mr-2 h-4 w-4" />
