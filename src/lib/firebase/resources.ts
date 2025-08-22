@@ -4,7 +4,7 @@
 import { db } from '@/lib/firebase/server'; // Use server-side db
 import { revalidatePath } from 'next/cache';
 import type { Resource as ResourceType } from '@/types';
-import { FieldValue, Timestamp } from 'firebase-admin/firestore';
+import { FieldValue, Timestamp, FieldPath } from 'firebase-admin/firestore';
 
 export type Resource = ResourceType & {
   createdAt: string;
@@ -44,7 +44,7 @@ export async function getResources(): Promise<Resource[]> {
 
         return querySnapshot.docs.map(doc => {
             const data = doc.data();
-            const createdAt = (data.createdAt as Timestamp).toDate().toISOString();
+            const createdAt = (data.createdAt as Timestamp)?.toDate().toISOString() || new Date().toISOString();
 
             return {
                 id: doc.id,
@@ -79,12 +79,7 @@ export async function getResourceById(id: string): Promise<Resource | null> {
         const data = docSnap.data();
         if (!data) return null;
         
-        let timestamp: string;
-        if (data.createdAt && data.createdAt instanceof Timestamp) {
-            timestamp = data.createdAt.toDate().toISOString();
-        } else {
-            timestamp = new Date().toISOString();
-        }
+        const createdAt = (data.createdAt as Timestamp)?.toDate().toISOString() || new Date().toISOString();
 
         const resource: Resource = {
             id: docSnap.id,
@@ -97,7 +92,7 @@ export async function getResourceById(id: string): Promise<Resource | null> {
             stream: data.stream,
             imageUrl: data.imageUrl,
             pdfUrl: data.pdfUrl,
-            createdAt: timestamp,
+            createdAt: createdAt,
             isComingSoon: data.isComingSoon || false,
         };
 
@@ -160,40 +155,45 @@ export async function getWatchlist(userId: string): Promise<Resource[]> {
         if (resourceIds.length === 0) {
             return [];
         }
-        
-        // Firestore 'in' queries are limited to 30 items. 
-        // If you expect more, you'll need to batch the requests.
-        const resourcesSnapshot = await db.collection('resources').where(FieldPath.documentId(), 'in', resourceIds).get();
 
-        const resourcesById = new Map(resourcesSnapshot.docs.map(doc => {
-            return [doc.id, doc.data()];
-        }));
-        
-        const watchlistResources = snapshot.docs.map(doc => {
-            const resourceData = resourcesById.get(doc.id);
-            if (!resourceData) {
-                return null;
-            }
+        const allResources: Resource[] = [];
+        // Firestore 'in' queries are limited to 30 items. Batch the requests.
+        const batchSize = 30;
+        for (let i = 0; i < resourceIds.length; i += batchSize) {
+            const batchIds = resourceIds.slice(i, i + batchSize);
+            const resourcesSnapshot = await db.collection('resources').where(FieldPath.documentId(), 'in', batchIds).get();
+            const resourcesById = new Map(resourcesSnapshot.docs.map(doc => [doc.id, doc.data()]));
             
-            const createdAt = (resourceData.createdAt as Timestamp).toDate().toISOString();
-            
-            return {
-                id: doc.id,
-                title: resourceData.title,
-                description: resourceData.description,
-                content: resourceData.content,
-                category: resourceData.category,
-                subject: resourceData.subject,
-                class: resourceData.class,
-                stream: resourceData.stream,
-                imageUrl: resourceData.imageUrl,
-                pdfUrl: resourceData.pdfUrl,
-                createdAt: createdAt,
-                isComingSoon: resourceData.isComingSoon || false,
-            } as Resource;
-        }).filter((item): item is Resource => item !== null);
+            const batchResources = batchIds.map(id => {
+                const resourceData = resourcesById.get(id);
+                if (!resourceData) return null;
+                
+                const createdAt = (resourceData.createdAt as Timestamp)?.toDate().toISOString() || new Date().toISOString();
 
-        return watchlistResources;
+                return {
+                    id: id,
+                    title: resourceData.title,
+                    description: resourceData.description,
+                    content: resourceData.content,
+                    category: resourceData.category,
+                    subject: resourceData.subject,
+                    class: resourceData.class,
+                    stream: resourceData.stream,
+                    imageUrl: resourceData.imageUrl,
+                    pdfUrl: resourceData.pdfUrl,
+                    createdAt: createdAt,
+                    isComingSoon: resourceData.isComingSoon || false,
+                } as Resource;
+            }).filter((item): item is Resource => item !== null);
+
+            allResources.push(...batchResources);
+        }
+
+        // We need to sort the final list because the batches are not ordered relative to each other.
+        const savedOrder = new Map(snapshot.docs.map((doc, index) => [doc.id, index]));
+        allResources.sort((a, b) => (savedOrder.get(a.id) ?? 0) - (savedOrder.get(b.id) ?? 0));
+        
+        return allResources;
 
     } catch (error) {
         console.error("Error fetching watchlist: ", error);
