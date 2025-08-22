@@ -102,7 +102,7 @@ export default function SavePage() {
                   >
                     <div className="relative aspect-video">
                         <Image 
-                            src={resource.imageUrl || 'https://placehold.co/600x400.png'}
+                            src={resource.isComingSoon ? 'https://placehold.co/600x400.png' : resource.imageUrl || 'https://placehold.co/600x400.png'}
                             alt={resource.title}
                             fill
                             className="object-cover group-hover:scale-105 transition-transform duration-300"

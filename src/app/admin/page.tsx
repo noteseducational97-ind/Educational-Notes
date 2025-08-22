@@ -78,58 +78,52 @@ export default function AdminPage() {
             </div>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-2">
-            <div className="space-y-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2"><Users /> Registered Users</CardTitle>
-                    <CardDescription>View and manage user accounts.</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    {loadingData ? (
-                      <div className="flex justify-center items-center h-64">
-                          <LoadingSpinner className="min-h-0" />
-                      </div>
-                    ) : (
-                      <div className="w-full overflow-x-auto">
-                        <Table>
-                          <TableHeader>
-                            <TableRow>
-                              <TableHead>User</TableHead>
-                              <TableHead>Email</TableHead>
-                              <TableHead>Status</TableHead>
-                            </TableRow>
-                          </TableHeader>
-                          <TableBody>
-                            {users.map((u) => (
-                              <TableRow key={u.uid}>
-                                <TableCell>
-                                  <div className="flex items-center gap-3">
-                                    <Avatar>
-                                      <AvatarImage src={u.photoURL ?? ''} alt={u.displayName ?? 'User'} />
-                                      <AvatarFallback>{getInitials(u.displayName)}</AvatarFallback>
-                                    </Avatar>
-                                    <span className="font-medium">{u.displayName || 'N/A'}</span>
-                                  </div>
-                                </TableCell>
-                                <TableCell>{u.email}</TableCell>
-                                <TableCell>
-                                  <Badge variant={u.disabled ? 'destructive' : 'secondary'}>
-                                    {u.disabled ? 'Disabled' : 'Active'}
-                                  </Badge>
-                                </TableCell>
-                              </TableRow>
-                            ))}
-                          </TableBody>
-                        </Table>
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-            </div>
-
-          </div>
-
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2"><Users /> Registered Users</CardTitle>
+              <CardDescription>View and manage user accounts.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {loadingData ? (
+                <div className="flex justify-center items-center h-64">
+                    <LoadingSpinner className="min-h-0" />
+                </div>
+              ) : (
+                <div className="w-full overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>User</TableHead>
+                        <TableHead>Email</TableHead>
+                        <TableHead>Status</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {users.map((u) => (
+                        <TableRow key={u.uid}>
+                          <TableCell>
+                            <div className="flex items-center gap-3">
+                              <Avatar>
+                                <AvatarImage src={u.photoURL ?? ''} alt={u.displayName ?? 'User'} />
+                                <AvatarFallback>{getInitials(u.displayName)}</AvatarFallback>
+                              </Avatar>
+                              <span className="font-medium">{u.displayName || 'N/A'}</span>
+                            </div>
+                          </TableCell>
+                          <TableCell>{u.email}</TableCell>
+                          <TableCell>
+                            <Badge variant={u.disabled ? 'destructive' : 'secondary'}>
+                              {u.disabled ? 'Disabled' : 'Active'}
+                            </Badge>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              )}
+            </CardContent>
+          </Card>
         </div>
       </main>
     </div>
