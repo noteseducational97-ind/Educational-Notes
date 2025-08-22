@@ -25,7 +25,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 
 const studyOptions = [
     'Class 9', 'Class 10', 'Class 11', 'Class 12',
-    'MHT-CET', 'NEET'
+    'MHT-CET', 'NEET', 'JEE', 'Commerce', 'Arts', 'Other'
 ]
 
 const formSchema = z
