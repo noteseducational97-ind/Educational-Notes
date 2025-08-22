@@ -18,7 +18,7 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 export default function SavePage() {
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, isAdmin } = useAuth();
   const [watchlistItems, setWatchlistItems] = useState<Resource[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
@@ -68,7 +68,7 @@ export default function SavePage() {
   };
 
   const getPreviewUrl = (resource: Resource) => {
-    return resource.isComingSoon ? '#' : resource.pdfUrl || '#';
+    return resource.isComingSoon ? '#' : resource.viewPdfUrl || resource.pdfUrl || '#';
   };
 
   const getDownloadUrl = (resource: Resource) => {
@@ -76,6 +76,13 @@ export default function SavePage() {
   };
   
   const isLinkDisabled = (resource: Resource) => resource.isComingSoon || !resource.pdfUrl;
+
+  const displayedItems = useMemo(() => {
+    if (isAdmin) {
+        return watchlistItems;
+    }
+    return watchlistItems.filter(item => item.visibility !== 'private' || user);
+  }, [watchlistItems, isAdmin, user]);
 
 
   if (authLoading || loading) {
@@ -94,9 +101,9 @@ export default function SavePage() {
             </p>
           </div>
 
-          {watchlistItems.length > 0 ? (
+          {displayedItems.length > 0 ? (
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {watchlistItems.map((resource) => (
+              {displayedItems.map((resource) => (
                 <Card key={resource.id} className="flex flex-col hover:border-primary/50 transition-colors duration-300 overflow-hidden">
                    <Link
                     href={getPreviewUrl(resource)}

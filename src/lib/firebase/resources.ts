@@ -46,7 +46,6 @@ export async function getResources(options: { includePrivate?: boolean, publicOn
         }
         // If includePrivate is true, we don't add a where clause for visibility,
         // so we fetch all resources (public and private). This is for admins.
-        // If a logged-in non-admin calls this, we fetch all and filter client-side.
         // Let's refine this to filter on the server for logged-in users.
         if (options.includePrivate) {
             // Logged-in user gets public and private
@@ -74,6 +73,7 @@ export async function getResources(options: { includePrivate?: boolean, publicOn
                 class: data.class,
                 stream: data.stream,
                 imageUrl: data.imageUrl,
+                viewPdfUrl: data.viewPdfUrl,
                 pdfUrl: data.pdfUrl,
                 createdAt: createdAt,
                 isComingSoon: data.isComingSoon || false,
@@ -110,6 +110,7 @@ export async function getResourceById(id: string): Promise<Resource | null> {
             class: data.class,
             stream: data.stream,
             imageUrl: data.imageUrl,
+            viewPdfUrl: data.viewPdfUrl,
             pdfUrl: data.pdfUrl,
             createdAt: createdAt,
             isComingSoon: data.isComingSoon || false,
@@ -177,8 +178,8 @@ export async function getWatchlist(userId: string): Promise<Resource[]> {
         }
 
         // A user's watchlist should contain all their saved items, regardless of visibility.
-        // The client will handle filtering if a non-admin somehow gets a private item.
-        // But since saving is a user action, we fetch all of them here.
+        // We will fetch all of them here, and the client will be responsible for filtering
+        // based on the user's role (admin vs regular user).
         const allResources: Resource[] = [];
         const batchSize = 30; // Firestore 'in' query limit
         for (let i = 0; i < resourceIds.length; i += batchSize) {
@@ -204,6 +205,7 @@ export async function getWatchlist(userId: string): Promise<Resource[]> {
                     class: resourceData.class,
                     stream: resourceData.stream,
                     imageUrl: resourceData.imageUrl,
+                    viewPdfUrl: resourceData.viewPdfUrl,
                     pdfUrl: resourceData.pdfUrl,
                     createdAt: createdAt,
                     isComingSoon: resourceData.isComingSoon || false,

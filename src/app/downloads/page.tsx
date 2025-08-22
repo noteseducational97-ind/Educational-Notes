@@ -131,7 +131,7 @@ export default function DownloadsPage() {
   }, [resources, selectedStreams, selectedClass, selectedCategories, selectedSubjects]);
 
   const getPreviewUrl = (resource: Resource) => {
-    return resource.isComingSoon ? '#' : resource.pdfUrl || '#';
+    return resource.isComingSoon ? '#' : resource.viewPdfUrl || resource.pdfUrl || '#';
   };
 
   const getDownloadUrl = (resource: Resource) => {

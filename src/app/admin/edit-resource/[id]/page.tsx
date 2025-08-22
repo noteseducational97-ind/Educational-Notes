@@ -36,6 +36,7 @@ const FormSchema = z.object({
   category: z.array(z.string()).nonempty({ message: 'Select at least one category.' }),
   subject: z.array(z.string()).nonempty({ message: 'Select at least one subject.' }),
   imageUrl: z.string().optional(),
+  viewPdfUrl: z.string().optional(),
   pdfUrl: z.string().optional(),
   isComingSoon: z.boolean().default(false),
   visibility: z.enum(['private', 'public']).default('public'),
@@ -46,6 +47,13 @@ const FormSchema = z.object({
                 code: z.ZodIssueCode.custom,
                 message: 'Image URL is required when not "Coming Soon".',
                 path: ['imageUrl'],
+            });
+        }
+        if (!data.viewPdfUrl || !z.string().url().safeParse(data.viewPdfUrl).success) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: 'View PDF URL is required when not "Coming Soon".',
+                path: ['viewPdfUrl'],
             });
         }
         if (!data.pdfUrl || !z.string().url().safeParse(data.pdfUrl).success) {
@@ -87,6 +95,7 @@ export default function EditResourceAdminPage() {
       description: '',
       content: '',
       imageUrl: '',
+      viewPdfUrl: '',
       pdfUrl: '',
       stream: [],
       class: '',
@@ -348,10 +357,18 @@ export default function EditResourceAdminPage() {
                       </FormItem>
                     )}
                   />
+                  <FormField control={form.control} name="viewPdfUrl" render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>View PDF URL</FormLabel>
+                        <FormControl><Input placeholder="https://example.com/view.pdf" {...field} value={field.value ?? ''} disabled={isComingSoon} /></FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                   <FormField control={form.control} name="pdfUrl" render={({ field }) => (
                       <FormItem>
-                        <FormLabel>PDF URL</FormLabel>
-                        <FormControl><Input placeholder="https://example.com/preview.pdf" {...field} value={field.value ?? ''} disabled={isComingSoon} /></FormControl>
+                        <FormLabel>PDF URL (for Download)</FormLabel>
+                        <FormControl><Input placeholder="https://example.com/download.pdf" {...field} value={field.value ?? ''} disabled={isComingSoon} /></FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
