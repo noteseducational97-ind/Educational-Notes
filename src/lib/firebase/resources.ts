@@ -54,7 +54,7 @@ export async function getResources(options: { includePrivate?: boolean, isAdmin?
             visibleResources = allDocs.filter(doc => {
                 const data = doc.data();
                 if (data.isComingSoon) {
-                    return false; // Never show "coming soon" on public pages
+                    return false;
                 }
                 if (data.visibility === 'public') {
                     return true;
@@ -221,7 +221,6 @@ export async function getWatchlist(userId: string): Promise<Resource[]> {
         const savedOrder = new Map(snapshot.docs.map((doc, index) => [doc.id, index]));
         allResources.sort((a, b) => (savedOrder.get(a.id) ?? 0) - (savedOrder.get(b.id) ?? 0));
         
-        // Final filter for watchlist: don't show "coming soon" items
         const filteredWatchlist = allResources.filter(item => !item.isComingSoon);
 
         return filteredWatchlist;

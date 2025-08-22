@@ -18,7 +18,7 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 export default function SavePage() {
-  const { user, loading: authLoading, isAdmin } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const [watchlistItems, setWatchlistItems] = useState<Resource[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
@@ -78,15 +78,8 @@ export default function SavePage() {
   const isLinkDisabled = (resource: Resource) => resource.isComingSoon || !resource.pdfUrl;
 
   const displayedItems = useMemo(() => {
-    if (isAdmin) {
-        return watchlistItems;
-    }
-    // Regular logged-in users see everything in their watchlist
-    if(user){
-        return watchlistItems.filter(item => item.visibility !== 'private' || user);
-    }
-    return [];
-  }, [watchlistItems, isAdmin, user]);
+    return watchlistItems;
+  }, [watchlistItems]);
 
 
   if (authLoading || loading) {
