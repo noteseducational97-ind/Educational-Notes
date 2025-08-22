@@ -16,7 +16,7 @@ const FormSchema = z.object({
   imageUrl: z.string().optional(),
   pdfUrl: z.string().optional(),
   isComingSoon: z.boolean().default(false),
-  visibility: z.enum(['public', 'private']).default('public'),
+  visibility: z.enum(['public', 'private', 'both']).default('both'),
 }).superRefine((data, ctx) => {
     if (!data.isComingSoon) {
         if (!data.imageUrl || !z.string().url().safeParse(data.imageUrl).success) {

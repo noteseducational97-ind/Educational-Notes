@@ -12,5 +12,5 @@ export type Resource = {
   pdfUrl: string;
   createdAt: string; // Should be an ISO string
   isComingSoon?: boolean;
-  visibility?: 'public' | 'private';
+  visibility?: 'public' | 'private' | 'both';
 };

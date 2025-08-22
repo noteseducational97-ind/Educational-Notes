@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { PlusCircle, BookCopy, Edit, Trash2, ArrowLeft, Eye, EyeOff } from 'lucide-react';
+import { PlusCircle, BookCopy, Edit, Trash2, ArrowLeft, Eye, EyeOff, Users } from 'lucide-react';
 import Link from 'next/link';
 import { getResources, Resource } from '@/lib/firebase/resources';
 import { deleteResourceAction } from '../actions';
@@ -71,6 +71,19 @@ export default function UploadedResourcesPage() {
     return <LoadingSpinner />;
   }
   
+  const getVisibilityProps = (visibility: Resource['visibility']) => {
+    switch (visibility) {
+      case 'public':
+        return { icon: <Eye className='mr-1 h-3 w-3'/>, text: 'Public' };
+      case 'private':
+        return { icon: <EyeOff className='mr-1 h-3 w-3'/>, text: 'Private' };
+      case 'both':
+         return { icon: <Users className='mr-1 h-3 w-3'/>, text: 'Both' };
+      default:
+        return { icon: <Eye className='mr-1 h-3 w-3'/>, text: 'Public' };
+    }
+  }
+
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
@@ -99,7 +112,7 @@ export default function UploadedResourcesPage() {
             <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2"><BookCopy /> All Resources</CardTitle>
-                  <CardDescription>View, edit, or delete any published resource. Public resources are visible to all users, while private resources are only visible to admins.</CardDescription>
+                  <CardDescription>View, edit, or delete any resource. `Public` is visible to all, `Private` only to admins, and `Both` is visible to everyone and highlighted for admins.</CardDescription>
                 </CardHeader>
                 <CardContent>
                   {loadingData ? (
@@ -121,61 +134,64 @@ export default function UploadedResourcesPage() {
                           </TableRow>
                         </TableHeader>
                         <TableBody>
-                          {resources.map((resource) => (
-                            <TableRow key={resource.id}>
-                              <TableCell className="font-medium">{resource.title}</TableCell>
-                              <TableCell>
-                                <Badge variant={resource.visibility === 'public' ? 'secondary' : 'outline'} className={cn(resource.visibility === 'private' && 'border-primary/50')}>
-                                    {resource.visibility === 'public' ? <Eye className='mr-1 h-3 w-3'/> : <EyeOff className='mr-1 h-3 w-3'/>}
-                                    {resource.visibility === 'public' ? 'Public' : 'Private'}
-                                </Badge>
-                              </TableCell>
-                              <TableCell>
-                                <div className="flex flex-wrap gap-1">
-                                    {resource.category.map(c => <Badge key={c} variant="secondary">{c}</Badge>)}
-                                </div>
-                              </TableCell>
-                              <TableCell>{resource.class ? `Class ${resource.class}`: 'N/A'}</TableCell>
-                               <TableCell>
-                                 <div className="flex flex-wrap gap-1">
-                                    {resource.subject.map(s => <Badge key={s} variant="outline">{s}</Badge>)}
-                                 </div>
-                               </TableCell>
-                              <TableCell>
-                                <div className="flex flex-wrap gap-1">
-                                    {resource.stream.map(s => <Badge key={s}>{s}</Badge>)}
-                                </div>
-                              </TableCell>
-                              <TableCell className="flex justify-end gap-2">
-                                <Button variant="outline" size="sm" asChild>
-                                  <Link href={`/admin/edit-resource/${resource.id}`}>
-                                    <Edit className="h-4 w-4" />
-                                  </Link>
-                                </Button>
-                                <AlertDialog>
-                                  <AlertDialogTrigger asChild>
-                                    <Button variant="destructive" size="sm" disabled={deletingId === resource.id}>
-                                      <Trash2 className="h-4 w-4" />
+                          {resources.map((resource) => {
+                            const { icon, text } = getVisibilityProps(resource.visibility);
+                            return (
+                               <TableRow key={resource.id}>
+                                  <TableCell className="font-medium">{resource.title}</TableCell>
+                                  <TableCell>
+                                    <Badge variant={resource.visibility === 'private' ? 'destructive' : 'secondary'} className={cn(resource.visibility === 'both' && 'bg-primary/20 border-primary/50')}>
+                                        {icon}
+                                        {text}
+                                    </Badge>
+                                  </TableCell>
+                                  <TableCell>
+                                    <div className="flex flex-wrap gap-1">
+                                        {resource.category.map(c => <Badge key={c} variant="secondary">{c}</Badge>)}
+                                    </div>
+                                  </TableCell>
+                                  <TableCell>{resource.class ? `Class ${resource.class}`: 'N/A'}</TableCell>
+                                   <TableCell>
+                                     <div className="flex flex-wrap gap-1">
+                                        {resource.subject.map(s => <Badge key={s} variant="outline">{s}</Badge>)}
+                                     </div>
+                                   </TableCell>
+                                  <TableCell>
+                                    <div className="flex flex-wrap gap-1">
+                                        {resource.stream.map(s => <Badge key={s}>{s}</Badge>)}
+                                    </div>
+                                  </TableCell>
+                                  <TableCell className="flex justify-end gap-2">
+                                    <Button variant="outline" size="sm" asChild>
+                                      <Link href={`/admin/edit-resource/${resource.id}`}>
+                                        <Edit className="h-4 w-4" />
+                                      </Link>
                                     </Button>
-                                  </AlertDialogTrigger>
-                                  <AlertDialogContent>
-                                    <AlertDialogHeader>
-                                      <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                                      <AlertDialogDescription>
-                                        This action cannot be undone. This will permanently delete the resource "{resource.title}".
-                                      </AlertDialogDescription>
-                                    </AlertDialogHeader>
-                                    <AlertDialogFooter>
-                                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                      <AlertDialogAction onClick={() => handleDelete(resource.id, resource.title)}>
-                                        Yes, delete
-                                      </AlertDialogAction>
-                                    </AlertDialogFooter>
-                                  </AlertDialogContent>
-                                </AlertDialog>
-                              </TableCell>
-                            </TableRow>
-                          ))}
+                                    <AlertDialog>
+                                      <AlertDialogTrigger asChild>
+                                        <Button variant="destructive" size="sm" disabled={deletingId === resource.id}>
+                                          <Trash2 className="h-4 w-4" />
+                                        </Button>
+                                      </AlertDialogTrigger>
+                                      <AlertDialogContent>
+                                        <AlertDialogHeader>
+                                          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                          <AlertDialogDescription>
+                                            This action cannot be undone. This will permanently delete the resource "{resource.title}".
+                                          </AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter>
+                                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                          <AlertDialogAction onClick={() => handleDelete(resource.id, resource.title)}>
+                                            Yes, delete
+                                          </AlertDialogAction>
+                                        </AlertDialogFooter>
+                                      </AlertDialogContent>
+                                    </AlertDialog>
+                                  </TableCell>
+                                </TableRow>
+                            )
+                          })}
                         </TableBody>
                       </Table>
                     </div>

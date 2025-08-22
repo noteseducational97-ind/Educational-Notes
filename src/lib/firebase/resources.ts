@@ -39,7 +39,7 @@ export async function getResources(options: { publicOnly?: boolean } = {}): Prom
         let query: FirebaseFirestore.Query<FirebaseFirestore.DocumentData> = db.collection('resources');
         
         if (options.publicOnly) {
-            query = query.where('visibility', '==', 'public');
+            query = query.where('visibility', 'in', ['public', 'both']);
         }
 
         const querySnapshot = await query.orderBy('createdAt', 'desc').get();
