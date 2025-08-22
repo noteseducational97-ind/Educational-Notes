@@ -23,23 +23,37 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Loader2, ArrowLeft, Save } from 'lucide-react';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
+import { Checkbox } from '@/components/ui/checkbox';
 
 const FormSchema = z.object({
   title: z.string().min(3, 'Title must be at least 3 characters.'),
   description: z.string().min(10, 'Description must be at least 10 characters.'),
   content: z.string().min(20, 'Content must be at least 20 characters.'),
-  category: z.enum(['Notes', 'PYQ', 'Syllabus']),
-  subject: z.enum(['Physics', 'Chemistry', 'Mathematics', 'Biology', 'History', 'Computer Science']),
-  class: z.enum(['class9', 'class10', 'class11', 'class12']),
-  stream: z.enum(['All', 'Science', 'Commerce', 'Arts']),
+  stream: z.string().min(1, 'Please select a stream.'),
+  class: z.string().optional(),
+  category: z.array(z.string()).nonempty({ message: 'Select at least one category.' }),
+  subject: z.array(z.string()).nonempty({ message: 'Select at least one subject.' }),
   imageUrl: z.string().url('Please enter a valid image URL.'),
-  pdfUrl: z.string().url('Please enter a valid PDF URL.').optional().or(z.literal('')),
+  pdfUrl: z.string().url('PDF URL is required.'),
+}).refine(data => {
+  if (data.stream === 'Science' || data.stream === 'Commerce') {
+    return !!data.class;
+  }
+  return true;
+}, {
+  message: "Class is required for this stream.",
+  path: ["class"],
 });
 
-const categories = ['Notes', 'PYQ', 'Syllabus'];
-const subjects = ['Physics', 'Chemistry', 'Mathematics', 'Biology', 'History', 'Computer Science'];
-const classes = ['class9', 'class10', 'class11', 'class12'];
-const streams = ['All', 'Science', 'Commerce', 'Arts'];
+const allStreams = ['Science', 'MHT-CET', 'NEET', 'Commerce'];
+const scienceClasses = ['9', '10', '11', '12'];
+const commerceClasses = ['11', '12'];
+const allSubjects = [
+    'Physics', 'Chemistry', 'Maths', 'Biology',
+    'Accountancy', 'Business Studies', 'Economics',
+    'History', 'Geography', 'Political Science', 'Sociology'
+];
+const categories = ['Notes', 'Previous Year Questions', 'Syllabus'];
 
 export default function EditResourceAdminPage() {
   const { user, isAdmin, loading: authLoading } = useAuth();
@@ -61,9 +75,21 @@ export default function EditResourceAdminPage() {
       content: '',
       imageUrl: '',
       pdfUrl: '',
+      stream: '',
+      class: '',
+      category: [],
+      subject: [],
     },
   });
   
+  const selectedStream = form.watch('stream');
+  
+  useEffect(() => {
+    if (selectedStream === 'MHT-CET' || selectedStream === 'NEET') {
+      form.setValue('class', undefined);
+    }
+  }, [selectedStream, form]);
+
   useEffect(() => {
     if (!authLoading) {
       if (!user || !isAdmin) {
@@ -124,6 +150,15 @@ export default function EditResourceAdminPage() {
     return <LoadingSpinner />;
   }
 
+  const getClassOptions = () => {
+    if (selectedStream === 'Science') return scienceClasses;
+    if (selectedStream === 'Commerce') return commerceClasses;
+    return [];
+  }
+
+  const showClassField = selectedStream === 'Science' || selectedStream === 'Commerce';
+
+
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
@@ -177,52 +212,129 @@ export default function EditResourceAdminPage() {
                     )}
                   />
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <FormField control={form.control} name="category" render={({ field }) => (
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                     <FormField
+                      control={form.control}
+                      name="stream"
+                      render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Category</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl><SelectTrigger><SelectValue placeholder="Select a category" /></SelectTrigger></FormControl>
-                            <SelectContent>{categories.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
+                          <FormLabel>Stream</FormLabel>
+                          <Select onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select a stream" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {allStreams.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+                            </SelectContent>
                           </Select>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
-                    <FormField control={form.control} name="subject" render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Subject</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl><SelectTrigger><SelectValue placeholder="Select a subject" /></SelectTrigger></FormControl>
-                            <SelectContent>{subjects.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField control={form.control} name="class" render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Class</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl><SelectTrigger><SelectValue placeholder="Select a class" /></SelectTrigger></FormControl>
-                            <SelectContent>{classes.map(c => <SelectItem key={c} value={c}>Class {c.replace('class', '')}</SelectItem>)}</SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                     <FormField control={form.control} name="stream" render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Stream / Exam</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl><SelectTrigger><SelectValue placeholder="Select a stream" /></SelectTrigger></FormControl>
-                            <SelectContent>{streams.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                    
+                    {showClassField && (
+                        <FormField
+                          control={form.control}
+                          name="class"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Class</FormLabel>
+                              <Select onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
+                                <FormControl>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="Select a class" />
+                                  </Trigger>
+                                </FormControl>
+                                <SelectContent>
+                                    {getClassOptions().map(c => <SelectItem key={c} value={c}>Class {c}</SelectItem>)}
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                    )}
                   </div>
+                  
+                  <FormField
+                    control={form.control}
+                    name="category"
+                    render={() => (
+                      <FormItem>
+                        <FormLabel>Category</FormLabel>
+                         <div className="flex flex-wrap gap-4">
+                            {categories.map((item) => (
+                                <FormField
+                                key={item}
+                                control={form.control}
+                                name="category"
+                                render={({ field }) => {
+                                    return (
+                                    <FormItem key={item} className="flex flex-row items-start space-x-3 space-y-0">
+                                        <FormControl>
+                                        <Checkbox
+                                            checked={field.value?.includes(item)}
+                                            onCheckedChange={(checked) => {
+                                            return checked
+                                                ? field.onChange([...(field.value || []), item])
+                                                : field.onChange(
+                                                    field.value?.filter(
+                                                    (value) => value !== item
+                                                    )
+                                                )
+                                            }}
+                                        />
+                                        </FormControl>
+                                        <FormLabel className="font-normal">
+                                        {item}
+                                        </FormLabel>
+                                    </FormItem>
+                                    )
+                                }}
+                                />
+                            ))}
+                        </div>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                      control={form.control}
+                      name="subject"
+                      render={() => (
+                      <FormItem>
+                          <FormLabel>Subject</FormLabel>
+                          <div className="flex flex-wrap gap-4">
+                          {allSubjects.map((item) => (
+                              <FormField
+                              key={item}
+                              control={form.control}
+                              name="subject"
+                              render={({ field }) => (
+                                  <FormItem key={item} className="flex flex-row items-start space-x-3 space-y-0">
+                                  <FormControl>
+                                      <Checkbox
+                                      checked={field.value?.includes(item)}
+                                      onCheckedChange={(checked) => {
+                                          return checked
+                                          ? field.onChange([...(field.value || []), item])
+                                          : field.onChange(field.value?.filter((value) => value !== item));
+                                      }}
+                                      />
+                                  </FormControl>
+                                  <FormLabel className="font-normal">{item}</FormLabel>
+                                  </FormItem>
+                              )}
+                              />
+                          ))}
+                          </div>
+                          <FormMessage />
+                      </FormItem>
+                      )}
+                  />
                   
                   <FormField control={form.control} name="imageUrl" render={({ field }) => (
                       <FormItem>
@@ -234,7 +346,7 @@ export default function EditResourceAdminPage() {
                   />
                   <FormField control={form.control} name="pdfUrl" render={({ field }) => (
                       <FormItem>
-                        <FormLabel>PDF URL (Optional)</FormLabel>
+                        <FormLabel>PDF URL</FormLabel>
                         <FormControl><Input placeholder="https://example.com/preview.pdf" {...field} /></FormControl>
                         <FormMessage />
                       </FormItem>

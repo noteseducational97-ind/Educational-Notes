@@ -125,16 +125,18 @@ export default function SavePage() {
                     </CardTitle>
                     <CardDescription asChild>
                       <div className="flex flex-wrap gap-2 pt-2">
-                        <Badge variant="secondary">Class {resource.class.replace('class','')}</Badge>
+                        {resource.class && <Badge variant="secondary">Class {resource.class}</Badge>}
                         {resource.stream && <Badge variant="outline">{resource.stream}</Badge>}
-                        {resource.subject && <Badge variant="default">{resource.subject}</Badge>}
+                        <div className="flex flex-wrap gap-1 mt-1">
+                          {resource.subject.map(s => <Badge key={s} variant="default">{s}</Badge>)}
+                        </div>
                       </div>
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="flex-grow">
                     <p className='text-sm text-muted-foreground'>{resource.description}</p>
                      <div className="flex flex-wrap gap-1 mt-2">
-                        {resource.category && <Badge variant="secondary">{resource.category}</Badge>}
+                        {resource.category.map(c => <Badge key={c} variant="secondary">{c}</Badge>)}
                     </div>
                   </CardContent>
                   <CardFooter className="flex items-center justify-between">

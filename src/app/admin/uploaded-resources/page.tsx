@@ -122,9 +122,17 @@ export default function UploadedResourcesPage() {
                           {resources.map((resource) => (
                             <TableRow key={resource.id}>
                               <TableCell className="font-medium">{resource.title}</TableCell>
-                              <TableCell><Badge variant="secondary">{resource.category}</Badge></TableCell>
-                              <TableCell>{resource.class.replace('class', 'Class ')}</TableCell>
-                               <TableCell><Badge variant="outline">{resource.subject}</Badge></TableCell>
+                              <TableCell>
+                                <div className="flex flex-wrap gap-1">
+                                    {resource.category.map(c => <Badge key={c} variant="secondary">{c}</Badge>)}
+                                </div>
+                              </TableCell>
+                              <TableCell>{resource.class ? `Class ${resource.class}`: 'N/A'}</TableCell>
+                               <TableCell>
+                                 <div className="flex flex-wrap gap-1">
+                                    {resource.subject.map(s => <Badge key={s} variant="outline">{s}</Badge>)}
+                                 </div>
+                               </TableCell>
                               <TableCell>{resource.stream}</TableCell>
                               <TableCell className="flex justify-end gap-2">
                                 <Button variant="outline" size="sm" asChild>
@@ -169,4 +177,3 @@ export default function UploadedResourcesPage() {
     </div>
   );
 }
-

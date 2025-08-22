@@ -9,13 +9,22 @@ const FormSchema = z.object({
   title: z.string().min(3, 'Title must be at least 3 characters.'),
   description: z.string().min(10, 'Description must be at least 10 characters.'),
   content: z.string().min(20, 'Content must be at least 20 characters.'),
-  category: z.enum(['Notes', 'PYQ', 'Syllabus']),
-  subject: z.enum(['Physics', 'Chemistry', 'Mathematics', 'Biology', 'History', 'Computer Science']),
-  class: z.enum(['class9', 'class10', 'class11', 'class12']),
-  stream: z.enum(['All', 'Science', 'Commerce', 'Arts']),
+  category: z.array(z.string()).nonempty({ message: 'Select at least one category.' }),
+  subject: z.array(z.string()).nonempty({ message: 'Select at least one subject.' }),
+  class: z.string().optional(),
+  stream: z.string().min(1, 'Please select a stream.'),
   imageUrl: z.string().url('Please enter a valid image URL.'),
-  pdfUrl: z.string().url('Please enter a valid PDF URL.').optional().or(z.literal('')),
+  pdfUrl: z.string().url('PDF URL is required.'),
+}).refine(data => {
+  if (data.stream === 'Science' || data.stream === 'Commerce') {
+    return !!data.class;
+  }
+  return true;
+}, {
+  message: "Class is required for this stream.",
+  path: ["class"],
 });
+
 
 type AddResourceInput = z.infer<typeof FormSchema>;
 

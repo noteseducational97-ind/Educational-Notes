@@ -22,11 +22,18 @@ import Image from 'next/image';
 import { useAuth } from '@/hooks/use-auth';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
 
-const classes = ['All', 'class9', 'class10', 'class11', 'class12'];
-const streams = ['All', 'Science', 'Commerce', 'Arts'];
-const categories = ['All', 'Notes', 'PYQ', 'Syllabus'];
-const subjects = ['All', 'Physics', 'Chemistry', 'Mathematics', 'Biology', 'History', 'Computer Science'];
+const allStreams = ['All', 'Science', 'MHT-CET', 'NEET', 'Commerce'];
+const scienceClasses = ['All', '9', '10', '11', '12'];
+const commerceClasses = ['All', '11', '12'];
+const allSubjects = [
+    'Physics', 'Chemistry', 'Maths', 'Biology',
+    'Accountancy', 'Business Studies', 'Economics',
+    'History', 'Geography', 'Political Science', 'Sociology'
+];
+const allCategories = ['Notes', 'Previous Year Questions', 'Syllabus'];
 
 export default function DownloadsPage() {
   const [resources, setResources] = useState<Resource[]>([]);
@@ -36,10 +43,10 @@ export default function DownloadsPage() {
   const [saving, setSaving] = useState<string | null>(null);
   const [watchlistIds, setWatchlistIds] = useState<Set<string>>(new Set());
 
-  const [selectedClass, setSelectedClass] = useState('All');
   const [selectedStream, setSelectedStream] = useState('All');
-  const [selectedCategory, setSelectedCategory] = useState('All');
-  const [selectedSubject, setSelectedSubject] = useState('All');
+  const [selectedClass, setSelectedClass] = useState('All');
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedSubjects, setSelectedSubjects] = useState<string[]>([]);
 
   const fetchInitialData = useCallback(async () => {
     try {
@@ -113,13 +120,13 @@ export default function DownloadsPage() {
 
   const filteredResources = useMemo(() => {
     return resources.filter(resource => {
-      const classMatch = selectedClass === 'All' || resource.class === selectedClass;
-      const streamMatch = selectedStream === 'All' || resource.stream === 'All' || resource.stream === selectedStream;
-      const categoryMatch = selectedCategory === 'All' || resource.category === 'All' || resource.category === selectedCategory;
-      const subjectMatch = selectedSubject === 'All' || resource.subject === 'All' || resource.subject === selectedSubject;
-      return classMatch && streamMatch && categoryMatch && subjectMatch;
+      const streamMatch = selectedStream === 'All' || resource.stream === selectedStream;
+      const classMatch = selectedClass === 'All' || !resource.class || resource.class === selectedClass;
+      const categoryMatch = selectedCategories.length === 0 || resource.category.some(c => selectedCategories.includes(c));
+      const subjectMatch = selectedSubjects.length === 0 || resource.subject.some(s => selectedSubjects.includes(s));
+      return streamMatch && classMatch && categoryMatch && subjectMatch;
     });
-  }, [resources, selectedClass, selectedStream, selectedCategory, selectedSubject]);
+  }, [resources, selectedStream, selectedClass, selectedCategories, selectedSubjects]);
 
   const getPreviewUrl = (resource: Resource) => {
     return resource.pdfUrl || '#';
@@ -128,6 +135,20 @@ export default function DownloadsPage() {
   const getDownloadUrl = (resource: Resource) => {
     return resource.pdfUrl || '#';
   };
+  
+  const handleStreamChange = (value: string) => {
+    setSelectedStream(value);
+    setSelectedClass('All');
+  }
+
+  const getClassOptions = () => {
+    if (selectedStream === 'Science') return scienceClasses;
+    if (selectedStream === 'Commerce') return commerceClasses;
+    return [];
+  }
+
+  const showClassFilter = selectedStream === 'Science' || selectedStream === 'Commerce';
+
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -146,52 +167,68 @@ export default function DownloadsPage() {
                 <CardTitle className="text-xl">Select Your Criteria</CardTitle>
                 <CardDescription>Narrow down the study materials to find exactly what you need.</CardDescription>
             </CardHeader>
-            <CardContent>
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-                    <Select onValueChange={setSelectedClass} value={selectedClass}>
-                        <SelectTrigger>
-                            <SelectValue placeholder="Select Class" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectGroup>
-                                <SelectItem value="All">All Classes</SelectItem>
-                                {classes.filter(c => c !== 'All').map(c => <SelectItem key={c} value={c}>Class {c.replace('class','')}</SelectItem>)}
-                            </SelectGroup>
-                        </SelectContent>
-                    </Select>
-                    <Select onValueChange={setSelectedStream} value={selectedStream}>
+            <CardContent className='space-y-6'>
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                    <Select onValueChange={handleStreamChange} value={selectedStream}>
                         <SelectTrigger>
                             <SelectValue placeholder="Select Stream" />
                         </SelectTrigger>
                         <SelectContent>
                             <SelectGroup>
-                                 <SelectItem value="All">All Streams</SelectItem>
-                                {streams.filter(s => s !== 'All').map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+                                {allStreams.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
                             </SelectGroup>
                         </SelectContent>
                     </Select>
-                    <Select onValueChange={setSelectedCategory} value={selectedCategory}>
-                        <SelectTrigger>
-                            <SelectValue placeholder="Select Category" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectGroup>
-                                <SelectItem value="All">All Categories</SelectItem>
-                                {categories.filter(c => c !== 'All').map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
-                            </SelectGroup>
-                        </SelectContent>
-                    </Select>
-                    <Select onValueChange={setSelectedSubject} value={selectedSubject}>
-                        <SelectTrigger>
-                            <SelectValue placeholder="Select Subject" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectGroup>
-                                 <SelectItem value="All">All Subjects</SelectItem>
-                                {subjects.filter(s => s !== 'All').map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
-                            </SelectGroup>
-                        </SelectContent>
-                    </Select>
+                    {showClassFilter && (
+                      <Select onValueChange={setSelectedClass} value={selectedClass}>
+                          <SelectTrigger>
+                              <SelectValue placeholder="Select Class" />
+                          </SelectTrigger>
+                          <SelectContent>
+                              <SelectGroup>
+                                  {getClassOptions().map(c => <SelectItem key={c} value={c}>{c === 'All' ? 'All Classes' : `Class ${c}`}</SelectItem>)}
+                              </SelectGroup>
+                          </SelectContent>
+                      </Select>
+                    )}
+                </div>
+                <div>
+                  <Label className='text-base font-medium'>Categories</Label>
+                  <div className='flex flex-wrap gap-x-4 gap-y-2 pt-2'>
+                    {allCategories.map(category => (
+                      <div key={category} className='flex items-center space-x-2'>
+                          <Checkbox
+                              id={`category-${category}`}
+                              checked={selectedCategories.includes(category)}
+                              onCheckedChange={(checked) => {
+                                  setSelectedCategories(prev => 
+                                      checked ? [...prev, category] : prev.filter(c => c !== category)
+                                  );
+                              }}
+                          />
+                          <Label htmlFor={`category-${category}`} className='font-normal'>{category}</Label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                 <div>
+                  <Label className='text-base font-medium'>Subjects</Label>
+                  <div className='flex flex-wrap gap-x-4 gap-y-2 pt-2'>
+                    {allSubjects.map(subject => (
+                      <div key={subject} className='flex items-center space-x-2'>
+                          <Checkbox
+                              id={`subject-${subject}`}
+                              checked={selectedSubjects.includes(subject)}
+                              onCheckedChange={(checked) => {
+                                  setSelectedSubjects(prev => 
+                                      checked ? [...prev, subject] : prev.filter(s => s !== subject)
+                                  );
+                              }}
+                          />
+                          <Label htmlFor={`subject-${subject}`} className='font-normal'>{subject}</Label>
+                      </div>
+                    ))}
+                  </div>
                 </div>
             </CardContent>
           </Card>
@@ -235,16 +272,18 @@ export default function DownloadsPage() {
                       </CardTitle>
                       <CardDescription asChild>
                         <div className="flex flex-wrap gap-2 pt-2">
-                          <Badge variant="secondary">Class {resource.class.replace('class','')}</Badge>
-                          {resource.stream && resource.stream !== 'All' && <Badge variant="outline">{resource.stream}</Badge>}
-                          {resource.subject && <Badge variant="default">{resource.subject}</Badge>}
+                          {resource.class && <Badge variant="secondary">Class {resource.class}</Badge>}
+                          {resource.stream && <Badge variant="outline">{resource.stream}</Badge>}
+                          <div className='flex flex-wrap gap-1 mt-1'>
+                             {resource.subject.map(s => <Badge key={s} variant="default">{s}</Badge>)}
+                          </div>
                         </div>
                       </CardDescription>
                     </CardHeader>
                     <CardContent className="flex-grow">
                       <p className='text-sm text-muted-foreground'>{resource.description}</p>
                       <div className="flex flex-wrap gap-1 mt-2">
-                          {resource.category && resource.category !== 'All' && <Badge variant="secondary">{resource.category}</Badge>}
+                          {resource.category.map(c => <Badge key={c} variant="secondary">{c}</Badge>)}
                       </div>
                     </CardContent>
                     <CardFooter className="flex items-center justify-between">
