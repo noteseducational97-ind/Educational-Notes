@@ -156,7 +156,7 @@ export default function SignUpForm() {
                 <FormControl>
                   <div className="relative">
                     <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input placeholder="name@example.com" {...field} className="pl-10" />
+                    <Input placeholder="email@gmail.com" {...field} className="pl-10" />
                   </div>
                 </FormControl>
                 <FormMessage />
