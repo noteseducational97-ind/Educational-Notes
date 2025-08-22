@@ -200,12 +200,12 @@ export default function SavePage() {
                            </Link>
                         </Button>
                         {user && (
-                          <Button asChild size="sm" variant="link" disabled={isLinkDisabled(resource)}>
+                          <Button asChild size="sm" disabled={isLinkDisabled(resource)}>
                             <Link
                             href={getDownloadUrl(resource)}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="group inline-flex items-center gap-1 text-primary text-sm font-medium hover:underline"
+                            className="group inline-flex items-center gap-1"
                             >
                             <Download className="h-4 w-4" />
                             Download
