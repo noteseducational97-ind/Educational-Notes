@@ -15,14 +15,6 @@ const FormSchema = z.object({
   stream: z.array(z.string()).nonempty({ message: 'Select at least one stream.' }),
   imageUrl: z.string().url('Please enter a valid image URL.'),
   pdfUrl: z.string().url('PDF URL is required.'),
-}).refine(data => {
-  if (data.stream.includes('Science') || data.stream.includes('Commerce')) {
-    return !!data.class;
-  }
-  return true;
-}, {
-  message: "Class is required for the selected stream(s).",
-  path: ["class"],
 });
 
 

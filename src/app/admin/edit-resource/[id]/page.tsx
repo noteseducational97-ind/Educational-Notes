@@ -35,19 +35,10 @@ const FormSchema = z.object({
   subject: z.array(z.string()).nonempty({ message: 'Select at least one subject.' }),
   imageUrl: z.string().url('Please enter a valid image URL.'),
   pdfUrl: z.string().url('PDF URL is required.'),
-}).refine(data => {
-  if (data.stream.includes('Science') || data.stream.includes('Commerce')) {
-    return !!data.class;
-  }
-  return true;
-}, {
-  message: "Class is required for the selected stream(s).",
-  path: ["class"],
 });
 
 const allStreams = ['Science', 'MHT-CET', 'NEET', 'Commerce'];
-const scienceClasses = ['9', '10', '11', '12'];
-const commerceClasses = ['11', '12'];
+const allclasses = ['9', '10', '11', '12'];
 const allSubjects = [
     'Physics', 'Chemistry', 'Maths', 'Biology',
     'Accountancy', 'Business Studies', 'Economics',
@@ -81,15 +72,6 @@ export default function EditResourceAdminPage() {
       subject: [],
     },
   });
-  
-  const selectedStreams = form.watch('stream');
-  
-  useEffect(() => {
-    const requiresClass = selectedStreams.some(s => ['Science', 'Commerce'].includes(s));
-    if (!requiresClass) {
-      form.setValue('class', undefined);
-    }
-  }, [selectedStreams, form]);
 
   useEffect(() => {
     if (!authLoading) {
@@ -150,13 +132,6 @@ export default function EditResourceAdminPage() {
   if (authLoading || !isAdmin || loadingResource) {
     return <LoadingSpinner />;
   }
-
-  const getClassOptions = () => {
-    return [...new Set([...scienceClasses, ...commerceClasses])];
-  }
-
-  const showClassField = selectedStreams.some(s => ['Science', 'Commerce'].includes(s));
-
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -229,63 +204,63 @@ export default function EditResourceAdminPage() {
                       )}
                     />
                     
-                    {showClassField && (
-                        <FormField
-                          control={form.control}
-                          name="class"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Class</FormLabel>
-                              <Select onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
-                                <FormControl>
-                                  <SelectTrigger>
-                                    <SelectValue placeholder="Select a class" />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                    {getClassOptions().map(c => <SelectItem key={c} value={c}>Class {c}</SelectItem>)}
-                                </SelectContent>
-                              </Select>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                    )}
-                  </div>
-                  
-                  <FormField
-                    control={form.control}
-                    name="category"
-                    render={({ field }) => (
-                       <FormItem>
-                            <FormLabel>Category</FormLabel>
-                            <MultiSelect
-                                options={categories.map(c => ({ value: c, label: c }))}
-                                onValueChange={field.onChange}
-                                defaultValue={field.value}
-                                placeholder="Select categories..."
-                            />
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                  />
-
-                  <FormField
+                    <FormField
                       control={form.control}
-                      name="subject"
+                      name="class"
                       render={({ field }) => (
-                         <FormItem>
-                            <FormLabel>Subject</FormLabel>
-                             <MultiSelect
-                                options={allSubjects.map(s => ({ value: s, label: s }))}
-                                onValue-change={field.onChange}
-                                defaultValue={field.value}
-                                placeholder="Select subjects..."
-                            />
-                            <FormMessage />
+                        <FormItem>
+                          <FormLabel>Class</FormLabel>
+                          <Select onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select a class" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                                {allclasses.map(c => <SelectItem key={c} value={c}>Class {c}</SelectItem>)}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
                         </FormItem>
                       )}
-                  />
+                    />
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <FormField
+                      control={form.control}
+                      name="category"
+                      render={({ field }) => (
+                        <FormItem>
+                              <FormLabel>Category</FormLabel>
+                              <MultiSelect
+                                  options={categories.map(c => ({ value: c, label: c }))}
+                                  onValueChange={field.onChange}
+                                  defaultValue={field.value}
+                                  placeholder="Select categories..."
+                              />
+                              <FormMessage />
+                          </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                        control={form.control}
+                        name="subject"
+                        render={({ field }) => (
+                          <FormItem>
+                              <FormLabel>Subject</FormLabel>
+                              <MultiSelect
+                                  options={allSubjects.map(s => ({ value: s, label: s }))}
+                                  onValueChange={field.onChange}
+                                  defaultValue={field.value}
+                                  placeholder="Select subjects..."
+                              />
+                              <FormMessage />
+                          </FormItem>
+                        )}
+                    />
+                  </div>
                   
                   <FormField control={form.control} name="imageUrl" render={({ field }) => (
                       <FormItem>
@@ -321,5 +296,3 @@ export default function EditResourceAdminPage() {
     </div>
   );
 }
-
-    

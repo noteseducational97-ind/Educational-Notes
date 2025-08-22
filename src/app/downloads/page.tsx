@@ -26,8 +26,7 @@ import { Label } from '@/components/ui/label';
 import { MultiSelect } from '@/components/ui/multi-select';
 
 const allStreams = ['Science', 'MHT-CET', 'NEET', 'Commerce'];
-const scienceClasses = ['All', '9', '10', '11', '12'];
-const commerceClasses = ['All', '11', '12'];
+const allclasses = ['All', '9', '10', '11', '12'];
 const allSubjects = [
     'Physics', 'Chemistry', 'Maths', 'Biology',
     'Accountancy', 'Business Studies', 'Economics',
@@ -135,29 +134,6 @@ export default function DownloadsPage() {
   const getDownloadUrl = (resource: Resource) => {
     return resource.pdfUrl || '#';
   };
-  
-  const showClassFilter = useMemo(() => {
-    return selectedStreams.some(s => ['Science', 'Commerce'].includes(s));
-  }, [selectedStreams]);
-
-  useEffect(() => {
-    if (!showClassFilter) {
-      setSelectedClass('All');
-    }
-  }, [showClassFilter]);
-
-
-  const getClassOptions = () => {
-    const options = new Set<string>(['All']);
-    if (selectedStreams.includes('Science')) {
-        scienceClasses.forEach(c => options.add(c));
-    }
-    if (selectedStreams.includes('Commerce')) {
-        commerceClasses.forEach(c => options.add(c));
-    }
-    return Array.from(options);
-  };
-
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -188,41 +164,41 @@ export default function DownloadsPage() {
                             className="mt-2"
                         />
                     </div>
-                    {showClassFilter && (
-                      <div>
-                        <Label className='text-base font-medium'>Class</Label>
-                        <Select onValueChange={setSelectedClass} value={selectedClass}>
-                          <SelectTrigger className='mt-2'>
-                              <SelectValue placeholder="Select Class" />
-                          </SelectTrigger>
-                          <SelectContent>
-                              <SelectGroup>
-                                  {getClassOptions().map(c => <SelectItem key={c} value={c}>{c === 'All' ? 'All Classes' : `Class ${c}`}</SelectItem>)}
-                              </SelectGroup>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    )}
+                    <div>
+                      <Label className='text-base font-medium'>Class</Label>
+                      <Select onValueChange={setSelectedClass} value={selectedClass}>
+                        <SelectTrigger className='mt-2'>
+                            <SelectValue placeholder="Select Class" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectGroup>
+                                {allclasses.map(c => <SelectItem key={c} value={c}>{c === 'All' ? 'All Classes' : `Class ${c}`}</SelectItem>)}
+                            </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    </div>
                 </div>
-                <div>
-                  <Label className='text-base font-medium'>Categories</Label>
-                  <MultiSelect
-                    options={allCategories.map(c => ({ value: c, label: c }))}
-                    onValueChange={setSelectedCategories}
-                    defaultValue={selectedCategories}
-                    placeholder="Filter categories..."
-                    className="mt-2"
-                  />
-                </div>
-                 <div>
-                  <Label className='text-base font-medium'>Subjects</Label>
-                   <MultiSelect
-                    options={allSubjects.map(s => ({ value: s, label: s }))}
-                    onValueChange={setSelectedSubjects}
-                    defaultValue={selectedSubjects}
-                    placeholder="Filter subjects..."
-                    className="mt-2"
-                  />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <Label className='text-base font-medium'>Categories</Label>
+                    <MultiSelect
+                      options={allCategories.map(c => ({ value: c, label: c }))}
+                      onValueChange={setSelectedCategories}
+                      defaultValue={selectedCategories}
+                      placeholder="Filter categories..."
+                      className="mt-2"
+                    />
+                  </div>
+                  <div>
+                    <Label className='text-base font-medium'>Subjects</Label>
+                    <MultiSelect
+                      options={allSubjects.map(s => ({ value: s, label: s }))}
+                      onValueChange={setSelectedSubjects}
+                      defaultValue={selectedSubjects}
+                      placeholder="Filter subjects..."
+                      className="mt-2"
+                    />
+                  </div>
                 </div>
             </CardContent>
           </Card>
@@ -321,5 +297,3 @@ export default function DownloadsPage() {
     </div>
   );
 }
-
-    
