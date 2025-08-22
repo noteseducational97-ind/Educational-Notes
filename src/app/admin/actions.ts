@@ -13,8 +13,25 @@ const FormSchema = z.object({
   subject: z.array(z.string()).nonempty({ message: 'Select at least one subject.' }),
   class: z.string().optional(),
   stream: z.array(z.string()).nonempty({ message: 'Select at least one stream.' }),
-  imageUrl: z.string().url('Please enter a valid image URL.'),
-  pdfUrl: z.string().url('PDF URL is required.'),
+  imageUrl: z.string(),
+  pdfUrl: z.string(),
+  isComingSoon: z.boolean().default(false),
+}).refine(data => {
+    if (!data.isComingSoon) {
+        return z.string().url('Please enter a valid image URL.').safeParse(data.imageUrl).success;
+    }
+    return true;
+}, {
+    message: 'Image URL is required when not "Coming Soon".',
+    path: ['imageUrl'],
+}).refine(data => {
+    if (!data.isComingSoon) {
+        return z.string().url('PDF URL is required.').safeParse(data.pdfUrl).success;
+    }
+    return true;
+}, {
+    message: 'PDF URL is required when not "Coming Soon".',
+    path: ['pdfUrl'],
 });
 
 
@@ -34,6 +51,7 @@ export async function addResourceAction(data: AddResourceInput) {
     return {
       success: false,
       error: 'Invalid fields. Please check the form and try again.',
+      errors: validatedFields.error.flatten().fieldErrors,
     };
   }
 
@@ -76,6 +94,7 @@ export async function updateResourceAction(id: string, data: AddResourceInput) {
     return {
       success: false,
       error: 'Invalid fields. Please check the form and try again.',
+      errors: validatedFields.error.flatten().fieldErrors,
     };
   }
 

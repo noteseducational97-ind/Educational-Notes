@@ -58,6 +58,7 @@ export async function getResources(): Promise<Resource[]> {
                 imageUrl: data.imageUrl,
                 pdfUrl: data.pdfUrl,
                 createdAt: createdAt,
+                isComingSoon: data.isComingSoon || false,
             } as Resource;
         });
     } catch (error) {
@@ -106,6 +107,7 @@ export async function getResourceById(id: string): Promise<Resource | null> {
             imageUrl: data.imageUrl,
             pdfUrl: data.pdfUrl,
             createdAt: timestamp,
+            isComingSoon: data.isComingSoon || false,
         };
 
         return resource;

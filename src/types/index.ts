@@ -11,4 +11,5 @@ export type Resource = {
   imageUrl: string;
   pdfUrl: string;
   createdAt: string; // Should be an ISO string
+  isComingSoon?: boolean;
 };

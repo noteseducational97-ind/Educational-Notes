@@ -24,6 +24,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Loader2, ArrowLeft, Save } from 'lucide-react';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { MultiSelect } from '@/components/ui/multi-select';
+import { Checkbox } from '@/components/ui/checkbox';
 
 const FormSchema = z.object({
   title: z.string().min(3, 'Title must be at least 3 characters.'),
@@ -33,8 +34,25 @@ const FormSchema = z.object({
   class: z.string().optional(),
   category: z.array(z.string()).nonempty({ message: 'Select at least one category.' }),
   subject: z.array(z.string()).nonempty({ message: 'Select at least one subject.' }),
-  imageUrl: z.string().url('Please enter a valid image URL.'),
-  pdfUrl: z.string().url('PDF URL is required.'),
+  imageUrl: z.string(),
+  pdfUrl: z.string(),
+  isComingSoon: z.boolean().default(false),
+}).refine(data => {
+    if (!data.isComingSoon) {
+        return z.string().url('Please enter a valid image URL.').safeParse(data.imageUrl).success;
+    }
+    return true;
+}, {
+    message: 'Image URL is required when not "Coming Soon".',
+    path: ['imageUrl'],
+}).refine(data => {
+    if (!data.isComingSoon) {
+        return z.string().url('PDF URL is required.').safeParse(data.pdfUrl).success;
+    }
+    return true;
+}, {
+    message: 'PDF URL is required when not "Coming Soon".',
+    path: ['pdfUrl'],
 });
 
 const allStreams = ['Science', 'MHT-CET', 'NEET', 'Commerce'];
@@ -70,8 +88,11 @@ export default function EditResourceAdminPage() {
       class: '',
       category: [],
       subject: [],
+      isComingSoon: false,
     },
   });
+
+  const isComingSoon = form.watch('isComingSoon');
 
   useEffect(() => {
     if (!authLoading) {
@@ -89,7 +110,10 @@ export default function EditResourceAdminPage() {
       const fetchedResource = await getResourceById(resourceId);
       if (fetchedResource) {
         setResource(fetchedResource);
-        form.reset(fetchedResource);
+        form.reset({
+          ...fetchedResource,
+          isComingSoon: fetchedResource.isComingSoon ?? false
+        });
       } else {
         toast({ variant: 'destructive', title: 'Resource not found' });
         router.push('/admin');
@@ -203,7 +227,6 @@ export default function EditResourceAdminPage() {
                         </FormItem>
                       )}
                     />
-                    
                     <FormField
                       control={form.control}
                       name="class"
@@ -225,7 +248,6 @@ export default function EditResourceAdminPage() {
                       )}
                     />
                   </div>
-                  
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <FormField
                       control={form.control}
@@ -243,7 +265,6 @@ export default function EditResourceAdminPage() {
                           </FormItem>
                       )}
                     />
-
                     <FormField
                         control={form.control}
                         name="subject"
@@ -261,11 +282,30 @@ export default function EditResourceAdminPage() {
                         )}
                     />
                   </div>
-                  
+                  <FormField
+                    control={form.control}
+                    name="isComingSoon"
+                    render={({ field }) => (
+                        <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                            <FormControl>
+                                <Checkbox
+                                    checked={field.value}
+                                    onCheckedChange={field.onChange}
+                                />
+                            </FormControl>
+                            <div className="space-y-1 leading-none">
+                                <FormLabel>
+                                    Coming Soon
+                                </FormLabel>
+                                <FormMessage />
+                            </div>
+                        </FormItem>
+                    )}
+                    />
                   <FormField control={form.control} name="imageUrl" render={({ field }) => (
                       <FormItem>
                         <FormLabel>Image URL</FormLabel>
-                        <FormControl><Input placeholder="https://example.com/image.png" {...field} /></FormControl>
+                        <FormControl><Input placeholder="https://example.com/image.png" {...field} disabled={isComingSoon} /></FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -273,7 +313,7 @@ export default function EditResourceAdminPage() {
                   <FormField control={form.control} name="pdfUrl" render={({ field }) => (
                       <FormItem>
                         <FormLabel>PDF URL</FormLabel>
-                        <FormControl><Input placeholder="https://example.com/preview.pdf" {...field} /></FormControl>
+                        <FormControl><Input placeholder="https://example.com/preview.pdf" {...field} disabled={isComingSoon} /></FormControl>
                         <FormMessage />
                       </FormItem>
                     )}

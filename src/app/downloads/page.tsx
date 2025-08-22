@@ -5,7 +5,7 @@ import Header from '@/components/layout/Header';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { getResources, Resource, addToWatchlist, removeFromWatchlist, getWatchlist } from '@/lib/firebase/resources';
 import { format } from 'date-fns';
-import { ArrowUpRight, Download, BookOpen, Bookmark, BookmarkCheck } from 'lucide-react';
+import { ArrowUpRight, Download, BookOpen, Bookmark, BookmarkCheck, Clock } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState, useMemo, useCallback } from 'react';
 import {
@@ -128,12 +128,15 @@ export default function DownloadsPage() {
   }, [resources, selectedStreams, selectedClass, selectedCategories, selectedSubjects]);
 
   const getPreviewUrl = (resource: Resource) => {
-    return resource.pdfUrl || '#';
+    return resource.isComingSoon ? '#' : resource.pdfUrl || '#';
   };
 
   const getDownloadUrl = (resource: Resource) => {
-    return resource.pdfUrl || '#';
+    return resource.isComingSoon ? '#' : resource.pdfUrl || '#';
   };
+  
+  const isLinkDisabled = (resource: Resource) => resource.isComingSoon || !resource.pdfUrl;
+
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -209,22 +212,27 @@ export default function DownloadsPage() {
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
               {filteredResources.map((resource: Resource) => {
                 const isSaved = watchlistIds.has(resource.id);
+                const disabled = isLinkDisabled(resource);
                 return (
                   <Card key={resource.id} className="flex flex-col hover:border-primary/50 transition-colors duration-300 overflow-hidden">
                     <Link
                       href={getPreviewUrl(resource)}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group block"
+                      className={cn("group block", disabled && "pointer-events-none cursor-not-allowed")}
                     >
                       <div className="relative aspect-video">
                           <Image 
-                              src={resource.imageUrl || 'https://placehold.co/600x400.png'}
+                              src={resource.isComingSoon ? 'https://placehold.co/600x400.png' : resource.imageUrl || 'https://placehold.co/600x400.png'}
                               alt={resource.title}
                               fill
-                              className="object-cover group-hover:scale-105 transition-transform duration-300"
-                          />
+                              className={cn("object-cover group-hover:scale-105 transition-transform duration-300", disabled && "filter grayscale")}/>
                           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                          {resource.isComingSoon && (
+                            <div className="absolute inset-0 flex items-center justify-center">
+                                <Badge variant="secondary" className="text-lg py-2 px-4"><Clock className="mr-2 h-5 w-5" />Coming Soon</Badge>
+                            </div>
+                          )}
                       </div>
                     </Link>
                     <CardHeader>
@@ -233,11 +241,11 @@ export default function DownloadsPage() {
                           href={getPreviewUrl(resource)}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="group inline-flex items-center gap-2 hover:text-primary transition-colors"
+                          className={cn("group inline-flex items-center gap-2 hover:text-primary transition-colors", disabled && "pointer-events-none text-muted-foreground")}
                         >
                           <BookOpen className="h-5 w-5 text-primary/80" />
                           {resource.title}
-                          <ArrowUpRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+                           {!disabled && <ArrowUpRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />}
                         </Link>
                       </CardTitle>
                       <CardDescription asChild>
@@ -269,15 +277,17 @@ export default function DownloadsPage() {
                                   {isSaved ? 'Saved' : 'Save'}
                               </Button>
                           )}
-                          <Link
-                          href={getDownloadUrl(resource)}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="group inline-flex items-center gap-1 text-primary text-sm font-medium hover:underline"
-                          >
-                          <Download className="h-4 w-4" />
-                          Download
-                          </Link>
+                          <Button asChild size="sm" variant="link" disabled={disabled}>
+                            <Link
+                                href={getDownloadUrl(resource)}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="group inline-flex items-center gap-1 text-primary text-sm font-medium hover:underline"
+                            >
+                            <Download className="h-4 w-4" />
+                            Download
+                            </Link>
+                          </Button>
                       </div>
                     </CardFooter>
                   </Card>
