@@ -9,6 +9,7 @@ import { generateTest } from '@/ai/flows/test-maker-flow';
 import type { Resource } from '@/types';
 import { useAuth } from '@/hooks/use-auth';
 import { useRouter } from 'next/navigation';
+import jsPDF from 'jspdf';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -50,15 +51,21 @@ export default function TestMakerButton({ resource, disabled = false }: TestMake
         content: resource.content,
       });
       
-      const blob = new Blob([result.testContent], { type: 'text/plain' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `${resource.title.replace(/ /g, '_')}_Test.txt`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+      const doc = new jsPDF();
+      
+      // Add content to the PDF
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(16);
+      doc.text(`Test for: ${resource.title}`, 10, 20);
+      
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(12);
+      
+      // Split the text into lines to handle wrapping
+      const splitText = doc.splitTextToSize(result.testContent, 180);
+      doc.text(splitText, 10, 30);
+      
+      doc.save(`${resource.title.replace(/ /g, '_')}_Test.pdf`);
       
       toast({
         title: 'Success!',
@@ -111,4 +118,3 @@ export default function TestMakerButton({ resource, disabled = false }: TestMake
     </>
   );
 }
-
