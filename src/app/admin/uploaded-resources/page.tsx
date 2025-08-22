@@ -99,7 +99,7 @@ export default function UploadedResourcesPage() {
             <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2"><BookCopy /> All Resources</CardTitle>
-                  <CardDescription>View, edit, or delete any published resource.</CardDescription>
+                  <CardDescription>View, edit, or delete any published resource. Public resources are visible to all users, while private resources are only visible to admins.</CardDescription>
                 </CardHeader>
                 <CardContent>
                   {loadingData ? (
