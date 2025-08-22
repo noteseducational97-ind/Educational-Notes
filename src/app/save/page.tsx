@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import Header from '@/components/layout/Header';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { getWatchlist, Resource, removeFromWatchlist } from '@/lib/firebase/resources';
@@ -17,8 +17,8 @@ import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 
 export default function SavePage() {
-  const { user, loading: authLoading } = useAuth();
-  const [watchlist, setWatchlist] = useState<Resource[]>([]);
+  const { user, isAdmin, loading: authLoading } = useAuth();
+  const [allWatchlistItems, setAllWatchlistItems] = useState<Resource[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const { toast } = useToast();
@@ -33,7 +33,7 @@ export default function SavePage() {
           try {
             setLoading(true);
             const items = await getWatchlist(user.uid);
-            setWatchlist(items);
+            setAllWatchlistItems(items);
           } catch (error) {
             console.error('Failed to fetch watchlist', error);
           } finally {
@@ -44,13 +44,21 @@ export default function SavePage() {
       }
     }
   }, [user, authLoading, router]);
+  
+  const watchlist = useMemo(() => {
+    if (isAdmin) {
+      return allWatchlistItems;
+    }
+    return allWatchlistItems.filter(item => item.visibility === 'public');
+  }, [allWatchlistItems, isAdmin]);
+
 
   const handleRemoveFromWatchlist = async (resourceId: string, resourceTitle: string) => {
     if (!user) return;
     setRemoving(resourceId);
     try {
       await removeFromWatchlist(user.uid, resourceId);
-      setWatchlist((prev) => prev.filter((item) => item.id !== resourceId));
+      setAllWatchlistItems((prev) => prev.filter((item) => item.id !== resourceId));
       toast({
         title: 'Removed',
         description: `"${resourceTitle}" has been removed from your watchlist.`,
@@ -89,7 +97,7 @@ export default function SavePage() {
           <div className="mb-8">
             <h1 className="text-4xl font-bold text-foreground tracking-tight">My Watchlist</h1>
             <p className="mt-2 text-muted-foreground">
-              Your curated collection of saved resources. Only public resources are shown here.
+              {isAdmin ? "Your curated collection of saved resources." : "Your curated collection of saved resources. Only public resources are shown here."}
             </p>
           </div>
 

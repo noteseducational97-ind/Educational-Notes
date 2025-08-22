@@ -1,4 +1,5 @@
 
+
 'use server';
 
 import { db } from '@/lib/firebase/server'; // Use server-side db
@@ -162,17 +163,13 @@ export async function getWatchlist(userId: string): Promise<Resource[]> {
         if (resourceIds.length === 0) {
             return [];
         }
-        
-        const publicResourceIds = (await db.collection('resources').where(FieldPath.documentId(), 'in', resourceIds).where('visibility', '==', 'public').get()).docs.map(doc => doc.id);
-        
-        if (publicResourceIds.length === 0) return [];
-
 
         const allResources: Resource[] = [];
-        // Firestore 'in' queries are limited to 30 items. Batch the requests.
         const batchSize = 30;
-        for (let i = 0; i < publicResourceIds.length; i += batchSize) {
-            const batchIds = publicResourceIds.slice(i, i + batchSize);
+        for (let i = 0; i < resourceIds.length; i += batchSize) {
+            const batchIds = resourceIds.slice(i, i + batchSize);
+            if (batchIds.length === 0) continue;
+
             const resourcesSnapshot = await db.collection('resources').where(FieldPath.documentId(), 'in', batchIds).get();
             const resourcesById = new Map(resourcesSnapshot.docs.map(doc => [doc.id, doc.data()]));
             
@@ -202,7 +199,6 @@ export async function getWatchlist(userId: string): Promise<Resource[]> {
             allResources.push(...batchResources);
         }
 
-        // We need to sort the final list because the batches are not ordered relative to each other.
         const savedOrder = new Map(snapshot.docs.map((doc, index) => [doc.id, index]));
         allResources.sort((a, b) => (savedOrder.get(a.id) ?? 0) - (savedOrder.get(b.id) ?? 0));
         
