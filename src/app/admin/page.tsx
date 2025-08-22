@@ -160,6 +160,7 @@ export default function AdminPage() {
                   <Table>
                     <TableHeader>
                       <TableRow>
+                        <TableHead>Sr. No.</TableHead>
                         <TableHead>User</TableHead>
                         <TableHead>Email</TableHead>
                         <TableHead>Status</TableHead>
@@ -167,8 +168,9 @@ export default function AdminPage() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {users.map((u) => (
+                      {users.map((u, index) => (
                         <TableRow key={u.uid}>
+                          <TableCell>{index + 1}</TableCell>
                           <TableCell>
                             <div className="flex items-center gap-3">
                               <Avatar>
