@@ -16,22 +16,23 @@ const FormSchema = z.object({
   imageUrl: z.string().optional(),
   pdfUrl: z.string().optional(),
   isComingSoon: z.boolean().default(false),
-}).refine(data => {
+}).superRefine((data, ctx) => {
     if (!data.isComingSoon) {
-        return z.string().url("Please enter a valid image URL.").safeParse(data.imageUrl).success;
+        if (!data.imageUrl || !z.string().url().safeParse(data.imageUrl).success) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: 'Image URL is required and must be a valid URL when resource is not "Coming Soon".',
+                path: ['imageUrl'],
+            });
+        }
+        if (!data.pdfUrl || !z.string().url().safeParse(data.pdfUrl).success) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: 'PDF URL is required and must be a valid URL when resource is not "Coming Soon".',
+                path: ['pdfUrl'],
+            });
+        }
     }
-    return true;
-}, {
-    message: 'Image URL is required and must be a valid URL when resource is not "Coming Soon".',
-    path: ['imageUrl'],
-}).refine(data => {
-    if (!data.isComingSoon) {
-        return z.string().url('Please enter a valid PDF URL.').safeParse(data.pdfUrl).success;
-    }
-    return true;
-}, {
-    message: 'PDF URL is required and must be a valid URL when resource is not "Coming Soon".',
-    path: ['pdfUrl'],
 });
 
 
