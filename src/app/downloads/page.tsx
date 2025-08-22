@@ -122,21 +122,14 @@ export default function DownloadsPage() {
 
   const filteredResources = useMemo(() => {
     return resources.filter(resource => {
-      if (resource.isComingSoon) {
-        return false;
-      }
       const streamMatch = selectedStreams.length === 0 || resource.stream.some(s => selectedStreams.includes(s));
       const classMatch = selectedClass === 'All' || !resource.class || resource.class === selectedClass;
       const categoryMatch = selectedCategories.length === 0 || resource.category.some(c => selectedCategories.includes(c));
       const subjectMatch = selectedSubjects.length === 0 || resource.subject.some(s => selectedSubjects.includes(s));
       
-      if (!user && resource.visibility === 'private') {
-        return false;
-      }
-      
       return streamMatch && classMatch && categoryMatch && subjectMatch;
     });
-  }, [resources, selectedStreams, selectedClass, selectedCategories, selectedSubjects, user]);
+  }, [resources, selectedStreams, selectedClass, selectedCategories, selectedSubjects]);
 
   const getPreviewUrl = (resource: Resource) => {
     return resource.isComingSoon ? '#' : resource.viewPdfUrl || resource.pdfUrl || '#';
@@ -266,15 +259,15 @@ export default function DownloadsPage() {
                       </CardTitle>
                       <CardDescription asChild>
                         <div className="flex flex-wrap gap-2 pt-2">
-                          <div className='flex flex-wrap gap-1'>
-                             {resource.category.map(c => <Badge key={c} variant="secondary">{c}</Badge>)}
-                          </div>
                           {resource.class && <Badge variant="secondary">Class {resource.class}</Badge>}
                           <div className='flex flex-wrap gap-1'>
                              {resource.stream.map(s => <Badge key={s} variant="outline">{s}</Badge>)}
                           </div>
                           <div className='flex flex-wrap gap-1 mt-1'>
                              {resource.subject.map(s => <Badge key={s} variant="default">{s}</Badge>)}
+                          </div>
+                          <div className='flex flex-wrap gap-1'>
+                             {resource.category.map(c => <Badge key={c} variant="secondary">{c}</Badge>)}
                           </div>
                         </div>
                       </CardDescription>

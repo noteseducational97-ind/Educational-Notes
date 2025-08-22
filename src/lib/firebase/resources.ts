@@ -33,13 +33,12 @@ export async function addResource(resource: AddResourceData) {
   }
 }
 
-export async function getResources(options: { includePrivate?: boolean } = {}): Promise<Resource[]> {
+export async function getResources(options: { includePrivate?: boolean } = { includePrivate: false }): Promise<Resource[]> {
     try {
         let query: FirebaseFirestore.Query<FirebaseFirestore.DocumentData> = db.collection('resources');
         
         if (!options.includePrivate) {
-            // Default behavior for non-logged-in users: only public resources
-             query = query.where('visibility', 'in', ['public']);
+             query = query.where('visibility', '==', 'public');
         }
 
 
@@ -49,14 +48,24 @@ export async function getResources(options: { includePrivate?: boolean } = {}): 
             return [];
         }
 
-        return querySnapshot.docs.map(doc => {
+        const visibleResources = querySnapshot.docs.filter(doc => {
+            const data = doc.data();
+            if (data.isComingSoon) {
+                return false;
+            }
+            if (options.includePrivate) {
+                return true;
+            }
+            return data.visibility === 'public';
+        });
+
+        return visibleResources.map(doc => {
             const data = doc.data();
             const createdAt = (data.createdAt as Timestamp)?.toDate().toISOString() || new Date().toISOString();
 
             return {
                 id: doc.id,
                 title: data.title,
-                content: data.content,
                 category: data.category,
                 subject: data.subject,
                 class: data.class,
@@ -92,7 +101,6 @@ export async function getResourceById(id: string): Promise<Resource | null> {
         const resource: Resource = {
             id: docSnap.id,
             title: data.title,
-            content: data.content,
             category: data.category,
             subject: data.subject,
             class: data.class,
@@ -183,7 +191,6 @@ export async function getWatchlist(userId: string): Promise<Resource[]> {
                 return {
                     id: id,
                     title: resourceData.title,
-                    content: resourceData.content,
                     category: resourceData.category,
                     subject: resourceData.subject,
                     class: resourceData.class,
