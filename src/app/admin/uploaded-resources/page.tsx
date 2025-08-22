@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { PlusCircle, BookCopy, Edit, Trash2, ArrowLeft, Lock, Users } from 'lucide-react';
+import { PlusCircle, BookCopy, Edit, Trash2, ArrowLeft, Lock, Users, Clock } from 'lucide-react';
 import Link from 'next/link';
 import { getResources, Resource } from '@/lib/firebase/resources';
 import { deleteResourceAction } from '../actions';
@@ -41,7 +41,7 @@ export default function UploadedResourcesPage() {
       if (!user || !isAdmin) {
         router.push('/');
       } else {
-        getResources()
+        getResources({ isAdmin: true }) // Fetch all resources for admin
           .then(setResources)
           .finally(() => setLoadingData(false));
       }
@@ -125,6 +125,7 @@ export default function UploadedResourcesPage() {
                         <TableHeader>
                           <TableRow>
                             <TableHead>Title</TableHead>
+                            <TableHead>Status</TableHead>
                             <TableHead>Visibility</TableHead>
                             <TableHead>Category</TableHead>
                             <TableHead>Class</TableHead>
@@ -139,6 +140,13 @@ export default function UploadedResourcesPage() {
                             return (
                                <TableRow key={resource.id}>
                                   <TableCell className="font-medium">{resource.title}</TableCell>
+                                   <TableCell>
+                                    {resource.isComingSoon ? (
+                                        <Badge variant="outline"><Clock className="mr-1 h-3 w-3"/>Coming Soon</Badge>
+                                    ) : (
+                                        <Badge variant="secondary" className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 border-green-300 dark:border-green-700/50">Published</Badge>
+                                    )}
+                                  </TableCell>
                                   <TableCell>
                                     <Badge variant={resource.visibility === 'private' ? 'destructive' : 'secondary'} className={cn(resource.visibility === 'public' && 'bg-primary/20 border-primary/50 text-primary-foreground')}>
                                         {icon}

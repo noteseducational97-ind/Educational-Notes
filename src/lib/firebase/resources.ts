@@ -33,31 +33,39 @@ export async function addResource(resource: AddResourceData) {
   }
 }
 
-export async function getResources(options: { includePrivate?: boolean } = { includePrivate: false }): Promise<Resource[]> {
+export async function getResources(options: { includePrivate?: boolean, isAdmin?: boolean } = { includePrivate: false, isAdmin: false }): Promise<Resource[]> {
     try {
-        let query: FirebaseFirestore.Query<FirebaseFirestore.DocumentData> = db.collection('resources');
+        let query: FirebaseFirestore.Query<FirebaseFirestore.DocumentData> = db.collection('resources').orderBy('createdAt', 'desc');
         
-        if (!options.includePrivate) {
-             query = query.where('visibility', '==', 'public');
-        }
-
-
-        const querySnapshot = await query.orderBy('createdAt', 'desc').get();
+        const querySnapshot = await query.get();
         
         if (querySnapshot.empty) {
             return [];
         }
 
-        const visibleResources = querySnapshot.docs.filter(doc => {
-            const data = doc.data();
-            if (data.isComingSoon) {
+        const allDocs = querySnapshot.docs;
+        let visibleResources;
+
+        if (options.isAdmin) {
+            // Admins see everything
+            visibleResources = allDocs;
+        } else {
+            // Filter for public/logged-in users
+            visibleResources = allDocs.filter(doc => {
+                const data = doc.data();
+                if (data.isComingSoon) {
+                    return false; // Never show "coming soon" on public pages
+                }
+                if (data.visibility === 'public') {
+                    return true;
+                }
+                if (options.includePrivate && data.visibility === 'private') {
+                    return true; // Show private to logged-in users
+                }
                 return false;
-            }
-            if (options.includePrivate) {
-                return true;
-            }
-            return data.visibility === 'public';
-        });
+            });
+        }
+
 
         return visibleResources.map(doc => {
             const data = doc.data();
@@ -66,6 +74,7 @@ export async function getResources(options: { includePrivate?: boolean } = { inc
             return {
                 id: doc.id,
                 title: data.title,
+                content: data.content,
                 category: data.category,
                 subject: data.subject,
                 class: data.class,
@@ -101,6 +110,7 @@ export async function getResourceById(id: string): Promise<Resource | null> {
         const resource: Resource = {
             id: docSnap.id,
             title: data.title,
+            content: data.content,
             category: data.category,
             subject: data.subject,
             class: data.class,
@@ -191,6 +201,7 @@ export async function getWatchlist(userId: string): Promise<Resource[]> {
                 return {
                     id: id,
                     title: resourceData.title,
+                    content: resourceData.content,
                     category: resourceData.category,
                     subject: resourceData.subject,
                     class: resourceData.class,
@@ -210,7 +221,10 @@ export async function getWatchlist(userId: string): Promise<Resource[]> {
         const savedOrder = new Map(snapshot.docs.map((doc, index) => [doc.id, index]));
         allResources.sort((a, b) => (savedOrder.get(a.id) ?? 0) - (savedOrder.get(b.id) ?? 0));
         
-        return allResources;
+        // Final filter for watchlist: don't show "coming soon" items
+        const filteredWatchlist = allResources.filter(item => !item.isComingSoon);
+
+        return filteredWatchlist;
 
     } catch (error) {
         console.error("Error fetching watchlist: ", error);
