@@ -18,17 +18,21 @@ import React from 'react';
 import { EducationalNotesLogo } from '../icons/EducationalNotesLogo';
 import LoadingSpinner from '../shared/LoadingSpinner';
 
-const navLinks = [
+const baseNavLinks = [
   { href: '/', label: 'Home', icon: Home },
   { href: '/downloads', label: 'Downloads', icon: Download },
   { href: '/save', label: 'Watchlist', icon: Bookmark },
   { href: '/about', label: 'About', icon: Info },
 ];
 
+const adminLink = { href: '/admin', label: 'Admin', icon: Shield };
+
 export default function Header() {
   const pathname = usePathname();
   const router = useRouter();
   const { user, loading, isAdmin } = useAuth();
+
+  const navLinks = isAdmin ? [...baseNavLinks, adminLink] : baseNavLinks;
 
   const NavLink = ({ href, children }: { href: string; children: React.ReactNode }) => (
     <Link
@@ -65,19 +69,11 @@ export default function Header() {
             <span className="hidden font-bold sm:inline-block text-lg">Educational Notes</span>
           </Link>
           <nav className="hidden items-center space-x-6 text-sm md:flex">
-            {navLinks.map(({ href, label, icon: Icon }) => (
+            {navLinks.map(({ href, label }) => (
               <NavLink key={label} href={href}>
                 {label}
               </NavLink>
             ))}
-             {isAdmin && (
-                <NavLink href="/admin">
-                    <span className="flex items-center gap-1.5">
-                        <Shield className="h-4 w-4" />
-                        Admin
-                    </span>
-                </NavLink>
-            )}
           </nav>
           <div className="ml-auto flex items-center gap-4">
             {loading ? (
@@ -132,10 +128,6 @@ export default function Header() {
                       <>
                         {isAdmin && (
                           <>
-                            <MobileNavLink href="/admin">
-                              <Shield className="h-5 w-5" />
-                              Admin Dashboard
-                            </MobileNavLink>
                             <MobileNavLink href="/admin/uploaded-resources">
                               <BookCopy className="h-5 w-5" />
                               Uploaded Resources
