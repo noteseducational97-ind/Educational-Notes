@@ -281,7 +281,7 @@ export default function DownloadsPage() {
                           {resource.category.map(c => <Badge key={c} variant="secondary">{c}</Badge>)}
                       </div>
                     </CardContent>
-                    <CardFooter className="flex items-center justify-between">
+                    <CardFooter className="flex items-center justify-between mt-auto border-t pt-4">
                       <p className="text-xs text-muted-foreground">
                         Added on {format(new Date(resource.createdAt), 'PP')}
                       </p>

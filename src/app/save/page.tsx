@@ -83,7 +83,7 @@ export default function SavePage() {
     }
     // Regular logged-in users see everything in their watchlist
     if(user){
-        return watchlistItems;
+        return watchlistItems.filter(item => item.visibility !== 'private');
     }
     return [];
   }, [watchlistItems, isAdmin, user]);
@@ -163,7 +163,7 @@ export default function SavePage() {
                         {resource.category.map(c => <Badge key={c} variant="secondary">{c}</Badge>)}
                     </div>
                   </CardContent>
-                  <CardFooter className="flex items-center justify-between">
+                  <CardFooter className="flex items-center justify-between mt-auto border-t pt-4">
                      <Button
                         variant="ghost"
                         size="sm"
