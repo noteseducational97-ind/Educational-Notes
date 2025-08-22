@@ -29,9 +29,9 @@ export default function AboutPage() {
                     </div>
                     <div className="w-full aspect-video relative rounded-lg overflow-hidden">
                         <Image
-                            src="https://images.pexels.com/photos/256455/pexels-photo-256455.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-                            alt="Stack of educational books"
-                            data-ai-hint="books education"
+                            src="https://images.pexels.com/photos/4144144/pexels-photo-4144144.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+                            alt="Student studying at a desk"
+                            data-ai-hint="student study"
                             fill
                             className="object-cover"
                         />
