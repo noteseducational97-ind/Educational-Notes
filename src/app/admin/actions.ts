@@ -7,7 +7,7 @@ import { revalidatePath } from 'next/cache';
 
 const FormSchema = z.object({
   title: z.string().min(3, 'Title must be at least 3 characters.'),
-  content: z.string().min(20, 'Content must be at least 20 characters.'),
+  content: z.string().min(10, 'Content must be at least 10 characters.'),
   category: z.array(z.string()).nonempty({ message: 'Select at least one category.' }),
   subject: z.array(z.string()).nonempty({ message: 'Select at least one subject.' }),
   class: z.string().optional(),
