@@ -162,7 +162,7 @@ export default function AdminPage() {
                       <TableRow>
                         <TableHead>Sr. No.</TableHead>
                         <TableHead>User</TableHead>
-                        <TableHead>Email</TableHead>
+                        <TableHead>Creation Date</TableHead>
                         <TableHead>Status</TableHead>
                         <TableHead className="text-center">Actions</TableHead>
                       </TableRow>
@@ -180,7 +180,7 @@ export default function AdminPage() {
                               <span className="font-medium">{u.displayName || 'N/A'}</span>
                             </div>
                           </TableCell>
-                          <TableCell>{u.email}</TableCell>
+                          <TableCell>{u.creationTime}</TableCell>
                           <TableCell>
                             <Badge variant={u.disabled ? 'destructive' : 'secondary'}>
                               {u.disabled ? 'Disabled' : 'Active'}
