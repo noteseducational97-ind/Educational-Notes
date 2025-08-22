@@ -283,16 +283,24 @@ export default function DownloadsPage() {
                       
                     </CardContent>
                     <CardFooter className="flex items-center justify-between mt-auto border-t pt-4">
-                      <p className="text-xs text-muted-foreground">
-                        Added on {format(new Date(resource.createdAt), 'PP')}
-                      </p>
-                      <div className="flex items-center gap-2">
-                          {user && (
-                              <Button variant={isSaved ? "secondary" : "ghost"} size="sm" onClick={() => handleToggleWatchlist(resource)} disabled={saving === resource.id}>
-                                  {isSaved ? <BookmarkCheck className="h-4 w-4 mr-1" /> : <Bookmark className="h-4 w-4 mr-1" />}
-                                  {isSaved ? 'Saved' : 'Save'}
-                              </Button>
-                          )}
+                      {user && (
+                          <Button variant={isSaved ? "secondary" : "ghost"} size="sm" onClick={() => handleToggleWatchlist(resource)} disabled={saving === resource.id}>
+                              {isSaved ? <BookmarkCheck className="h-4 w-4 mr-1" /> : <Bookmark className="h-4 w-4 mr-1" />}
+                              {isSaved ? 'Saved' : 'Save'}
+                          </Button>
+                      )}
+                      <div className="flex items-center gap-2 ml-auto">
+                           <Button asChild size="sm" variant="outline" disabled={disabled}>
+                              <Link
+                                href={getPreviewUrl(resource)}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="group inline-flex items-center gap-1"
+                              >
+                                <BookOpen className="h-4 w-4" />
+                                View
+                              </Link>
+                           </Button>
                           <Button asChild size="sm" variant="link" disabled={disabled}>
                             <Link
                                 href={getDownloadUrl(resource)}
@@ -323,5 +331,3 @@ export default function DownloadsPage() {
     </div>
   );
 }
-
-    

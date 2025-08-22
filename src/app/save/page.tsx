@@ -174,17 +174,30 @@ export default function SavePage() {
                         <BookmarkX className="h-4 w-4 mr-1" />
                         Remove
                       </Button>
-                     <Button asChild size="sm" variant="link" disabled={isLinkDisabled(resource)}>
-                        <Link
-                        href={getDownloadUrl(resource)}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="group inline-flex items-center gap-1 text-primary text-sm font-medium hover:underline"
-                        >
-                        <Download className="h-4 w-4" />
-                        Download
-                        </Link>
-                    </Button>
+                      <div className="flex items-center gap-2">
+                        <Button asChild size="sm" variant="outline" disabled={isLinkDisabled(resource)}>
+                           <Link
+                           href={getPreviewUrl(resource)}
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           className="group inline-flex items-center gap-1"
+                           >
+                           <BookOpen className="h-4 w-4" />
+                           View
+                           </Link>
+                        </Button>
+                        <Button asChild size="sm" variant="link" disabled={isLinkDisabled(resource)}>
+                           <Link
+                           href={getDownloadUrl(resource)}
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           className="group inline-flex items-center gap-1 text-primary text-sm font-medium hover:underline"
+                           >
+                           <Download className="h-4 w-4" />
+                           Download
+                           </Link>
+                       </Button>
+                      </div>
                   </CardFooter>
                 </Card>
               ))}
@@ -206,5 +219,3 @@ export default function SavePage() {
     </div>
   );
 }
-
-    
