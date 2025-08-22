@@ -4,7 +4,7 @@
 import Header from '@/components/layout/Header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Mail } from 'lucide-react';
+import { Mail, Phone } from 'lucide-react';
 import Image from 'next/image';
 
 export default function AboutPage() {
@@ -68,12 +68,26 @@ export default function AboutPage() {
               <p className="text-muted-foreground mb-4">
                 Have questions or feedback? We'd love to hear from you. Reach out to us at:
               </p>
-              <Button asChild variant="outline">
-                <a href="mailto:noteseducational97@gmail.com">
-                  <Mail className="mr-2 h-4 w-4" />
-                  noteseducational97@gmail.com
-                </a>
-              </Button>
+              <div className="flex flex-wrap gap-4">
+                <Button asChild variant="outline">
+                  <a href="mailto:noteseducational97@gmail.com">
+                    <Mail className="mr-2 h-4 w-4" />
+                    noteseducational97@gmail.com
+                  </a>
+                </Button>
+                <Button asChild variant="outline">
+                  <a href="tel:+919881482416">
+                    <Phone className="mr-2 h-4 w-4" />
+                    Khachane Sir - 9881482416
+                  </a>
+                </Button>
+                <Button asChild variant="outline">
+                  <a href="tel:+919405695457">
+                    <Phone className="mr-2 h-4 w-4" />
+                    Shete Sir - 9405695457
+                  </a>
+                </Button>
+              </div>
             </CardContent>
           </Card>
 
