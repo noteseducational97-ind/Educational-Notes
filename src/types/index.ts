@@ -2,7 +2,6 @@
 export type Resource = {
   id: string; // The unique document ID from Firestore (slug)
   title: string;
-  description: string;
   content: string;
   category: string[];
   subject: string[];

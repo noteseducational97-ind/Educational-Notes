@@ -81,7 +81,11 @@ export default function SavePage() {
     if (isAdmin) {
         return watchlistItems;
     }
-    return watchlistItems.filter(item => item.visibility !== 'private' || user);
+    // Regular logged-in users see everything in their watchlist
+    if(user){
+        return watchlistItems;
+    }
+    return [];
   }, [watchlistItems, isAdmin, user]);
 
 
@@ -155,7 +159,7 @@ export default function SavePage() {
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="flex-grow">
-                    <p className='text-sm text-muted-foreground'>{resource.description}</p>
+                    <p className='text-sm text-muted-foreground'>{resource.content}</p>
                      <div className="flex flex-wrap gap-1 mt-2">
                         {resource.category.map(c => <Badge key={c} variant="secondary">{c}</Badge>)}
                     </div>

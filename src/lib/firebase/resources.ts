@@ -33,23 +33,13 @@ export async function addResource(resource: AddResourceData) {
   }
 }
 
-export async function getResources(options: { includePrivate?: boolean, publicOnly?: boolean } = {}): Promise<Resource[]> {
+export async function getResources(options: { includePrivate?: boolean } = {}): Promise<Resource[]> {
     try {
         let query: FirebaseFirestore.Query<FirebaseFirestore.DocumentData> = db.collection('resources');
         
-        if (options.publicOnly) {
-            // DEPRECATED: This path is for non-logged-in users, but new logic covers it.
-            query = query.where('visibility', '==', 'public');
-        } else if (!options.includePrivate) {
+        if (!options.includePrivate) {
             // Default behavior for non-logged-in users: only public resources
-            query = query.where('visibility', '==', 'public');
-        }
-        // If includePrivate is true, we don't add a where clause for visibility,
-        // so we fetch all resources (public and private). This is for admins.
-        // Let's refine this to filter on the server for logged-in users.
-        if (options.includePrivate) {
-            // Logged-in user gets public and private
-            query = query.where('visibility', 'in', ['public', 'private']);
+             query = query.where('visibility', 'in', ['public']);
         }
 
 
@@ -66,7 +56,6 @@ export async function getResources(options: { includePrivate?: boolean, publicOn
             return {
                 id: doc.id,
                 title: data.title,
-                description: data.description,
                 content: data.content,
                 category: data.category,
                 subject: data.subject,
@@ -103,7 +92,6 @@ export async function getResourceById(id: string): Promise<Resource | null> {
         const resource: Resource = {
             id: docSnap.id,
             title: data.title,
-            description: data.description,
             content: data.content,
             category: data.category,
             subject: data.subject,
@@ -177,9 +165,6 @@ export async function getWatchlist(userId: string): Promise<Resource[]> {
             return [];
         }
 
-        // A user's watchlist should contain all their saved items, regardless of visibility.
-        // We will fetch all of them here, and the client will be responsible for filtering
-        // based on the user's role (admin vs regular user).
         const allResources: Resource[] = [];
         const batchSize = 30; // Firestore 'in' query limit
         for (let i = 0; i < resourceIds.length; i += batchSize) {
@@ -198,7 +183,6 @@ export async function getWatchlist(userId: string): Promise<Resource[]> {
                 return {
                     id: id,
                     title: resourceData.title,
-                    description: resourceData.description,
                     content: resourceData.content,
                     category: resourceData.category,
                     subject: resourceData.subject,

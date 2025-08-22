@@ -27,7 +27,6 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 const FormSchema = z.object({
   title: z.string().min(3, 'Title must be at least 3 characters.'),
-  description: z.string().min(10, 'Description must be at least 10 characters.'),
   content: z.string().min(20, 'Content must be at least 20 characters.'),
   stream: z.array(z.string()).nonempty({ message: 'Select at least one stream.' }),
   class: z.string().optional(),
@@ -84,7 +83,6 @@ export default function AddResourceAdminPage() {
     resolver: zodResolver(FormSchema),
     defaultValues: {
       title: '',
-      description: '',
       content: '',
       stream: [],
       class: '',
@@ -153,19 +151,6 @@ export default function AddResourceAdminPage() {
                         <FormLabel>Title</FormLabel>
                         <FormControl>
                           <Input placeholder="e.g., Chapter 1: Electric Charges and Fields" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="description"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Short Description</FormLabel>
-                        <FormControl>
-                          <Textarea placeholder="A brief summary of the resource." {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>

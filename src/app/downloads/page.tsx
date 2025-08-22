@@ -126,9 +126,14 @@ export default function DownloadsPage() {
       const classMatch = selectedClass === 'All' || !resource.class || resource.class === selectedClass;
       const categoryMatch = selectedCategories.length === 0 || resource.category.some(c => selectedCategories.includes(c));
       const subjectMatch = selectedSubjects.length === 0 || resource.subject.some(s => selectedSubjects.includes(s));
+      
+      if (!user && resource.visibility === 'private') {
+        return false;
+      }
+      
       return streamMatch && classMatch && categoryMatch && subjectMatch;
     });
-  }, [resources, selectedStreams, selectedClass, selectedCategories, selectedSubjects]);
+  }, [resources, selectedStreams, selectedClass, selectedCategories, selectedSubjects, user]);
 
   const getPreviewUrl = (resource: Resource) => {
     return resource.isComingSoon ? '#' : resource.viewPdfUrl || resource.pdfUrl || '#';
@@ -269,7 +274,7 @@ export default function DownloadsPage() {
                       </CardDescription>
                     </CardHeader>
                     <CardContent className="flex-grow">
-                      <p className='text-sm text-muted-foreground'>{resource.description}</p>
+                      <p className='text-sm text-muted-foreground'>{resource.content}</p>
                       <div className="flex flex-wrap gap-1 mt-2">
                           {resource.category.map(c => <Badge key={c} variant="secondary">{c}</Badge>)}
                       </div>
