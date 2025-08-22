@@ -75,11 +75,11 @@ export default function Home() {
                 </div>
               </div>
               <Image
-                src="https://images.pexels.com/photos/159711/books-bookstore-book-reading-159711.jpeg"
+                src="https://images.pexels.com/photos/8617965/pexels-photo-8617965.jpeg"
                 width="600"
                 height="400"
-                alt="A person browsing a library shelf full of books."
-                data-ai-hint="library books"
+                alt="A group of Indian college students studying together."
+                data-ai-hint="group study"
                 className="mx-auto aspect-video overflow-hidden rounded-xl object-cover sm:w-full lg:order-last lg:aspect-square shadow-2xl"
               />
             </div>
