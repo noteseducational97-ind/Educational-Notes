@@ -84,7 +84,7 @@ export default function Header() {
                    <Button asChild variant="ghost">
                       <Link href="/admin">
                         <Shield />
-                        Admin
+                        Admin Panel
                       </Link>
                   </Button>
                 )}
