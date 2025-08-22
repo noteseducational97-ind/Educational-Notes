@@ -23,7 +23,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setUser(user);
       if (user) {
         // Correct way to check for admin email
-        setIsAdmin(user.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL);
+        setIsAdmin(user.email === 'noteseducational97@gmail.com');
       } else {
         setIsAdmin(false);
       }
