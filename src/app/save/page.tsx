@@ -138,7 +138,7 @@ export default function SavePage() {
               {displayedItems.map((resource) => (
                 <Card key={resource.id} className="flex flex-col hover:border-primary/50 transition-colors duration-300 overflow-hidden">
                    <Link
-                    href={getPreviewUrl(resource)}
+                    href={`/resources/${resource.id}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="group block"
@@ -164,7 +164,7 @@ export default function SavePage() {
                    <CardHeader>
                     <CardTitle className="text-xl">
                        <Link
-                        href={getPreviewUrl(resource)}
+                        href={`/resources/${resource.id}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="group inline-flex items-center gap-2 hover:text-primary transition-colors"
@@ -190,8 +190,8 @@ export default function SavePage() {
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="flex-grow">
-                     <p className="text-sm text-muted-foreground">
-                        Added on {format(new Date(resource.createdAt), 'MMM dd, yyyy')}
+                     <p className="text-sm text-muted-foreground truncate">
+                        {resource.content}
                       </p>
                   </CardContent>
                   <CardFooter className="flex items-center justify-between mt-auto border-t pt-4">

@@ -5,7 +5,7 @@ import Header from '@/components/layout/Header';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { getResources, Resource, addToWatchlist, removeFromWatchlist, getWatchlist } from '@/lib/firebase/resources';
 import { format } from 'date-fns';
-import { ArrowUpRight, Download, BookOpen, Bookmark, BookmarkCheck, Clock, Lock, LogIn } from 'lucide-react';
+import { ArrowUpRight, Download, BookOpen, Bookmark, BookmarkCheck, Clock, Lock, LogIn, ExternalLink } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState, useMemo, useCallback } from 'react';
 import {
@@ -156,11 +156,7 @@ export default function DownloadsPage() {
       return streamMatch && classMatch && categoryMatch && subjectMatch;
     });
   }, [resources, selectedStreams, selectedClass, selectedCategories, selectedSubjects]);
-
-  const getPreviewUrl = (resource: Resource) => {
-    return resource.isComingSoon ? '#' : resource.viewPdfUrl || resource.pdfUrl || '#';
-  };
-
+  
   const getDownloadUrl = (resource: Resource) => {
     return resource.isComingSoon ? '#' : resource.pdfUrl || '#';
   };
@@ -252,7 +248,7 @@ export default function DownloadsPage() {
                 return (
                   <Card key={resource.id} className="flex flex-col hover:border-primary/50 transition-colors duration-300 overflow-hidden">
                     <Link
-                      href={getPreviewUrl(resource)}
+                      href={`/resources/${resource.id}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className={cn("group block", disabled && "pointer-events-none cursor-not-allowed")}
@@ -279,7 +275,7 @@ export default function DownloadsPage() {
                     <CardHeader>
                       <CardTitle className="text-xl">
                         <Link
-                          href={getPreviewUrl(resource)}
+                          href={`/resources/${resource.id}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className={cn("group inline-flex items-center gap-2 hover:text-primary transition-colors", disabled && "pointer-events-none text-muted-foreground")}
@@ -305,8 +301,8 @@ export default function DownloadsPage() {
                       </CardDescription>
                     </CardHeader>
                     <CardContent className="flex-grow">
-                      <p className="text-sm text-muted-foreground">
-                        Added on {format(new Date(resource.createdAt), 'MMM dd, yyyy')}
+                       <p className="text-sm text-muted-foreground truncate">
+                        {resource.content}
                       </p>
                     </CardContent>
                     <CardFooter className="flex items-center justify-between mt-auto border-t pt-4">
@@ -317,12 +313,12 @@ export default function DownloadsPage() {
                       <div className="flex items-center gap-2">
                            <Button asChild size="sm" variant="outline" disabled={disabled}>
                               <Link
-                                href={getPreviewUrl(resource)}
+                                href={resource.viewPdfUrl || '#'}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="group inline-flex items-center gap-1"
                               >
-                                <BookOpen className="h-4 w-4" />
+                                <ExternalLink className="h-4 w-4" />
                                 View
                               </Link>
                            </Button>
