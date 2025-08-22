@@ -103,12 +103,6 @@ export default async function ResourceDetailPage({ params }: Props) {
                                         Download PDF
                                     </Link>
                                 </Button>
-                                <Button asChild variant="outline" disabled={isLinkDisabled}>
-                                     <Link href={resource.viewPdfUrl || resource.pdfUrl} target="_blank" rel="noopener noreferrer">
-                                        <ExternalLink className="mr-2 h-4 w-4" />
-                                        View PDF
-                                    </Link>
-                                </Button>
                             </div>
                         </div>
                     </aside>
