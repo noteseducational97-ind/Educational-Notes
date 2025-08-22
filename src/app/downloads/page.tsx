@@ -25,6 +25,8 @@ import { useToast } from '@/hooks/use-toast';
 import { Label } from '@/components/ui/label';
 import { MultiSelect } from '@/components/ui/multi-select';
 import { cn } from '@/lib/utils';
+import { ToastAction } from '@/components/ui/toast';
+import { useRouter } from 'next/navigation';
 
 const allStreams = ['Science', 'MHT-CET', 'NEET', 'Commerce'];
 const allclasses = ['All', '9', '10', '11', '12'];
@@ -41,6 +43,7 @@ export default function DownloadsPage() {
   const [loading, setLoading] = useState(true);
   const { user, loading: authLoading } = useAuth();
   const { toast } = useToast();
+  const router = useRouter();
   const [saving, setSaving] = useState<string | null>(null);
   const [watchlistIds, setWatchlistIds] = useState<Set<string>>(new Set());
 
@@ -152,6 +155,20 @@ export default function DownloadsPage() {
   };
   
   const isLinkDisabled = (resource: Resource) => resource.isComingSoon || !resource.pdfUrl;
+
+  const handleDownloadClick = () => {
+    if (!user) {
+      toast({
+        title: 'Sign in to download',
+        description: 'You need to be logged in to download notes.',
+        action: (
+            <ToastAction altText="Sign In" onClick={() => router.push('/login')}>
+                Sign In
+            </ToastAction>
+        )
+      })
+    }
+  }
 
 
   return (
@@ -306,19 +323,17 @@ export default function DownloadsPage() {
                                 View
                               </Link>
                            </Button>
-                          {user && (
-                            <Button asChild size="sm" disabled={disabled}>
-                              <Link
-                                  href={getDownloadUrl(resource)}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="group inline-flex items-center gap-1"
-                              >
-                              <Download className="h-4 w-4" />
-                              Download
-                              </Link>
-                            </Button>
-                          )}
+                           <Button asChild={!!user} size="sm" disabled={disabled} onClick={handleDownloadClick}>
+                               <Link
+                                   href={user ? getDownloadUrl(resource) : '#'}
+                                   target="_blank"
+                                   rel="noopener noreferrer"
+                                   className="group inline-flex items-center gap-1"
+                               >
+                               <Download className="h-4 w-4" />
+                               Download
+                               </Link>
+                           </Button>
                       </div>
                     </CardFooter>
                   </Card>

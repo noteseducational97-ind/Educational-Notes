@@ -16,6 +16,7 @@ import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { ToastAction } from '@/components/ui/toast';
 
 const GUEST_WATCHLIST_KEY = 'guest-watchlist';
 
@@ -94,6 +95,20 @@ export default function SavePage() {
   };
   
   const isLinkDisabled = (resource: Resource) => resource.isComingSoon || !resource.pdfUrl;
+
+  const handleDownloadClick = () => {
+    if (!user) {
+      toast({
+        title: 'Sign in to download',
+        description: 'You need to be logged in to download notes.',
+        action: (
+            <ToastAction altText="Sign In" onClick={() => router.push('/login')}>
+                Sign In
+            </ToastAction>
+        )
+      })
+    }
+  }
 
   const displayedItems = useMemo(() => {
     return watchlistItems;
@@ -199,19 +214,17 @@ export default function SavePage() {
                            View
                            </Link>
                         </Button>
-                        {user && (
-                          <Button asChild size="sm" disabled={isLinkDisabled(resource)}>
+                        <Button asChild={!!user} size="sm" disabled={isLinkDisabled(resource)} onClick={handleDownloadClick}>
                             <Link
-                            href={getDownloadUrl(resource)}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="group inline-flex items-center gap-1"
+                                href={user ? getDownloadUrl(resource) : '#'}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="group inline-flex items-center gap-1"
                             >
                             <Download className="h-4 w-4" />
                             Download
                             </Link>
-                          </Button>
-                        )}
+                        </Button>
                       </div>
                   </CardFooter>
                 </Card>
