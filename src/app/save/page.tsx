@@ -123,7 +123,7 @@ export default function SavePage() {
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
       <main className="flex-1">
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-4 py-8 max-w-screen-xl">
           <div className="mb-8">
             <h1 className="text-4xl font-bold text-foreground tracking-tight">My Watchlist</h1>
             <p className="mt-2 text-muted-foreground">

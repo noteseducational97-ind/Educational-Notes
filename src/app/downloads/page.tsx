@@ -175,7 +175,7 @@ export default function DownloadsPage() {
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
       <main className="flex-1">
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-4 py-8 max-w-screen-xl">
           <div className="mb-8 text-center">
             <h1 className="text-4xl font-bold text-foreground tracking-tight">Downloads</h1>
             <p className="mt-2 text-muted-foreground max-w-2xl mx-auto">
