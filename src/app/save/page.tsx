@@ -49,7 +49,8 @@ export default function SavePage() {
     if (isAdmin) {
       return allWatchlistItems;
     }
-    return allWatchlistItems.filter(item => item.visibility === 'public');
+    // Regular users should only see items that are 'both'
+    return allWatchlistItems.filter(item => item.visibility === 'both');
   }, [allWatchlistItems, isAdmin]);
 
 
@@ -97,7 +98,7 @@ export default function SavePage() {
           <div className="mb-8">
             <h1 className="text-4xl font-bold text-foreground tracking-tight">My Watchlist</h1>
             <p className="mt-2 text-muted-foreground">
-              {isAdmin ? "Your curated collection of saved resources." : "Your curated collection of saved resources. Only public resources are shown here."}
+              {isAdmin ? "Your curated collection of saved resources." : "Your curated collection of saved public resources."}
             </p>
           </div>
 

@@ -19,7 +19,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Loader2, ArrowLeft, Upload, Eye, EyeOff, Users } from 'lucide-react';
+import { Loader2, ArrowLeft, Upload, EyeOff, Users } from 'lucide-react';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { MultiSelect } from '@/components/ui/multi-select';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -36,7 +36,7 @@ const FormSchema = z.object({
   imageUrl: z.string().optional(),
   pdfUrl: z.string().optional(),
   isComingSoon: z.boolean().default(false),
-  visibility: z.enum(['public', 'private', 'both']).default('both'),
+  visibility: z.enum(['private', 'both']).default('both'),
 }).superRefine((data, ctx) => {
     if (!data.isComingSoon) {
         if (!data.imageUrl || !z.string().url().safeParse(data.imageUrl).success) {
@@ -262,21 +262,15 @@ export default function AddResourceAdminPage() {
                               >
                                 <FormItem className="flex items-center space-x-2 space-y-0">
                                   <FormControl>
-                                    <RadioGroupItem value="public" />
-                                  </FormControl>
-                                  <FormLabel className="font-normal flex items-center gap-2"><Eye/> Public</FormLabel>
-                                </FormItem>
-                                <FormItem className="flex items-center space-x-2 space-y-0">
-                                  <FormControl>
                                     <RadioGroupItem value="private" />
                                   </FormControl>
-                                  <FormLabel className="font-normal flex items-center gap-2"><EyeOff/> Private</FormLabel>
+                                  <FormLabel className="font-normal flex items-center gap-2"><EyeOff/> Private (Admin only)</FormLabel>
                                 </FormItem>
                                 <FormItem className="flex items-center space-x-2 space-y-0">
                                   <FormControl>
                                     <RadioGroupItem value="both" />
                                   </FormControl>
-                                  <FormLabel className="font-normal flex items-center gap-2"><Users/> Both</FormLabel>
+                                  <FormLabel className="font-normal flex items-center gap-2"><Users/> Both (Public & Admin)</FormLabel>
                                 </FormItem>
                               </RadioGroup>
                             </FormControl>
