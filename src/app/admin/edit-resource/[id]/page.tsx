@@ -21,7 +21,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Loader2, ArrowLeft, Save, EyeOff, Users } from 'lucide-react';
+import { Loader2, ArrowLeft, Save, Lock, Users } from 'lucide-react';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { MultiSelect } from '@/components/ui/multi-select';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -303,15 +303,15 @@ export default function EditResourceAdminPage() {
                               >
                                 <FormItem className="flex items-center space-x-2 space-y-0">
                                   <FormControl>
-                                    <RadioGroupItem value="private" />
-                                  </FormControl>
-                                  <FormLabel className="font-normal flex items-center gap-2"><EyeOff/> Private (Admin only)</FormLabel>
-                                </FormItem>
-                                 <FormItem className="flex items-center space-x-2 space-y-0">
-                                  <FormControl>
                                     <RadioGroupItem value="public" />
                                   </FormControl>
                                   <FormLabel className="font-normal flex items-center gap-2"><Users/> Public (Visible to all users)</FormLabel>
+                                </FormItem>
+                                 <FormItem className="flex items-center space-x-2 space-y-0">
+                                  <FormControl>
+                                    <RadioGroupItem value="private" />
+                                  </FormControl>
+                                  <FormLabel className="font-normal flex items-center gap-2"><Lock/> Private (Logged-in users only)</FormLabel>
                                 </FormItem>
                               </RadioGroup>
                             </FormControl>

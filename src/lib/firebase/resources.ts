@@ -1,5 +1,4 @@
 
-
 'use server';
 
 import { db } from '@/lib/firebase/server'; // Use server-side db
@@ -34,13 +33,26 @@ export async function addResource(resource: AddResourceData) {
   }
 }
 
-export async function getResources(options: { publicOnly?: boolean } = {}): Promise<Resource[]> {
+export async function getResources(options: { includePrivate?: boolean, publicOnly?: boolean } = {}): Promise<Resource[]> {
     try {
         let query: FirebaseFirestore.Query<FirebaseFirestore.DocumentData> = db.collection('resources');
         
         if (options.publicOnly) {
+            // DEPRECATED: This path is for non-logged-in users, but new logic covers it.
+            query = query.where('visibility', '==', 'public');
+        } else if (!options.includePrivate) {
+            // Default behavior for non-logged-in users: only public resources
             query = query.where('visibility', '==', 'public');
         }
+        // If includePrivate is true, we don't add a where clause for visibility,
+        // so we fetch all resources (public and private). This is for admins.
+        // If a logged-in non-admin calls this, we fetch all and filter client-side.
+        // Let's refine this to filter on the server for logged-in users.
+        if (options.includePrivate) {
+            // Logged-in user gets public and private
+            query = query.where('visibility', 'in', ['public', 'private']);
+        }
+
 
         const querySnapshot = await query.orderBy('createdAt', 'desc').get();
         
@@ -164,8 +176,11 @@ export async function getWatchlist(userId: string): Promise<Resource[]> {
             return [];
         }
 
+        // A user's watchlist should contain all their saved items, regardless of visibility.
+        // The client will handle filtering if a non-admin somehow gets a private item.
+        // But since saving is a user action, we fetch all of them here.
         const allResources: Resource[] = [];
-        const batchSize = 30;
+        const batchSize = 30; // Firestore 'in' query limit
         for (let i = 0; i < resourceIds.length; i += batchSize) {
             const batchIds = resourceIds.slice(i, i + batchSize);
             if (batchIds.length === 0) continue;

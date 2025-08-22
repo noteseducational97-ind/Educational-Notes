@@ -5,7 +5,7 @@ import Header from '@/components/layout/Header';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { getResources, Resource, addToWatchlist, removeFromWatchlist, getWatchlist } from '@/lib/firebase/resources';
 import { format } from 'date-fns';
-import { ArrowUpRight, Download, BookOpen, Bookmark, BookmarkCheck, Clock } from 'lucide-react';
+import { ArrowUpRight, Download, BookOpen, Bookmark, BookmarkCheck, Clock, Lock } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState, useMemo, useCallback } from 'react';
 import {
@@ -38,7 +38,7 @@ const allCategories = ['Notes', 'Previous Year Questions', 'Syllabus'];
 export default function DownloadsPage() {
   const [resources, setResources] = useState<Resource[]>([]);
   const [loading, setLoading] = useState(true);
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const { toast } = useToast();
   const [saving, setSaving] = useState<string | null>(null);
   const [watchlistIds, setWatchlistIds] = useState<Set<string>>(new Set());
@@ -51,7 +51,8 @@ export default function DownloadsPage() {
   const fetchInitialData = useCallback(async () => {
     try {
       setLoading(true);
-      const fetchedResources = await getResources({ publicOnly: true });
+      // Pass user auth status to getResources
+      const fetchedResources = await getResources({ includePrivate: !!user });
       setResources(fetchedResources);
 
       if (user) {
@@ -71,8 +72,9 @@ export default function DownloadsPage() {
   }, [user, toast]);
 
   useEffect(() => {
+    // Re-fetch data if user logs in or out
     fetchInitialData();
-  }, [fetchInitialData]);
+  }, [fetchInitialData, user]);
   
   const handleToggleWatchlist = async (resource: Resource) => {
     if (!user) {
@@ -207,7 +209,7 @@ export default function DownloadsPage() {
             </CardContent>
           </Card>
 
-          {loading ? (
+          {authLoading || loading ? (
             <LoadingSpinner />
           ) : filteredResources.length > 0 ? (
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -232,6 +234,11 @@ export default function DownloadsPage() {
                           {resource.isComingSoon && (
                             <div className="absolute inset-0 flex items-center justify-center">
                                 <Badge variant="secondary" className="text-lg py-2 px-4"><Clock className="mr-2 h-5 w-5" />Coming Soon</Badge>
+                            </div>
+                          )}
+                          {resource.visibility === 'private' && (
+                             <div className="absolute top-2 right-2">
+                                <Badge variant="destructive" className="text-lg py-1 px-3"><Lock className="mr-1 h-4 w-4" />Private</Badge>
                             </div>
                           )}
                       </div>
@@ -299,7 +306,7 @@ export default function DownloadsPage() {
             <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-muted bg-card/50 p-12 text-center">
               <h2 className="text-2xl font-semibold">No Matching Resources Found</h2>
               <p className="mt-2 text-muted-foreground">
-                Try adjusting your filters or check back later for new public materials.
+                Try adjusting your filters or check back later for new materials.
               </p>
             </div>
           )}

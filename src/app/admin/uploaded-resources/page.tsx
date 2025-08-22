@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { PlusCircle, BookCopy, Edit, Trash2, ArrowLeft, Eye, EyeOff, Users } from 'lucide-react';
+import { PlusCircle, BookCopy, Edit, Trash2, ArrowLeft, Lock, Users } from 'lucide-react';
 import Link from 'next/link';
 import { getResources, Resource } from '@/lib/firebase/resources';
 import { deleteResourceAction } from '../actions';
@@ -74,7 +74,7 @@ export default function UploadedResourcesPage() {
   const getVisibilityProps = (visibility: Resource['visibility']) => {
     switch (visibility) {
       case 'private':
-        return { icon: <EyeOff className='mr-1 h-3 w-3'/>, text: 'Private' };
+        return { icon: <Lock className='mr-1 h-3 w-3'/>, text: 'Private' };
       case 'public':
          return { icon: <Users className='mr-1 h-3 w-3'/>, text: 'Public' };
       default:
@@ -110,7 +110,9 @@ export default function UploadedResourcesPage() {
             <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2"><BookCopy /> All Resources</CardTitle>
-                  <CardDescription>View, edit, or delete any resource. `Private` is visible only to admins, and `Public` is visible to everyone.</CardDescription>
+                  <CardDescription>
+                    `Public` is visible to everyone. `Private` is visible only to logged-in users.
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   {loadingData ? (

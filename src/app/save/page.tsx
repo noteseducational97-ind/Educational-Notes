@@ -10,15 +10,16 @@ import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import Link from 'next/link';
 import Image from 'next/image';
 import { format } from 'date-fns';
-import { ArrowUpRight, Download, BookOpen, BookmarkX } from 'lucide-react';
+import { ArrowUpRight, Download, BookOpen, BookmarkX, Lock } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 export default function SavePage() {
-  const { user, isAdmin, loading: authLoading } = useAuth();
-  const [allWatchlistItems, setAllWatchlistItems] = useState<Resource[]>([]);
+  const { user, loading: authLoading } = useAuth();
+  const [watchlistItems, setWatchlistItems] = useState<Resource[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const { toast } = useToast();
@@ -33,7 +34,7 @@ export default function SavePage() {
           try {
             setLoading(true);
             const items = await getWatchlist(user.uid);
-            setAllWatchlistItems(items);
+            setWatchlistItems(items);
           } catch (error) {
             console.error('Failed to fetch watchlist', error);
           } finally {
@@ -44,22 +45,13 @@ export default function SavePage() {
       }
     }
   }, [user, authLoading, router]);
-  
-  const watchlist = useMemo(() => {
-    if (isAdmin) {
-      return allWatchlistItems;
-    }
-    // Regular users should only see items that are 'public'
-    return allWatchlistItems.filter(item => item.visibility === 'public');
-  }, [allWatchlistItems, isAdmin]);
-
 
   const handleRemoveFromWatchlist = async (resourceId: string, resourceTitle: string) => {
     if (!user) return;
     setRemoving(resourceId);
     try {
       await removeFromWatchlist(user.uid, resourceId);
-      setAllWatchlistItems((prev) => prev.filter((item) => item.id !== resourceId));
+      setWatchlistItems((prev) => prev.filter((item) => item.id !== resourceId));
       toast({
         title: 'Removed',
         description: `"${resourceTitle}" has been removed from your watchlist.`,
@@ -76,14 +68,14 @@ export default function SavePage() {
   };
 
   const getPreviewUrl = (resource: Resource) => {
-    return resource.isComingSoon || resource.visibility === 'private' ? '#' : resource.pdfUrl || '#';
+    return resource.isComingSoon ? '#' : resource.pdfUrl || '#';
   };
 
   const getDownloadUrl = (resource: Resource) => {
-    return resource.isComingSoon || resource.visibility === 'private' ? '#' : resource.pdfUrl || '#';
+    return resource.isComingSoon ? '#' : resource.pdfUrl || '#';
   };
   
-  const isLinkDisabled = (resource: Resource) => resource.isComingSoon || !resource.pdfUrl || resource.visibility === 'private';
+  const isLinkDisabled = (resource: Resource) => resource.isComingSoon || !resource.pdfUrl;
 
 
   if (authLoading || loading) {
@@ -98,13 +90,13 @@ export default function SavePage() {
           <div className="mb-8">
             <h1 className="text-4xl font-bold text-foreground tracking-tight">My Watchlist</h1>
             <p className="mt-2 text-muted-foreground">
-              {isAdmin ? "Your curated collection of saved resources." : "Your curated collection of saved public resources."}
+              Your curated collection of saved resources.
             </p>
           </div>
 
-          {watchlist.length > 0 ? (
+          {watchlistItems.length > 0 ? (
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {watchlist.map((resource) => (
+              {watchlistItems.map((resource) => (
                 <Card key={resource.id} className="flex flex-col hover:border-primary/50 transition-colors duration-300 overflow-hidden">
                    <Link
                     href={getPreviewUrl(resource)}
@@ -117,9 +109,17 @@ export default function SavePage() {
                             src={resource.isComingSoon ? 'https://placehold.co/600x400.png' : resource.imageUrl || 'https://placehold.co/600x400.png'}
                             alt={resource.title}
                             fill
-                            className="object-cover group-hover:scale-105 transition-transform duration-300"
+                            className={cn(
+                                "object-cover group-hover:scale-105 transition-transform duration-300",
+                                isLinkDisabled(resource) && "filter grayscale"
+                            )}
                         />
-                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                        {resource.visibility === 'private' && (
+                           <div className="absolute top-2 right-2">
+                                <Badge variant="destructive" className="text-lg py-1 px-3"><Lock className="mr-1 h-4 w-4" />Private</Badge>
+                            </div>
+                        )}
                     </div>
                   </Link>
                    <CardHeader>
@@ -132,7 +132,7 @@ export default function SavePage() {
                       >
                          <BookOpen className="h-5 w-5 text-primary/80" />
                         {resource.title}
-                        <ArrowUpRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+                        {!isLinkDisabled(resource) && <ArrowUpRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />}
                       </Link>
                     </CardTitle>
                     <CardDescription asChild>
@@ -163,15 +163,17 @@ export default function SavePage() {
                         <BookmarkX className="h-4 w-4 mr-1" />
                         Remove
                       </Button>
-                     <Link
-                      href={getDownloadUrl(resource)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="group inline-flex items-center gap-1 text-primary text-sm font-medium hover:underline"
-                    >
-                      <Download className="h-4 w-4" />
-                      Download
-                    </Link>
+                     <Button asChild size="sm" variant="link" disabled={isLinkDisabled(resource)}>
+                        <Link
+                        href={getDownloadUrl(resource)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group inline-flex items-center gap-1 text-primary text-sm font-medium hover:underline"
+                        >
+                        <Download className="h-4 w-4" />
+                        Download
+                        </Link>
+                    </Button>
                   </CardFooter>
                 </Card>
               ))}
