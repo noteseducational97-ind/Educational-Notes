@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Home, Download, Bookmark, Info, Shield, Menu, PlusCircle, LogIn, UserPlus, BookCopy, UserCog, LayoutDashboard, Users } from 'lucide-react';
+import { Home, Download, Bookmark, Info, Shield, Menu, PlusCircle, LogIn, UserPlus, BookCopy, UserCog, LayoutDashboard, Users, Loader2 } from 'lucide-react';
 import UserNav from './UserNav';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/use-auth';
