@@ -21,10 +21,11 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Loader2, ArrowLeft, Save } from 'lucide-react';
+import { Loader2, ArrowLeft, Save, Eye, EyeOff } from 'lucide-react';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { MultiSelect } from '@/components/ui/multi-select';
 import { Checkbox } from '@/components/ui/checkbox';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 const FormSchema = z.object({
   title: z.string().min(3, 'Title must be at least 3 characters.'),
@@ -37,6 +38,7 @@ const FormSchema = z.object({
   imageUrl: z.string().optional(),
   pdfUrl: z.string().optional(),
   isComingSoon: z.boolean().default(false),
+  visibility: z.enum(['public', 'private']).default('public'),
 }).superRefine((data, ctx) => {
     if (!data.isComingSoon) {
         if (!data.imageUrl || !z.string().url().safeParse(data.imageUrl).success) {
@@ -91,6 +93,7 @@ export default function EditResourceAdminPage() {
       category: [],
       subject: [],
       isComingSoon: false,
+      visibility: 'public',
     },
   });
 
@@ -114,7 +117,8 @@ export default function EditResourceAdminPage() {
         setResource(fetchedResource);
         form.reset({
           ...fetchedResource,
-          isComingSoon: fetchedResource.isComingSoon ?? false
+          isComingSoon: fetchedResource.isComingSoon ?? false,
+          visibility: fetchedResource.visibility ?? 'public',
         });
       } else {
         toast({ variant: 'destructive', title: 'Resource not found' });
@@ -136,7 +140,7 @@ export default function EditResourceAdminPage() {
           title: 'Success!',
           description: `Resource "${values.title}" has been updated.`,
         });
-        router.push('/admin');
+        router.push('/admin/uploaded-resources');
       } else {
         toast({
           variant: 'destructive',
@@ -284,26 +288,58 @@ export default function EditResourceAdminPage() {
                         )}
                     />
                   </div>
-                  <FormField
-                    control={form.control}
-                    name="isComingSoon"
-                    render={({ field }) => (
-                        <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                  <div className='space-y-4'>
+                    <FormField
+                        control={form.control}
+                        name="visibility"
+                        render={({ field }) => (
+                          <FormItem className="space-y-3">
+                            <FormLabel>Visibility</FormLabel>
                             <FormControl>
-                                <Checkbox
-                                    checked={field.value}
-                                    onCheckedChange={field.onChange}
-                                />
+                              <RadioGroup
+                                onValueChange={field.onChange}
+                                defaultValue={field.value}
+                                className="flex space-x-4"
+                              >
+                                <FormItem className="flex items-center space-x-2 space-y-0">
+                                  <FormControl>
+                                    <RadioGroupItem value="public" />
+                                  </FormControl>
+                                  <FormLabel className="font-normal flex items-center gap-2"><Eye/> Public</FormLabel>
+                                </FormItem>
+                                <FormItem className="flex items-center space-x-2 space-y-0">
+                                  <FormControl>
+                                    <RadioGroupItem value="private" />
+                                  </FormControl>
+                                  <FormLabel className="font-normal flex items-center gap-2"><EyeOff/> Private</FormLabel>
+                                </FormItem>
+                              </RadioGroup>
                             </FormControl>
-                            <div className="space-y-1 leading-none">
-                                <FormLabel>
-                                    Coming Soon
-                                </FormLabel>
-                                <FormMessage />
-                            </div>
-                        </FormItem>
-                    )}
-                    />
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    <FormField
+                      control={form.control}
+                      name="isComingSoon"
+                      render={({ field }) => (
+                          <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                              <FormControl>
+                                  <Checkbox
+                                      checked={field.value}
+                                      onCheckedChange={field.onChange}
+                                  />
+                              </FormControl>
+                              <div className="space-y-1 leading-none">
+                                  <FormLabel>
+                                      Mark as "Coming Soon"
+                                  </FormLabel>
+                                  <FormMessage />
+                              </div>
+                          </FormItem>
+                      )}
+                      />
+                  </div>
                   <FormField control={form.control} name="imageUrl" render={({ field }) => (
                       <FormItem>
                         <FormLabel>Image URL</FormLabel>
@@ -323,7 +359,7 @@ export default function EditResourceAdminPage() {
                 </CardContent>
                 <CardFooter className="flex justify-between gap-4 border-t pt-6">
                     <Button type="button" variant="outline" asChild>
-                        <Link href="/admin"><ArrowLeft /> Back</Link>
+                        <Link href="/admin/uploaded-resources"><ArrowLeft /> Back</Link>
                     </Button>
                     <Button type="submit" disabled={isSubmitting}>
                         {isSubmitting ? <Loader2 className="animate-spin" /> : <Save />}

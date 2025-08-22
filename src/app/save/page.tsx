@@ -67,12 +67,15 @@ export default function SavePage() {
   };
 
   const getPreviewUrl = (resource: Resource) => {
-    return resource.pdfUrl || '#';
+    return resource.isComingSoon || resource.visibility === 'private' ? '#' : resource.pdfUrl || '#';
   };
 
   const getDownloadUrl = (resource: Resource) => {
-    return resource.pdfUrl || '#';
+    return resource.isComingSoon || resource.visibility === 'private' ? '#' : resource.pdfUrl || '#';
   };
+  
+  const isLinkDisabled = (resource: Resource) => resource.isComingSoon || !resource.pdfUrl || resource.visibility === 'private';
+
 
   if (authLoading || loading) {
     return <LoadingSpinner />;
@@ -86,7 +89,7 @@ export default function SavePage() {
           <div className="mb-8">
             <h1 className="text-4xl font-bold text-foreground tracking-tight">My Watchlist</h1>
             <p className="mt-2 text-muted-foreground">
-              Your curated collection of saved resources.
+              Your curated collection of saved resources. Only public resources are shown here.
             </p>
           </div>
 

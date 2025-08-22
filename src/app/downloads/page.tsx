@@ -51,7 +51,7 @@ export default function DownloadsPage() {
   const fetchInitialData = useCallback(async () => {
     try {
       setLoading(true);
-      const fetchedResources = await getResources();
+      const fetchedResources = await getResources({ publicOnly: true });
       setResources(fetchedResources);
 
       if (user) {
@@ -299,7 +299,7 @@ export default function DownloadsPage() {
             <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-muted bg-card/50 p-12 text-center">
               <h2 className="text-2xl font-semibold">No Matching Resources Found</h2>
               <p className="mt-2 text-muted-foreground">
-                Try adjusting your filters or check back later.
+                Try adjusting your filters or check back later for new public materials.
               </p>
             </div>
           )}

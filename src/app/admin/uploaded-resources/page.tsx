@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { PlusCircle, BookCopy, Edit, Trash2, ArrowLeft } from 'lucide-react';
+import { PlusCircle, BookCopy, Edit, Trash2, ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import Link from 'next/link';
 import { getResources, Resource } from '@/lib/firebase/resources';
 import { deleteResourceAction } from '../actions';
@@ -25,6 +25,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+import { cn } from '@/lib/utils';
 
 export default function UploadedResourcesPage() {
   const { user, loading: authLoading, isAdmin } = useAuth();
@@ -111,6 +112,7 @@ export default function UploadedResourcesPage() {
                         <TableHeader>
                           <TableRow>
                             <TableHead>Title</TableHead>
+                            <TableHead>Visibility</TableHead>
                             <TableHead>Category</TableHead>
                             <TableHead>Class</TableHead>
                              <TableHead>Subject</TableHead>
@@ -122,6 +124,12 @@ export default function UploadedResourcesPage() {
                           {resources.map((resource) => (
                             <TableRow key={resource.id}>
                               <TableCell className="font-medium">{resource.title}</TableCell>
+                              <TableCell>
+                                <Badge variant={resource.visibility === 'public' ? 'secondary' : 'outline'} className={cn(resource.visibility === 'private' && 'border-primary/50')}>
+                                    {resource.visibility === 'public' ? <Eye className='mr-1 h-3 w-3'/> : <EyeOff className='mr-1 h-3 w-3'/>}
+                                    {resource.visibility === 'public' ? 'Public' : 'Private'}
+                                </Badge>
+                              </TableCell>
                               <TableCell>
                                 <div className="flex flex-wrap gap-1">
                                     {resource.category.map(c => <Badge key={c} variant="secondary">{c}</Badge>)}

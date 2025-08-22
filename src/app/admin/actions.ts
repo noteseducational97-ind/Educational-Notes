@@ -16,6 +16,7 @@ const FormSchema = z.object({
   imageUrl: z.string().optional(),
   pdfUrl: z.string().optional(),
   isComingSoon: z.boolean().default(false),
+  visibility: z.enum(['public', 'private']).default('public'),
 }).superRefine((data, ctx) => {
     if (!data.isComingSoon) {
         if (!data.imageUrl || !z.string().url().safeParse(data.imageUrl).success) {
@@ -74,7 +75,7 @@ export async function addResourceAction(data: AddResourceInput) {
       createdAt: new Date(),
     });
 
-    revalidatePath('/admin');
+    revalidatePath('/admin/uploaded-resources');
     revalidatePath('/downloads');
     revalidatePath(`/resources/${slug}`);
 
@@ -106,7 +107,7 @@ export async function updateResourceAction(id: string, data: AddResourceInput) {
       ...validatedFields.data,
     });
 
-    revalidatePath('/admin');
+    revalidatePath('/admin/uploaded-resources');
     revalidatePath('/downloads');
     revalidatePath(`/resources/${id}`);
 
@@ -136,7 +137,7 @@ export async function deleteResourceAction(id: string) {
     });
     await batch.commit();
 
-    revalidatePath('/admin');
+    revalidatePath('/admin/uploaded-resources');
     revalidatePath('/downloads');
     revalidatePath('/save');
 

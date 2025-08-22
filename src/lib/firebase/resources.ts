@@ -33,10 +33,15 @@ export async function addResource(resource: AddResourceData) {
   }
 }
 
-export async function getResources(): Promise<Resource[]> {
+export async function getResources(options: { publicOnly?: boolean } = {}): Promise<Resource[]> {
     try {
-        const resourcesCollection = db.collection('resources');
-        const querySnapshot = await resourcesCollection.orderBy('createdAt', 'desc').get();
+        let query: FirebaseFirestore.Query<FirebaseFirestore.DocumentData> = db.collection('resources');
+        
+        if (options.publicOnly) {
+            query = query.where('visibility', '==', 'public');
+        }
+
+        const querySnapshot = await query.orderBy('createdAt', 'desc').get();
         
         if (querySnapshot.empty) {
             return [];
@@ -59,6 +64,7 @@ export async function getResources(): Promise<Resource[]> {
                 pdfUrl: data.pdfUrl,
                 createdAt: createdAt,
                 isComingSoon: data.isComingSoon || false,
+                visibility: data.visibility || 'public',
             } as Resource;
         });
     } catch (error) {
@@ -94,6 +100,7 @@ export async function getResourceById(id: string): Promise<Resource | null> {
             pdfUrl: data.pdfUrl,
             createdAt: createdAt,
             isComingSoon: data.isComingSoon || false,
+            visibility: data.visibility || 'public',
         };
 
         return resource;
@@ -155,12 +162,17 @@ export async function getWatchlist(userId: string): Promise<Resource[]> {
         if (resourceIds.length === 0) {
             return [];
         }
+        
+        const publicResourceIds = (await db.collection('resources').where(FieldPath.documentId(), 'in', resourceIds).where('visibility', '==', 'public').get()).docs.map(doc => doc.id);
+        
+        if (publicResourceIds.length === 0) return [];
+
 
         const allResources: Resource[] = [];
         // Firestore 'in' queries are limited to 30 items. Batch the requests.
         const batchSize = 30;
-        for (let i = 0; i < resourceIds.length; i += batchSize) {
-            const batchIds = resourceIds.slice(i, i + batchSize);
+        for (let i = 0; i < publicResourceIds.length; i += batchSize) {
+            const batchIds = publicResourceIds.slice(i, i + batchSize);
             const resourcesSnapshot = await db.collection('resources').where(FieldPath.documentId(), 'in', batchIds).get();
             const resourcesById = new Map(resourcesSnapshot.docs.map(doc => [doc.id, doc.data()]));
             
@@ -183,6 +195,7 @@ export async function getWatchlist(userId: string): Promise<Resource[]> {
                     pdfUrl: resourceData.pdfUrl,
                     createdAt: createdAt,
                     isComingSoon: resourceData.isComingSoon || false,
+                     visibility: resourceData.visibility || 'public',
                 } as Resource;
             }).filter((item): item is Resource => item !== null);
 
