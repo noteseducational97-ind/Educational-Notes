@@ -48,7 +48,7 @@ export default function AboutPage() {
                         <Image
                             src="https://images.pexels.com/photos/5726838/pexels-photo-5726838.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
                             alt="Pravin Khachane"
-                            data-ai-hint="physics chalkboard"
+                            data-ai-hint="physics"
                             fill
                             className="object-cover"
                         />
