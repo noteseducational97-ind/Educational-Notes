@@ -10,6 +10,7 @@ import Link from 'next/link';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
+import TestMakerButton from '@/components/resources/TestMakerButton';
 
 type Props = {
   params: { id: string };
@@ -105,10 +106,7 @@ export default async function ResourceDetailPage({ params }: Props) {
                                         Download PDF
                                     </Link>
                                 </Button>
-                                <Button variant="secondary">
-                                    <FileText className="mr-2 h-4 w-4" />
-                                    Test Maker
-                                </Button>
+                                <TestMakerButton resource={resource} disabled={isLinkDisabled} />
                                 <Button variant="secondary">
                                     <HelpCircle className="mr-2 h-4 w-4" />
                                     Answer Question
