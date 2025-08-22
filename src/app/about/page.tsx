@@ -29,7 +29,7 @@ export default function AboutPage() {
                     </div>
                     <div className="w-full aspect-video relative rounded-lg overflow-hidden">
                         <Image
-                            src="https://images.pexels.com/photos/256517/pexels-photo-256517.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+                            src="https://images.pexels.com/photos/3762940/pexels-photo-3762940.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
                             alt="Stack of educational books"
                             data-ai-hint="books education"
                             fill
