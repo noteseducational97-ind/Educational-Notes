@@ -9,31 +9,17 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { Users, BookCopy, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
-import { db } from '@/lib/firebase/server'; // This is fine for server-side fetching, but we need a client-side approach
+import { getAdminStats } from './actions';
 
 type AdminStats = {
   userCount: number;
   resourceCount: number;
 };
 
-// This server-side function will be moved to a client-callable action if needed,
-// but for now, we'll use a client-side fetch for simplicity.
-// We'll mock the data on the client. A proper implementation would use a server action.
-async function getAdminStats(): Promise<AdminStats> {
-    const users = await db.collection('users').get();
-    const resources = await db.collection('resources').get();
-    return {
-        userCount: users.size,
-        resourceCount: resources.size,
-    };
-}
-
-
 export default function AdminDashboardPage() {
   const { user, loading: authLoading, isAdmin } = useAuth();
   const router = useRouter();
 
-  // Mocking stats for client-side display as we can't call server-side db directly
   const [stats, setStats] = useState<AdminStats>({ userCount: 0, resourceCount: 0 });
   const [loadingStats, setLoadingStats] = useState(true);
 
@@ -45,18 +31,17 @@ export default function AdminDashboardPage() {
     }
   }, [user, isAdmin, authLoading, router]);
 
-  // This is a placeholder for fetching stats.
-  // In a real app, you'd call a Server Action here.
   useEffect(() => {
-    setLoadingStats(true);
-    // Simulate fetching data
-    setTimeout(() => {
-      // In a real scenario, you would fetch this data from your backend.
-      // For the prototype, we are using placeholder values.
-      setStats({ userCount: 125, resourceCount: 42 });
-      setLoadingStats(false);
-    }, 1000);
-  }, []);
+    async function fetchStats() {
+      if(isAdmin) {
+        setLoadingStats(true);
+        const fetchedStats = await getAdminStats();
+        setStats(fetchedStats);
+        setLoadingStats(false);
+      }
+    }
+    fetchStats();
+  }, [isAdmin]);
 
   if (authLoading || !isAdmin) {
     return <LoadingSpinner />;

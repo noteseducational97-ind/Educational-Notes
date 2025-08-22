@@ -168,3 +168,20 @@ export async function deleteResourceAction(id: string) {
     };
   }
 }
+
+export async function getAdminStats() {
+    try {
+        const usersPromise = db.collection('users').get();
+        const resourcesPromise = db.collection('resources').get();
+
+        const [usersSnapshot, resourcesSnapshot] = await Promise.all([usersPromise, resourcesPromise]);
+
+        return {
+            userCount: usersSnapshot.size,
+            resourceCount: resourcesSnapshot.size,
+        };
+    } catch (error) {
+        console.error("Error fetching admin stats:", error);
+        return { userCount: 0, resourceCount: 0 };
+    }
+}
