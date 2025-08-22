@@ -4,7 +4,6 @@
 import { z } from 'zod';
 import { db } from '@/lib/firebase/server';
 import { revalidatePath } from 'next/cache';
-import type { Resource } from '@/types';
 
 const FormSchema = z.object({
   title: z.string().min(3, 'Title must be at least 3 characters.'),
@@ -127,42 +126,6 @@ export async function deleteResourceAction(id: string) {
     return {
       success: false,
       error: 'Something went wrong on the server. Could not delete the resource.',
-    };
-  }
-}
-
-export async function saveTemporaryResourceAction(data: AddResourceInput, id?: string) {
-  const validatedFields = FormSchema.safeParse(data);
-
-  if (!validatedFields.success) {
-    return {
-      success: false,
-      error: 'Invalid fields. Please check the form and try again.',
-    };
-  }
-  
-  const resourceId = id || createSlug(validatedFields.data.title);
-  if (!resourceId) {
-    return { success: false, error: 'Cannot save a draft without a title.' };
-  }
-
-  const resourceRef = db.collection('temporary_resources').doc(resourceId);
-
-  try {
-    await resourceRef.set({
-      ...validatedFields.data,
-      id: resourceId,
-      savedAt: new Date(),
-    }, { merge: true });
-
-    revalidatePath('/admin');
-
-    return { success: true, id: resourceId, isNew: !id };
-  } catch (error) {
-    console.error('Error saving temporary resource to Firestore: ', error);
-    return {
-      success: false,
-      error: 'Something went wrong on the server. Could not save the temporary resource.',
     };
   }
 }

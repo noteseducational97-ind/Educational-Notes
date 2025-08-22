@@ -11,23 +11,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { CheckCircle, PlusCircle, XCircle, Users, BookCopy, Edit, Trash2, Archive, ArrowRight } from 'lucide-react';
+import { PlusCircle, Users, BookCopy } from 'lucide-react';
 import Link from 'next/link';
-import { getResources, getTemporaryResources, Resource } from '@/lib/firebase/resources';
-import { format } from 'date-fns';
-import { deleteResourceAction } from './actions';
-import { useToast } from '@/hooks/use-toast';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
 
 type User = {
     uid: string;
@@ -42,49 +27,21 @@ type User = {
 export default function AdminPage() {
   const { user, loading: authLoading, isAdmin } = useAuth();
   const router = useRouter();
-  const { toast } = useToast();
 
   const [users, setUsers] = useState<User[]>([]);
-  const [resources, setResources] = useState<Resource[]>([]);
-  const [tempResources, setTempResources] = useState<Resource[]>([]);
   const [loadingData, setLoadingData] = useState(true);
   
-  const [deletingId, setDeletingId] = useState<string | null>(null);
-
   useEffect(() => {
     if (!authLoading) {
       if (!user || !isAdmin) {
         router.push('/');
       } else {
-        Promise.all([listAllUsers(), getResources(), getTemporaryResources()])
-          .then(([userResults, resourceResults, tempResourceResults]) => {
-            setUsers(userResults);
-            setResources(resourceResults);
-            setTempResources(tempResourceResults);
-          })
+        listAllUsers()
+          .then(setUsers)
           .finally(() => setLoadingData(false));
       }
     }
   }, [user, authLoading, isAdmin, router]);
-
-  const handleDelete = async (id: string, title: string) => {
-    setDeletingId(id);
-    const result = await deleteResourceAction(id);
-    if (result.success) {
-      setResources(prev => prev.filter(r => r.id !== id));
-      toast({
-        title: 'Resource Deleted',
-        description: `"${title}" has been successfully deleted.`,
-      });
-    } else {
-      toast({
-        variant: 'destructive',
-        title: 'Error Deleting Resource',
-        description: result.error,
-      });
-    }
-    setDeletingId(null);
-  };
   
   if (authLoading || !isAdmin) {
     return <LoadingSpinner />;
@@ -123,50 +80,6 @@ export default function AdminPage() {
 
           <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-2">
             <div className="space-y-6">
-                <Card>
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-2"><Archive /> Temporary Save Resources</CardTitle>
-                        <CardDescription>View and manage resources saved as drafts.</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      {loadingData ? (
-                        <div className="flex justify-center items-center h-48">
-                           <LoadingSpinner className="min-h-0" />
-                       </div>
-                      ) : tempResources.length > 0 ? (
-                        <div className="w-full overflow-x-auto">
-                          <Table>
-                            <TableHeader>
-                              <TableRow>
-                                <TableHead>Title</TableHead>
-                                <TableHead>Saved At</TableHead>
-                                <TableHead>Actions</TableHead>
-                              </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                              {tempResources.map((resource) => (
-                                <TableRow key={resource.id}>
-                                  <TableCell className="font-medium">{resource.title}</TableCell>
-                                  <TableCell>{format(new Date(resource.createdAt), 'PPp')}</TableCell>
-                                  <TableCell>
-                                    <Button variant="outline" size="sm" asChild>
-                                      <Link href={`/admin/edit-resource/${resource.id}`}>
-                                        <ArrowRight className="h-4 w-4" />
-                                        Continue Editing
-                                      </Link>
-                                    </Button>
-                                  </TableCell>
-                                </TableRow>
-                              ))}
-                            </TableBody>
-                          </Table>
-                        </div>
-                      ) : (
-                          <p className="text-muted-foreground">No temporarily saved resources found.</p>
-                      )}
-                    </CardContent>
-                </Card>
-
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2"><Users /> Registered Users</CardTitle>

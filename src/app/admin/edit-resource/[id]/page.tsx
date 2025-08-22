@@ -10,7 +10,7 @@ import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 
 import { useToast } from '@/hooks/use-toast';
-import { updateResourceAction, saveTemporaryResourceAction } from '@/app/admin/actions';
+import { updateResourceAction } from '@/app/admin/actions';
 import { getResourceById } from '@/lib/firebase/resources';
 import type { Resource } from '@/types';
 
@@ -21,7 +21,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Loader2, ArrowLeft, Save, Archive } from 'lucide-react';
+import { Loader2, ArrowLeft, Save } from 'lucide-react';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 
 const FormSchema = z.object({
@@ -49,7 +49,6 @@ export default function EditResourceAdminPage() {
   const { toast } = useToast();
   
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSavingTemp, setIsSavingTemp] = useState(false);
   const [resource, setResource] = useState<Resource | null>(null);
   const [loadingResource, setLoadingResource] = useState(true);
 
@@ -120,35 +119,6 @@ export default function EditResourceAdminPage() {
       });
     } finally {
       setIsSubmitting(false);
-    }
-  }
-
-  async function handleSaveTemporary() {
-    if (!resourceId) return;
-    setIsSavingTemp(true);
-    try {
-        const values = form.getValues();
-        const result = await saveTemporaryResourceAction(values, resourceId);
-        if (result.success) {
-            toast({
-                title: 'Saved Temporarily!',
-                description: 'The current version has been saved as a draft.',
-            });
-        } else {
-            toast({
-                variant: 'destructive',
-                title: 'Error Saving Draft',
-                description: result.error || 'An unknown error occurred.',
-            });
-        }
-    } catch (error) {
-        toast({
-            variant: 'destructive',
-            title: 'Unexpected Error',
-            description: 'Something went wrong while saving the draft.',
-        });
-    } finally {
-        setIsSavingTemp(false);
     }
   }
 
@@ -282,15 +252,9 @@ export default function EditResourceAdminPage() {
                   />
                 </CardContent>
                 <CardFooter className="flex justify-between gap-4 border-t pt-6">
-                    <div className="flex gap-2">
-                        <Button type="button" variant="outline" asChild>
-                            <Link href="/admin"><ArrowLeft /> Back</Link>
-                        </Button>
-                        <Button type="button" variant="secondary" onClick={handleSaveTemporary} disabled={isSavingTemp}>
-                            {isSavingTemp ? <Loader2 className="animate-spin" /> : <Archive />}
-                            Save for Later
-                        </Button>
-                    </div>
+                    <Button type="button" variant="outline" asChild>
+                        <Link href="/admin"><ArrowLeft /> Back</Link>
+                    </Button>
                     <Button type="submit" disabled={isSubmitting}>
                         {isSubmitting ? <Loader2 className="animate-spin" /> : <Save />}
                         Save Changes
