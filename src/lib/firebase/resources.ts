@@ -4,7 +4,7 @@
 import { db } from '@/lib/firebase/server'; // Use server-side db
 import { revalidatePath } from 'next/cache';
 import type { Resource as ResourceType } from '@/types';
-import { FieldValue } from 'firebase-admin/firestore';
+import { FieldValue, Timestamp } from 'firebase-admin/firestore';
 
 export type Resource = ResourceType & {
   createdAt: string;
@@ -44,7 +44,7 @@ export async function getResources(): Promise<Resource[]> {
 
         return querySnapshot.docs.map(doc => {
             const data = doc.data();
-            const createdAt = data.createdAt.toDate().toISOString();
+            const createdAt = (data.createdAt as Timestamp).toDate().toISOString();
 
             return {
                 id: doc.id,
@@ -69,32 +69,23 @@ export async function getResources(): Promise<Resource[]> {
 
 export async function getResourceById(id: string): Promise<Resource | null> {
     try {
-        let docSnap = await db.collection('resources').doc(id).get();
-        
-        if (!docSnap.exists) {
-            console.log('Document not found in resources, checking temporary_resources...');
-            docSnap = await db.collection('temporary_resources').doc(id).get();
-        }
+        const docSnap = await db.collection('resources').doc(id).get();
 
         if (!docSnap.exists) {
-            console.log('No such document in resources or temporary_resources!');
+            console.log('No such document in resources!');
             return null;
         }
 
         const data = docSnap.data();
         if (!data) return null;
         
-        // Handle both createdAt and savedAt timestamps, prioritizing createdAt
-        let timestamp;
-        if (data.createdAt) {
+        let timestamp: string;
+        if (data.createdAt && data.createdAt instanceof Timestamp) {
             timestamp = data.createdAt.toDate().toISOString();
-        } else if (data.savedAt) {
-            timestamp = data.savedAt.toDate().toISOString();
         } else {
             timestamp = new Date().toISOString();
         }
 
-        // Create the base resource object
         const resource: Resource = {
             id: docSnap.id,
             title: data.title,
@@ -170,22 +161,39 @@ export async function getWatchlist(userId: string): Promise<Resource[]> {
             return [];
         }
         
-        const resourcesSnapshot = await db.collection('resources').where('id', 'in', resourceIds).get();
+        // Firestore 'in' queries are limited to 30 items. 
+        // If you expect more, you'll need to batch the requests.
+        const resourcesSnapshot = await db.collection('resources').where(FieldPath.documentId(), 'in', resourceIds).get();
 
-        const resourcesById = new Map(resourcesSnapshot.docs.map(doc => [doc.id, doc.data()]));
+        const resourcesById = new Map(resourcesSnapshot.docs.map(doc => {
+            return [doc.id, doc.data()];
+        }));
+        
+        const watchlistResources = snapshot.docs.map(doc => {
+            const resourceData = resourcesById.get(doc.id);
+            if (!resourceData) {
+                return null;
+            }
+            
+            const createdAt = (resourceData.createdAt as Timestamp).toDate().toISOString();
+            
+            return {
+                id: doc.id,
+                title: resourceData.title,
+                description: resourceData.description,
+                content: resourceData.content,
+                category: resourceData.category,
+                subject: resourceData.subject,
+                class: resourceData.class,
+                stream: resourceData.stream,
+                imageUrl: resourceData.imageUrl,
+                pdfUrl: resourceData.pdfUrl,
+                createdAt: createdAt,
+                isComingSoon: resourceData.isComingSoon || false,
+            } as Resource;
+        }).filter((item): item is Resource => item !== null);
 
-        return resourceIds.map(id => {
-             const data = resourcesById.get(id);
-             if (!data) return null;
-
-             const createdAt = data.createdAt.toDate().toISOString();
-             return {
-                id: id,
-                ...data,
-                createdAt
-             } as Resource;
-        }).filter((r): r is Resource => r !== null);
-
+        return watchlistResources;
 
     } catch (error) {
         console.error("Error fetching watchlist: ", error);

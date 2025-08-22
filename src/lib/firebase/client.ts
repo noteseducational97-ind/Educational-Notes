@@ -1,3 +1,4 @@
+
 'use client';
 
 import { initializeApp, getApps, getApp, FirebaseOptions } from 'firebase/app';
@@ -5,12 +6,12 @@ import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig: FirebaseOptions = {
-  apiKey: 'AIzaSyCm8CWW2NS1aGQII9EwMAfBDBxWh4mlddo',
-  authDomain: 'authzen-698pc.firebaseapp.com',
-  projectId: 'authzen-698pc',
-  storageBucket: 'authzen-698pc.appspot.com',
-  messagingSenderId: '645500335752',
-  appId: '1:645500335752:web:de594eb8789542776d913d',
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
 // Check that all required environment variables are set
@@ -19,8 +20,8 @@ if (
   !firebaseConfig.authDomain ||
   !firebaseConfig.projectId
 ) {
-  throw new Error(
-    'Firebase environment variables are not set. Please check your .env.local file.'
+  console.error(
+    'Firebase environment variables are not set. Please check your .env.local file or environment configuration.'
   );
 }
 
