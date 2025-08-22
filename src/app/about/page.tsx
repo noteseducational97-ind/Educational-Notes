@@ -3,6 +3,8 @@
 
 import Header from '@/components/layout/Header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Mail } from 'lucide-react';
 import Image from 'next/image';
 
 export default function AboutPage() {
@@ -57,6 +59,24 @@ export default function AboutPage() {
                 </div>
             </CardContent>
           </Card>
+          
+          <Card className="mt-8">
+            <CardHeader>
+              <CardTitle className="text-3xl font-bold text-primary">Contact Us</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-muted-foreground mb-4">
+                Have questions or feedback? We'd love to hear from you. Reach out to us at:
+              </p>
+              <Button asChild variant="outline">
+                <a href="mailto:noteseducational97@gmail.com">
+                  <Mail className="mr-2 h-4 w-4" />
+                  noteseducational97@gmail.com
+                </a>
+              </Button>
+            </CardContent>
+          </Card>
+
         </div>
       </main>
     </div>
