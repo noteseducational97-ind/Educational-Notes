@@ -36,7 +36,7 @@ const FormSchema = z.object({
   imageUrl: z.string().optional(),
   pdfUrl: z.string().optional(),
   isComingSoon: z.boolean().default(false),
-  visibility: z.enum(['private', 'both']).default('both'),
+  visibility: z.enum(['private', 'public']).default('public'),
 }).superRefine((data, ctx) => {
     if (!data.isComingSoon) {
         if (!data.imageUrl || !z.string().url().safeParse(data.imageUrl).success) {
@@ -85,7 +85,7 @@ export default function AddResourceAdminPage() {
       imageUrl: '',
       pdfUrl: '',
       isComingSoon: false,
-      visibility: 'both',
+      visibility: 'public',
     },
   });
   
@@ -268,9 +268,9 @@ export default function AddResourceAdminPage() {
                                 </FormItem>
                                 <FormItem className="flex items-center space-x-2 space-y-0">
                                   <FormControl>
-                                    <RadioGroupItem value="both" />
+                                    <RadioGroupItem value="public" />
                                   </FormControl>
-                                  <FormLabel className="font-normal flex items-center gap-2"><Users/> Both (Public & Admin)</FormLabel>
+                                  <FormLabel className="font-normal flex items-center gap-2"><Users/> Public (Visible to all users)</FormLabel>
                                 </FormItem>
                               </RadioGroup>
                             </FormControl>

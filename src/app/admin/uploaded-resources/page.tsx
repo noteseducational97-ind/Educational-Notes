@@ -75,10 +75,10 @@ export default function UploadedResourcesPage() {
     switch (visibility) {
       case 'private':
         return { icon: <EyeOff className='mr-1 h-3 w-3'/>, text: 'Private' };
-      case 'both':
-         return { icon: <Users className='mr-1 h-3 w-3'/>, text: 'Both' };
+      case 'public':
+         return { icon: <Users className='mr-1 h-3 w-3'/>, text: 'Public' };
       default:
-        return { icon: <Users className='mr-1 h-3 w-3'/>, text: 'Both' };
+        return { icon: <Users className='mr-1 h-3 w-3'/>, text: 'Public' };
     }
   }
 
@@ -110,7 +110,7 @@ export default function UploadedResourcesPage() {
             <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2"><BookCopy /> All Resources</CardTitle>
-                  <CardDescription>View, edit, or delete any resource. `Private` is visible only to admins, and `Both` is visible to everyone.</CardDescription>
+                  <CardDescription>View, edit, or delete any resource. `Private` is visible only to admins, and `Public` is visible to everyone.</CardDescription>
                 </CardHeader>
                 <CardContent>
                   {loadingData ? (
@@ -138,7 +138,7 @@ export default function UploadedResourcesPage() {
                                <TableRow key={resource.id}>
                                   <TableCell className="font-medium">{resource.title}</TableCell>
                                   <TableCell>
-                                    <Badge variant={resource.visibility === 'private' ? 'destructive' : 'secondary'} className={cn(resource.visibility === 'both' && 'bg-primary/20 border-primary/50 text-primary-foreground')}>
+                                    <Badge variant={resource.visibility === 'private' ? 'destructive' : 'secondary'} className={cn(resource.visibility === 'public' && 'bg-primary/20 border-primary/50 text-primary-foreground')}>
                                         {icon}
                                         {text}
                                     </Badge>

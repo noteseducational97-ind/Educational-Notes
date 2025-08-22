@@ -39,7 +39,7 @@ export async function getResources(options: { publicOnly?: boolean } = {}): Prom
         let query: FirebaseFirestore.Query<FirebaseFirestore.DocumentData> = db.collection('resources');
         
         if (options.publicOnly) {
-            query = query.where('visibility', '==', 'both');
+            query = query.where('visibility', '==', 'public');
         }
 
         const querySnapshot = await query.orderBy('createdAt', 'desc').get();
@@ -65,7 +65,7 @@ export async function getResources(options: { publicOnly?: boolean } = {}): Prom
                 pdfUrl: data.pdfUrl,
                 createdAt: createdAt,
                 isComingSoon: data.isComingSoon || false,
-                visibility: data.visibility || 'both',
+                visibility: data.visibility || 'public',
             } as Resource;
         });
     } catch (error) {
@@ -101,7 +101,7 @@ export async function getResourceById(id: string): Promise<Resource | null> {
             pdfUrl: data.pdfUrl,
             createdAt: createdAt,
             isComingSoon: data.isComingSoon || false,
-            visibility: data.visibility || 'both',
+            visibility: data.visibility || 'public',
         };
 
         return resource;
@@ -192,7 +192,7 @@ export async function getWatchlist(userId: string): Promise<Resource[]> {
                     pdfUrl: resourceData.pdfUrl,
                     createdAt: createdAt,
                     isComingSoon: resourceData.isComingSoon || false,
-                     visibility: resourceData.visibility || 'both',
+                     visibility: resourceData.visibility || 'public',
                 } as Resource;
             }).filter((item): item is Resource => item !== null);
 

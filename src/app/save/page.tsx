@@ -49,8 +49,8 @@ export default function SavePage() {
     if (isAdmin) {
       return allWatchlistItems;
     }
-    // Regular users should only see items that are 'both'
-    return allWatchlistItems.filter(item => item.visibility === 'both');
+    // Regular users should only see items that are 'public'
+    return allWatchlistItems.filter(item => item.visibility === 'public');
   }, [allWatchlistItems, isAdmin]);
 
 
