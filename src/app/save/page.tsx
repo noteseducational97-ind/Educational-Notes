@@ -216,17 +216,24 @@ export default function SavePage() {
                            View
                            </Link>
                         </Button>
-                        <Button asChild={!!user} size="sm" disabled={isLinkDisabled(resource)} onClick={handleDownloadClick}>
+                        {user ? (
+                          <Button asChild size="sm" disabled={isLinkDisabled(resource)}>
                             <Link
-                                href={user ? getDownloadUrl(resource) : '#'}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="group inline-flex items-center gap-1"
+                              href={getDownloadUrl(resource)}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="group inline-flex items-center gap-1"
                             >
+                              <Download className="h-4 w-4" />
+                              Download
+                            </Link>
+                          </Button>
+                        ) : (
+                          <Button size="sm" disabled={isLinkDisabled(resource)} onClick={handleDownloadClick}>
                             <Download className="h-4 w-4" />
                             Download
-                            </Link>
-                        </Button>
+                          </Button>
+                        )}
                       </div>
                   </CardFooter>
                 </Card>
