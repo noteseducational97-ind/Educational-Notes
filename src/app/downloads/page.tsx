@@ -122,6 +122,9 @@ export default function DownloadsPage() {
 
   const filteredResources = useMemo(() => {
     return resources.filter(resource => {
+      if (resource.isComingSoon) {
+        return false;
+      }
       const streamMatch = selectedStreams.length === 0 || resource.stream.some(s => selectedStreams.includes(s));
       const classMatch = selectedClass === 'All' || !resource.class || resource.class === selectedClass;
       const categoryMatch = selectedCategories.length === 0 || resource.category.some(c => selectedCategories.includes(c));
