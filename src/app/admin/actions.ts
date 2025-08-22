@@ -26,18 +26,18 @@ const FormSchema = z.object({
                 path: ['imageUrl'],
             });
         }
-        if (!data.pdfUrl || !z.string().url().safeParse(data.pdfUrl).success) {
-            ctx.addIssue({
-                code: z.ZodIssueCode.custom,
-                message: 'PDF URL is required and must be a valid URL when resource is not "Coming Soon".',
-                path: ['pdfUrl'],
-            });
-        }
         if (!data.viewPdfUrl || !z.string().url().safeParse(data.viewPdfUrl).success) {
             ctx.addIssue({
                 code: z.ZodIssueCode.custom,
                 message: 'View PDF URL is required and must be a valid URL when resource is not "Coming Soon".',
                 path: ['viewPdfUrl'],
+            });
+        }
+        if (!data.pdfUrl || !z.string().url().safeParse(data.pdfUrl).success) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: 'PDF URL is required and must be a valid URL when resource is not "Coming Soon".',
+                path: ['pdfUrl'],
             });
         }
     }
@@ -134,19 +134,27 @@ export async function deleteResourceAction(id: string) {
   }
   
   try {
-    // Also remove from users' watchlists (optional but good practice)
-    const watchlistSnapshot = await db.collectionGroup('watchlist').where('resourceId', '==', id).get();
-    if (!watchlistSnapshot.empty) {
-        const batch = db.batch();
-        watchlistSnapshot.docs.forEach(doc => {
-            batch.delete(doc.ref);
-        });
-        await batch.commit();
+    // Delete the resource document
+    await db.collection('resources').doc(id).delete();
+
+    // After deleting the resource, attempt to remove it from watchlists.
+    // This is a secondary action and should not block the main deletion if it fails.
+    try {
+      const watchlistSnapshot = await db.collectionGroup('watchlist').where('resourceId', '==', id).get();
+      if (!watchlistSnapshot.empty) {
+          const batch = db.batch();
+          watchlistSnapshot.docs.forEach(doc => {
+              batch.delete(doc.ref);
+          });
+          await batch.commit();
+      }
+    } catch (watchlistError) {
+      // Log the error but don't fail the entire operation.
+      // This might happen if the required index for collectionGroup query is not created.
+      console.warn(`Could not clean up watchlists for deleted resource ${id}:`, watchlistError);
     }
     
-    // Now delete the resource itself
-    await db.collection('resources').doc(id).delete();
-    
+    // Revalidate paths to update the UI
     revalidatePath('/admin/uploaded-resources');
     revalidatePath('/downloads');
     revalidatePath('/save');
