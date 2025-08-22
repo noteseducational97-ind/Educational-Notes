@@ -23,7 +23,6 @@ const navLinks = [
   { href: '/downloads', label: 'Downloads', icon: Download },
   { href: '/save', label: 'Watchlist', icon: Bookmark },
   { href: '/about', label: 'About', icon: Info },
-  { href: '/admin', label: 'Admin', icon: Shield },
 ];
 
 
@@ -67,14 +66,12 @@ export default function Header() {
             <span className="hidden font-bold sm:inline-block text-lg">Educational Notes</span>
           </Link>
           <nav className="hidden items-center space-x-6 text-sm md:flex">
-            {navLinks.map(({ href, label }) => {
-              if (href === '/admin' && !isAdmin) return null;
-              return (
+            {navLinks.map(({ href, label }) => (
                 <NavLink key={label} href={href}>
                   {label}
                 </NavLink>
-              );
-            })}
+              )
+            )}
           </nav>
           <div className="ml-auto flex items-center gap-4">
             {loading ? (
@@ -82,7 +79,17 @@ export default function Header() {
                 <LoadingSpinner className="min-h-0 h-full w-full"/>
               </div>
             ) : user ? (
-              <UserNav />
+              <>
+                {isAdmin && (
+                   <Button asChild variant="ghost">
+                      <Link href="/admin">
+                        <Shield />
+                        Admin
+                      </Link>
+                  </Button>
+                )}
+                <UserNav />
+              </>
             ) : (
               <div className="hidden md:flex items-center gap-2">
                 <Button asChild variant="ghost">
@@ -118,20 +125,22 @@ export default function Header() {
                         <span>Educational Notes</span>
                       </Link>
                     </SheetClose>
-                    {navLinks.map(({ href, label, icon: Icon }) => {
-                       if (href === '/admin' && !isAdmin) return null;
-                       return (
+                    {navLinks.map(({ href, label, icon: Icon }) => (
                           <MobileNavLink key={label} href={href}>
                             <Icon className="h-5 w-5" />
                             {label}
                           </MobileNavLink>
                        )
-                    })}
+                    )}
                     <hr className="my-2"/>
                     {user ? (
                       <>
                         {isAdmin && (
                           <>
+                            <MobileNavLink href="/admin">
+                               <Shield className="h-5 w-5" />
+                               Admin
+                            </MobileNavLink>
                             <MobileNavLink href="/admin/uploaded-resources">
                               <BookCopy className="h-5 w-5" />
                               Uploaded Resources
