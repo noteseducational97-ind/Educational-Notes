@@ -42,23 +42,18 @@ export default function AboutPage() {
             <CardHeader>
                 <CardTitle className="text-3xl font-bold text-primary">Sponsored by Passionate Educators</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-12">
-                 <div className="grid md:grid-cols-[200px_1fr] gap-8 items-start">
-                    <div className="w-full aspect-square relative rounded-lg overflow-hidden shadow-lg">
-                        <Image
-                            src="https://placehold.co/400x400.png"
-                            alt="Mangesh Shete Sir"
-                            data-ai-hint="male professor"
-                            fill
-                            className="object-cover"
-                        />
-                    </div>
-                    <div className="space-y-2">
-                        <h3 className="text-2xl font-semibold text-foreground">Mangesh Shete Sir (M.Sc., B.Ed.) – Chemistry</h3>
-                        <p className="text-muted-foreground leading-relaxed">
-                            A master of chemistry and a champion of student-first learning, Mangesh Sir has spent three decades nurturing curiosity, confidence, and academic excellence. His empathetic approach continues to inspire thousands.
-                        </p>
-                    </div>
+            <CardContent className="space-y-8">
+                 <div className="space-y-2">
+                    <h3 className="text-2xl font-semibold text-foreground">Pravin Khachane (M.Sc., B.Ed.) – Physics</h3>
+                    <p className="text-muted-foreground leading-relaxed">
+                        With over 30 years of teaching experience, Pravin Sir is a visionary in science education. His ability to simplify complex physics concepts and connect with students has made him a beloved mentor across Maharashtra.
+                    </p>
+                </div>
+                <div className="space-y-2">
+                    <h3 className="text-2xl font-semibold text-foreground">Mangesh Shete Sir (M.Sc., B.Ed.) – Chemistry</h3>
+                    <p className="text-muted-foreground leading-relaxed">
+                        A master of chemistry and a champion of student-first learning, Mangesh Sir has spent three decades nurturing curiosity, confidence, and academic excellence. His empathetic approach continues to inspire thousands.
+                    </p>
                 </div>
             </CardContent>
           </Card>
