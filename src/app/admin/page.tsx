@@ -11,7 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { PlusCircle, Users, BookCopy, Trash2, UserX, UserCheck, Edit } from 'lucide-react';
+import { PlusCircle, Users, BookCopy, Trash2, Edit } from 'lucide-react';
 import Link from 'next/link';
 import { useToast } from '@/hooks/use-toast';
 import {
@@ -185,15 +185,28 @@ export default function AdminPage() {
                             </Badge>
                           </TableCell>
                            <TableCell className="flex justify-center gap-2">
-                            <Button 
-                              variant="outline" 
-                              size="sm"
-                              onClick={() => handleToggleDisable(u.uid, u.disabled)}
-                              disabled={isProcessing === u.uid}
-                            >
-                              <Edit className="h-4 w-4 mr-2" />
-                              {u.disabled ? 'Enable' : 'Disable'}
-                            </Button>
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button variant="outline" size="sm" disabled={isProcessing === u.uid}>
+                                  <Edit className="h-4 w-4 mr-2" />
+                                  Edit
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>Confirm Action</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    Are you sure you want to {u.disabled ? 'enable' : 'disable'} the user {u.email}?
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                  <AlertDialogAction onClick={() => handleToggleDisable(u.uid, u.disabled)}>
+                                    Yes, {u.disabled ? 'Enable' : 'Disable'} User
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
                             <AlertDialog>
                               <AlertDialogTrigger asChild>
                                 <Button variant="destructive" size="sm" disabled={isProcessing === u.uid}>
