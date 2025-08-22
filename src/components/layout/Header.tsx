@@ -18,21 +18,19 @@ import React from 'react';
 import { EducationalNotesLogo } from '../icons/EducationalNotesLogo';
 import LoadingSpinner from '../shared/LoadingSpinner';
 
-const baseNavLinks = [
+const navLinks = [
   { href: '/', label: 'Home', icon: Home },
   { href: '/downloads', label: 'Downloads', icon: Download },
   { href: '/save', label: 'Watchlist', icon: Bookmark },
   { href: '/about', label: 'About', icon: Info },
+  { href: '/admin', label: 'Admin', icon: Shield },
 ];
 
-const adminLink = { href: '/admin', label: 'Admin', icon: Shield };
 
 export default function Header() {
   const pathname = usePathname();
   const router = useRouter();
   const { user, loading, isAdmin } = useAuth();
-
-  const navLinks = isAdmin ? [...baseNavLinks, adminLink] : baseNavLinks;
 
   const NavLink = ({ href, children }: { href: string; children: React.ReactNode }) => (
     <Link
@@ -69,11 +67,14 @@ export default function Header() {
             <span className="hidden font-bold sm:inline-block text-lg">Educational Notes</span>
           </Link>
           <nav className="hidden items-center space-x-6 text-sm md:flex">
-            {navLinks.map(({ href, label }) => (
-              <NavLink key={label} href={href}>
-                {label}
-              </NavLink>
-            ))}
+            {navLinks.map(({ href, label }) => {
+              if (href === '/admin' && !isAdmin) return null;
+              return (
+                <NavLink key={label} href={href}>
+                  {label}
+                </NavLink>
+              );
+            })}
           </nav>
           <div className="ml-auto flex items-center gap-4">
             {loading ? (
@@ -117,12 +118,15 @@ export default function Header() {
                         <span>Educational Notes</span>
                       </Link>
                     </SheetClose>
-                    {navLinks.map(({ href, label, icon: Icon }) => (
-                      <MobileNavLink key={label} href={href}>
-                        <Icon className="h-5 w-5" />
-                        {label}
-                      </MobileNavLink>
-                    ))}
+                    {navLinks.map(({ href, label, icon: Icon }) => {
+                       if (href === '/admin' && !isAdmin) return null;
+                       return (
+                          <MobileNavLink key={label} href={href}>
+                            <Icon className="h-5 w-5" />
+                            {label}
+                          </MobileNavLink>
+                       )
+                    })}
                     <hr className="my-2"/>
                     {user ? (
                       <>

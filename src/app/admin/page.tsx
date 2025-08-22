@@ -13,6 +13,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { PlusCircle, Users, BookCopy } from 'lucide-react';
 import Link from 'next/link';
+import { useToast } from '@/hooks/use-toast';
 
 type User = {
     uid: string;
@@ -27,13 +28,18 @@ type User = {
 export default function AdminPage() {
   const { user, loading: authLoading, isAdmin } = useAuth();
   const router = useRouter();
+  const { toast } = useToast();
 
   const [users, setUsers] = useState<User[]>([]);
   const [loadingData, setLoadingData] = useState(true);
   
   useEffect(() => {
     if (!authLoading) {
-      if (!user || !isAdmin) {
+      if (!user) {
+        toast({ variant: 'destructive', title: 'Unauthorized Access', description: 'Please log in to view this page.' });
+        router.push('/login');
+      } else if (!isAdmin) {
+        toast({ variant: 'destructive', title: 'Permission Denied', description: 'You do not have permission to access the admin panel.' });
         router.push('/');
       } else {
         listAllUsers()
@@ -41,9 +47,9 @@ export default function AdminPage() {
           .finally(() => setLoadingData(false));
       }
     }
-  }, [user, authLoading, isAdmin, router]);
+  }, [user, authLoading, isAdmin, router, toast]);
   
-  if (authLoading || !isAdmin) {
+  if (authLoading || !user || !isAdmin) {
     return <LoadingSpinner />;
   }
   
