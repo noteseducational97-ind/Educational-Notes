@@ -67,11 +67,11 @@ export default function SavePage() {
   };
 
   const getPreviewUrl = (resource: Resource) => {
-    return resource.pdfUrl || resource.downloadUrl || '#';
+    return resource.pdfUrl || '#';
   };
 
   const getDownloadUrl = (resource: Resource) => {
-    return resource.downloadUrl || resource.pdfUrl || '#';
+    return resource.pdfUrl || '#';
   };
 
   if (authLoading || loading) {

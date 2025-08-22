@@ -122,11 +122,11 @@ export default function DownloadsPage() {
   }, [resources, selectedClass, selectedStream, selectedCategory, selectedSubject]);
 
   const getPreviewUrl = (resource: Resource) => {
-    return resource.pdfUrl || resource.downloadUrl || '#';
+    return resource.pdfUrl || '#';
   };
 
   const getDownloadUrl = (resource: Resource) => {
-    return resource.downloadUrl || resource.pdfUrl || '#';
+    return resource.pdfUrl || '#';
   };
 
   return (

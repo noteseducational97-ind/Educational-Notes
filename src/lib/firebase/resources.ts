@@ -58,7 +58,6 @@ export async function getResources(): Promise<Resource[]> {
                 stream: data.stream,
                 imageUrl: data.imageUrl,
                 pdfUrl: data.pdfUrl,
-                downloadUrl: data.downloadUrl,
                 createdAt: createdAt,
             } as Resource;
         });

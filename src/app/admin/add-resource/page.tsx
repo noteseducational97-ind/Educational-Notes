@@ -32,7 +32,6 @@ const FormSchema = z.object({
   stream: z.enum(['All', 'Science', 'Commerce', 'Arts']),
   imageUrl: z.string().url('Please enter a valid image URL.'),
   pdfUrl: z.string().url('Please enter a valid PDF URL.').optional().or(z.literal('')),
-  downloadUrl: z.string().url('Please enter a valid download URL.').optional().or(z.literal('')),
 });
 
 const categories = ['Notes', 'PYQ', 'Syllabus'];
@@ -54,7 +53,6 @@ export default function AddResourceAdminPage() {
       content: '',
       imageUrl: '',
       pdfUrl: '',
-      downloadUrl: '',
     },
   });
 
@@ -215,14 +213,6 @@ export default function AddResourceAdminPage() {
                       <FormItem>
                         <FormLabel>PDF URL (Optional)</FormLabel>
                         <FormControl><Input placeholder="https://example.com/preview.pdf" {...field} /></FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField control={form.control} name="downloadUrl" render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>External Download URL (Optional)</FormLabel>
-                        <FormControl><Input placeholder="https://example.com/download-link" {...field} /></FormControl>
                         <FormMessage />
                       </FormItem>
                     )}

@@ -15,7 +15,6 @@ const FormSchema = z.object({
   stream: z.enum(['All', 'Science', 'Commerce', 'Arts']),
   imageUrl: z.string().url('Please enter a valid image URL.'),
   pdfUrl: z.string().url('Please enter a valid PDF URL.').optional().or(z.literal('')),
-  downloadUrl: z.string().url('Please enter a valid download URL.').optional().or(z.literal('')),
 });
 
 type AddResourceInput = z.infer<typeof FormSchema>;

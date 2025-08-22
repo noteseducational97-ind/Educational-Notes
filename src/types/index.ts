@@ -9,6 +9,5 @@ export type Resource = {
   stream: 'All' | 'Science' | 'Commerce' | 'Arts';
   imageUrl: string;
   pdfUrl?: string;
-  downloadUrl?: string;
   createdAt: string; // Should be an ISO string
 };
