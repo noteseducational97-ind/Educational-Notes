@@ -42,7 +42,7 @@ export default function AboutPage() {
             <CardHeader>
                 <CardTitle className="text-3xl font-bold text-primary">Sponsored by Passionate Educators</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-8">
+            <CardContent className="grid md:grid-cols-2 gap-8">
                  <div className="space-y-2">
                     <h3 className="text-2xl font-semibold text-foreground">Pravin Khachane (M.Sc., B.Ed.) – Physics</h3>
                     <p className="text-muted-foreground leading-relaxed">
