@@ -34,8 +34,8 @@ const FormSchema = z.object({
   class: z.string().optional(),
   category: z.array(z.string()).nonempty({ message: 'Select at least one category.' }),
   subject: z.array(z.string()).nonempty({ message: 'Select at least one subject.' }),
-  imageUrl: z.string(),
-  pdfUrl: z.string(),
+  imageUrl: z.string().optional(),
+  pdfUrl: z.string().optional(),
   isComingSoon: z.boolean().default(false),
 }).refine(data => {
     if (!data.isComingSoon) {
@@ -305,7 +305,7 @@ export default function EditResourceAdminPage() {
                   <FormField control={form.control} name="imageUrl" render={({ field }) => (
                       <FormItem>
                         <FormLabel>Image URL</FormLabel>
-                        <FormControl><Input placeholder="https://example.com/image.png" {...field} disabled={isComingSoon} /></FormControl>
+                        <FormControl><Input placeholder="https://example.com/image.png" {...field} value={field.value ?? ''} disabled={isComingSoon} /></FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -313,7 +313,7 @@ export default function EditResourceAdminPage() {
                   <FormField control={form.control} name="pdfUrl" render={({ field }) => (
                       <FormItem>
                         <FormLabel>PDF URL</FormLabel>
-                        <FormControl><Input placeholder="https://example.com/preview.pdf" {...field} disabled={isComingSoon} /></FormControl>
+                        <FormControl><Input placeholder="https://example.com/preview.pdf" {...field} value={field.value ?? ''} disabled={isComingSoon} /></FormControl>
                         <FormMessage />
                       </FormItem>
                     )}

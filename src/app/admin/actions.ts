@@ -13,8 +13,8 @@ const FormSchema = z.object({
   subject: z.array(z.string()).nonempty({ message: 'Select at least one subject.' }),
   class: z.string().optional(),
   stream: z.array(z.string()).nonempty({ message: 'Select at least one stream.' }),
-  imageUrl: z.string(),
-  pdfUrl: z.string(),
+  imageUrl: z.string().optional(),
+  pdfUrl: z.string().optional(),
   isComingSoon: z.boolean().default(false),
 }).refine(data => {
     if (!data.isComingSoon) {
