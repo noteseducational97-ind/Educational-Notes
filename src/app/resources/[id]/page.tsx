@@ -23,7 +23,7 @@ export default async function ResourceDetailPage({ params }: Props) {
   }
 
   const isLinkDisabled = resource.isComingSoon || !resource.pdfUrl;
-  const previewUrl = `${resource.viewPdfUrl || resource.pdfUrl}#toolbar=0`;
+  const previewUrl = `https://docs.google.com/gview?url=${resource.viewPdfUrl}&embedded=true`;
 
   return (
     <div className="flex min-h-screen flex-col bg-secondary/20">
@@ -66,12 +66,7 @@ export default async function ResourceDetailPage({ params }: Props) {
                                 className={cn("object-cover rounded-lg", isLinkDisabled && "filter grayscale")}
                             />
                         </div>
-                         <div>
-                            <h3 className="text-lg font-semibold mb-2">Description</h3>
-                            <div className="prose dark:prose-invert max-w-none text-sm text-muted-foreground">
-                                <p>{resource.content}</p>
-                            </div>
-                        </div>
+                         
                         <div>
                             <h3 className="text-lg font-semibold mb-2">Details</h3>
                             <div className="flex flex-col gap-2">
@@ -93,6 +88,12 @@ export default async function ResourceDetailPage({ params }: Props) {
                                  <span className='font-semibold'>Stream:</span>
                                  {resource.stream.map(s => <Badge key={s}>{s}</Badge>)}
                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 className="text-lg font-semibold mb-2">Description</h3>
+                            <div className="prose dark:prose-invert max-w-none text-sm text-muted-foreground">
+                                <p>{resource.content}</p>
                             </div>
                         </div>
                         <div>
@@ -119,3 +120,4 @@ export default async function ResourceDetailPage({ params }: Props) {
 export async function generateStaticParams() {
     return [];
 }
+
