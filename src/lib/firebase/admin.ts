@@ -3,6 +3,7 @@
 
 import { initializeApp, getApps, cert, getApp, App } from 'firebase-admin/app';
 import { getAuth } from 'firebase-admin/auth';
+import { revalidatePath } from 'next/cache';
 
 const serviceAccountString = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
 
@@ -48,7 +49,26 @@ export const listAllUsers = async () => {
     }));
   } catch (error) {
     console.error('Error listing users:', error);
-    // Return an empty array or re-throw the error, depending on desired error handling
     return [];
   }
 };
+
+export async function updateUserDisabledStatus(uid: string, disabled: boolean) {
+  try {
+    await adminAuth.updateUser(uid, { disabled });
+    revalidatePath('/admin');
+  } catch (error) {
+    console.error('Error updating user status:', error);
+    throw new Error('Failed to update user status.');
+  }
+}
+
+export async function deleteUser(uid: string) {
+  try {
+    await adminAuth.deleteUser(uid);
+    revalidatePath('/admin');
+  } catch (error) {
+    console.error('Error deleting user:', error);
+    throw new Error('Failed to delete user.');
+  }
+}
