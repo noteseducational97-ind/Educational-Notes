@@ -139,8 +139,6 @@ export default function SavePage() {
                 <Card key={resource.id} className="flex flex-col hover:border-primary/50 transition-colors duration-300 overflow-hidden">
                    <Link
                     href={`/resources/${resource.id}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
                     className="group block"
                   >
                     <div className="relative aspect-video">
@@ -165,8 +163,6 @@ export default function SavePage() {
                     <CardTitle className="text-xl">
                        <Link
                         href={`/resources/${resource.id}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
                         className="group inline-flex items-center gap-2 hover:text-primary transition-colors"
                       >
                          <BookOpen className="h-5 w-5 text-primary/80" />

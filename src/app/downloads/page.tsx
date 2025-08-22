@@ -249,8 +249,6 @@ export default function DownloadsPage() {
                   <Card key={resource.id} className="flex flex-col hover:border-primary/50 transition-colors duration-300 overflow-hidden">
                     <Link
                       href={`/resources/${resource.id}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
                       className={cn("group block", disabled && "pointer-events-none cursor-not-allowed")}
                     >
                       <div className="relative aspect-video">
@@ -276,8 +274,6 @@ export default function DownloadsPage() {
                       <CardTitle className="text-xl">
                         <Link
                           href={`/resources/${resource.id}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
                           className={cn("group inline-flex items-center gap-2 hover:text-primary transition-colors", disabled && "pointer-events-none text-muted-foreground")}
                         >
                           <BookOpen className="h-5 w-5 text-primary/80" />
