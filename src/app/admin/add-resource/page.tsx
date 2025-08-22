@@ -27,21 +27,22 @@ const FormSchema = z.object({
   title: z.string().min(3, 'Title must be at least 3 characters.'),
   description: z.string().min(10, 'Description must be at least 10 characters.'),
   content: z.string().min(20, 'Content must be at least 20 characters.'),
-  stream: z.string().min(1, 'Please select a stream.'),
+  stream: z.array(z.string()).nonempty({ message: 'Select at least one stream.' }),
   class: z.string().optional(),
   category: z.array(z.string()).nonempty({ message: 'Select at least one category.' }),
   subject: z.array(z.string()).nonempty({ message: 'Select at least one subject.' }),
   imageUrl: z.string().url('Please enter a valid image URL.'),
   pdfUrl: z.string().url('PDF URL is required.'),
 }).refine(data => {
-  if (data.stream === 'Science' || data.stream === 'Commerce') {
+  if (data.stream.includes('Science') || data.stream.includes('Commerce')) {
     return !!data.class;
   }
   return true;
 }, {
-  message: "Class is required for this stream.",
+  message: "Class is required for the selected stream(s).",
   path: ["class"],
 });
+
 
 const allStreams = ['Science', 'MHT-CET', 'NEET', 'Commerce'];
 const scienceClasses = ['9', '10', '11', '12'];
@@ -65,7 +66,7 @@ export default function AddResourceAdminPage() {
       title: '',
       description: '',
       content: '',
-      stream: '',
+      stream: [],
       class: '',
       category: [],
       subject: [],
@@ -74,13 +75,14 @@ export default function AddResourceAdminPage() {
     },
   });
 
-  const selectedStream = form.watch('stream');
+  const selectedStreams = form.watch('stream');
   
   useEffect(() => {
-    if (selectedStream === 'MHT-CET' || selectedStream === 'NEET') {
+    const requiresClass = selectedStreams.includes('Science') || selectedStreams.includes('Commerce');
+    if (!requiresClass) {
       form.setValue('class', undefined);
     }
-  }, [selectedStream, form]);
+  }, [selectedStreams, form]);
 
 
   useEffect(() => {
@@ -129,13 +131,11 @@ export default function AddResourceAdminPage() {
   }
   
   const getClassOptions = () => {
-    if (selectedStream === 'Science') return scienceClasses;
-    if (selectedStream === 'Commerce') return commerceClasses;
-    return [];
+    // This can be expanded if Science and Commerce have different classes in the future
+    return [...new Set([...scienceClasses, ...commerceClasses])];
   }
 
-  const showClassField = selectedStream === 'Science' || selectedStream === 'Commerce';
-
+  const showClassField = selectedStreams.includes('Science') || selectedStreams.includes('Commerce');
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -189,24 +189,37 @@ export default function AddResourceAdminPage() {
                       </FormItem>
                     )}
                   />
-
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                     <FormField
+                    <FormField
                       control={form.control}
                       name="stream"
-                      render={({ field }) => (
+                      render={() => (
                         <FormItem>
-                          <FormLabel>Stream</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select a stream" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {allStreams.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
-                            </SelectContent>
-                          </Select>
+                          <FormLabel>Stream(s)</FormLabel>
+                          <div className="flex flex-wrap gap-4">
+                            {allStreams.map((item) => (
+                              <FormField
+                                key={item}
+                                control={form.control}
+                                name="stream"
+                                render={({ field }) => (
+                                  <FormItem key={item} className="flex flex-row items-start space-x-3 space-y-0">
+                                    <FormControl>
+                                      <Checkbox
+                                        checked={field.value?.includes(item)}
+                                        onCheckedChange={(checked) => {
+                                          return checked
+                                            ? field.onChange([...(field.value || []), item])
+                                            : field.onChange(field.value?.filter((value) => value !== item));
+                                        }}
+                                      />
+                                    </FormControl>
+                                    <FormLabel className="font-normal">{item}</FormLabel>
+                                  </FormItem>
+                                )}
+                              />
+                            ))}
+                          </div>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -223,7 +236,7 @@ export default function AddResourceAdminPage() {
                                 <FormControl>
                                   <SelectTrigger>
                                     <SelectValue placeholder="Select a class" />
-                                  </Trigger>
+                                  </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
                                     {getClassOptions().map(c => <SelectItem key={c} value={c}>Class {c}</SelectItem>)}

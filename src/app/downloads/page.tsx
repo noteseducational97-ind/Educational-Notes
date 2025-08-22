@@ -120,7 +120,7 @@ export default function DownloadsPage() {
 
   const filteredResources = useMemo(() => {
     return resources.filter(resource => {
-      const streamMatch = selectedStream === 'All' || resource.stream === selectedStream;
+      const streamMatch = selectedStream === 'All' || resource.stream.includes(selectedStream);
       const classMatch = selectedClass === 'All' || !resource.class || resource.class === selectedClass;
       const categoryMatch = selectedCategories.length === 0 || resource.category.some(c => selectedCategories.includes(c));
       const subjectMatch = selectedSubjects.length === 0 || resource.subject.some(s => selectedSubjects.includes(s));
@@ -273,7 +273,9 @@ export default function DownloadsPage() {
                       <CardDescription asChild>
                         <div className="flex flex-wrap gap-2 pt-2">
                           {resource.class && <Badge variant="secondary">Class {resource.class}</Badge>}
-                          {resource.stream && <Badge variant="outline">{resource.stream}</Badge>}
+                          <div className='flex flex-wrap gap-1'>
+                             {resource.stream.map(s => <Badge key={s} variant="outline">{s}</Badge>)}
+                          </div>
                           <div className='flex flex-wrap gap-1 mt-1'>
                              {resource.subject.map(s => <Badge key={s} variant="default">{s}</Badge>)}
                           </div>

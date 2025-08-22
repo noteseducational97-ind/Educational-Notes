@@ -126,7 +126,9 @@ export default function SavePage() {
                     <CardDescription asChild>
                       <div className="flex flex-wrap gap-2 pt-2">
                         {resource.class && <Badge variant="secondary">Class {resource.class}</Badge>}
-                        {resource.stream && <Badge variant="outline">{resource.stream}</Badge>}
+                        <div className="flex flex-wrap gap-1">
+                            {resource.stream.map(s => <Badge key={s} variant="outline">{s}</Badge>)}
+                        </div>
                         <div className="flex flex-wrap gap-1 mt-1">
                           {resource.subject.map(s => <Badge key={s} variant="default">{s}</Badge>)}
                         </div>

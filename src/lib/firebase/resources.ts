@@ -1,7 +1,6 @@
 
 'use server';
 
-import { addDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase/server'; // Use server-side db
 import { revalidatePath } from 'next/cache';
 import type { Resource as ResourceType } from '@/types';
@@ -69,29 +68,54 @@ export async function getResources(): Promise<Resource[]> {
 
 export async function getResourceById(id: string): Promise<Resource | null> {
     try {
-        const docRef = db.collection('resources').doc(id);
-        const docSnap = await docRef.get();
+        let docSnap = await db.collection('resources').doc(id).get();
+        
+        if (!docSnap.exists) {
+            console.log('Document not found in resources, checking temporary_resources...');
+            docSnap = await db.collection('temporary_resources').doc(id).get();
+        }
 
         if (!docSnap.exists) {
-            console.log('No such document in resources!');
+            console.log('No such document in resources or temporary_resources!');
             return null;
         }
 
         const data = docSnap.data();
         if (!data) return null;
+        
+        // Handle both createdAt and savedAt timestamps, prioritizing createdAt
+        let timestamp;
+        if (data.createdAt) {
+            timestamp = data.createdAt.toDate().toISOString();
+        } else if (data.savedAt) {
+            timestamp = data.savedAt.toDate().toISOString();
+        } else {
+            timestamp = new Date().toISOString();
+        }
 
-        const createdAt = data.createdAt.toDate().toISOString();
-
-        return {
+        // Create the base resource object
+        const resource: Resource = {
             id: docSnap.id,
-            ...data,
-            createdAt,
-        } as Resource;
+            title: data.title,
+            description: data.description,
+            content: data.content,
+            category: data.category,
+            subject: data.subject,
+            class: data.class,
+            stream: data.stream,
+            imageUrl: data.imageUrl,
+            pdfUrl: data.pdfUrl,
+            createdAt: timestamp,
+        };
+
+        return resource;
+
     } catch (error) {
         console.error("Error fetching resource by ID: ", error);
         return null;
     }
 }
+
 
 export async function addToWatchlist(userId: string, resourceId: string) {
     if (!userId) {

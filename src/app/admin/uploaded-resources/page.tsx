@@ -114,7 +114,7 @@ export default function UploadedResourcesPage() {
                             <TableHead>Category</TableHead>
                             <TableHead>Class</TableHead>
                              <TableHead>Subject</TableHead>
-                            <TableHead>Stream</TableHead>
+                            <TableHead>Stream(s)</TableHead>
                             <TableHead className="text-right">Actions</TableHead>
                           </TableRow>
                         </TableHeader>
@@ -133,7 +133,11 @@ export default function UploadedResourcesPage() {
                                     {resource.subject.map(s => <Badge key={s} variant="outline">{s}</Badge>)}
                                  </div>
                                </TableCell>
-                              <TableCell>{resource.stream}</TableCell>
+                              <TableCell>
+                                <div className="flex flex-wrap gap-1">
+                                    {resource.stream.map(s => <Badge key={s}>{s}</Badge>)}
+                                </div>
+                              </TableCell>
                               <TableCell className="flex justify-end gap-2">
                                 <Button variant="outline" size="sm" asChild>
                                   <Link href={`/admin/edit-resource/${resource.id}`}>

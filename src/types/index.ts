@@ -4,11 +4,11 @@ export type Resource = {
   title: string;
   description: string;
   content: string;
-  category: string[]; // Changed to array
-  subject: string[]; // Changed to array
+  category: string[];
+  subject: string[];
   class?: string; // Optional since it may not be present for all streams
-  stream: string;
+  stream: string[]; // Changed to array to support multiple streams
   imageUrl: string;
-  pdfUrl: string; // No longer optional
+  pdfUrl: string;
   createdAt: string; // Should be an ISO string
 };

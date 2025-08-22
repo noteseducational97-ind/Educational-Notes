@@ -12,16 +12,16 @@ const FormSchema = z.object({
   category: z.array(z.string()).nonempty({ message: 'Select at least one category.' }),
   subject: z.array(z.string()).nonempty({ message: 'Select at least one subject.' }),
   class: z.string().optional(),
-  stream: z.string().min(1, 'Please select a stream.'),
+  stream: z.array(z.string()).nonempty({ message: 'Select at least one stream.' }),
   imageUrl: z.string().url('Please enter a valid image URL.'),
   pdfUrl: z.string().url('PDF URL is required.'),
 }).refine(data => {
-  if (data.stream === 'Science' || data.stream === 'Commerce') {
+  if (data.stream.includes('Science') || data.stream.includes('Commerce')) {
     return !!data.class;
   }
   return true;
 }, {
-  message: "Class is required for this stream.",
+  message: "Class is required for the selected stream(s).",
   path: ["class"],
 });
 
