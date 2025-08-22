@@ -24,6 +24,7 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { Label } from '@/components/ui/label';
 import { MultiSelect } from '@/components/ui/multi-select';
+import { cn } from '@/lib/utils';
 
 const allStreams = ['Science', 'MHT-CET', 'NEET', 'Commerce'];
 const allclasses = ['All', '9', '10', '11', '12'];
@@ -307,3 +308,5 @@ export default function DownloadsPage() {
     </div>
   );
 }
+
+    
