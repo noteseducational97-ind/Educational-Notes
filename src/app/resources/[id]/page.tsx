@@ -5,9 +5,11 @@ import Header from '@/components/layout/Header';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Download, CalendarIcon, BookOpen } from 'lucide-react';
+import { Download, CalendarIcon, BookOpen, ExternalLink } from 'lucide-react';
 import Link from 'next/link';
 import { format } from 'date-fns';
+import { cn } from '@/lib/utils';
+import Image from 'next/image';
 
 type Props = {
   params: { id: string };
@@ -19,6 +21,8 @@ export default async function ResourceDetailPage({ params }: Props) {
   if (!resource) {
     notFound();
   }
+
+  const isLinkDisabled = resource.isComingSoon || !resource.pdfUrl;
 
   return (
     <div className="flex min-h-screen flex-col bg-secondary/20">
@@ -39,13 +43,34 @@ export default async function ResourceDetailPage({ params }: Props) {
                     </div>
                 </CardHeader>
                 <CardContent className="p-6 md:p-8 grid md:grid-cols-3 gap-8">
-                    <div className="md:col-span-2">
-                        <h2 className="text-2xl font-semibold mb-4 border-b pb-2">Description</h2>
-                        <div className="prose dark:prose-invert max-w-none text-muted-foreground">
-                            <p>{resource.content}</p>
+                    <div className="md:col-span-2 space-y-8">
+                        <div>
+                            <h2 className="text-2xl font-semibold mb-4 border-b pb-2">Description</h2>
+                            <div className="prose dark:prose-invert max-w-none text-muted-foreground">
+                                <p>{resource.content}</p>
+                            </div>
+                        </div>
+                        <div>
+                             <h2 className="text-2xl font-semibold mb-4 border-b pb-2">PDF Preview</h2>
+                             <div className="aspect-w-16 aspect-h-9 border rounded-lg overflow-hidden">
+                                 <iframe 
+                                    src={resource.viewPdfUrl || resource.pdfUrl}
+                                    className="w-full h-[800px]"
+                                    title={`${resource.title} PDF Preview`}
+                                    allowFullScreen
+                                />
+                             </div>
                         </div>
                     </div>
                     <aside className="space-y-6">
+                        <div className="relative aspect-video w-full">
+                           <Image 
+                                src={isLinkDisabled ? 'https://placehold.co/600x400.png' : resource.imageUrl || 'https://placehold.co/600x400.png'}
+                                alt={resource.title}
+                                fill
+                                className={cn("object-cover rounded-lg", isLinkDisabled && "filter grayscale")}
+                            />
+                        </div>
                         <div>
                             <h3 className="text-lg font-semibold mb-2">Details</h3>
                             <div className="flex flex-col gap-2">
@@ -72,15 +97,15 @@ export default async function ResourceDetailPage({ params }: Props) {
                         <div>
                             <h3 className="text-lg font-semibold mb-2">Actions</h3>
                             <div className="flex flex-col gap-2">
-                                <Button asChild>
+                                <Button asChild disabled={isLinkDisabled}>
                                     <Link href={resource.pdfUrl} target="_blank" rel="noopener noreferrer">
                                         <Download className="mr-2 h-4 w-4" />
                                         Download PDF
                                     </Link>
                                 </Button>
-                                <Button asChild variant="outline">
+                                <Button asChild variant="outline" disabled={isLinkDisabled}>
                                      <Link href={resource.viewPdfUrl || resource.pdfUrl} target="_blank" rel="noopener noreferrer">
-                                        <BookOpen className="mr-2 h-4 w-4" />
+                                        <ExternalLink className="mr-2 h-4 w-4" />
                                         View PDF
                                     </Link>
                                 </Button>
@@ -88,19 +113,6 @@ export default async function ResourceDetailPage({ params }: Props) {
                         </div>
                     </aside>
                 </CardContent>
-                <CardFooter className="bg-muted/50 p-6 md:p-8">
-                    <div className="w-full">
-                         <h2 className="text-2xl font-semibold mb-4">PDF Preview</h2>
-                         <div className="aspect-w-16 aspect-h-9 border rounded-lg overflow-hidden">
-                             <iframe 
-                                src={resource.viewPdfUrl || resource.pdfUrl}
-                                className="w-full h-[800px]"
-                                title={`${resource.title} PDF Preview`}
-                                allowFullScreen
-                            />
-                         </div>
-                    </div>
-                </CardFooter>
             </Card>
         </div>
       </main>
