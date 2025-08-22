@@ -294,7 +294,7 @@ export default function DownloadsPage() {
                           {isSaved ? <BookmarkCheck className="h-4 w-4 mr-1" /> : <Bookmark className="h-4 w-4 mr-1" />}
                           {isSaved ? 'Saved' : 'Save'}
                       </Button>
-                      <div className="flex items-center gap-2 ml-auto">
+                      <div className="flex items-center gap-2">
                            <Button asChild size="sm" variant="outline" disabled={disabled}>
                               <Link
                                 href={getPreviewUrl(resource)}
