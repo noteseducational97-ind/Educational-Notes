@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Home, Download, Bookmark, Info, Shield, Menu, PlusCircle, LogIn, UserPlus, BookCopy } from 'lucide-react';
+import { Home, Download, Bookmark, Info, Shield, Menu, PlusCircle, LogIn, UserPlus, BookCopy, UserCog } from 'lucide-react';
 import UserNav from './UserNav';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/use-auth';
@@ -83,7 +83,7 @@ export default function Header() {
                 {isAdmin && (
                    <Button asChild variant="ghost">
                       <Link href="/admin">
-                        <Shield />
+                        <UserCog />
                         Admin Panel
                       </Link>
                   </Button>
@@ -138,7 +138,7 @@ export default function Header() {
                         {isAdmin && (
                           <>
                             <MobileNavLink href="/admin">
-                               <Shield className="h-5 w-5" />
+                               <UserCog className="h-5 w-5" />
                                Admin
                             </MobileNavLink>
                             <MobileNavLink href="/admin/uploaded-resources">
