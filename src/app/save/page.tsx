@@ -159,7 +159,6 @@ export default function SavePage() {
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="flex-grow">
-                    <p className='text-sm text-muted-foreground'>{resource.content}</p>
                      <div className="flex flex-wrap gap-1 mt-2">
                         {resource.category.map(c => <Badge key={c} variant="secondary">{c}</Badge>)}
                     </div>
