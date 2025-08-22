@@ -22,8 +22,8 @@ import Image from 'next/image';
 import { useAuth } from '@/hooks/use-auth';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
+import { MultiSelect } from '@/components/ui/multi-select';
 
 const allStreams = ['Science', 'MHT-CET', 'NEET', 'Commerce'];
 const scienceClasses = ['All', '9', '10', '11', '12'];
@@ -137,7 +137,7 @@ export default function DownloadsPage() {
   };
   
   const showClassFilter = useMemo(() => {
-    return selectedStreams.includes('Science') || selectedStreams.includes('Commerce');
+    return selectedStreams.some(s => ['Science', 'Commerce'].includes(s));
   }, [selectedStreams]);
 
   useEffect(() => {
@@ -180,22 +180,13 @@ export default function DownloadsPage() {
                 <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
                     <div>
                         <Label className='text-base font-medium'>Stream(s)</Label>
-                        <div className='flex flex-wrap gap-x-4 gap-y-2 pt-2'>
-                            {allStreams.map(stream => (
-                            <div key={stream} className='flex items-center space-x-2'>
-                                <Checkbox
-                                    id={`stream-${stream}`}
-                                    checked={selectedStreams.includes(stream)}
-                                    onCheckedChange={(checked) => {
-                                        setSelectedStreams(prev => 
-                                            checked ? [...prev, stream] : prev.filter(s => s !== stream)
-                                        );
-                                    }}
-                                />
-                                <Label htmlFor={`stream-${stream}`} className='font-normal'>{stream}</Label>
-                            </div>
-                            ))}
-                        </div>
+                        <MultiSelect
+                            options={allStreams.map(s => ({ value: s, label: s }))}
+                            onValueChange={setSelectedStreams}
+                            defaultValue={selectedStreams}
+                            placeholder="Filter streams..."
+                            className="mt-2"
+                        />
                     </div>
                     {showClassFilter && (
                       <div>
@@ -215,41 +206,23 @@ export default function DownloadsPage() {
                 </div>
                 <div>
                   <Label className='text-base font-medium'>Categories</Label>
-                  <div className='flex flex-wrap gap-x-4 gap-y-2 pt-2'>
-                    {allCategories.map(category => (
-                      <div key={category} className='flex items-center space-x-2'>
-                          <Checkbox
-                              id={`category-${category}`}
-                              checked={selectedCategories.includes(category)}
-                              onCheckedChange={(checked) => {
-                                  setSelectedCategories(prev => 
-                                      checked ? [...prev, category] : prev.filter(c => c !== category)
-                                  );
-                              }}
-                          />
-                          <Label htmlFor={`category-${category}`} className='font-normal'>{category}</Label>
-                      </div>
-                    ))}
-                  </div>
+                  <MultiSelect
+                    options={allCategories.map(c => ({ value: c, label: c }))}
+                    onValueChange={setSelectedCategories}
+                    defaultValue={selectedCategories}
+                    placeholder="Filter categories..."
+                    className="mt-2"
+                  />
                 </div>
                  <div>
                   <Label className='text-base font-medium'>Subjects</Label>
-                  <div className='flex flex-wrap gap-x-4 gap-y-2 pt-2'>
-                    {allSubjects.map(subject => (
-                      <div key={subject} className='flex items-center space-x-2'>
-                          <Checkbox
-                              id={`subject-${subject}`}
-                              checked={selectedSubjects.includes(subject)}
-                              onCheckedChange={(checked) => {
-                                  setSelectedSubjects(prev => 
-                                      checked ? [...prev, subject] : prev.filter(s => s !== subject)
-                                  );
-                              }}
-                          />
-                          <Label htmlFor={`subject-${subject}`} className='font-normal'>{subject}</Label>
-                      </div>
-                    ))}
-                  </div>
+                   <MultiSelect
+                    options={allSubjects.map(s => ({ value: s, label: s }))}
+                    onValueChange={setSelectedSubjects}
+                    defaultValue={selectedSubjects}
+                    placeholder="Filter subjects..."
+                    className="mt-2"
+                  />
                 </div>
             </CardContent>
           </Card>
@@ -348,3 +321,5 @@ export default function DownloadsPage() {
     </div>
   );
 }
+
+    

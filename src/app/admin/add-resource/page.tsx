@@ -21,7 +21,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Loader2, ArrowLeft, Upload } from 'lucide-react';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
-import { Checkbox } from '@/components/ui/checkbox';
+import { MultiSelect } from '@/components/ui/multi-select';
 
 const FormSchema = z.object({
   title: z.string().min(3, 'Title must be at least 3 characters.'),
@@ -78,7 +78,7 @@ export default function AddResourceAdminPage() {
   const selectedStreams = form.watch('stream');
   
   useEffect(() => {
-    const requiresClass = selectedStreams.includes('Science') || selectedStreams.includes('Commerce');
+    const requiresClass = selectedStreams.some(s => ['Science', 'Commerce'].includes(s));
     if (!requiresClass) {
       form.setValue('class', undefined);
     }
@@ -131,11 +131,10 @@ export default function AddResourceAdminPage() {
   }
   
   const getClassOptions = () => {
-    // This can be expanded if Science and Commerce have different classes in the future
     return [...new Set([...scienceClasses, ...commerceClasses])];
   }
 
-  const showClassField = selectedStreams.includes('Science') || selectedStreams.includes('Commerce');
+  const showClassField = selectedStreams.some(s => ['Science', 'Commerce'].includes(s));
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -193,33 +192,15 @@ export default function AddResourceAdminPage() {
                     <FormField
                       control={form.control}
                       name="stream"
-                      render={() => (
+                      render={({ field }) => (
                         <FormItem>
                           <FormLabel>Stream(s)</FormLabel>
-                          <div className="flex flex-wrap gap-4">
-                            {allStreams.map((item) => (
-                              <FormField
-                                key={item}
-                                control={form.control}
-                                name="stream"
-                                render={({ field }) => (
-                                  <FormItem key={item} className="flex flex-row items-start space-x-3 space-y-0">
-                                    <FormControl>
-                                      <Checkbox
-                                        checked={field.value?.includes(item)}
-                                        onCheckedChange={(checked) => {
-                                          return checked
-                                            ? field.onChange([...(field.value || []), item])
-                                            : field.onChange(field.value?.filter((value) => value !== item));
-                                        }}
-                                      />
-                                    </FormControl>
-                                    <FormLabel className="font-normal">{item}</FormLabel>
-                                  </FormItem>
-                                )}
-                              />
-                            ))}
-                          </div>
+                            <MultiSelect
+                                options={allStreams.map(s => ({ value: s, label: s }))}
+                                onValueChange={field.onChange}
+                                defaultValue={field.value}
+                                placeholder="Select streams..."
+                            />
                           <FormMessage />
                         </FormItem>
                       )}
@@ -252,78 +233,34 @@ export default function AddResourceAdminPage() {
                   <FormField
                     control={form.control}
                     name="category"
-                    render={() => (
-                      <FormItem>
-                        <FormLabel>Category</FormLabel>
-                         <div className="flex flex-wrap gap-4">
-                            {categories.map((item) => (
-                                <FormField
-                                key={item}
-                                control={form.control}
-                                name="category"
-                                render={({ field }) => {
-                                    return (
-                                    <FormItem key={item} className="flex flex-row items-start space-x-3 space-y-0">
-                                        <FormControl>
-                                        <Checkbox
-                                            checked={field.value?.includes(item)}
-                                            onCheckedChange={(checked) => {
-                                            return checked
-                                                ? field.onChange([...(field.value || []), item])
-                                                : field.onChange(
-                                                    field.value?.filter(
-                                                    (value) => value !== item
-                                                    )
-                                                )
-                                            }}
-                                        />
-                                        </FormControl>
-                                        <FormLabel className="font-normal">
-                                        {item}
-                                        </FormLabel>
-                                    </FormItem>
-                                    )
-                                }}
-                                />
-                            ))}
-                        </div>
-                        <FormMessage />
-                      </FormItem>
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Category</FormLabel>
+                            <MultiSelect
+                                options={categories.map(c => ({ value: c, label: c }))}
+                                onValueChange={field.onChange}
+                                defaultValue={field.value}
+                                placeholder="Select categories..."
+                            />
+                            <FormMessage />
+                        </FormItem>
                     )}
                   />
 
                   <FormField
                       control={form.control}
                       name="subject"
-                      render={() => (
-                      <FormItem>
-                          <FormLabel>Subject</FormLabel>
-                          <div className="flex flex-wrap gap-4">
-                          {allSubjects.map((item) => (
-                              <FormField
-                              key={item}
-                              control={form.control}
-                              name="subject"
-                              render={({ field }) => (
-                                  <FormItem key={item} className="flex flex-row items-start space-x-3 space-y-0">
-                                  <FormControl>
-                                      <Checkbox
-                                      checked={field.value?.includes(item)}
-                                      onCheckedChange={(checked) => {
-                                          return checked
-                                          ? field.onChange([...(field.value || []), item])
-                                          : field.onChange(field.value?.filter((value) => value !== item));
-                                      }}
-                                      />
-                                  </FormControl>
-                                  <FormLabel className="font-normal">{item}</FormLabel>
-                                  </FormItem>
-                              )}
-                              />
-                          ))}
-                          </div>
-                          <FormMessage />
-                      </FormItem>
+                      render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Subject</FormLabel>
+                             <MultiSelect
+                                options={allSubjects.map(s => ({ value: s, label: s }))}
+                                onValueChange={field.onChange}
+                                defaultValue={field.value}
+                                placeholder="Select subjects..."
+                            />
+                            <FormMessage />
+                        </FormItem>
                       )}
                   />
                   
@@ -361,3 +298,5 @@ export default function AddResourceAdminPage() {
     </div>
   );
 }
+
+    
