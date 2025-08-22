@@ -75,8 +75,8 @@ export default function Header() {
           </nav>
           <div className="ml-auto flex items-center gap-4">
             {loading ? (
-              <div className="h-8 w-20">
-                <LoadingSpinner className="min-h-0 h-full w-full"/>
+              <div className="h-8 w-20 flex items-center justify-center">
+                <Loader2 className="h-6 w-6 animate-spin" />
               </div>
             ) : user ? (
               <>

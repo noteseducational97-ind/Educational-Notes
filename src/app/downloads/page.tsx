@@ -274,7 +274,7 @@ export default function DownloadsPage() {
                           <div className='flex flex-wrap gap-1'>
                              {resource.category.map(c => <Badge key={c} variant="secondary">{c}</Badge>)}
                           </div>
-                          {resource.class && <Badge variant="secondary">Class {resource.class}</Badge>}
+                          {resource.class && <Badge variant="outline">Class {resource.class}</Badge>}
                           <div className='flex flex-wrap gap-1'>
                              {resource.stream.map(s => <Badge key={s} variant="outline">{s}</Badge>)}
                           </div>

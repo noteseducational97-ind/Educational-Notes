@@ -69,13 +69,13 @@ export default function Home() {
                        <Link href="/downloads">Get Started</Link>
                      </Button>
                      <Button size="lg" variant="outline" asChild>
-                       <Link href="/downloads">Explore Resources</Link>
+                       <Link href="/about">Learn More</Link>
                      </Button>
                    </div>
                 </div>
               </div>
               <Image
-                src="https://images.pexels.com/photos/3184328/pexels-photo-3184328.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+                src="https://images.pexels.com/photos/5905445/pexels-photo-5905445.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
                 width="600"
                 height="400"
                 alt="A group of people studying together."
