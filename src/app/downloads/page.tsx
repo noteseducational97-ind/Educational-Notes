@@ -307,7 +307,7 @@ export default function DownloadsPage() {
                       </p>
                     </CardContent>
                     <CardFooter className="flex items-center justify-between mt-auto border-t pt-4">
-                      <Button variant={isSaved ? "secondary" : "ghost"} size="sm" onClick={() => handleToggleWatchlist(resource)} disabled={saving === resource.id}>
+                      <Button variant={isSaved ? "secondary" : "outline"} size="sm" onClick={() => handleToggleWatchlist(resource)} disabled={saving === resource.id}>
                           {isSaved ? <BookmarkCheck className="h-4 w-4 mr-1" /> : <Bookmark className="h-4 w-4 mr-1" />}
                           {isSaved ? 'Saved' : 'Save'}
                       </Button>
