@@ -18,19 +18,19 @@ const FormSchema = z.object({
   isComingSoon: z.boolean().default(false),
 }).refine(data => {
     if (!data.isComingSoon) {
-        return z.string().url('Please enter a valid image URL.').safeParse(data.imageUrl).success;
+        return z.string().url("Please enter a valid image URL.").safeParse(data.imageUrl).success;
     }
     return true;
 }, {
-    message: 'Image URL is required when not "Coming Soon".',
+    message: 'Image URL is required and must be a valid URL when resource is not "Coming Soon".',
     path: ['imageUrl'],
 }).refine(data => {
     if (!data.isComingSoon) {
-        return z.string().url('PDF URL is required.').safeParse(data.pdfUrl).success;
+        return z.string().url('Please enter a valid PDF URL.').safeParse(data.pdfUrl).success;
     }
     return true;
 }, {
-    message: 'PDF URL is required when not "Coming Soon".',
+    message: 'PDF URL is required and must be a valid URL when resource is not "Coming Soon".',
     path: ['pdfUrl'],
 });
 
