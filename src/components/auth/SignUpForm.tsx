@@ -163,7 +163,7 @@ export default function SignUpForm() {
             name="areaOfStudy"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Area of Study</FormLabel>
+                <FormLabel>Preparation</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
                         <div className='relative'>
