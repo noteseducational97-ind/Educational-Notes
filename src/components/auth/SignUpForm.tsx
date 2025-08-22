@@ -11,7 +11,6 @@ import {
   updateProfile,
   signInWithPopup,
   GoogleAuthProvider,
-  sendEmailVerification,
 } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import { auth, db } from '@/lib/firebase/client';
@@ -98,8 +97,7 @@ export default function SignUpForm() {
         createdAt: new Date(),
       });
       
-      await sendEmailVerification(user);
-      router.push('/verify-email');
+      router.push('/');
 
     } catch (error: any) {
       toast({

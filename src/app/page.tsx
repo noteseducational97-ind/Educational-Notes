@@ -6,7 +6,6 @@ import Header from '@/components/layout/Header';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
-import { sendEmailVerification } from 'firebase/auth';
 import { useToast } from '@/hooks/use-toast';
 import { ShieldCheck, Send, Download, Bookmark, Users, LogIn, UserPlus } from 'lucide-react';
 import Image from 'next/image';
@@ -16,23 +15,6 @@ import Link from 'next/link';
 export default function Home() {
   const { user, loading } = useAuth();
   const { toast } = useToast();
-
-  const handleResendVerification = async () => {
-    if (!user) return;
-    try {
-      await sendEmailVerification(user);
-      toast({
-        title: 'Verification email sent',
-        description: 'Check your inbox to verify your account.',
-      });
-    } catch (error: any) {
-      toast({
-        variant: 'destructive',
-        title: 'Error sending email',
-        description: error.message,
-      });
-    }
-  };
 
   if (loading) {
     return <LoadingSpinner />;
@@ -44,19 +26,6 @@ export default function Home() {
       <main className="flex-1">
         <section className="w-full py-20 md:py-32 lg:py-40 bg-gradient-to-br from-primary/10 to-background">
           <div className="container px-4 md:px-6">
-             {user && !user.emailVerified && (
-              <Alert className="mb-8 border-yellow-500/50 text-yellow-700 dark:border-yellow-500/50 dark:bg-yellow-900/20">
-                <ShieldCheck className="h-4 w-4 !text-yellow-500" />
-                <AlertTitle className="font-bold !text-yellow-700 dark:!text-yellow-400">Verify your email address</AlertTitle>
-                <AlertDescription className="flex flex-col sm:flex-row sm:items-center justify-between !text-yellow-600 dark:!text-yellow-400/80">
-                  <span>Please check your inbox to verify your account for full access.</span>
-                  <Button variant="link" onClick={handleResendVerification} className="p-0 h-auto text-yellow-700 hover:text-yellow-800 dark:text-yellow-400 dark:hover:text-yellow-300 mt-2 sm:mt-0">
-                    <Send />
-                    Resend verification email
-                  </Button>
-                </AlertDescription>
-              </Alert>
-            )}
             <div className="grid gap-6 lg:grid-cols-[1fr_500px] lg:gap-12 xl:grid-cols-[1fr_600px]">
               <div className="flex flex-col justify-center space-y-4">
                 <div className="space-y-4">
