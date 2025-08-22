@@ -11,7 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { PlusCircle, Users, BookCopy, Trash2, UserX, UserCheck } from 'lucide-react';
+import { PlusCircle, Users, BookCopy, Trash2, UserX, UserCheck, Edit } from 'lucide-react';
 import Link from 'next/link';
 import { useToast } from '@/hooks/use-toast';
 import {
@@ -191,7 +191,8 @@ export default function AdminPage() {
                               onClick={() => handleToggleDisable(u.uid, u.disabled)}
                               disabled={isProcessing === u.uid}
                             >
-                              {u.disabled ? <UserCheck className="h-4 w-4" /> : <UserX className="h-4 w-4" />}
+                              <Edit className="h-4 w-4 mr-2" />
+                              {u.disabled ? 'Enable' : 'Disable'}
                             </Button>
                             <AlertDialog>
                               <AlertDialogTrigger asChild>
