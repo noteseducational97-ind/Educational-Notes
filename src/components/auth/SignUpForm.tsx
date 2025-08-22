@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -19,11 +20,18 @@ import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Loader2, User, Mail, KeyRound, UserPlus } from 'lucide-react';
+import { Loader2, User, Mail, KeyRound, UserPlus, Book } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+
+const studyOptions = [
+    'Class 9', 'Class 10', 'Class 11', 'Class 12',
+    'MHT-CET', 'NEET'
+]
 
 const formSchema = z
   .object({
     username: z.string().min(3, { message: 'Username must be at least 3 characters.' }),
+    areaOfStudy: z.string().min(1, { message: 'Please select your area of study.'}),
     email: z.string().email({ message: 'Please enter a valid email.' }),
     password: z.string().min(6, { message: 'Password must be at least 6 characters.' }),
     confirmPassword: z.string(),
@@ -64,6 +72,7 @@ export default function SignUpForm() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       username: '',
+      areaOfStudy: '',
       email: '',
       password: '',
       confirmPassword: '',
@@ -85,6 +94,7 @@ export default function SignUpForm() {
         uid: user.uid,
         displayName: values.username,
         email: values.email,
+        areaOfStudy: values.areaOfStudy,
         createdAt: new Date(),
       });
       
@@ -144,6 +154,31 @@ export default function SignUpForm() {
                     <Input placeholder="John Doe" {...field} className="pl-10" />
                   </div>
                 </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="areaOfStudy"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Area of Study</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                        <div className='relative'>
+                            <Book className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                            <SelectTrigger className="pl-10">
+                                <SelectValue placeholder="Select class or exam" />
+                            </SelectTrigger>
+                        </div>
+                    </FormControl>
+                    <SelectContent>
+                        {studyOptions.map(option => (
+                            <SelectItem key={option} value={option}>{option}</SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}
