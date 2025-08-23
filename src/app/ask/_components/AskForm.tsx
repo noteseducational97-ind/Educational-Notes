@@ -260,6 +260,10 @@ export default function AskForm() {
                             </FormItem>
                             )}
                         />
+                        <Button type="submit" disabled={loading} size="icon" className="shrink-0">
+                            {loading ? <Loader2 className="animate-spin" /> : <Send />}
+                            <span className="sr-only">Send</span>
+                        </Button>
                         <Button
                             type="button"
                             variant="outline"
@@ -277,10 +281,6 @@ export default function AskForm() {
                             className="hidden"
                             accept="image/*"
                         />
-                        <Button type="submit" disabled={loading} size="icon" className="shrink-0">
-                            {loading ? <Loader2 className="animate-spin" /> : <Send />}
-                            <span className="sr-only">Send</span>
-                        </Button>
                     </div>
                 </form>
             </Form>
