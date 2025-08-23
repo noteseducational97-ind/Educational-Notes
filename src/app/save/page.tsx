@@ -122,6 +122,12 @@ export default function SavePage() {
 
   const totalPages = Math.ceil(watchlistItems.length / ITEMS_PER_PAGE);
 
+  const handleViewClick = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
   if (authLoading || loading) {
     return <LoadingSpinner />;
   }
@@ -206,7 +212,7 @@ export default function SavePage() {
                                 size="sm"
                                 variant="outline"
                                 disabled={isLinkDisabled(resource)}
-                                onClick={() => currentPage < totalPages && setCurrentPage(currentPage + 1)}
+                                onClick={handleViewClick}
                             >
                                 <ExternalLink className="h-4 w-4" />
                                 View
