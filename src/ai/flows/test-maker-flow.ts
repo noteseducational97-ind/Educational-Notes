@@ -16,6 +16,7 @@ const GenerateTestInputSchema = z.object({
   content: z.string().describe('The full text content of the resource material to base the test on.'),
   class: z.string().optional().describe('The class level for which the test is being generated (e.g., "12").'),
   subject: z.array(z.string()).optional().describe('The subject(s) of the resource material.'),
+  stream: z.array(z.string()).optional().describe('The stream(s) the resource material belongs to (e.g., "Science").'),
 });
 export type GenerateTestInput = z.infer<typeof GenerateTestInputSchema>;
 
@@ -29,7 +30,7 @@ const prompt = ai.definePrompt({
   name: 'generateTestPrompt',
   input: {schema: GenerateTestInputSchema},
   output: {schema: GenerateTestOutputSchema},
-  prompt: `You are an expert test creator for students. Your task is to generate a comprehensive and well-structured test based on the provided content.
+  prompt: `You are an expert test creator for students. Your task is to generate a comprehensive and well-structured test based on the provided topic details.
 
 The test must be structured into four sections based on marks, in this exact order:
 1.  **Section A: Multiple Choice Questions** (Create 4 multiple-choice questions, 1 mark each. Each question must have 4 options. Format them as "1. Question text... A) Option A B) Option B C) Option C D) Option D")
@@ -42,10 +43,13 @@ After all the questions, provide a separate "Answer Key" section that clearly li
 Formatting Rules:
 - Add a blank line before the start of each new section (e.g., before "Section B").
 - Do NOT add any extra blank lines between questions within the same section.
-- Ensure the questions are directly relevant to the content provided below.
+- Ensure the questions are directly relevant to the topic details provided below.
 
-Content:
-{{{content}}}
+Topic Details:
+- Chapter/Title: {{{title}}}
+- Class: {{{class}}}
+- Subject(s): {{#each subject}}{{{this}}}{{#unless @last}}, {{/unless}}{{/each}}
+- Stream(s): {{#each stream}}{{{this}}}{{#unless @last}}, {{/unless}}{{/each}}
 `,
 });
 

@@ -31,6 +31,7 @@ export default function TestMakerButton({ resource, disabled = false }: TestMake
         content: resource.content,
         class: resource.class,
         subject: resource.subject,
+        stream: resource.stream,
       });
       
       const doc = new jsPDF({
