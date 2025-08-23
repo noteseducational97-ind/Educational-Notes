@@ -79,7 +79,7 @@ export default function PdfPreview({ url, title }: PdfPreviewProps) {
         </CardHeader>
         <CardContent className="p-2 h-[800px] overflow-auto flex justify-center" ref={ref}>
             <Document
-                file={{ url }}
+                file={url}
                 onLoadSuccess={onDocumentLoadSuccess}
                 loading={<LoadingSpinner className='min-h-0'/>}
                 error={<div className='text-destructive p-4'>Error loading PDF. Please try viewing it directly.</div>}
