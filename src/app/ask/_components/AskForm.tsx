@@ -28,13 +28,6 @@ type Message = {
     image?: string;
 }
 
-const exampleQuestions = [
-    "Explain the concept of photosynthesis in simple terms.",
-    "What was the significance of the Treaty of Versailles?",
-    "Can you give me a summary of Shakespeare's 'Hamlet'?",
-    "Describe the basic principles of supply and demand in economics."
-];
-
 export default function AskForm() {
   const [loading, setLoading] = useState(false);
   const [conversation, setConversation] = useState<Message[]>([]);
@@ -63,11 +56,6 @@ export default function AskForm() {
   useEffect(() => {
     scrollToBottom();
   }, [conversation, scrollToBottom]);
-
-  const handleExampleClick = (question: string) => {
-    form.setValue('question', question);
-    form.handleSubmit(onSubmit)();
-  };
   
   const getInitials = (name: string | null | undefined) => {
     if (!name) return 'U';
@@ -135,15 +123,8 @@ export default function AskForm() {
                              <Sparkles className="mx-auto h-12 w-12 text-muted-foreground/50" />
                              <h3 className="mt-4 text-lg font-medium">No messages yet</h3>
                              <p className="mt-1 text-sm text-muted-foreground max-w-md">
-                                Ask a question below to start the conversation. Or try one of these examples:
+                                Ask a question below to start the conversation.
                              </p>
-                             <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2 w-full max-w-lg">
-                                {exampleQuestions.map((q, i) => (
-                                    <Button key={i} variant="outline" size="sm" className="text-left h-auto py-2" onClick={() => handleExampleClick(q)}>
-                                        {q}
-                                    </Button>
-                                ))}
-                             </div>
                         </div>
                     ) : (
                         conversation.map((message, index) => (
