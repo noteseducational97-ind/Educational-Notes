@@ -54,7 +54,7 @@ export default function TestMakerButton({ resource, disabled = false }: TestMake
       doc.text('Sponsored by Pravin Khachane & Mangesh Shete Sir', pageWidth - margin, y, { align: 'right' });
       
       y += 15;
-      doc.text('Total Marks: 20', margin, y);
+      doc.text('Total Marks: 28', margin, y);
       doc.text('Time: 1 hr', pageWidth - margin, y, { align: 'right' });
 
       y += 15;
@@ -147,7 +147,7 @@ export default function TestMakerButton({ resource, disabled = false }: TestMake
           if (line.startsWith('Section A:')) {
             currentSection = 'A';
             processSection('Section A', '(4 Marks)');
-            processLine('Ques. 1 Multiple Choice Questions', true);
+            processLine('Ques. 1 Multiple Choice Questions (MCQs)', true);
             continue;
           } else if (line.startsWith('Section B:')) {
             currentSection = 'B';
@@ -156,12 +156,12 @@ export default function TestMakerButton({ resource, disabled = false }: TestMake
             continue;
           } else if (line.startsWith('Section C:')) {
             currentSection = 'C';
-            processSection('Section C', '(6 Marks)');
+            processSection('Section C', '(9 Marks)');
             processLine('Ques. 3. Answer The following Question (Any 2)', true);
             continue;
           } else if (line.startsWith('Section D:')) {
             currentSection = 'D';
-            processSection('Section D', '(4 Marks)'); // As per image it's C again, could be a typo
+            processSection('Section D', '(8 Marks)');
             processLine('Ques. 4. Long Answer Question', true);
             continue;
           } else if (line.startsWith('Answer Key')) {
