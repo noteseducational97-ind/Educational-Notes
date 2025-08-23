@@ -5,7 +5,7 @@ import Header from '@/components/layout/Header';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { getResources, Resource, addToWatchlist, removeFromWatchlist, getWatchlist } from '@/lib/firebase/resources';
 import { format } from 'date-fns';
-import { ArrowUpRight, Download, BookOpen, Bookmark, BookmarkCheck, Clock, Lock, LogIn, ExternalLink } from 'lucide-react';
+import { ArrowUpRight, Download, BookOpen, Bookmark, BookmarkCheck, Clock, Lock, LogIn, ExternalLink, HelpCircle } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState, useMemo, useCallback } from 'react';
 import {
@@ -239,6 +239,16 @@ export default function DownloadsPage() {
                   </div>
                 </div>
             </CardContent>
+            {user && (
+                <CardFooter>
+                    <Button asChild>
+                        <Link href="/ask">
+                            <HelpCircle className="mr-2 h-4 w-4" />
+                            Ask a Question
+                        </Link>
+                    </Button>
+                </CardFooter>
+            )}
           </Card>
 
           {authLoading || loading ? (
@@ -377,3 +387,5 @@ export default function DownloadsPage() {
     </div>
   );
 }
+
+    

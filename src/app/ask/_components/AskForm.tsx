@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -12,81 +12,67 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Loader2, Sparkles, Send, Lightbulb, ArrowLeft } from 'lucide-react';
-import { getResourceById, Resource } from '@/lib/firebase/resources';
+import { getResourceById, getResources, Resource } from '@/lib/firebase/resources';
 import { useAuth } from '@/hooks/use-auth';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useSearchParams, useRouter } from 'next/navigation';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const formSchema = z.object({
   question: z.string().min(10, 'Your question must be at least 10 characters.'),
+  resourceId: z.string().min(1, { message: 'Please select a resource.' }),
 });
 
 export default function AskForm() {
   const [loading, setLoading] = useState(false);
   const [answer, setAnswer] = useState('');
-  const [resource, setResource] = useState<Resource | null>(null);
+  const [resources, setResources] = useState<Resource[]>([]);
   const [loadingResource, setLoadingResource] = useState(true);
   const { toast } = useToast();
   const { user } = useAuth();
   const searchParams = useSearchParams();
   const router = useRouter();
+  
+  const initialResourceId = useMemo(() => searchParams.get('resourceId'), [searchParams]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       question: '',
+      resourceId: initialResourceId || '',
     },
   });
 
-  const resourceId = searchParams.get('resourceId');
-
-  const loadResource = useCallback(async () => {
-    if (!resourceId) {
-        setLoadingResource(false);
-        toast({
-            variant: 'destructive',
-            title: 'No Resource Selected',
-            description: 'Please go back and select a resource to ask a question about.'
-        });
-        return;
-    }
+  const loadResources = useCallback(async () => {
     setLoadingResource(true);
     try {
-        const fetchedResource = await getResourceById(resourceId);
-        if (!fetchedResource || (fetchedResource.visibility === 'private' && !user)) {
-             toast({
-                variant: 'destructive',
-                title: 'Resource not accessible',
-                description: 'The selected resource could not be found or you do not have permission to view it.'
-            });
-            setResource(null);
-        } else {
-            setResource(fetchedResource);
-        }
+        const fetchedResources = await getResources({ includePrivate: !!user });
+        setResources(fetchedResources);
     } catch (error) {
         toast({
             variant: 'destructive',
-            title: 'Error loading resource',
-            description: 'Could not fetch the details of the study material.'
+            title: 'Error loading resources',
+            description: 'Could not fetch the list of study materials.'
         });
     } finally {
         setLoadingResource(false);
     }
-  }, [resourceId, toast, user]);
+  }, [user, toast]);
 
   useEffect(() => {
-    loadResource();
-  }, [loadResource]);
+    loadResources();
+  }, [loadResources]);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
     setAnswer('');
-    if (!resource) {
+    const selectedResource = resources.find(r => r.id === values.resourceId);
+    if (!selectedResource) {
         toast({
             variant: 'destructive',
             title: 'Error',
-            description: 'Resource not loaded. Please try again.',
+            description: 'Selected resource not found. Please try again.',
         });
         setLoading(false);
         return;
@@ -94,8 +80,8 @@ export default function AskForm() {
     try {
       const result = await answerQuestion({
         question: values.question,
-        resourceTitle: resource.title,
-        resourceContent: resource.content,
+        resourceTitle: selectedResource.title,
+        resourceContent: selectedResource.content,
       });
       setAnswer(result.answer);
       toast({
@@ -127,47 +113,64 @@ export default function AskForm() {
         </p>
         </div>
     
-    {resource ? (
-            <Card className="w-full shadow-lg">
-            <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)}>
-                    <CardHeader>
-                    <CardTitle>Ask about: <span className="text-primary">{resource.title}</span></CardTitle>
-                    <CardDescription>Type your question below.</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-6">
-                        <FormField
-                            control={form.control}
-                            name="question"
-                            render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Your Question</FormLabel>
-                                <FormControl>
-                                <Textarea placeholder="e.g., What is the law of conservation of energy?" {...field} rows={4} />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                            )}
-                        />
-                    </CardContent>
-                    <CardFooter className="flex justify-between">
-                        <Button type="button" variant="outline" onClick={() => router.back()}>
-                            <ArrowLeft /> Back
-                        </Button>
-                        <Button type="submit" disabled={loading}>
-                            {loading ? <Loader2 className="animate-spin" /> : <Send />}
-                            Ask Question
-                        </Button>
-                    </CardFooter>
-                </form>
-            </Form>
-            </Card>
-    ): (
-            <Card className="w-full shadow-lg text-center p-8">
-            <CardTitle>Resource Not Available</CardTitle>
-            <CardDescription>Please return to the downloads page and select a resource to ask a question.</CardDescription>
+        <Card className="w-full shadow-lg">
+        <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)}>
+                <CardHeader>
+                <CardTitle>Ask the AI</CardTitle>
+                <CardDescription>Select a resource and type your question below.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                    <FormField
+                      control={form.control}
+                      name="resourceId"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Resource</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select a resource to ask about..." />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {resources.map((resource) => (
+                                <SelectItem key={resource.id} value={resource.id}>
+                                  {resource.title}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="question"
+                        render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Your Question</FormLabel>
+                            <FormControl>
+                            <Textarea placeholder="e.g., What is the law of conservation of energy?" {...field} rows={4} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                        )}
+                    />
+                </CardContent>
+                <CardFooter className="flex justify-between">
+                    <Button type="button" variant="outline" onClick={() => router.back()}>
+                        <ArrowLeft /> Back
+                    </Button>
+                    <Button type="submit" disabled={loading}>
+                        {loading ? <Loader2 className="animate-spin" /> : <Send />}
+                        Ask Question
+                    </Button>
+                </CardFooter>
+            </form>
+        </Form>
         </Card>
-    )}
 
         {answer && (
         <div className="mt-8">
@@ -183,3 +186,5 @@ export default function AskForm() {
     </div>
   );
 }
+
+    
