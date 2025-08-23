@@ -14,6 +14,7 @@ const FormSchema = z.object({
   stream: z.array(z.string()).nonempty({ message: 'Select at least one stream.' }),
   imageUrl: z.string().url().optional().or(z.literal('')),
   pdfUrl: z.string().optional(),
+  viewPdfUrl: z.string().url({ message: 'A valid URL for the PDF preview is required.' }),
   isComingSoon: z.boolean().default(false),
   visibility: z.enum(['private', 'public']).default('public'),
 }).superRefine((data, ctx) => {
@@ -21,7 +22,7 @@ const FormSchema = z.object({
         if (!data.pdfUrl || !z.string().url().safeParse(data.pdfUrl).success) {
             ctx.addIssue({
                 code: z.ZodIssueCode.custom,
-                message: 'PDF URL is required and must be a valid URL when resource is not "Coming Soon".',
+                message: 'Download PDF URL is required and must be a valid URL when resource is not "Coming Soon".',
                 path: ['pdfUrl'],
             });
         }

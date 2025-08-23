@@ -24,7 +24,7 @@ export default async function ResourceDetailPage({ params }: Props) {
   }
 
   const isLinkDisabled = resource.isComingSoon || !resource.pdfUrl;
-  const previewUrl = `https://docs.google.com/gview?url=${resource.pdfUrl}&embedded=true`;
+  const previewUrl = `https://docs.google.com/gview?url=${resource.viewPdfUrl}&embedded=true`;
 
   return (
     <div className="flex min-h-screen flex-col bg-secondary/20">
@@ -56,13 +56,14 @@ export default async function ResourceDetailPage({ params }: Props) {
                     <div className="md:col-span-2 space-y-8">
                         <div>
                              <h2 className="text-2xl font-semibold mb-4 border-b pb-2">PDF Preview</h2>
-                             <div className="border rounded-lg overflow-hidden">
+                             <div className="border rounded-lg overflow-hidden h-[800px] relative">
                                  <iframe 
                                     src={previewUrl}
-                                    className="w-full h-[800px]"
+                                    className="w-full h-full"
                                     title={`${resource.title} PDF Preview`}
                                     allowFullScreen
                                 />
+                                <div className="absolute inset-0" onContextMenu={(e) => e.preventDefault()}></div>
                              </div>
                         </div>
                     </div>

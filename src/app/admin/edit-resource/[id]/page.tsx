@@ -36,6 +36,7 @@ const FormSchema = z.object({
   subject: z.array(z.string()).nonempty({ message: 'Select at least one subject.' }),
   imageUrl: z.string().url().optional().or(z.literal('')),
   pdfUrl: z.string().optional(),
+  viewPdfUrl: z.string().url({ message: 'A valid URL for the PDF preview is required.' }),
   isComingSoon: z.boolean().default(false),
   visibility: z.enum(['private', 'public']).default('public'),
 }).superRefine((data, ctx) => {
@@ -43,7 +44,7 @@ const FormSchema = z.object({
         if (!data.pdfUrl || !z.string().url().safeParse(data.pdfUrl).success) {
             ctx.addIssue({
                 code: z.ZodIssueCode.custom,
-                message: 'PDF URL is required when not "Coming Soon".',
+                message: 'Download PDF URL is required and must be a valid URL when resource is not "Coming Soon".',
                 path: ['pdfUrl'],
             });
         }
@@ -79,6 +80,7 @@ export default function EditResourceAdminPage() {
       content: '',
       imageUrl: '',
       pdfUrl: '',
+      viewPdfUrl: '',
       stream: [],
       class: '',
       category: [],
@@ -89,10 +91,10 @@ export default function EditResourceAdminPage() {
   });
 
   const isComingSoon = form.watch('isComingSoon');
-  const pdfUrlValue = form.watch('pdfUrl');
+  const viewPdfUrlValue = form.watch('viewPdfUrl');
 
-  const isValidPdfUrl = pdfUrlValue && z.string().url().safeParse(pdfUrlValue).success;
-  const previewUrl = isValidPdfUrl ? `https://docs.google.com/gview?url=${pdfUrlValue}&embedded=true` : '';
+  const isValidPdfUrl = viewPdfUrlValue && z.string().url().safeParse(viewPdfUrlValue).success;
+  const previewUrl = isValidPdfUrl ? `https://docs.google.com/gview?url=${viewPdfUrlValue}&embedded=true` : '';
 
   useEffect(() => {
     if (!authLoading) {
@@ -325,7 +327,7 @@ export default function EditResourceAdminPage() {
                   <FormField control={form.control} name="imageUrl" render={({ field }) => (
                       <FormItem>
                         <FormLabel>Image URL (Optional)</FormLabel>
-                        <FormControl><Input placeholder="https://example.com/image.png" {...field} value={field.value ?? ''} disabled={isComingSoon} /></FormControl>
+                        <FormControl><Input placeholder="https://example.com/image.png" {...field} value={field.value ?? ''} /></FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -349,10 +351,22 @@ export default function EditResourceAdminPage() {
                       </CardContent>
                     </Card>
                   )}
+                  
+                  <FormField
+                    control={form.control}
+                    name="viewPdfUrl"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>PDF View URL</FormLabel>
+                        <FormControl><Input placeholder="https://example.com/view.pdf" {...field} value={field.value ?? ''} disabled={isComingSoon} /></FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
                   <FormField control={form.control} name="pdfUrl" render={({ field }) => (
                       <FormItem>
-                        <FormLabel>PDF URL (for View & Download)</FormLabel>
+                        <FormLabel>PDF URL (for Download)</FormLabel>
                         <FormControl><Input placeholder="https://example.com/download.pdf" {...field} value={field.value ?? ''} disabled={isComingSoon} /></FormControl>
                         <FormMessage />
                       </FormItem>
