@@ -1,11 +1,7 @@
 
 'use client';
 
-import LoadingSpinner from '../shared/LoadingSpinner';
 import { Card, CardContent } from '../ui/card';
-import { Button } from '../ui/button';
-import { ExternalLink } from 'lucide-react';
-import Link from 'next/link';
 
 type PdfPreviewProps = {
     url: string;
@@ -34,9 +30,7 @@ export default function PdfPreview({ url, title }: PdfPreviewProps) {
                 height="100%"
                 frameBorder="0"
                 style={{ border: 'none' }}
-            >
-                <p>Your browser does not support iframes.</p>
-            </iframe>
+            />
         </CardContent>
        </Card>
     );
