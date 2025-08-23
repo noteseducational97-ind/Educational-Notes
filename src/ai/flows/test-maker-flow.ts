@@ -42,7 +42,7 @@ After all the questions, provide a separate "Answer Key" section that clearly li
 Formatting Rules:
 - Add a blank line before the start of each new section (e.g., before "Section B").
 - Do NOT add any extra blank lines between questions within the same section.
-- Ensure the questions are directly relevant to the content provided below for the topic: {{{title}}}.
+- Ensure the questions are directly relevant to the content provided below.
 
 Content:
 {{{content}}}
