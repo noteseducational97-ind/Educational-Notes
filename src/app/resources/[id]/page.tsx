@@ -5,11 +5,11 @@ import Header from '@/components/layout/Header';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Download, CalendarIcon, HelpCircle, ArrowLeft, Eye, ExternalLink } from 'lucide-react';
+import { Download, CalendarIcon, HelpCircle, ArrowLeft, ExternalLink } from 'lucide-react';
 import Link from 'next/link';
 import { format } from 'date-fns';
 import TestMakerButton from '@/components/resources/TestMakerButton';
-import PdfPreview from '@/components/resources/PdfPreview';
+import ResourcePreviewer from '@/components/resources/ResourcePreviewer';
 
 type Props = {
   params: { id: string };
@@ -106,7 +106,7 @@ export default async function ResourceDetailPage({ params }: Props) {
               </div>
 
               <div className="lg:col-span-2">
-                <PdfPreview title={resource.title} url={resource.viewPdfUrl} />
+                <ResourcePreviewer title={resource.title} url={resource.viewPdfUrl} />
               </div>
 
             </div>
