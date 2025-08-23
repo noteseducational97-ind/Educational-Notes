@@ -26,8 +26,10 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import Pagination from '@/components/shared/Pagination';
 
 const GUEST_WATCHLIST_KEY = 'guest-watchlist';
+const ITEMS_PER_PAGE = 9;
 
 export default function SavePage() {
   const { user, loading: authLoading } = useAuth();
@@ -37,6 +39,7 @@ export default function SavePage() {
   const { toast } = useToast();
   const [removing, setRemoving] = useState<string | null>(null);
   const [showLoginDialog, setShowLoginDialog] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const fetchWatchlist = useCallback(async () => {
     try {
@@ -112,10 +115,12 @@ export default function SavePage() {
     }
   }
 
-  const displayedItems = useMemo(() => {
-    return watchlistItems;
-  }, [watchlistItems]);
+  const paginatedItems = useMemo(() => {
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    return watchlistItems.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  }, [watchlistItems, currentPage]);
 
+  const totalPages = Math.ceil(watchlistItems.length / ITEMS_PER_PAGE);
 
   if (authLoading || loading) {
     return <LoadingSpinner />;
@@ -133,103 +138,110 @@ export default function SavePage() {
             </p>
           </div>
 
-          {displayedItems.length > 0 ? (
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {displayedItems.map((resource) => (
-                <Card key={resource.id} className="flex flex-col hover:border-primary/50 transition-colors duration-300 overflow-hidden">
-                   <Link
-                    href={`/resources/${resource.id}`}
-                    className="group block"
-                  >
-                    <div className="relative aspect-video">
-                        <Image 
-                            src={resource.isComingSoon ? 'https://placehold.co/600x400.png' : resource.imageUrl || 'https://placehold.co/600x400.png'}
-                            alt={resource.title}
-                            fill
-                            className={cn(
-                                "object-cover group-hover:scale-105 transition-transform duration-300",
-                                isLinkDisabled(resource) && "filter grayscale"
-                            )}
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                        {resource.visibility === 'private' && (
-                           <div className="absolute top-2 right-2">
-                                <Badge variant="destructive" className="text-lg py-1 px-3"><Lock className="mr-1 h-4 w-4" />Private</Badge>
-                            </div>
-                        )}
-                    </div>
-                  </Link>
-                   <CardHeader className="flex-grow">
-                    <CardTitle className="text-xl">
-                       <Link
+          {paginatedItems.length > 0 ? (
+            <>
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {paginatedItems.map((resource) => (
+                    <Card key={resource.id} className="flex flex-col hover:border-primary/50 transition-colors duration-300 overflow-hidden">
+                    <Link
                         href={`/resources/${resource.id}`}
-                        className="group inline-flex items-center gap-2 hover:text-primary transition-colors"
-                      >
-                         <BookOpen className="h-5 w-5 text-primary/80" />
-                        {resource.title}
-                        {!isLinkDisabled(resource) && <ArrowUpRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />}
-                      </Link>
-                    </CardTitle>
-                    <CardDescription asChild>
-                      <div className="flex flex-wrap gap-2 pt-2">
-                        <div className="flex flex-wrap gap-1">
-                            {resource.category.map(c => <Badge key={c} variant="secondary">{c}</Badge>)}
+                        className="group block"
+                    >
+                        <div className="relative aspect-video">
+                            <Image 
+                                src={resource.isComingSoon ? 'https://placehold.co/600x400.png' : resource.imageUrl || 'https://placehold.co/600x400.png'}
+                                alt={resource.title}
+                                fill
+                                className={cn(
+                                    "object-cover group-hover:scale-105 transition-transform duration-300",
+                                    isLinkDisabled(resource) && "filter grayscale"
+                                )}
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                            {resource.visibility === 'private' && (
+                            <div className="absolute top-2 right-2">
+                                    <Badge variant="destructive" className="text-lg py-1 px-3"><Lock className="mr-1 h-4 w-4" />Private</Badge>
+                                </div>
+                            )}
                         </div>
-                        {resource.class && <Badge variant="outline">Class {resource.class}</Badge>}
-                        <div className="flex flex-wrap gap-1">
-                            {resource.stream.map(s => <Badge key={s} variant="outline">{s}</Badge>)}
+                    </Link>
+                    <CardHeader className="flex-grow">
+                        <CardTitle className="text-xl">
+                        <Link
+                            href={`/resources/${resource.id}`}
+                            className="group inline-flex items-center gap-2 hover:text-primary transition-colors"
+                        >
+                            <BookOpen className="h-5 w-5 text-primary/80" />
+                            {resource.title}
+                            {!isLinkDisabled(resource) && <ArrowUpRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />}
+                        </Link>
+                        </CardTitle>
+                        <CardDescription asChild>
+                        <div className="flex flex-wrap gap-2 pt-2">
+                            <div className="flex flex-wrap gap-1">
+                                {resource.category.map(c => <Badge key={c} variant="secondary">{c}</Badge>)}
+                            </div>
+                            {resource.class && <Badge variant="outline">Class {resource.class}</Badge>}
+                            <div className="flex flex-wrap gap-1">
+                                {resource.stream.map(s => <Badge key={s} variant="outline">{s}</Badge>)}
+                            </div>
+                            <div className="flex flex-wrap gap-1 mt-1">
+                            {resource.subject.map(s => <Badge key={s} variant="default">{s}</Badge>)}
+                            </div>
                         </div>
-                        <div className="flex flex-wrap gap-1 mt-1">
-                          {resource.subject.map(s => <Badge key={s} variant="default">{s}</Badge>)}
-                        </div>
-                      </div>
-                    </CardDescription>
-                  </CardHeader>
-                  <CardFooter className="flex items-center justify-between mt-auto border-t pt-4">
-                     <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleRemoveFromWatchlist(resource.id, resource.title)}
-                        disabled={removing === resource.id}
-                      >
-                        <BookmarkX className="h-4 w-4 mr-1" />
-                        Remove
-                      </Button>
-                      <div className="flex items-center gap-2">
-                        <Button asChild size="sm" variant="outline" disabled={isLinkDisabled(resource)}>
-                           <Link
-                           href={getPreviewUrl(resource)}
-                           target="_blank"
-                           rel="noopener noreferrer"
-                           className="group inline-flex items-center gap-1"
-                           >
-                           <ExternalLink className="h-4 w-4" />
-                           View
-                           </Link>
+                        </CardDescription>
+                    </CardHeader>
+                    <CardFooter className="flex items-center justify-between mt-auto border-t pt-4">
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleRemoveFromWatchlist(resource.id, resource.title)}
+                            disabled={removing === resource.id}
+                        >
+                            <BookmarkX className="h-4 w-4 mr-1" />
+                            Remove
                         </Button>
-                        {user ? (
-                          <Button asChild size="sm" disabled={isLinkDisabled(resource)}>
+                        <div className="flex items-center gap-2">
+                            <Button asChild size="sm" variant="outline" disabled={isLinkDisabled(resource)}>
                             <Link
-                              href={getDownloadUrl(resource)}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="group inline-flex items-center gap-1"
+                            href={getPreviewUrl(resource)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="group inline-flex items-center gap-1"
                             >
-                              <Download className="h-4 w-4" />
-                              Download
+                            <ExternalLink className="h-4 w-4" />
+                            View
                             </Link>
-                          </Button>
-                        ) : (
-                          <Button size="sm" disabled={isLinkDisabled(resource)} onClick={handleDownloadClick}>
-                            <Download className="h-4 w-4" />
-                            Download
-                          </Button>
-                        )}
-                      </div>
-                  </CardFooter>
-                </Card>
-              ))}
-            </div>
+                            </Button>
+                            {user ? (
+                            <Button asChild size="sm" disabled={isLinkDisabled(resource)}>
+                                <Link
+                                href={getDownloadUrl(resource)}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="group inline-flex items-center gap-1"
+                                >
+                                <Download className="h-4 w-4" />
+                                Download
+                                </Link>
+                            </Button>
+                            ) : (
+                            <Button size="sm" disabled={isLinkDisabled(resource)} onClick={handleDownloadClick}>
+                                <Download className="h-4 w-4" />
+                                Download
+                            </Button>
+                            )}
+                        </div>
+                    </CardFooter>
+                    </Card>
+                ))}
+                </div>
+                <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={setCurrentPage}
+                />
+            </>
           ) : (
             <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-muted bg-card/50 p-12 text-center">
                 <BookmarkX className="h-16 w-16 text-muted-foreground" />

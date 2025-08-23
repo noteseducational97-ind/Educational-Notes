@@ -36,7 +36,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-
+import Pagination from '@/components/shared/Pagination';
 
 const allStreams = ['Science', 'MHT-CET', 'NEET', 'Commerce'];
 const allclasses = ['All', '9', '10', '11', '12'];
@@ -47,6 +47,7 @@ const allSubjects = [
 ];
 const allCategories = ['Notes', 'Previous Year Questions', 'Syllabus'];
 const GUEST_WATCHLIST_KEY = 'guest-watchlist';
+const ITEMS_PER_PAGE = 9;
 
 export default function DownloadsPage() {
   const [resources, setResources] = useState<Resource[]>([]);
@@ -62,15 +63,14 @@ export default function DownloadsPage() {
   const [selectedClass, setSelectedClass] = useState('All');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedSubjects, setSelectedSubjects] = useState<string[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const fetchInitialData = useCallback(async () => {
     try {
       setLoading(true);
-      // Fetch resources based on login state
       const fetchedResources = await getResources({ includePrivate: !!user });
       setResources(fetchedResources);
       
-      // Fetch watchlist based on login state
       if (user) {
         const watchlistItems = await getWatchlist(user.uid);
         setWatchlistIds(new Set(watchlistItems.map(item => item.id)));
@@ -92,7 +92,6 @@ export default function DownloadsPage() {
   }, [user, toast]);
 
   useEffect(() => {
-    // Only run on the client
     fetchInitialData();
   }, [fetchInitialData]);
   
@@ -102,14 +101,12 @@ export default function DownloadsPage() {
 
     try {
         if (user) {
-            // Logged-in user logic
             if (isSaved) {
                 await removeFromWatchlist(user.uid, resource.id);
             } else {
                 await addToWatchlist(user.uid, resource.id);
             }
         } else {
-            // Guest user logic with localStorage
             const guestWatchlist = new Set(JSON.parse(localStorage.getItem(GUEST_WATCHLIST_KEY) || '[]'));
             if (isSaved) {
                 guestWatchlist.delete(resource.id);
@@ -119,7 +116,6 @@ export default function DownloadsPage() {
             localStorage.setItem(GUEST_WATCHLIST_KEY, JSON.stringify(Array.from(guestWatchlist)));
         }
 
-        // Update local state to reflect the change immediately
         setWatchlistIds(prev => {
             const newSet = new Set(prev);
             if (isSaved) {
@@ -147,6 +143,7 @@ export default function DownloadsPage() {
   };
 
   const filteredResources = useMemo(() => {
+    setCurrentPage(1); // Reset to first page on filter change
     return resources.filter(resource => {
       const streamMatch = selectedStreams.length === 0 || resource.stream.some(s => selectedStreams.includes(s));
       const classMatch = selectedClass === 'All' || !resource.class || resource.class === selectedClass;
@@ -156,6 +153,13 @@ export default function DownloadsPage() {
       return streamMatch && classMatch && categoryMatch && subjectMatch;
     });
   }, [resources, selectedStreams, selectedClass, selectedCategories, selectedSubjects]);
+
+  const paginatedResources = useMemo(() => {
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    return filteredResources.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  }, [filteredResources, currentPage]);
+
+  const totalPages = Math.ceil(filteredResources.length / ITEMS_PER_PAGE);
   
   const getDownloadUrl = (resource: Resource) => {
     return resource.isComingSoon ? '#' : resource.pdfUrl || '#';
@@ -240,103 +244,110 @@ export default function DownloadsPage() {
 
           {authLoading || loading ? (
             <LoadingSpinner />
-          ) : filteredResources.length > 0 ? (
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {filteredResources.map((resource: Resource) => {
-                const isSaved = watchlistIds.has(resource.id);
-                const disabled = isLinkDisabled(resource);
-                return (
-                  <Card key={resource.id} className="flex flex-col hover:border-primary/50 transition-colors duration-300 overflow-hidden">
-                    <Link
-                      href={`/resources/${resource.id}`}
-                      className={cn("group block", disabled && "pointer-events-none cursor-not-allowed")}
-                    >
-                      <div className="relative aspect-video">
-                          <Image 
-                              src={resource.isComingSoon ? 'https://placehold.co/600x400.png' : resource.imageUrl || 'https://placehold.co/600x400.png'}
-                              alt={resource.title}
-                              fill
-                              className={cn("object-cover group-hover:scale-105 transition-transform duration-300", disabled && "filter grayscale")}/>
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                          {resource.isComingSoon && (
-                            <div className="absolute inset-0 flex items-center justify-center">
-                                <Badge variant="secondary" className="text-lg py-2 px-4"><Clock className="mr-2 h-5 w-5" />Coming Soon</Badge>
-                            </div>
-                          )}
-                          {resource.visibility === 'private' && (
-                             <div className="absolute top-2 right-2">
-                                <Badge variant="destructive" className="text-lg py-1 px-3"><Lock className="mr-1 h-4 w-4" />Private</Badge>
-                            </div>
-                          )}
-                      </div>
-                    </Link>
-                    <CardHeader className="flex-grow">
-                      <CardTitle className="text-xl">
+          ) : paginatedResources.length > 0 ? (
+            <>
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {paginatedResources.map((resource: Resource) => {
+                    const isSaved = watchlistIds.has(resource.id);
+                    const disabled = isLinkDisabled(resource);
+                    return (
+                    <Card key={resource.id} className="flex flex-col hover:border-primary/50 transition-colors duration-300 overflow-hidden">
                         <Link
-                          href={`/resources/${resource.id}`}
-                          className={cn("group inline-flex items-center gap-2 hover:text-primary transition-colors", disabled && "pointer-events-none text-muted-foreground")}
+                        href={`/resources/${resource.id}`}
+                        className={cn("group block", disabled && "pointer-events-none cursor-not-allowed")}
                         >
-                          <BookOpen className="h-5 w-5 text-primary/80" />
-                          {resource.title}
-                           {!disabled && <ArrowUpRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />}
-                        </Link>
-                      </CardTitle>
-                      <CardDescription asChild>
-                        <div className="flex flex-wrap gap-2 pt-2">
-                          <div className='flex flex-wrap gap-1'>
-                             {resource.category.map(c => <Badge key={c} variant="secondary">{c}</Badge>)}
-                          </div>
-                          {resource.class && <Badge variant="outline">Class {resource.class}</Badge>}
-                          <div className='flex flex-wrap gap-1'>
-                             {resource.stream.map(s => <Badge key={s} variant="outline">{s}</Badge>)}
-                          </div>
-                          <div className='flex flex-wrap gap-1 mt-1'>
-                             {resource.subject.map(s => <Badge key={s} variant="default">{s}</Badge>)}
-                          </div>
+                        <div className="relative aspect-video">
+                            <Image 
+                                src={resource.isComingSoon ? 'https://placehold.co/600x400.png' : resource.imageUrl || 'https://placehold.co/600x400.png'}
+                                alt={resource.title}
+                                fill
+                                className={cn("object-cover group-hover:scale-105 transition-transform duration-300", disabled && "filter grayscale")}/>
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                            {resource.isComingSoon && (
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                    <Badge variant="secondary" className="text-lg py-2 px-4"><Clock className="mr-2 h-5 w-5" />Coming Soon</Badge>
+                                </div>
+                            )}
+                            {resource.visibility === 'private' && (
+                                <div className="absolute top-2 right-2">
+                                    <Badge variant="destructive" className="text-lg py-1 px-3"><Lock className="mr-1 h-4 w-4" />Private</Badge>
+                                </div>
+                            )}
                         </div>
-                      </CardDescription>
-                    </CardHeader>
-                    <CardFooter className="flex items-center justify-between mt-auto border-t pt-4">
-                      <Button variant={isSaved ? "secondary" : "outline"} size="sm" onClick={() => handleToggleWatchlist(resource)} disabled={saving === resource.id}>
-                          {isSaved ? <BookmarkCheck className="h-4 w-4 mr-1" /> : <Bookmark className="h-4 w-4 mr-1" />}
-                          {isSaved ? 'Saved' : 'Save'}
-                      </Button>
-                      <div className="flex items-center gap-2">
-                           <Button asChild size="sm" variant="outline" disabled={disabled}>
-                              <Link
-                                href={resource.viewPdfUrl || '#'}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="group inline-flex items-center gap-1"
-                              >
-                                <ExternalLink className="h-4 w-4" />
-                                View
-                              </Link>
-                           </Button>
-                           {user ? (
-                                <Button asChild size="sm" disabled={disabled}>
-                                  <Link
-                                    href={getDownloadUrl(resource)}
+                        </Link>
+                        <CardHeader className="flex-grow">
+                        <CardTitle className="text-xl">
+                            <Link
+                            href={`/resources/${resource.id}`}
+                            className={cn("group inline-flex items-center gap-2 hover:text-primary transition-colors", disabled && "pointer-events-none text-muted-foreground")}
+                            >
+                            <BookOpen className="h-5 w-5 text-primary/80" />
+                            {resource.title}
+                            {!disabled && <ArrowUpRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />}
+                            </Link>
+                        </CardTitle>
+                        <CardDescription asChild>
+                            <div className="flex flex-wrap gap-2 pt-2">
+                            <div className='flex flex-wrap gap-1'>
+                                {resource.category.map(c => <Badge key={c} variant="secondary">{c}</Badge>)}
+                            </div>
+                            {resource.class && <Badge variant="outline">Class {resource.class}</Badge>}
+                            <div className='flex flex-wrap gap-1'>
+                                {resource.stream.map(s => <Badge key={s} variant="outline">{s}</Badge>)}
+                            </div>
+                            <div className='flex flex-wrap gap-1 mt-1'>
+                                {resource.subject.map(s => <Badge key={s} variant="default">{s}</Badge>)}
+                            </div>
+                            </div>
+                        </CardDescription>
+                        </CardHeader>
+                        <CardFooter className="flex items-center justify-between mt-auto border-t pt-4">
+                        <Button variant={isSaved ? "secondary" : "outline"} size="sm" onClick={() => handleToggleWatchlist(resource)} disabled={saving === resource.id}>
+                            {isSaved ? <BookmarkCheck className="h-4 w-4 mr-1" /> : <Bookmark className="h-4 w-4 mr-1" />}
+                            {isSaved ? 'Saved' : 'Save'}
+                        </Button>
+                        <div className="flex items-center gap-2">
+                            <Button asChild size="sm" variant="outline" disabled={disabled}>
+                                <Link
+                                    href={resource.viewPdfUrl || '#'}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="group inline-flex items-center gap-1"
-                                  >
+                                >
+                                    <ExternalLink className="h-4 w-4" />
+                                    View
+                                </Link>
+                            </Button>
+                            {user ? (
+                                    <Button asChild size="sm" disabled={disabled}>
+                                    <Link
+                                        href={getDownloadUrl(resource)}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="group inline-flex items-center gap-1"
+                                    >
+                                        <Download className="h-4 w-4" />
+                                        Download
+                                    </Link>
+                                    </Button>
+                                ) : (
+                                    <Button size="sm" disabled={disabled} onClick={handleDownloadClick}>
                                     <Download className="h-4 w-4" />
                                     Download
-                                  </Link>
-                                </Button>
-                              ) : (
-                                <Button size="sm" disabled={disabled} onClick={handleDownloadClick}>
-                                  <Download className="h-4 w-4" />
-                                  Download
-                                </Button>
-                           )}
-                      </div>
-                    </CardFooter>
-                  </Card>
-                )
-              })}
-            </div>
+                                    </Button>
+                            )}
+                        </div>
+                        </CardFooter>
+                    </Card>
+                    )
+                })}
+                </div>
+                <Pagination 
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={setCurrentPage}
+                />
+            </>
           ) : (
             <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-muted bg-card/50 p-12 text-center">
               <h2 className="text-2xl font-semibold">No Matching Resources Found</h2>
