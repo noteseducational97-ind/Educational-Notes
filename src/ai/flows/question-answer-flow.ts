@@ -39,6 +39,7 @@ Do not attempt to generate images. Only provide text-based answers.
 
 {{#if photoDataUri}}
 You have been provided with an image to help answer the question. Use it as context.
+Photo: {{media url=photoDataUri}}
 {{/if}}
 
 User's Question:
@@ -53,9 +54,10 @@ const answerQuestionFlow = ai.defineFlow(
     outputSchema: QuestionAnswerOutputSchema,
   },
   async (input) => {
-    const shouldGenerateImage = /image|generate|create/i.test(input.question);
+    // Check if the user is explicitly asking to generate an image, and no image was uploaded.
+    const wantsImageGeneration = /image|generate|create/i.test(input.question);
     
-    if (shouldGenerateImage) {
+    if (wantsImageGeneration && !input.photoDataUri) {
       const { media } = await ai.generate({
         model: 'googleai/gemini-2.0-flash-preview-image-generation',
         prompt: input.question,
@@ -68,6 +70,7 @@ const answerQuestionFlow = ai.defineFlow(
           imageUrl: media?.url
       }
     } else {
+        // For text questions, or questions about an uploaded image.
         const { output } = await prompt(input);
         return {
             answer: output!.answer,
