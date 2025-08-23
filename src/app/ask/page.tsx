@@ -9,7 +9,7 @@ export default function AskPage() {
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
       <main className="flex-1">
-        <div className="container mx-auto px-4 py-8 flex items-center justify-center">
+        <div className="container mx-auto px-4 py-4 flex items-center justify-center">
             <Suspense fallback={<LoadingSpinner />}>
                 <AskForm />
             </Suspense>
