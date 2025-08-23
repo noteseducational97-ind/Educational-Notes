@@ -218,7 +218,7 @@ export default function AskForm() {
                 </div>
             </ScrollArea>
          </CardContent>
-         <CardFooter className="border-t pt-4">
+         <CardFooter className="border-t pt-4 bg-primary/10">
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-3">
                    {attachedImage && (
@@ -240,7 +240,7 @@ export default function AskForm() {
                         render={({ field }) => (
                         <FormItem>
                             <FormControl>
-                                <div className="relative flex w-full items-center">
+                                <div className="relative flex w-full items-center rounded-full bg-background border shadow-sm">
                                     <Button
                                         type="button"
                                         variant="ghost"
@@ -271,7 +271,7 @@ export default function AskForm() {
                                             }
                                         }}
                                     />
-                                    <Button type="submit" disabled={loading || !form.getValues('question')} size="icon" className="shrink-0">
+                                    <Button type="submit" disabled={loading || !form.getValues('question')} size="icon" className="shrink-0 rounded-full mr-1">
                                         {loading ? <Loader2 className="animate-spin" /> : <Send />}
                                         <span className="sr-only">Send</span>
                                     </Button>
