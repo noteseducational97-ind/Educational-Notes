@@ -173,13 +173,6 @@ export default function DownloadsPage() {
     }
   }
 
-  const handleViewClick = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
@@ -317,10 +310,12 @@ export default function DownloadsPage() {
                                 size="sm"
                                 variant="outline"
                                 disabled={disabled}
-                                onClick={handleViewClick}
+                                asChild
                             >
-                                <ExternalLink className="h-4 w-4" />
-                                View
+                                <Link href={`/resources/${resource.id}`}>
+                                    <ExternalLink className="h-4 w-4" />
+                                    View
+                                </Link>
                             </Button>
                             {user ? (
                                     <Button asChild size="sm" disabled={disabled}>

@@ -122,12 +122,6 @@ export default function SavePage() {
 
   const totalPages = Math.ceil(watchlistItems.length / ITEMS_PER_PAGE);
 
-  const handleViewClick = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
   if (authLoading || loading) {
     return <LoadingSpinner />;
   }
@@ -212,10 +206,12 @@ export default function SavePage() {
                                 size="sm"
                                 variant="outline"
                                 disabled={isLinkDisabled(resource)}
-                                onClick={handleViewClick}
+                                asChild
                             >
-                                <ExternalLink className="h-4 w-4" />
-                                View
+                                <Link href={`/resources/${resource.id}`}>
+                                    <ExternalLink className="h-4 w-4" />
+                                    View
+                                </Link>
                             </Button>
                             {user ? (
                             <Button asChild size="sm" disabled={isLinkDisabled(resource)}>
