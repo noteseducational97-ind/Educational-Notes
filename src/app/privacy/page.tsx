@@ -2,7 +2,6 @@
 'use client';
 import { useEffect, useState } from 'react';
 
-// Accept params to prevent Next.js from trying to enumerate them.
 export default function PrivacyPage() {
   const [date, setDate] = useState('');
 
