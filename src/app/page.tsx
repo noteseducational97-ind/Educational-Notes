@@ -44,11 +44,11 @@ export default function Home() {
                 </div>
               </div>
               <Image
-                src="https://images.pexels.com/photos/5905445/pexels-photo-5905445.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+                src="https://images.pexels.com/photos/159711/books-bookstore-book-reading-159711.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
                 width="600"
                 height="400"
-                alt="A group of people studying together."
-                data-ai-hint="group study"
+                alt="A collection of books on a shelf."
+                data-ai-hint="books education"
                 className="mx-auto aspect-video overflow-hidden rounded-xl object-cover sm:w-full lg:order-last lg:aspect-square shadow-2xl"
               />
             </div>
@@ -128,10 +128,10 @@ export default function Home() {
                 <div className="grid md:grid-cols-2 gap-12 items-center">
                      <div className="flex justify-center">
                         <Image
-                            src="https://images.pexels.com/photos/18069693/pexels-photo-18069693.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+                            src="https://images.pexels.com/photos/8369527/pexels-photo-8369527.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
                             width="500"
                             height="500"
-                            alt="AI Generated Art"
+                            alt="AI concept image"
                             data-ai-hint="abstract technology"
                             className="rounded-full aspect-square object-cover shadow-2xl"
                         />
