@@ -112,8 +112,8 @@ export default function AskForm() {
   }
 
   return (
-    <div className="h-full w-full">
-       <Card className="flex flex-col shadow-lg h-full border-0 rounded-none">
+    <div className="h-full w-full max-w-4xl mx-auto">
+       <Card className="flex flex-col shadow-lg h-full">
          <CardHeader className="border-b">
             <div className='flex justify-between items-center'>
                 <div>
@@ -128,7 +128,7 @@ export default function AskForm() {
             </div>
          </CardHeader>
          <CardContent className="p-0 flex-1 overflow-hidden">
-            <ScrollArea className="h-full" ref={scrollAreaRef}>
+            <ScrollArea className="h-[calc(100vh-270px)]" ref={scrollAreaRef}>
                 <div className="p-6 space-y-6">
                     {conversation.length === 0 ? (
                         <div className="text-center py-12 flex flex-col items-center justify-center h-full">
