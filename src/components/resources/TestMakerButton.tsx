@@ -40,17 +40,21 @@ export default function TestMakerButton({ resource, disabled = false }: TestMake
       doc.setFontSize(20);
       doc.text('Educational Notes', 105, 20, { align: 'center' });
       
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'italic');
+      doc.text('Sponsored by Pravin Khachane & Mangesh Shete', 105, 26, { align: 'center' });
+
       doc.setFontSize(12);
       doc.setFont('helvetica', 'normal');
-      doc.text(`Test for: ${resource.title}`, 105, 30, { align: 'center' });
-      doc.line(15, 35, 195, 35); // Horizontal line
+      doc.text(`Test for: ${resource.title}`, 105, 35, { align: 'center' });
+      doc.line(15, 40, 195, 40); // Horizontal line
 
       // Add Test Content
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(12);
       
       const splitText = doc.splitTextToSize(result.testContent, 180);
-      doc.text(splitText, 15, 45);
+      doc.text(splitText, 15, 50);
       
       const safeTitle = resource.title.replace(/[^a-z0-9]/gi, '_').toLowerCase();
       doc.save(`${safeTitle}_test.pdf`);

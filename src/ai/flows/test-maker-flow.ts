@@ -29,7 +29,7 @@ const prompt = ai.definePrompt({
   name: 'generateTestPrompt',
   input: {schema: GenerateTestInputSchema},
   output: {schema: GenerateTestOutputSchema},
-  prompt: `You are an expert test creator for students. Your task is to generate a comprehensive test based on the provided content.
+  prompt: `You are an expert test creator for students. Your task is to generate a comprehensive and well-structured test based on the provided content.
 
 The test should be tailored for the following context:
 {{#if class}}
@@ -39,15 +39,14 @@ The test should be tailored for the following context:
 - Subject(s): {{#each subject}}{{{this}}}{{#unless @last}}, {{/unless}}{{/each}}
 {{/if}}
 
-The test should be structured into three sections based on marks:
-1.  **Section A: 1 Mark Questions** (5 multiple-choice questions)
-2.  **Section B: 2 Marks Questions** (3 short-answer questions)
-3.  **Section C: 3 Marks Questions** (2 long-answer questions)
+The test must be structured into three sections based on marks, in this exact order:
+1.  **Section A: 1 Mark Questions** (Create 5 multiple-choice questions. Each question must have 4 options labeled A, B, C, and D.)
+2.  **Section B: 2 Marks Questions** (Create 3 short-answer questions that require a brief explanation.)
+3.  **Section C: 3 Marks Questions** (Create 2 long-answer questions that require a more detailed explanation.)
 
-For each multiple-choice question, provide 4 options (A, B, C, D) and clearly indicate the correct answer.
-The entire test should be formatted clearly and be ready for a student to take.
+After all the questions, provide a separate "Answer Key" section that clearly lists the correct answer for every question (e.g., "Section A: 1. B, 2. A", "Section B: 1. [Brief Answer]", etc.).
 
-Use the following content to generate the test for the topic: {{{title}}}
+Format the entire output cleanly. Use clear headings for each section. Ensure the questions are directly relevant to the content provided below for the topic: {{{title}}}.
 
 Content:
 {{{content}}}
