@@ -7,7 +7,7 @@ import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
-import { ShieldCheck, Send, Download, Bookmark, Users, LogIn, UserPlus, FileText, Lightbulb } from 'lucide-react';
+import { ShieldCheck, Send, Download, Bookmark, Users, LogIn, UserPlus, FileText, Lightbulb, BrainCircuit } from 'lucide-react';
 import Image from 'next/image';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
@@ -95,12 +95,35 @@ export default function Home() {
             </div>
           </div>
         </section>
-        
+
         <section className="w-full py-12 md:py-24">
             <div className="container px-4 md:px-6">
                 <div className="grid md:grid-cols-2 gap-12 items-center">
+                     <div className="flex justify-center">
+                        <BrainCircuit className="h-48 w-48 text-primary/20" />
+                    </div>
                     <div>
-                        <div className="inline-block rounded-lg bg-secondary px-3 py-1 text-sm font-semibold text-secondary-foreground mb-4">Your Privacy Matters</div>
+                        <div className="inline-block rounded-lg bg-secondary px-3 py-1 text-sm font-semibold text-secondary-foreground mb-4">Supercharge Your Learning</div>
+                        <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">Meet Your Personal AI Tutor</h2>
+                        <p className="mt-4 max-w-[600px] text-muted-foreground md:text-xl/relaxed">
+                           "The only limit to AI is human imagination." - Chris Duffey. Our AI assistant is here to break down complex topics, answer your toughest questions, and help you generate practice tests. It's like having a personal tutor available 24/7.
+                        </p>
+                        <Button asChild className="mt-6">
+                            <Link href="/ask">
+                                <Lightbulb className="mr-2 h-5 w-5" />
+                                Try the Assistant
+                            </Link>
+                        </Button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section className="w-full py-12 md:py-24 bg-secondary/30">
+            <div className="container px-4 md:px-6">
+                <div className="grid md:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm text-primary font-semibold mb-4">Your Privacy Matters</div>
                         <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">We Guarantee Your Data's Security</h2>
                         <p className="mt-4 max-w-[600px] text-muted-foreground md:text-xl/relaxed">
                             Your trust is our top priority. We are committed to protecting your personal information and ensuring your learning environment is safe and secure. We use industry-standard encryption and never share your data without your consent.
