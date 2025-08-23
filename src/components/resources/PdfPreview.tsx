@@ -30,7 +30,8 @@ export default function PdfPreview({ url, title }: PdfPreviewProps) {
                 height="100%"
                 frameBorder="0"
                 style={{ border: 'none' }}
-            />
+            >
+            </iframe>
         </CardContent>
        </Card>
     );
