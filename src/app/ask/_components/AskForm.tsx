@@ -112,8 +112,8 @@ export default function AskForm() {
   }
 
   return (
-    <div className="w-full max-w-5xl mx-auto">
-       <Card className="flex-1 flex flex-col shadow-lg h-[calc(100vh-10rem)]">
+    <div className="h-full w-full">
+       <Card className="flex flex-col shadow-lg h-full border-0 rounded-none">
          <CardHeader className="border-b">
             <div className='flex justify-between items-center'>
                 <div>
