@@ -153,36 +153,6 @@ export default function Home() {
             </div>
         </section>
         
-        <section className="w-full py-12 md:py-24 bg-secondary/30">
-            <div className="container px-4 md:px-6">
-                <div className="grid md:grid-cols-2 gap-12 items-center">
-                    <div>
-                        <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm text-primary font-semibold mb-4">Your Privacy Matters</div>
-                        <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">We Guarantee Your Data's Security</h2>
-                        <p className="mt-4 max-w-[600px] text-muted-foreground md:text-xl/relaxed">
-                            Your trust is our top priority. We are committed to protecting your personal information and ensuring your learning environment is safe and secure. We use industry-standard encryption and never share your data without your consent.
-                        </p>
-                        <Button asChild className="mt-6">
-                            <Link href="/privacy">
-                                <ShieldCheck className="mr-2 h-5 w-5" />
-                                Read Our Privacy Policy
-                            </Link>
-                        </Button>
-                    </div>
-                    <div className="flex justify-center">
-                         <Image
-                            src="https://images.pexels.com/photos/60504/security-protection-anti-virus-software-60504.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-                            width="500"
-                            height="500"
-                            alt="Data Security"
-                            data-ai-hint="data security"
-                            className="rounded-full aspect-square object-cover shadow-2xl"
-                        />
-                    </div>
-                </div>
-            </div>
-        </section>
-
         <section className="w-full py-12 md:py-24 bg-primary/10">
             <div className="container grid items-center justify-center gap-4 px-4 text-center md:px-6">
                 <div className="space-y-3 max-w-2xl mx-auto">
