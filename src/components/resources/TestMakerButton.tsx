@@ -42,7 +42,7 @@ export default function TestMakerButton({ resource, disabled = false }: TestMake
     setLoading(true);
     toast({
       title: 'Generating Test...',
-      description: 'Please wait while we create your test. This may take a moment.',
+      description: 'The AI is creating your personalized test. This may take a moment.',
     });
 
     try {
@@ -62,10 +62,14 @@ export default function TestMakerButton({ resource, disabled = false }: TestMake
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(12);
       
+      // The splitTextToSize function is important for handling long text.
+      // It splits the text into an array of strings, each fitting the specified width.
       const splitText = doc.splitTextToSize(result.testContent, 180);
       doc.text(splitText, 15, 35);
       
-      doc.save(`${resource.title.replace(/ /g, '_')}_Test.pdf`);
+      // Sanitize the title for the filename
+      const safeTitle = resource.title.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+      doc.save(`${safeTitle}_test.pdf`);
       
       toast({
         title: 'Success!',
@@ -77,7 +81,7 @@ export default function TestMakerButton({ resource, disabled = false }: TestMake
       toast({
         variant: 'destructive',
         title: 'Error',
-        description: 'Failed to generate the test. Please try again later.',
+        description: 'Failed to generate the test. The AI might be busy. Please try again later.',
       });
     } finally {
       setLoading(false);
