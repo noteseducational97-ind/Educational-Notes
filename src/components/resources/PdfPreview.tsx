@@ -25,8 +25,16 @@ export default function PdfPreview({ url, title }: PdfPreviewProps) {
         )
     }
     
-    // Construct the Google Docs Viewer URL
-    const embedUrl = `https://docs.google.com/gview?url=${encodeURIComponent(url)}&embedded=true`;
+    let embedUrl = `https://docs.google.com/gview?url=${encodeURIComponent(url)}&embedded=true`;
+
+    // Check if it's a Google Drive link and construct the native embed URL
+    if (url.includes('drive.google.com')) {
+        // From: https://drive.google.com/file/d/FILE_ID/view?usp=sharing
+        // To:   https://drive.google.com/file/d/FILE_ID/preview
+        const newUrl = url.replace('/view?usp=sharing', '/preview').replace('/view', '/preview');
+        embedUrl = newUrl;
+    }
+
 
     return (
        <Card className="h-full flex flex-col">
