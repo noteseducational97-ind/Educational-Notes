@@ -128,7 +128,7 @@ export default function AskForm() {
             </div>
          </CardHeader>
          <CardContent className="p-0 flex-1 overflow-hidden">
-            <ScrollArea className="h-[calc(100vh-270px)]" ref={scrollAreaRef}>
+            <ScrollArea className="h-full" ref={scrollAreaRef}>
                 <div className="p-6 space-y-6">
                     {conversation.length === 0 ? (
                         <div className="text-center py-12 flex flex-col items-center justify-center h-full">
@@ -261,3 +261,5 @@ export default function AskForm() {
     </div>
   );
 }
+
+    
