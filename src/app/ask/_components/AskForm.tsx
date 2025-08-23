@@ -28,6 +28,13 @@ type Message = {
     image?: string;
 }
 
+const examplePrompts = [
+    'What is Beats frequency?',
+    'What is electrochemistry?',
+    'What is photosynthesis?',
+    'What is CPU?',
+];
+
 export default function AskForm() {
   const [loading, setLoading] = useState(false);
   const [conversation, setConversation] = useState<Message[]>([]);
@@ -73,7 +80,16 @@ export default function AskForm() {
     }
   };
 
+  const handleExampleClick = (prompt: string) => {
+    form.setValue('question', prompt);
+    // Use a timeout to ensure the value is set before submitting
+    setTimeout(() => {
+        form.handleSubmit(onSubmit)();
+    }, 0);
+  }
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    if (loading) return;
     setLoading(true);
     const userMessage: Message = { role: 'user', content: values.question, image: attachedImage ?? undefined };
     setConversation(prev => [...prev, userMessage]);
@@ -100,7 +116,7 @@ export default function AskForm() {
   }
 
   return (
-    <div className="h-full w-full max-w-6xl">
+    <div className="h-full w-full max-w-4xl">
        <Card className="flex flex-col shadow-lg h-full">
          <CardHeader className="border-b">
             <div className='flex justify-between items-center'>
@@ -125,6 +141,23 @@ export default function AskForm() {
                              <p className="mt-1 text-sm text-muted-foreground max-w-md">
                                 Ask a question below to start the conversation.
                              </p>
+                            <div className="mt-8 w-full max-w-2xl">
+                                <p className="mb-4 text-sm font-medium text-muted-foreground">
+                                    Or try one of these examples:
+                                </p>
+                                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                                    {examplePrompts.map((prompt, i) => (
+                                        <Button
+                                            key={i}
+                                            variant="outline"
+                                            className="text-left h-auto py-2"
+                                            onClick={() => handleExampleClick(prompt)}
+                                        >
+                                            {prompt}
+                                        </Button>
+                                    ))}
+                                </div>
+                            </div>
                         </div>
                     ) : (
                         conversation.map((message, index) => (
@@ -242,3 +275,5 @@ export default function AskForm() {
     </div>
   );
 }
+
+    
