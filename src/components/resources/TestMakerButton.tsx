@@ -55,17 +55,15 @@ export default function TestMakerButton({ resource, disabled = false }: TestMake
       
       const doc = new jsPDF();
       
-      // Add content to the PDF
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(16);
-      doc.text(`Test for: ${resource.title}`, 10, 20);
+      doc.text(`Test for: ${resource.title}`, 105, 20, { align: 'center' });
       
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(12);
       
-      // Split the text into lines to handle wrapping
       const splitText = doc.splitTextToSize(result.testContent, 180);
-      doc.text(splitText, 10, 30);
+      doc.text(splitText, 15, 35);
       
       doc.save(`${resource.title.replace(/ /g, '_')}_Test.pdf`);
       
