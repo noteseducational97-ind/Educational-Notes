@@ -11,6 +11,7 @@ import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import TestMakerButton from '@/components/resources/TestMakerButton';
+import PdfPreview from '@/components/resources/PdfPreview';
 
 type Props = {
   params: { id: string };
@@ -56,15 +57,7 @@ export default async function ResourceDetailPage({ params }: Props) {
                     <div className="md:col-span-2 space-y-8">
                         <div>
                              <h2 className="text-2xl font-semibold mb-4 border-b pb-2">PDF Preview</h2>
-                             <div className="border rounded-lg overflow-hidden h-[800px] relative">
-                                 <iframe 
-                                    src={previewUrl}
-                                    className="w-full h-full"
-                                    title={`${resource.title} PDF Preview`}
-                                    allowFullScreen
-                                />
-                                <div className="absolute inset-0" onContextMenu={(e) => e.preventDefault()}></div>
-                             </div>
+                             <PdfPreview url={previewUrl} title={resource.title} />
                         </div>
                     </div>
                     <aside className="space-y-6">
