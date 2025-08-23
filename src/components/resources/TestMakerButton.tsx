@@ -35,7 +35,7 @@ export default function TestMakerButton({ resource, disabled = false }: TestMake
       
       const doc = new jsPDF({
         unit: 'pt',
-        lineHeight: 1.15,
+        lineHeight: 1.0,
       });
 
       const pageWidth = doc.internal.pageSize.getWidth();
@@ -89,11 +89,11 @@ export default function TestMakerButton({ resource, disabled = false }: TestMake
           const questionMatch = line.match(/^([0-9]+\..*?)( A\))/);
           if (questionMatch) {
               const questionText = questionMatch[1].trim();
-              doc.setFont('helvetica', 'bold');
+              doc.setFont('helvetica', 'normal');
               doc.setFontSize(11);
               const questionLines = doc.splitTextToSize(questionText, pageWidth - (margin * 2));
               doc.text(questionLines, margin, y);
-              y += (questionLines.length * 11 * 1.15);
+              y += (questionLines.length * 11 * 1.0);
 
               const optionsMatch = line.match(/(A\).*)/);
               if (optionsMatch) {
@@ -133,13 +133,14 @@ export default function TestMakerButton({ resource, disabled = false }: TestMake
           doc.setFontSize(11);
           const questionLines = doc.splitTextToSize(line, pageWidth - margin * 2);
           doc.text(questionLines, margin, y);
-          y += questionLines.length * 11 * 1.15;
+          y += questionLines.length * 11 * 1.0;
           y += 4;
       };
 
       let currentSection = '';
       for(const line of lines) {
           if (line.trim() === '') {
+              y += 5; // Add space between sections
               continue;
           }
 
@@ -160,7 +161,7 @@ export default function TestMakerButton({ resource, disabled = false }: TestMake
             continue;
           } else if (line.startsWith('Section D:')) {
             currentSection = 'D';
-            processSection('Section C', '(4 Marks)'); // As per image it's C again, could be a typo
+            processSection('Section D', '(4 Marks)'); // As per image it's C again, could be a typo
             processLine('Ques. 4. Long Answer Question', true);
             continue;
           } else if (line.startsWith('Answer Key')) {
