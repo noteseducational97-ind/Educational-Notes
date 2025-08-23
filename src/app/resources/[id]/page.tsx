@@ -47,13 +47,13 @@ export default async function ResourceDetailPage({ params }: Props) {
                 </p>
             </div>
 
-            <div className="space-y-8">
-              <div>
+            <div className="grid grid-cols-1 lg:grid-cols-3 lg:gap-8 space-y-8 lg:space-y-0">
+              <div className="lg:col-span-2">
                 <ResourcePreviewer title={resource.title} url={resource.viewPdfUrl} />
               </div>
 
-              <div>
-                <Card className="shadow-xl">
+              <div className="lg:col-span-1">
+                <Card className="shadow-xl sticky top-24">
                     <CardHeader>
                         <CardTitle>Details</CardTitle>
                     </CardHeader>
