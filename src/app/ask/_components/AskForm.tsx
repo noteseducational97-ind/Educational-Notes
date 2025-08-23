@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useRef, useEffect, useCallback } from 'react';
@@ -206,23 +207,6 @@ export default function AskForm() {
                         </div>
                     )}
                     <div className="flex items-center gap-2">
-                        <Button
-                            type="button"
-                            variant="outline"
-                            size="icon"
-                            onClick={() => fileInputRef.current?.click()}
-                            className="shrink-0"
-                        >
-                            <Paperclip />
-                            <span className="sr-only">Attach file</span>
-                        </Button>
-                        <input
-                            type="file"
-                            ref={fileInputRef}
-                            onChange={handleFileChange}
-                            className="hidden"
-                            accept="image/*"
-                        />
                         <FormField
                             control={form.control}
                             name="question"
@@ -247,6 +231,23 @@ export default function AskForm() {
                                 <FormMessage />
                             </FormItem>
                             )}
+                        />
+                        <Button
+                            type="button"
+                            variant="outline"
+                            size="icon"
+                            onClick={() => fileInputRef.current?.click()}
+                            className="shrink-0"
+                        >
+                            <Paperclip />
+                            <span className="sr-only">Attach file</span>
+                        </Button>
+                        <input
+                            type="file"
+                            ref={fileInputRef}
+                            onChange={handleFileChange}
+                            className="hidden"
+                            accept="image/*"
                         />
                         <Button type="submit" disabled={loading} size="icon" className="shrink-0">
                             {loading ? <Loader2 className="animate-spin" /> : <Send />}
