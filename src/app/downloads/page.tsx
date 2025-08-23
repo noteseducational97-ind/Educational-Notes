@@ -307,16 +307,14 @@ export default function DownloadsPage() {
                             {isSaved ? 'Saved' : 'Save'}
                         </Button>
                         <div className="flex items-center gap-2">
-                            <Button asChild size="sm" variant="outline" disabled={disabled}>
-                                <Link
-                                    href={resource.viewPdfUrl || '#'}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="group inline-flex items-center gap-1"
-                                >
-                                    <ExternalLink className="h-4 w-4" />
-                                    View
-                                </Link>
+                            <Button
+                                size="sm"
+                                variant="outline"
+                                disabled={disabled}
+                                onClick={() => currentPage < totalPages && setCurrentPage(currentPage + 1)}
+                            >
+                                <ExternalLink className="h-4 w-4" />
+                                View
                             </Button>
                             {user ? (
                                     <Button asChild size="sm" disabled={disabled}>

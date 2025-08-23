@@ -202,16 +202,14 @@ export default function SavePage() {
                             Remove
                         </Button>
                         <div className="flex items-center gap-2">
-                            <Button asChild size="sm" variant="outline" disabled={isLinkDisabled(resource)}>
-                            <Link
-                            href={getPreviewUrl(resource)}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="group inline-flex items-center gap-1"
+                            <Button
+                                size="sm"
+                                variant="outline"
+                                disabled={isLinkDisabled(resource)}
+                                onClick={() => currentPage < totalPages && setCurrentPage(currentPage + 1)}
                             >
-                            <ExternalLink className="h-4 w-4" />
-                            View
-                            </Link>
+                                <ExternalLink className="h-4 w-4" />
+                                View
                             </Button>
                             {user ? (
                             <Button asChild size="sm" disabled={isLinkDisabled(resource)}>
