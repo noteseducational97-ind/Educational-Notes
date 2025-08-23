@@ -58,10 +58,6 @@ export default function ResourceActions({ resource }: ResourceActionsProps) {
           </Button>
         )}
         <TestMakerButton resource={resource} disabled={isLinkDisabled} />
-        <Button variant="secondary">
-          <HelpCircle className="mr-2 h-4 w-4" />
-          Answer Question
-        </Button>
       </div>
 
       <AlertDialog open={showLoginDialog} onOpenChange={setShowLoginDialog}>
