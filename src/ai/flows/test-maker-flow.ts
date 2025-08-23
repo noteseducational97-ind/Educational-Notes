@@ -40,10 +40,10 @@ The test should be tailored for the following context:
 {{/if}}
 
 The test must be structured into four sections based on marks, in this exact order:
-1.  **Section A: 1 Mark Questions** (Create 4 multiple-choice questions. Each question must have 4 options labeled A, B, C, and D.)
-2.  **Section B: 2 Marks Questions** (Create 3 short-answer questions that require a brief explanation.)
-3.  **Section C: 3 Marks Questions** (Create 2 questions that require a more detailed explanation.)
-4.  **Section D: 4 Marks Questions** (Create 1 long-answer question that requires a comprehensive explanation.)
+1.  **Section A: Multiple Choice Questions (4 Marks)** (Create 4 multiple-choice questions, 1 mark each. Each question must have 4 options labeled A, B, C, and D.)
+2.  **Section B: Short Answer Questions (6 Marks)** (Create 3 short-answer questions, 2 marks each, that require a brief explanation.)
+3.  **Section C: Medium Answer Questions (6 Marks)** (Create 2 questions, 3 marks each, that require a more detailed explanation.)
+4.  **Section D: Long Answer Question (4 Marks)** (Create 1 long-answer question, 4 marks each, that requires a comprehensive explanation.)
 
 After all the questions, provide a separate "Answer Key" section that clearly lists the correct answer for every question (e.g., "Section A: 1. B, 2. A", "Section B: 1. [Brief Answer]", etc.).
 
