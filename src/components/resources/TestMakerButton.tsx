@@ -49,6 +49,8 @@ export default function TestMakerButton({ resource, disabled = false }: TestMake
       const result = await generateTest({
         title: resource.title,
         content: resource.content,
+        class: resource.class,
+        subject: resource.subject,
       });
       
       const doc = new jsPDF();
