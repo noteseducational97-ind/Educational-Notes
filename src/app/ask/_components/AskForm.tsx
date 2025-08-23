@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, Sparkles, Send, Trash2, Paperclip, X } from 'lucide-react';
+import { Loader2, Sparkles, Send, Trash2, Paperclip, X, History } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
@@ -56,7 +56,7 @@ export default function AskForm() {
     if (scrollAreaRef.current) {
         const viewport = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
         if (viewport) {
-             setTimeout(() => viewport.scrollTop = viewport.scrollHeight, 10);
+             setTimeout(() => viewport.scrollTop = viewport.scrollHeight, 100);
         }
     }
   }, []);
@@ -130,9 +130,14 @@ export default function AskForm() {
                     <CardDescription>Your personal AI-powered tutor. Ask anything!</CardDescription>
                 </div>
                 {conversation.length > 0 && (
-                    <Button variant="outline" size="sm" onClick={() => setConversation([])}>
-                        <Trash2 className="mr-2 h-4 w-4"/> Clear Chat
-                    </Button>
+                    <div className="flex gap-2">
+                        <Button variant="outline" size="sm" onClick={() => { /* Implement history logic here */ }}>
+                            <History className="mr-2 h-4 w-4"/> History
+                        </Button>
+                        <Button variant="outline" size="sm" onClick={() => setConversation([])}>
+                            <Trash2 className="mr-2 h-4 w-4"/> Clear Chat
+                        </Button>
+                    </div>
                 )}
             </div>
          </CardHeader>
