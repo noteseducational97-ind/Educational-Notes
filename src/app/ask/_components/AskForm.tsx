@@ -1,7 +1,6 @@
-
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -31,7 +30,7 @@ const exampleQuestions = [
     "What was the significance of the Treaty of Versailles?",
     "Can you give me a summary of Shakespeare's 'Hamlet'?",
     "Describe the basic principles of supply and demand in economics."
-]
+];
 
 export default function AskForm() {
   const [loading, setLoading] = useState(false);
@@ -47,18 +46,22 @@ export default function AskForm() {
     },
   });
 
-  useEffect(() => {
-    // Scroll to the bottom when conversation changes
+  const scrollToBottom = useCallback(() => {
     if (scrollAreaRef.current) {
         const viewport = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
         if (viewport) {
-             viewport.scrollTop = viewport.scrollHeight;
+             setTimeout(() => viewport.scrollTop = viewport.scrollHeight, 10);
         }
     }
-  }, [conversation]);
+  }, []);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [conversation, scrollToBottom]);
 
   const handleExampleClick = (question: string) => {
     form.setValue('question', question);
+    form.handleSubmit(onSubmit)();
   };
 
   const getInitials = (name: string | null | undefined) => {
@@ -84,7 +87,7 @@ export default function AskForm() {
         title: 'Error generating answer',
         description: 'The AI might be busy. Please try again later.',
       });
-       setConversation(prev => prev.slice(0, -1)); // Remove the user message if AI fails
+       setConversation(prev => prev.slice(0, -1));
     } finally {
       setLoading(false);
     }
@@ -92,7 +95,7 @@ export default function AskForm() {
 
   return (
     <div className="w-full max-w-5xl mx-auto">
-       <Card className="flex-1 flex flex-col shadow-lg h-[calc(100vh-10rem)]">
+       <Card className="flex-1 flex flex-col shadow-lg h-[calc(100vh-12rem)]">
          <CardHeader className="border-b">
             <div className='flex justify-between items-center'>
                 <div>
@@ -110,13 +113,13 @@ export default function AskForm() {
             <ScrollArea className="h-full" ref={scrollAreaRef}>
                 <div className="p-6 space-y-6">
                     {conversation.length === 0 ? (
-                        <div className="text-center py-12">
+                        <div className="text-center py-12 flex flex-col items-center justify-center h-full">
                              <Sparkles className="mx-auto h-12 w-12 text-muted-foreground/50" />
                              <h3 className="mt-4 text-lg font-medium">No messages yet</h3>
-                             <p className="mt-1 text-sm text-muted-foreground">
+                             <p className="mt-1 text-sm text-muted-foreground max-w-md">
                                 Ask a question below to start the conversation. Or try one of these examples:
                              </p>
-                             <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2">
+                             <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2 w-full max-w-lg">
                                 {exampleQuestions.map((q, i) => (
                                     <Button key={i} variant="outline" size="sm" className="text-left h-auto py-2" onClick={() => handleExampleClick(q)}>
                                         {q}
@@ -179,9 +182,9 @@ export default function AskForm() {
                                 rows={1}
                                 className="resize-none"
                                 onKeyDown={(e) => {
-                                    if (e.key === 'Enter' && !e.shiftKey) {
+                                    if (e.key === 'Enter' && !e.shiftKey && !loading) {
                                         e.preventDefault();
-                                        if (!loading && form.getValues('question')) {
+                                        if (form.getValues('question')) {
                                           form.handleSubmit(onSubmit)();
                                         }
                                     }
@@ -203,3 +206,5 @@ export default function AskForm() {
     </div>
   );
 }
+
+    
