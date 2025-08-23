@@ -35,6 +35,7 @@ export default function TestMakerButton({ resource, disabled = false }: TestMake
       
       const doc = new jsPDF({
         unit: 'pt',
+        lineHeight: 1,
       });
 
       const pageWidth = doc.internal.pageSize.getWidth();
@@ -96,7 +97,7 @@ export default function TestMakerButton({ resource, disabled = false }: TestMake
               const questionText = questionMatch[1];
               const questionLines = doc.splitTextToSize(questionText, pageWidth - margin * 2);
               doc.text(questionLines, margin, y);
-              y += questionLines.length * 12;
+              y += questionLines.length * 11;
 
               const optionsMatch = line.match(/(A\).*?B\).*?C\).*?D\).*)/);
               if(optionsMatch) {
@@ -109,11 +110,11 @@ export default function TestMakerButton({ resource, disabled = false }: TestMake
                 
                 doc.text(optionA, margin + 15, y);
                 doc.text(optionB, pageWidth / 2 + 5, y);
-                y += Math.max(optionA.length, optionB.length) * 12;
+                y += Math.max(optionA.length, optionB.length) * 11;
 
                 doc.text(optionC, margin + 15, y);
                 doc.text(optionD, pageWidth / 2 + 5, y);
-                y += Math.max(optionC.length, optionD.length) * 12;
+                y += Math.max(optionC.length, optionD.length) * 11;
               }
             }
         } else {
@@ -121,7 +122,7 @@ export default function TestMakerButton({ resource, disabled = false }: TestMake
             doc.setFont('helvetica', 'normal');
             doc.setFontSize(11);
             doc.text(questionLines, margin, y);
-            y += questionLines.length * 12;
+            y += questionLines.length * 11;
         }
         y += 6; // Space after each question
       };
@@ -129,7 +130,7 @@ export default function TestMakerButton({ resource, disabled = false }: TestMake
       let currentSection = '';
       for(const line of lines) {
           if (line.trim() === '') {
-              y += 12; // Add space between sections
+              y += 11; // Add space between sections
               continue;
           }
 
