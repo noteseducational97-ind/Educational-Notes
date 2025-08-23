@@ -9,7 +9,7 @@ import { useToast } from '@/hooks/use-toast';
 import { answerQuestion } from '@/ai/flows/question-answer-flow';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
-import { Textarea } from '@/components/ui/textarea';
+import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Loader2, Sparkles, Send, Trash2, Paperclip, X, History } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -258,11 +258,10 @@ export default function AskForm() {
                                         className="hidden"
                                         accept="image/*"
                                     />
-                                    <Textarea 
+                                    <Input 
                                         placeholder="e.g., What is this? Explain it to me." 
                                         {...field} 
-                                        rows={1}
-                                        className="flex-1 resize-none border-0 shadow-none focus-visible:ring-0 h-10"
+                                        className="flex-1 resize-none border-0 shadow-none focus-visible:ring-0"
                                         onKeyDown={(e) => {
                                             if (e.key === 'Enter' && !e.shiftKey && !loading) {
                                                 e.preventDefault();
