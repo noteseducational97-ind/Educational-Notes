@@ -239,16 +239,6 @@ export default function DownloadsPage() {
                   </div>
                 </div>
             </CardContent>
-            {user && (
-                <CardFooter>
-                    <Button asChild>
-                        <Link href="/ask">
-                            <HelpCircle className="mr-2 h-4 w-4" />
-                            Ask a Question
-                        </Link>
-                    </Button>
-                </CardFooter>
-            )}
           </Card>
 
           {authLoading || loading ? (
