@@ -234,54 +234,54 @@ export default function AskForm() {
                         </Button>
                         </div>
                     )}
-                    <div className="flex items-center gap-2">
-                        <Button
-                            type="button"
-                            variant="outline"
-                            size="icon"
-                            onClick={() => fileInputRef.current?.click()}
-                            className="shrink-0"
-                        >
-                            <Paperclip />
-                            <span className="sr-only">Attach file</span>
-                        </Button>
-                        <input
-                            type="file"
-                            ref={fileInputRef}
-                            onChange={handleFileChange}
-                            className="hidden"
-                            accept="image/*"
-                        />
-                        <FormField
-                            control={form.control}
-                            name="question"
-                            render={({ field }) => (
-                            <FormItem className="flex-1">
-                                <FormControl>
-                                <Textarea 
-                                    placeholder="e.g., What is this? Explain it to me." 
-                                    {...field} 
-                                    rows={1}
-                                    className="resize-none"
-                                    onKeyDown={(e) => {
-                                        if (e.key === 'Enter' && !e.shiftKey && !loading) {
-                                            e.preventDefault();
-                                            if (form.getValues('question')) {
-                                              form.handleSubmit(onSubmit)();
+                    <FormField
+                        control={form.control}
+                        name="question"
+                        render={({ field }) => (
+                        <FormItem>
+                            <FormControl>
+                                <div className="relative flex w-full items-center">
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="icon"
+                                        onClick={() => fileInputRef.current?.click()}
+                                        className="shrink-0 text-muted-foreground"
+                                    >
+                                        <Paperclip />
+                                        <span className="sr-only">Attach file</span>
+                                    </Button>
+                                    <input
+                                        type="file"
+                                        ref={fileInputRef}
+                                        onChange={handleFileChange}
+                                        className="hidden"
+                                        accept="image/*"
+                                    />
+                                    <Textarea 
+                                        placeholder="e.g., What is this? Explain it to me." 
+                                        {...field} 
+                                        rows={1}
+                                        className="flex-1 resize-none border-0 shadow-none focus-visible:ring-0"
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter' && !e.shiftKey && !loading) {
+                                                e.preventDefault();
+                                                if (form.getValues('question')) {
+                                                  form.handleSubmit(onSubmit)();
+                                                }
                                             }
-                                        }
-                                    }}
-                                />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                            )}
-                        />
-                        <Button type="submit" disabled={loading} size="icon" className="shrink-0">
-                            {loading ? <Loader2 className="animate-spin" /> : <Send />}
-                            <span className="sr-only">Send</span>
-                        </Button>
-                    </div>
+                                        }}
+                                    />
+                                    <Button type="submit" disabled={loading || !form.getValues('question')} size="icon" className="shrink-0">
+                                        {loading ? <Loader2 className="animate-spin" /> : <Send />}
+                                        <span className="sr-only">Send</span>
+                                    </Button>
+                                </div>
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                        )}
+                    />
                 </form>
             </Form>
          </CardFooter>
