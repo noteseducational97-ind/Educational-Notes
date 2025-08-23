@@ -32,7 +32,7 @@ const nextConfig: NextConfig = {
     ],
   },
   webpack: (config) => {
-    config.resolve.alias.canvas = false;
+    config.externals.push('canvas');
     return config;
   },
 };

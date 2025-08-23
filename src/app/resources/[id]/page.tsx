@@ -5,10 +5,11 @@ import Header from '@/components/layout/Header';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Download, CalendarIcon, HelpCircle, ArrowLeft, Eye } from 'lucide-react';
+import { Download, CalendarIcon, HelpCircle, ArrowLeft, Eye, ExternalLink } from 'lucide-react';
 import Link from 'next/link';
 import { format } from 'date-fns';
 import TestMakerButton from '@/components/resources/TestMakerButton';
+import PdfPreview from '@/components/resources/PdfPreview';
 
 type Props = {
   params: { id: string };
@@ -38,7 +39,7 @@ export default async function ResourceDetailPage({ params }: Props) {
                 </Button>
             </div>
             
-            <div className="bg-primary/10 p-6 md:p-8 rounded-lg">
+            <div className="bg-primary/10 p-6 md:p-8 rounded-lg mb-8">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
                     <CalendarIcon className="h-4 w-4" />
                     <span>Uploaded on {format(new Date(resource.createdAt), 'MMMM dd, yyyy')}</span>
@@ -49,8 +50,9 @@ export default async function ResourceDetailPage({ params }: Props) {
                 </p>
             </div>
 
-            <div className="mt-8">
-                <Card className="shadow-xl">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              <div className="lg:col-span-1">
+                <Card className="shadow-xl sticky top-24">
                     <CardHeader>
                         <CardTitle>Details</CardTitle>
                     </CardHeader>
@@ -83,7 +85,7 @@ export default async function ResourceDetailPage({ params }: Props) {
                         <div className="flex flex-wrap gap-2">
                              <Button asChild disabled={isViewDisabled}>
                                 <Link href={resource.viewPdfUrl || '#'} target="_blank" rel="noopener noreferrer">
-                                    <Eye className="mr-2 h-4 w-4" />
+                                    <ExternalLink className="mr-2 h-4 w-4" />
                                     View PDF
                                 </Link>
                             </Button>
@@ -101,6 +103,12 @@ export default async function ResourceDetailPage({ params }: Props) {
                         </div>
                     </CardFooter>
                 </Card>
+              </div>
+
+              <div className="lg:col-span-2">
+                <PdfPreview title={resource.title} url={resource.viewPdfUrl} />
+              </div>
+
             </div>
         </div>
       </main>
