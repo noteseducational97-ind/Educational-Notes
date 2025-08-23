@@ -116,7 +116,7 @@ export default function AskForm() {
   }
 
   return (
-    <div className="h-full w-full max-w-6xl">
+    <div className="h-full w-full max-w-4xl">
        <Card className="flex flex-col shadow-lg h-full">
          <CardHeader className="border-b">
             <div className='flex justify-between items-center'>
@@ -150,7 +150,6 @@ export default function AskForm() {
                                         <Button
                                             key={i}
                                             variant="outline"
-                                            className="text-left h-auto py-2"
                                             onClick={() => handleExampleClick(prompt)}
                                         >
                                             {prompt}
