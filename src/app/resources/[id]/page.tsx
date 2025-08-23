@@ -8,8 +8,8 @@ import { Button } from '@/components/ui/button';
 import { Download, CalendarIcon, HelpCircle, ArrowLeft, ExternalLink } from 'lucide-react';
 import Link from 'next/link';
 import { format } from 'date-fns';
-import TestMakerButton from '@/components/resources/TestMakerButton';
 import ResourcePreviewer from '@/components/resources/ResourcePreviewer';
+import ResourceActions from '@/components/resources/ResourceActions';
 
 type Props = {
   params: { id: string };
@@ -21,8 +21,6 @@ export default async function ResourceDetailPage({ params }: Props) {
   if (!resource) {
     notFound();
   }
-
-  const isLinkDisabled = resource.isComingSoon || !resource.pdfUrl;
 
   return (
     <div className="flex min-h-screen flex-col bg-secondary/20">
@@ -85,25 +83,7 @@ export default async function ResourceDetailPage({ params }: Props) {
                     </CardContent>
                     <CardFooter className="flex flex-col items-start gap-4 border-t pt-4">
                         <h3 className="text-lg font-semibold">Actions</h3>
-                        <div className="flex flex-wrap gap-2">
-                             <Button asChild disabled={isLinkDisabled}>
-                                <Link href={resource.viewPdfUrl || '#'} target="_blank" rel="noopener noreferrer">
-                                    <ExternalLink className="mr-2 h-4 w-4" />
-                                    View PDF
-                                </Link>
-                            </Button>
-                            <Button asChild disabled={isLinkDisabled}>
-                                <Link href={resource.pdfUrl || '#'} target="_blank" rel="noopener noreferrer">
-                                    <Download className="mr-2 h-4 w-4" />
-                                    Download PDF
-                                </Link>
-                            </Button>
-                            <TestMakerButton resource={resource} disabled={isLinkDisabled} />
-                            <Button variant="secondary">
-                                <HelpCircle className="mr-2 h-4 w-4" />
-                                Answer Question
-                            </Button>
-                        </div>
+                        <ResourceActions resource={resource} />
                     </CardFooter>
                 </Card>
               </div>
