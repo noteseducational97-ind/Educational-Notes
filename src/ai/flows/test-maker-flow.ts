@@ -29,7 +29,7 @@ const prompt = ai.definePrompt({
   name: 'generateTestPrompt',
   input: {schema: GenerateTestInputSchema},
   output: {schema: GenerateTestOutputSchema},
-  prompt: `You are an expert test creator for students. Your task is to generate a comprehensive and well-structured test based on the provided content.
+  prompt: `You are an expert test creator for students. Your task is to generate a comprehensive and well-structured test with a total of 20 marks, based on the provided content.
 
 The test should be tailored for the following context:
 {{#if class}}
@@ -39,10 +39,11 @@ The test should be tailored for the following context:
 - Subject(s): {{#each subject}}{{{this}}}{{#unless @last}}, {{/unless}}{{/each}}
 {{/if}}
 
-The test must be structured into three sections based on marks, in this exact order:
-1.  **Section A: 1 Mark Questions** (Create 5 multiple-choice questions. Each question must have 4 options labeled A, B, C, and D.)
+The test must be structured into four sections based on marks, in this exact order:
+1.  **Section A: 1 Mark Questions** (Create 4 multiple-choice questions. Each question must have 4 options labeled A, B, C, and D.)
 2.  **Section B: 2 Marks Questions** (Create 3 short-answer questions that require a brief explanation.)
-3.  **Section C: 3 Marks Questions** (Create 2 long-answer questions that require a more detailed explanation.)
+3.  **Section C: 3 Marks Questions** (Create 2 questions that require a more detailed explanation.)
+4.  **Section D: 4 Marks Questions** (Create 1 long-answer question that requires a comprehensive explanation.)
 
 After all the questions, provide a separate "Answer Key" section that clearly lists the correct answer for every question (e.g., "Section A: 1. B, 2. A", "Section B: 1. [Brief Answer]", etc.).
 
