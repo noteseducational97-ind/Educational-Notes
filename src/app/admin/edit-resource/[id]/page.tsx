@@ -21,7 +21,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Loader2, ArrowLeft, Save, Lock, Users } from 'lucide-react';
+import { Loader2, ArrowLeft, Save, Lock, Users, Eye } from 'lucide-react';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { MultiSelect } from '@/components/ui/multi-select';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -89,6 +89,10 @@ export default function EditResourceAdminPage() {
   });
 
   const isComingSoon = form.watch('isComingSoon');
+  const pdfUrlValue = form.watch('pdfUrl');
+
+  const isValidPdfUrl = pdfUrlValue && z.string().url().safeParse(pdfUrlValue).success;
+  const previewUrl = isValidPdfUrl ? `https://docs.google.com/gview?url=${pdfUrlValue}&embedded=true` : '';
 
   useEffect(() => {
     if (!authLoading) {
@@ -326,6 +330,26 @@ export default function EditResourceAdminPage() {
                       </FormItem>
                     )}
                   />
+
+                  {previewUrl && !isComingSoon && (
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2 text-lg"><Eye /> PDF Preview</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="relative border rounded-lg overflow-hidden h-[600px]">
+                           <iframe
+                              src={previewUrl}
+                              className="w-full h-full"
+                              title="PDF Preview"
+                              allowFullScreen
+                            />
+                            <div className="absolute inset-0" onContextMenu={(e) => e.preventDefault()}></div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )}
+
                   <FormField control={form.control} name="pdfUrl" render={({ field }) => (
                       <FormItem>
                         <FormLabel>PDF URL (for View & Download)</FormLabel>
