@@ -219,7 +219,7 @@ export default function AskForm() {
                                 </div>
                                 {message.role === 'user' && (
                                     <Avatar className="w-9 h-9 border flex-shrink-0">
-                                        <AvatarImage src={user?.photoURL ?? ''} alt={user?.displayName ?? 'User'} />
+                                        <AvatarImage src={user?.photoURL || undefined} alt={user?.displayName ?? 'User'} />
                                         <AvatarFallback>{getInitials(user?.displayName)}</AvatarFallback>
                                     </Avatar>
                                 )}
@@ -328,3 +328,5 @@ export default function AskForm() {
     </div>
   );
 }
+
+    
