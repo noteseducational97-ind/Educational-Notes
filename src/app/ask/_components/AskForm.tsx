@@ -26,12 +26,13 @@ type Message = {
     role: 'user' | 'assistant';
     content: string;
     image?: string;
+    generatedImage?: string;
 }
 
 const examplePrompts = [
     'What is Beats frequency?',
     'What is electrochemistry?',
-    'What is photosynthesis?',
+    'Generate an image of a cat programmer',
     'What is CPU?',
 ];
 
@@ -101,7 +102,11 @@ export default function AskForm() {
         question: values.question,
         photoDataUri: attachedImage ?? undefined
       });
-      const assistantMessage: Message = { role: 'assistant', content: result.answer };
+      const assistantMessage: Message = { 
+        role: 'assistant', 
+        content: result.answer,
+        generatedImage: result.imageUrl,
+      };
       setConversation(prev => [...prev, assistantMessage]);
     } catch (error: any) {
       toast({
@@ -178,6 +183,11 @@ export default function AskForm() {
                                       </div>
                                     )}
                                     <p className="text-sm prose prose-sm dark:prose-invert max-w-none">{message.content}</p>
+                                    {message.generatedImage && (
+                                      <div className="relative w-full aspect-video rounded-lg overflow-hidden mt-2">
+                                        <Image src={message.generatedImage} alt="Generated image" fill className="object-contain" />
+                                      </div>
+                                    )}
                                 </div>
                                 {message.role === 'user' && (
                                     <Avatar className="w-9 h-9 border flex-shrink-0">
@@ -274,10 +284,3 @@ export default function AskForm() {
     </div>
   );
 }
-
-    
-    
-
-    
-
-    

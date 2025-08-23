@@ -24,6 +24,7 @@ export type QuestionAnswerInput = z.infer<typeof QuestionAnswerInputSchema>;
 
 const QuestionAnswerOutputSchema = z.object({
   answer: z.string().describe('The AI-generated answer to the question.'),
+  imageUrl: z.string().optional().describe('The URL of a generated image, if requested. Should be a data URI.'),
 });
 export type QuestionAnswerOutput = z.infer<typeof QuestionAnswerOutputSchema>;
 
@@ -32,14 +33,9 @@ const prompt = ai.definePrompt({
   name: 'questionAnswerPrompt',
   input: {schema: QuestionAnswerInputSchema},
   output: {schema: QuestionAnswerOutputSchema},
-  prompt: `You are a helpful AI assistant for students. Your primary role is to answer questions related to educational topics, suitable for students up to the graduation and post-graduation level.
+  prompt: `You are a helpful AI assistant. Your task is to provide clear, concise, and accurate answers to user questions on any topic.
 
-Your task is to provide clear, concise, and accurate answers to academic questions.
-
-When a user asks a question, first determine if it is related to an educational subject.
-- If the question is about an academic topic (e.g., science, math, history, literature, engineering basics), provide a helpful and informative answer.
-- If the question is NOT study-related (e.g., personal advice, celebrity gossip, current affairs, or any other non-academic topic), you must politely decline to answer. Respond with a message like: "I can only answer questions related to educational topics. Please ask me something about your studies."
-- If the question is too advanced (beyond post-graduation level), you can suggest that the topic is outside the scope of your knowledge.
+If the user asks you to generate an image, you MUST set the 'imageUrl' field in your response. To do this, call the image generation model with a descriptive prompt based on the user's request.
 
 {{#if photoDataUri}}
 You have been provided with an image to help answer the question. Use it as context.
@@ -58,6 +54,17 @@ const answerQuestionFlow = ai.defineFlow(
   },
   async input => {
     const {output} = await prompt(input);
+    if (output?.imageUrl) {
+        // This is a sentinel that the prompt wants to generate an image.
+        const {media} = await ai.generate({
+            model: 'googleai/gemini-2.0-flash-preview-image-generation',
+            prompt: input.question,
+            config: {
+                responseModalities: ['TEXT', 'IMAGE'],
+            },
+        });
+        output.imageUrl = media?.url;
+    }
     return output!;
   }
 );
@@ -66,3 +73,4 @@ const answerQuestionFlow = ai.defineFlow(
 export async function answerQuestion(input: QuestionAnswerInput): Promise<QuestionAnswerOutput> {
   return answerQuestionFlow(input);
 }
+
