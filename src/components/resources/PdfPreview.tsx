@@ -19,7 +19,9 @@ export default function PdfPreview({ url, title }: PdfPreviewProps) {
         )
     }
 
-    const googleDocsViewerUrl = `https://docs.google.com/gview?url=${encodeURIComponent(url)}&embedded=true`;
+    // Append parameters to the PDF URL itself to hint at hiding the toolbar
+    const pdfUrlWithParams = `${url}#toolbar=0&navpanes=0&scrollbar=0`;
+    const googleDocsViewerUrl = `https://docs.google.com/gview?url=${encodeURIComponent(pdfUrlWithParams)}&embedded=true`;
 
     return (
         <div className="border rounded-lg overflow-hidden h-[800px] relative group">
