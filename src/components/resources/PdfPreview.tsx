@@ -19,9 +19,8 @@ export default function PdfPreview({ url, title }: PdfPreviewProps) {
         )
     }
 
-    // Append parameters to the PDF URL itself to hint at hiding the toolbar
-    const pdfUrlWithParams = `${url}#toolbar=0&navpanes=0&scrollbar=0`;
-    const googleDocsViewerUrl = `https://docs.google.com/gview?url=${encodeURIComponent(pdfUrlWithParams)}&embedded=true`;
+    // Append parameters to the PDF URL to hint at hiding the toolbar and other controls
+    const googleDocsViewerUrl = `https://docs.google.com/gview?url=${encodeURIComponent(url)}&embedded=true`;
 
     return (
         <div className="border rounded-lg overflow-hidden h-[800px] relative group">
@@ -30,6 +29,7 @@ export default function PdfPreview({ url, title }: PdfPreviewProps) {
                 className="w-full h-full"
                 title={`${title} PDF Preview`}
                 allowFullScreen
+                frameBorder="0"
             />
             <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                  <Button asChild>
