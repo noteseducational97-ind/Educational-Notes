@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -31,15 +31,24 @@ export default function AskPage() {
   const { toast } = useToast();
   const { user } = useAuth();
 
-  useState(() => {
+  useEffect(() => {
     async function loadResources() {
       setLoadingResources(true);
-      const fetchedResources = await getResources({ includePrivate: !!user });
-      setResources(fetchedResources.filter(r => !r.isComingSoon));
-      setLoadingResources(false);
+      try {
+        const fetchedResources = await getResources({ includePrivate: !!user });
+        setResources(fetchedResources.filter(r => !r.isComingSoon));
+      } catch (error) {
+          toast({
+              variant: 'destructive',
+              title: 'Error loading resources',
+              description: 'Could not fetch the list of study materials.'
+          });
+      } finally {
+        setLoadingResources(false);
+      }
     }
     loadResources();
-  });
+  }, [user, toast]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
