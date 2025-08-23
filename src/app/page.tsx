@@ -98,62 +98,25 @@ export default function Home() {
         
         <section className="w-full py-12 md:py-24">
             <div className="container px-4 md:px-6">
-              <div className="flex flex-col items-center justify-center space-y-4 text-center mb-12">
-                  <div className="inline-block rounded-lg bg-secondary px-3 py-1 text-sm">Key Features</div>
-                  <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Everything You Need to Succeed</h2>
-                  <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                    Our platform provides curated resources, community support, and tools to help you on your learning journey.
-                  </p>
-              </div>
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                    <Link href="/downloads" className="block hover:shadow-lg transition-shadow duration-300 rounded-xl">
-                        <Card className="h-full cursor-pointer">
-                            <CardHeader className="flex flex-row items-center justify-between pb-2">
-                                <CardTitle className="text-lg font-medium">Curated Resources</CardTitle>
-                                <Download className="h-6 w-6 text-primary"/>
-                            </CardHeader>
-                            <CardContent>
-                               <CardDescription>Access a library of hand-picked study materials, notes, and guides to supplement your learning.</CardDescription>
-                            </CardContent>
-                        </Card>
-                    </Link>
-                    <Link href="/save" className="block hover:shadow-lg transition-shadow duration-300 rounded-xl">
-                        <Card className="h-full cursor-pointer">
-                            <CardHeader className="flex flex-row items-center justify-between pb-2">
-                                <CardTitle className="text-lg font-medium">Personal Watchlist</CardTitle>
-                                <Bookmark className="h-6 w-6 text-primary"/>
-                            </CardHeader>
-                            <CardContent>
-                                <CardDescription>Save and organize your most important materials for quick and easy access whenever you need them.</CardDescription>
-                            </CardContent>
-                        </Card>
-                    </Link>
-                     <Link href="/about" className="block hover:shadow-lg transition-shadow duration-300 rounded-xl">
-                        <Card className="h-full cursor-pointer">
-                            <CardHeader className="flex flex-row items-center justify-between pb-2">
-                                <CardTitle className="text-lg font-medium">Community Support</CardTitle>
-                                <Users className="h-6 w-6 text-primary"/>
-                            </CardHeader>
-                            <CardContent>
-                                <CardDescription>Connect with fellow learners, ask questions, and share knowledge in a supportive environment.</CardDescription>
-                            </CardContent>
-                        </Card>
-                    </Link>
+                <div className="grid md:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <div className="inline-block rounded-lg bg-secondary px-3 py-1 text-sm font-semibold text-secondary-foreground mb-4">Your Privacy Matters</div>
+                        <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">We Guarantee Your Data's Security</h2>
+                        <p className="mt-4 max-w-[600px] text-muted-foreground md:text-xl/relaxed">
+                            Your trust is our top priority. We are committed to protecting your personal information and ensuring your learning environment is safe and secure. We use industry-standard encryption and never share your data without your consent.
+                        </p>
+                        <Button asChild className="mt-6">
+                            <Link href="/privacy">
+                                <ShieldCheck className="mr-2 h-5 w-5" />
+                                Read Our Privacy Policy
+                            </Link>
+                        </Button>
+                    </div>
+                    <div className="flex justify-center">
+                        <ShieldCheck className="h-48 w-48 text-primary/20" />
+                    </div>
                 </div>
             </div>
-        </section>
-
-        <section className="w-full py-12 md:py-24">
-          <div className="container px-4 md:px-6">
-            <div className="mx-auto max-w-3xl text-center border rounded-xl p-8 shadow-lg bg-card">
-                <blockquote >
-                <p className="text-2xl font-semibold leading-tight text-foreground sm:text-3xl">
-                    "Learning gives creativity, creativity leads to thinking, thinking provides knowledge, and knowledge makes you great."
-                </p>
-                <footer className="mt-4 text-right text-muted-foreground">- Dr. A.P.J. Abdul Kalam</footer>
-                </blockquote>
-            </div>
-          </div>
         </section>
 
         <section className="w-full py-12 md:py-24 bg-primary/10">
