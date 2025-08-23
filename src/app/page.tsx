@@ -7,7 +7,7 @@ import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
-import { ShieldCheck, Send, Download, Bookmark, Users, LogIn, UserPlus } from 'lucide-react';
+import { ShieldCheck, Send, Download, Bookmark, Users, LogIn, UserPlus, FileText, Lightbulb } from 'lucide-react';
 import Image from 'next/image';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
@@ -51,6 +51,47 @@ export default function Home() {
                 data-ai-hint="group study"
                 className="mx-auto aspect-video overflow-hidden rounded-xl object-cover sm:w-full lg:order-last lg:aspect-square shadow-2xl"
               />
+            </div>
+          </div>
+        </section>
+
+        <section className="w-full py-12 md:py-24 bg-secondary/30">
+          <div className="container px-4 md:px-6">
+            <div className="flex flex-col items-center justify-center space-y-4 text-center mb-12">
+              <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm text-primary font-semibold">What We Offer</div>
+              <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Your All-in-One Learning Hub</h2>
+              <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                From comprehensive notes to AI-powered tools, find everything you need to excel in your studies.
+              </p>
+            </div>
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              <Card className="hover:shadow-lg transition-shadow duration-300">
+                <CardHeader className="flex flex-row items-center justify-between pb-2">
+                  <CardTitle className="text-lg font-medium">Study Notes</CardTitle>
+                  <Download className="h-6 w-6 text-primary" />
+                </CardHeader>
+                <CardContent>
+                  <CardDescription>High-quality, comprehensive study notes for various subjects and competitive exams, available for free.</CardDescription>
+                </CardContent>
+              </Card>
+              <Card className="hover:shadow-lg transition-shadow duration-300">
+                <CardHeader className="flex flex-row items-center justify-between pb-2">
+                  <CardTitle className="text-lg font-medium">AI-Powered Test Maker</CardTitle>
+                  <FileText className="h-6 w-6 text-primary" />
+                </CardHeader>
+                <CardContent>
+                  <CardDescription>Generate personalized practice tests from our resources to sharpen your knowledge and exam readiness.</CardDescription>
+                </CardContent>
+              </Card>
+              <Card className="hover:shadow-lg transition-shadow duration-300">
+                <CardHeader className="flex flex-row items-center justify-between pb-2">
+                  <CardTitle className="text-lg font-medium">AI Assistant</CardTitle>
+                  <Lightbulb className="h-6 w-6 text-primary" />
+                </CardHeader>
+                <CardContent>
+                  <CardDescription>Have a doubt? Ask our AI assistant for instant clarification on any topic, anytime.</CardDescription>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </section>
