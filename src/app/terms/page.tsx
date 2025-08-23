@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 
 // Accept params to prevent Next.js from trying to enumerate them.
-export default function TermsPage(props: any) {
+export default function TermsPage() {
   const [date, setDate] = useState('');
 
   useEffect(() => {
