@@ -303,17 +303,6 @@ export default function AddResourceAdminPage() {
                     )}
                   />
 
-                  {isValidPdfUrl && !isComingSoon && (
-                    <Card>
-                      <CardHeader>
-                        <CardTitle className="flex items-center gap-2 text-lg"><Eye /> PDF Preview</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <PdfPreview url={viewPdfUrlValue} title="PDF Preview" />
-                      </CardContent>
-                    </Card>
-                  )}
-
                   <FormField control={form.control} name="pdfUrl" render={({ field }) => (
                       <FormItem>
                         <FormLabel>PDF URL (for Download)</FormLabel>
