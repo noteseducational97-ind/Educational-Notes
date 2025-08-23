@@ -2,7 +2,7 @@
 import { getResourceById } from '@/lib/firebase/resources';
 import { notFound } from 'next/navigation';
 import Header from '@/components/layout/Header';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Download, CalendarIcon, ExternalLink, FileText, HelpCircle, ArrowLeft } from 'lucide-react';
@@ -26,7 +26,7 @@ export default async function ResourceDetailPage({ params }: Props) {
 
   const isLinkDisabled = resource.isComingSoon || !resource.pdfUrl;
 
-  const googleDocsViewerUrl = `https://docs.google.com/gview?url=${encodeURIComponent(resource.pdfUrl || resource.viewPdfUrl)}&embedded=true`;
+  const googleDocsViewerUrl = `https://docs.google.com/gview?url=${encodeURIComponent(resource.viewPdfUrl || resource.pdfUrl || '')}&embedded=true`;
 
 
   return (
