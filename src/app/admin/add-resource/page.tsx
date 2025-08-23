@@ -288,7 +288,7 @@ export default function AddResourceAdminPage() {
                   />
                   <FormField control={form.control} name="pdfUrl" render={({ field }) => (
                       <FormItem>
-                        <FormLabel>PDF URL (for Download)</FormLabel>
+                        <FormLabel>PDF URL (for View & Download)</FormLabel>
                         <FormControl><Input placeholder="https://example.com/download.pdf" {...field} value={field.value ?? ''} disabled={isComingSoon} /></FormControl>
                         <FormMessage />
                       </FormItem>
