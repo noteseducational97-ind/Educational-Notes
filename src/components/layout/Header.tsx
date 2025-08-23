@@ -21,6 +21,7 @@ import LoadingSpinner from '../shared/LoadingSpinner';
 const navLinks = [
   { href: '/', label: 'Home', icon: Home },
   { href: '/downloads', label: 'Downloads', icon: Download },
+  { href: '/ask', label: 'Assistant', icon: Lightbulb },
   { href: '/save', label: 'Watchlist', icon: Bookmark },
   { href: '/about', label: 'About', icon: Info },
 ];
