@@ -10,7 +10,7 @@ import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import Link from 'next/link';
 import Image from 'next/image';
 import { format } from 'date-fns';
-import { ArrowUpRight, Download, BookOpen, BookmarkX, Lock, LogIn } from 'lucide-react';
+import { ArrowUpRight, Download, BookOpen, BookmarkX, Lock, LogIn, ExternalLink } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
@@ -97,7 +97,7 @@ export default function SavePage() {
   };
 
   const getPreviewUrl = (resource: Resource) => {
-    return resource.isComingSoon ? '#' : resource.pdfUrl || '#';
+    return resource.isComingSoon ? '#' : resource.viewPdfUrl || '#';
   };
 
   const getDownloadUrl = (resource: Resource) => {
@@ -203,7 +203,7 @@ export default function SavePage() {
                            rel="noopener noreferrer"
                            className="group inline-flex items-center gap-1"
                            >
-                           <BookOpen className="h-4 w-4" />
+                           <ExternalLink className="h-4 w-4" />
                            View
                            </Link>
                         </Button>

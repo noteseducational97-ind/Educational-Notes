@@ -11,7 +11,6 @@ import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import TestMakerButton from '@/components/resources/TestMakerButton';
-import PdfPreview from '@/components/resources/PdfPreview';
 
 type Props = {
   params: { id: string };
@@ -25,7 +24,6 @@ export default async function ResourceDetailPage({ params }: Props) {
   }
 
   const isLinkDisabled = resource.isComingSoon || !resource.pdfUrl;
-  const previewUrl = resource.pdfUrl ? `https://docs.google.com/gview?url=${resource.pdfUrl}&embedded=true` : '';
 
   return (
     <div className="flex min-h-screen flex-col bg-secondary/20">
@@ -49,32 +47,28 @@ export default async function ResourceDetailPage({ params }: Props) {
                         </div>
                         <CardTitle className="text-4xl font-bold text-primary">{resource.title}</CardTitle>
                         <CardDescription className="text-xl mt-2 text-foreground/80">
-                          Explore the details and preview the content below.
+                          Explore the details and download the content below.
                         </CardDescription>
                     </div>
                 </CardHeader>
                 <CardContent className="p-6 md:p-8 grid md:grid-cols-3 gap-8">
                     <div className="md:col-span-2 space-y-8">
-                        <div>
-                             <h2 className="text-2xl font-semibold mb-4 border-b pb-2">PDF Preview</h2>
-                             {previewUrl ? (
-                                <PdfPreview url={previewUrl} title={resource.title} />
-                             ) : (
-                                <div className='flex items-center justify-center h-96 border rounded-lg bg-muted/50'>
-                                    <p className='text-muted-foreground'>No preview available.</p>
-                                </div>
-                             )}
-                        </div>
-                    </div>
-                    <aside className="space-y-6">
                         <div className="relative aspect-video w-full">
                            <Image 
                                 src={isLinkDisabled ? 'https://placehold.co/600x400.png' : resource.imageUrl || 'https://placehold.co/600x400.png'}
                                 alt={resource.title}
                                 fill
-                                className={cn("object-cover rounded-lg", isLinkDisabled && "filter grayscale")}
+                                className={cn("object-cover rounded-lg shadow-md", isLinkDisabled && "filter grayscale")}
                             />
                         </div>
+                        <div>
+                            <h2 className="text-2xl font-semibold mb-4 border-b pb-2">Description</h2>
+                            <div className="prose dark:prose-invert max-w-none text-muted-foreground">
+                                <p>{resource.content}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <aside className="space-y-6">
                          
                         <div>
                             <h3 className="text-lg font-semibold mb-2">Details</h3>
@@ -99,15 +93,16 @@ export default async function ResourceDetailPage({ params }: Props) {
                                </div>
                             </div>
                         </div>
-                        <div>
-                            <h3 className="text-lg font-semibold mb-2">Description</h3>
-                            <div className="prose dark:prose-invert max-w-none text-sm text-muted-foreground">
-                                <p>{resource.content}</p>
-                            </div>
-                        </div>
+                        
                         <div>
                             <h3 className="text-lg font-semibold mb-2">Actions</h3>
                             <div className="flex flex-col gap-2">
+                                <Button asChild disabled={isLinkDisabled}>
+                                    <Link href={resource.viewPdfUrl || '#'} target="_blank" rel="noopener noreferrer">
+                                        <ExternalLink className="mr-2 h-4 w-4" />
+                                        View PDF
+                                    </Link>
+                                </Button>
                                 <Button asChild disabled={isLinkDisabled}>
                                     <Link href={resource.pdfUrl || '#'} target="_blank" rel="noopener noreferrer">
                                         <Download className="mr-2 h-4 w-4" />

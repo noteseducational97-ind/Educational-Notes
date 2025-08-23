@@ -37,6 +37,7 @@ const FormSchema = z.object({
   subject: z.array(z.string()).nonempty({ message: 'Select at least one subject.' }),
   imageUrl: z.string().url().optional().or(z.literal('')),
   pdfUrl: z.string().optional(),
+  viewPdfUrl: z.string().url('A valid view URL for the PDF is required.'),
   isComingSoon: z.boolean().default(false),
   visibility: z.enum(['private', 'public']).default('public'),
 }).superRefine((data, ctx) => {
@@ -80,6 +81,7 @@ export default function EditResourceAdminPage() {
       content: '',
       imageUrl: '',
       pdfUrl: '',
+      viewPdfUrl: '',
       stream: [],
       class: '',
       category: [],
@@ -90,11 +92,10 @@ export default function EditResourceAdminPage() {
   });
 
   const isComingSoon = form.watch('isComingSoon');
-  const pdfUrlValue = form.watch('pdfUrl');
+  const viewPdfUrlValue = form.watch('viewPdfUrl');
 
-  const isValidPdfUrl = pdfUrlValue && z.string().url().safeParse(pdfUrlValue).success;
-  const previewUrl = isValidPdfUrl ? `https://docs.google.com/gview?url=${pdfUrlValue}&embedded=true` : '';
-
+  const isValidPdfUrl = viewPdfUrlValue && z.string().url().safeParse(viewPdfUrlValue).success;
+  
   useEffect(() => {
     if (!authLoading) {
       if (!user || !isAdmin) {
@@ -331,21 +332,30 @@ export default function EditResourceAdminPage() {
                       </FormItem>
                     )}
                   />
+                  
+                  <FormField control={form.control} name="viewPdfUrl" render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>PDF View URL</FormLabel>
+                        <FormControl><Input placeholder="https://example.com/view.pdf" {...field} value={field.value ?? ''} /></FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-                  {previewUrl && !isComingSoon && (
+                  {isValidPdfUrl && !isComingSoon && (
                     <Card>
                       <CardHeader>
                         <CardTitle className="flex items-center gap-2 text-lg"><Eye /> PDF Preview</CardTitle>
                       </CardHeader>
                       <CardContent>
-                        <PdfPreview url={previewUrl} title="PDF Preview" />
+                        <PdfPreview url={viewPdfUrlValue} title="PDF Preview" />
                       </CardContent>
                     </Card>
                   )}
                   
                   <FormField control={form.control} name="pdfUrl" render={({ field }) => (
                       <FormItem>
-                        <FormLabel>PDF URL (for View & Download)</FormLabel>
+                        <FormLabel>PDF URL (for Download)</FormLabel>
                         <FormControl><Input placeholder="https://example.com/download.pdf" {...field} value={field.value ?? ''} disabled={isComingSoon} /></FormControl>
                         <FormMessage />
                       </FormItem>

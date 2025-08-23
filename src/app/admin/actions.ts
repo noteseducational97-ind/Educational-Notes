@@ -1,4 +1,3 @@
-
 'use server';
 
 import { z } from 'zod';
@@ -14,6 +13,7 @@ const FormSchema = z.object({
   stream: z.array(z.string()).nonempty({ message: 'Select at least one stream.' }),
   imageUrl: z.string().url().optional().or(z.literal('')),
   pdfUrl: z.string().optional(),
+  viewPdfUrl: z.string().url('A valid view URL for the PDF is required.'),
   isComingSoon: z.boolean().default(false),
   visibility: z.enum(['private', 'public']).default('public'),
 }).superRefine((data, ctx) => {
