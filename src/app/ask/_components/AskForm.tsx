@@ -10,11 +10,12 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, Sparkles, Send, Trash2 } from 'lucide-react';
+import { Loader2, Sparkles, Send, Trash2, Paperclip, X } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/use-auth';
+import Image from 'next/image';
 
 const formSchema = z.object({
   question: z.string().min(1, 'Cannot send an empty message.'),
@@ -23,6 +24,7 @@ const formSchema = z.object({
 type Message = {
     role: 'user' | 'assistant';
     content: string;
+    image?: string;
 }
 
 const exampleQuestions = [
@@ -35,9 +37,11 @@ const exampleQuestions = [
 export default function AskForm() {
   const [loading, setLoading] = useState(false);
   const [conversation, setConversation] = useState<Message[]>([]);
+  const [attachedImage, setAttachedImage] = useState<string | null>(null);
   const { toast } = useToast();
   const { user } = useAuth();
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -63,21 +67,34 @@ export default function AskForm() {
     form.setValue('question', question);
     form.handleSubmit(onSubmit)();
   };
-
+  
   const getInitials = (name: string | null | undefined) => {
     if (!name) return 'U';
     return name.split(' ').map((n) => n[0]).join('').toUpperCase();
   };
 
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setAttachedImage(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
-    const userMessage: Message = { role: 'user', content: values.question };
+    const userMessage: Message = { role: 'user', content: values.question, image: attachedImage ?? undefined };
     setConversation(prev => [...prev, userMessage]);
     form.reset();
+    setAttachedImage(null);
 
     try {
       const result = await answerQuestion({
         question: values.question,
+        photoDataUri: attachedImage ?? undefined
       });
       const assistantMessage: Message = { role: 'assistant', content: result.answer };
       setConversation(prev => [...prev, assistantMessage]);
@@ -138,9 +155,14 @@ export default function AskForm() {
                                     </Avatar>
                                 )}
                                 <div className={cn(
-                                    "max-w-[75%] rounded-2xl p-4",
+                                    "max-w-[75%] rounded-2xl p-4 space-y-2",
                                     message.role === 'user' ? 'bg-primary text-primary-foreground rounded-br-none' : 'bg-secondary rounded-bl-none'
                                 )}>
+                                    {message.image && (
+                                      <div className="relative w-full aspect-video rounded-lg overflow-hidden">
+                                        <Image src={message.image} alt="User upload" fill className="object-contain" />
+                                      </div>
+                                    )}
                                     <p className="text-sm prose prose-sm dark:prose-invert max-w-none">{message.content}</p>
                                 </div>
                                 {message.role === 'user' && (
@@ -167,38 +189,70 @@ export default function AskForm() {
                 </div>
             </ScrollArea>
          </CardContent>
-         <CardFooter className="border-t pt-6">
+         <CardFooter className="border-t pt-4">
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="w-full flex items-start gap-4">
-                    <FormField
-                        control={form.control}
-                        name="question"
-                        render={({ field }) => (
-                        <FormItem className="flex-1">
-                            <FormControl>
-                            <Textarea 
-                                placeholder="e.g., What is the law of conservation of energy?" 
-                                {...field} 
-                                rows={1}
-                                className="resize-none"
-                                onKeyDown={(e) => {
-                                    if (e.key === 'Enter' && !e.shiftKey && !loading) {
-                                        e.preventDefault();
-                                        if (form.getValues('question')) {
-                                          form.handleSubmit(onSubmit)();
+                <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-3">
+                   {attachedImage && (
+                        <div className="relative w-32 h-32">
+                        <Image src={attachedImage} alt="Preview" fill className="object-cover rounded-md" />
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="absolute top-1 right-1 h-6 w-6 bg-black/50 hover:bg-black/75 text-white rounded-full"
+                            onClick={() => setAttachedImage(null)}
+                        >
+                            <X className="h-4 w-4" />
+                        </Button>
+                        </div>
+                    )}
+                    <div className="flex items-center gap-2">
+                        <Button
+                            type="button"
+                            variant="outline"
+                            size="icon"
+                            onClick={() => fileInputRef.current?.click()}
+                            className="shrink-0"
+                        >
+                            <Paperclip />
+                            <span className="sr-only">Attach file</span>
+                        </Button>
+                        <input
+                            type="file"
+                            ref={fileInputRef}
+                            onChange={handleFileChange}
+                            className="hidden"
+                            accept="image/*"
+                        />
+                        <FormField
+                            control={form.control}
+                            name="question"
+                            render={({ field }) => (
+                            <FormItem className="flex-1">
+                                <FormControl>
+                                <Textarea 
+                                    placeholder="e.g., What is this? Explain it to me." 
+                                    {...field} 
+                                    rows={1}
+                                    className="resize-none"
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter' && !e.shiftKey && !loading) {
+                                            e.preventDefault();
+                                            if (form.getValues('question')) {
+                                              form.handleSubmit(onSubmit)();
+                                            }
                                         }
-                                    }
-                                }}
-                            />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                        )}
-                    />
-                    <Button type="submit" disabled={loading} size="icon" className="w-10 h-10 flex-shrink-0">
-                        {loading ? <Loader2 className="animate-spin" /> : <Send />}
-                        <span className="sr-only">Send</span>
-                    </Button>
+                                    }}
+                                />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                            )}
+                        />
+                        <Button type="submit" disabled={loading} size="icon" className="shrink-0">
+                            {loading ? <Loader2 className="animate-spin" /> : <Send />}
+                            <span className="sr-only">Send</span>
+                        </Button>
+                    </div>
                 </form>
             </Form>
          </CardFooter>
