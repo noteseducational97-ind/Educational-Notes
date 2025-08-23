@@ -57,7 +57,7 @@ export default function ResourceActions({ resource }: ResourceActionsProps) {
             Download PDF
           </Button>
         )}
-        <TestMakerButton resource={resource} disabled={isLinkDisabled} />
+        {user && <TestMakerButton resource={resource} disabled={isLinkDisabled} />}
       </div>
 
       <AlertDialog open={showLoginDialog} onOpenChange={setShowLoginDialog}>
