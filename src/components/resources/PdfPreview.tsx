@@ -19,16 +19,17 @@ export default function PdfPreview({ url, title }: PdfPreviewProps) {
         )
     }
 
+    // Construct the Google Docs Viewer URL to prevent downloads and printing
+    const embedUrl = `https://docs.google.com/gview?url=${encodeURIComponent(url)}&embedded=true`;
+
     return (
         <div className="border rounded-lg overflow-hidden h-[800px] relative group">
-             <object data={url} type="application/pdf" className="w-full h-full">
-                <p className="p-4 text-center text-muted-foreground">
-                    Your browser does not support embedded PDFs.
-                    <Button asChild variant="link">
-                        <Link href={url} target="_blank" rel="noopener noreferrer">Click here to view the PDF in a new tab.</Link>
-                    </Button>
-                </p>
-            </object>
+             <iframe
+                src={embedUrl}
+                title={title}
+                className="w-full h-full"
+                frameBorder="0"
+            />
             <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                  <Button asChild>
                     <Link href={url} target="_blank" rel="noopener noreferrer">
