@@ -26,7 +26,7 @@ export default async function ResourceDetailPage({ params }: Props) {
 
   const isLinkDisabled = resource.isComingSoon || !resource.pdfUrl;
 
-  const googleDocsViewerUrl = `https://docs.google.com/gview?url=${encodeURIComponent(resource.pdfUrl || '')}&embedded=true`;
+  const googleDocsViewerUrl = `https://docs.google.com/gview?url=${encodeURIComponent(resource.viewPdfUrl || '')}&embedded=true`;
 
   return (
     <div className="flex min-h-screen flex-col bg-secondary/20">
@@ -55,21 +55,7 @@ export default async function ResourceDetailPage({ params }: Props) {
                     </div>
                 </CardHeader>
                 <CardContent className="p-6 md:p-8 grid md:grid-cols-2 gap-8">
-                    <div className="space-y-6">
-                        <div>
-                            <h2 className="text-2xl font-semibold mb-4 border-b pb-2">Preview</h2>
-                            <PdfPreview title={resource.title} url={googleDocsViewerUrl} />
-                        </div>
-                    </div>
-                    <div className="space-y-8">
-                        <div className="relative aspect-video w-full">
-                           <Image 
-                                src={isLinkDisabled ? 'https://placehold.co/600x400.png' : resource.imageUrl || 'https://placehold.co/600x400.png'}
-                                alt={resource.title}
-                                fill
-                                className={cn("object-cover rounded-lg shadow-md", isLinkDisabled && "filter grayscale")}
-                            />
-                        </div>
+                    <div className="space-y-6 order-2 md:order-1">
                          <div>
                             <h2 className="text-2xl font-semibold mb-4 border-b pb-2">Description</h2>
                             <p className="text-muted-foreground">{resource.content}</p>
@@ -102,7 +88,7 @@ export default async function ResourceDetailPage({ params }: Props) {
                                 <h3 className="text-lg font-semibold">Actions</h3>
                                 <div className="flex flex-wrap gap-2">
                                     <Button asChild disabled={isLinkDisabled}>
-                                        <Link href={resource.pdfUrl || '#'} target="_blank" rel="noopener noreferrer">
+                                        <Link href={resource.viewPdfUrl || '#'} target="_blank" rel="noopener noreferrer">
                                             <ExternalLink className="mr-2 h-4 w-4" />
                                             View PDF
                                         </Link>
@@ -121,6 +107,12 @@ export default async function ResourceDetailPage({ params }: Props) {
                                 </div>
                             </CardFooter>
                         </Card>
+                    </div>
+                    <div className="space-y-8 order-1 md:order-2">
+                        <div>
+                            <h2 className="text-2xl font-semibold mb-4 border-b pb-2">Preview</h2>
+                            <PdfPreview title={resource.title} url={googleDocsViewerUrl} />
+                        </div>
                     </div>
                 </CardContent>
             </Card>
