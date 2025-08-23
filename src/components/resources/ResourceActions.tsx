@@ -44,12 +44,6 @@ export default function ResourceActions({ resource }: ResourceActionsProps) {
   return (
     <>
       <div className="flex flex-wrap gap-2">
-        <Button asChild disabled={isLinkDisabled}>
-          <Link href={resource.viewPdfUrl || '#'} target="_blank" rel="noopener noreferrer">
-            <ExternalLink className="mr-2 h-4 w-4" />
-            View PDF
-          </Link>
-        </Button>
         {user ? (
           <Button asChild disabled={isLinkDisabled}>
             <Link href={getDownloadUrl()} target="_blank" rel="noopener noreferrer">
