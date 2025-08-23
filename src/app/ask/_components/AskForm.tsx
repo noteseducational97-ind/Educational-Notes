@@ -262,7 +262,7 @@ export default function AskForm() {
                                         placeholder="e.g., What is this? Explain it to me." 
                                         {...field} 
                                         rows={1}
-                                        className="flex-1 resize-none border-0 shadow-none focus-visible:ring-0"
+                                        className="flex-1 resize-none border-0 shadow-none focus-visible:ring-0 h-10"
                                         onKeyDown={(e) => {
                                             if (e.key === 'Enter' && !e.shiftKey && !loading) {
                                                 e.preventDefault();
