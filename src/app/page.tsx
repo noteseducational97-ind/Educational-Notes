@@ -7,7 +7,7 @@ import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
-import { ShieldCheck, Send, Download, Bookmark, Users, LogIn, UserPlus, FileText, Lightbulb, BrainCircuit } from 'lucide-react';
+import { ShieldCheck, Send, Download, Bookmark, Users, LogIn, UserPlus, FileText, Lightbulb, BrainCircuit, BookCheck, ClipboardList } from 'lucide-react';
 import Image from 'next/image';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
@@ -85,11 +85,38 @@ export default function Home() {
               </Card>
               <Card className="hover:shadow-lg transition-shadow duration-300">
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-lg font-medium">AI Assistant</CardTitle>
+                  <CardTitle className="text-lg font-medium">Instant AI Assistant</CardTitle>
                   <Lightbulb className="h-6 w-6 text-primary" />
                 </CardHeader>
                 <CardContent>
                   <CardDescription>Have a doubt? Ask our AI assistant for instant clarification on any topic, anytime.</CardDescription>
+                </CardContent>
+              </Card>
+              <Card className="hover:shadow-lg transition-shadow duration-300">
+                <CardHeader className="flex flex-row items-center justify-between pb-2">
+                  <CardTitle className="text-lg font-medium">Previous Year Questions</CardTitle>
+                  <BookCheck className="h-6 w-6 text-primary" />
+                </CardHeader>
+                <CardContent>
+                  <CardDescription>Access a vast library of past exam papers (PYQs) to understand patterns and practice effectively.</CardDescription>
+                </CardContent>
+              </Card>
+              <Card className="hover:shadow-lg transition-shadow duration-300">
+                <CardHeader className="flex flex-row items-center justify-between pb-2">
+                  <CardTitle className="text-lg font-medium">Syllabus & Exam Guides</CardTitle>
+                  <ClipboardList className="h-6 w-6 text-primary" />
+                </CardHeader>
+                <CardContent>
+                  <CardDescription>Stay on track with detailed syllabus breakdowns and exam patterns for various boards and entrance tests.</CardDescription>
+                </CardContent>
+              </Card>
+               <Card className="hover:shadow-lg transition-shadow duration-300">
+                <CardHeader className="flex flex-row items-center justify-between pb-2">
+                  <CardTitle className="text-lg font-medium">Personalized Watchlist</CardTitle>
+                  <Bookmark className="h-6 w-6 text-primary" />
+                </CardHeader>
+                <CardContent>
+                  <CardDescription>Save and organize your most important resources for quick and easy access whenever you need them.</CardDescription>
                 </CardContent>
               </Card>
             </div>
@@ -100,7 +127,14 @@ export default function Home() {
             <div className="container px-4 md:px-6">
                 <div className="grid md:grid-cols-2 gap-12 items-center">
                      <div className="flex justify-center">
-                        <BrainCircuit className="h-48 w-48 text-primary/20" />
+                        <Image
+                            src="https://images.pexels.com/photos/8454553/pexels-photo-8454553.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+                            width="500"
+                            height="500"
+                            alt="AI Brain"
+                            data-ai-hint="ai brain"
+                            className="rounded-full aspect-square object-cover shadow-2xl"
+                        />
                     </div>
                     <div>
                         <div className="inline-block rounded-lg bg-secondary px-3 py-1 text-sm font-semibold text-secondary-foreground mb-4">Supercharge Your Learning</div>
@@ -136,7 +170,14 @@ export default function Home() {
                         </Button>
                     </div>
                     <div className="flex justify-center">
-                        <ShieldCheck className="h-48 w-48 text-primary/20" />
+                         <Image
+                            src="https://images.pexels.com/photos/60504/security-protection-anti-virus-software-60504.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+                            width="500"
+                            height="500"
+                            alt="Data Security"
+                            data-ai-hint="data security"
+                            className="rounded-full aspect-square object-cover shadow-2xl"
+                        />
                     </div>
                 </div>
             </div>
