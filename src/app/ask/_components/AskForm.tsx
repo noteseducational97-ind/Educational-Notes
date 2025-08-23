@@ -11,12 +11,24 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, Sparkles, Send, Trash2, Paperclip, X, History } from 'lucide-react';
+import { Loader2, Sparkles, Send, Trash2, Paperclip, X, History, LogIn } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/use-auth';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+
 
 const formSchema = z.object({
   question: z.string().min(1, 'Cannot send an empty message.'),
@@ -36,12 +48,16 @@ const examplePrompts = [
     'What is CPU?',
 ];
 
+const GUEST_MESSAGE_LIMIT = 5;
+
 export default function AskForm() {
   const [loading, setLoading] = useState(false);
   const [conversation, setConversation] = useState<Message[]>([]);
   const [attachedImage, setAttachedImage] = useState<string | null>(null);
+  const [showLoginDialog, setShowLoginDialog] = useState(false);
   const { toast } = useToast();
   const { user } = useAuth();
+  const router = useRouter();
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -91,6 +107,13 @@ export default function AskForm() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     if (loading) return;
+
+    const userMessagesCount = conversation.filter(m => m.role === 'user').length;
+    if (!user && userMessagesCount >= GUEST_MESSAGE_LIMIT) {
+        setShowLoginDialog(true);
+        return;
+    }
+
     setLoading(true);
     const userMessage: Message = { role: 'user', content: values.question, image: attachedImage ?? undefined };
     setConversation(prev => [...prev, userMessage]);
@@ -285,6 +308,23 @@ export default function AskForm() {
             </Form>
          </CardFooter>
        </Card>
+        <AlertDialog open={showLoginDialog} onOpenChange={setShowLoginDialog}>
+            <AlertDialogContent>
+            <AlertDialogHeader>
+                <AlertDialogTitle>Message Limit Reached</AlertDialogTitle>
+                <AlertDialogDescription>
+                You've reached the message limit for guest users. Please sign in to continue your conversation with the AI assistant.
+                </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={() => router.push('/login')}>
+                <LogIn className="mr-2 h-4 w-4" />
+                Sign In
+                </AlertDialogAction>
+            </AlertDialogFooter>
+            </AlertDialogContent>
+        </AlertDialog>
     </div>
   );
 }
