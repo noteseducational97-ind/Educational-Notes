@@ -47,7 +47,10 @@ The test must be structured into four sections based on marks, in this exact ord
 
 After all the questions, provide a separate "Answer Key" section that clearly lists the correct answer for every question (e.g., "Section A: 1. B, 2. A", "Section B: 1. [Brief Answer]", etc.).
 
-Format the entire output cleanly. Use clear headings for each section. Ensure the questions are directly relevant to the content provided below for the topic: {{{title}}}.
+Formatting Rules:
+- Add a blank line before the start of each new section (e.g., before "Section B").
+- Do NOT add any extra blank lines between questions within the same section.
+- Ensure the questions are directly relevant to the content provided below for the topic: {{{title}}}.
 
 Content:
 {{{content}}}
