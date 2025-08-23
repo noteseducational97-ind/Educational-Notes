@@ -22,6 +22,7 @@ const navLinks = [
   { href: '/', label: 'Home', icon: Home },
   { href: '/downloads', label: 'Downloads', icon: Download },
   { href: '/save', label: 'Watchlist', icon: Bookmark },
+  { href: '/ask', label: 'Assistant', icon: Lightbulb },
   { href: '/about', label: 'About', icon: Info },
 ];
 
@@ -74,12 +75,6 @@ export default function Header() {
             )}
           </nav>
           <div className="ml-auto flex items-center gap-4">
-             <Button asChild variant="ghost">
-                <Link href="/ask" className={cn(pathname === '/ask' && 'text-primary')}>
-                    <Lightbulb />
-                    Assistant
-                </Link>
-            </Button>
             {loading ? (
               <div className="h-8 w-20 flex items-center justify-center">
                 <Loader2 className="h-6 w-6 animate-spin" />
@@ -138,10 +133,6 @@ export default function Header() {
                           </MobileNavLink>
                        )
                     )}
-                    <MobileNavLink href="/ask">
-                        <Lightbulb className="h-5 w-5" />
-                        Assistant
-                    </MobileNavLink>
                     <hr className="my-2"/>
                     {user ? (
                       <>
