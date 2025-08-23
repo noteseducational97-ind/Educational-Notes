@@ -57,7 +57,17 @@ export default function ResourceActions({ resource }: ResourceActionsProps) {
             Download PDF
           </Button>
         )}
-        {user && <TestMakerButton resource={resource} disabled={isLinkDisabled} />}
+        {user && (
+          <>
+            <Button asChild variant="outline">
+              <Link href={`/ask?resourceId=${resource.id}`}>
+                <HelpCircle className="mr-2 h-4 w-4" />
+                Ask a Question
+              </Link>
+            </Button>
+            <TestMakerButton resource={resource} disabled={isLinkDisabled} />
+          </>
+        )}
       </div>
 
       <AlertDialog open={showLoginDialog} onOpenChange={setShowLoginDialog}>

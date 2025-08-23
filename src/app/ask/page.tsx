@@ -17,6 +17,7 @@ import { getResources, Resource } from '@/lib/firebase/resources';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useAuth } from '@/hooks/use-auth';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { useSearchParams } from 'next/navigation';
 
 const formSchema = z.object({
   resourceId: z.string().min(1, 'Please select a resource.'),
@@ -30,7 +31,23 @@ export default function AskPage() {
   const [loadingResources, setLoadingResources] = useState(true);
   const { toast } = useToast();
   const { user } = useAuth();
+  const searchParams = useSearchParams();
 
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      resourceId: '',
+      question: '',
+    },
+  });
+
+  useEffect(() => {
+    const resourceId = searchParams.get('resourceId');
+    if(resourceId) {
+        form.setValue('resourceId', resourceId);
+    }
+  }, [searchParams, form]);
+  
   useEffect(() => {
     async function loadResources() {
       setLoadingResources(true);
@@ -49,14 +66,6 @@ export default function AskPage() {
     }
     loadResources();
   }, [user, toast]);
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      resourceId: '',
-      question: '',
-    },
-  });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
@@ -120,7 +129,7 @@ export default function AskPage() {
                                 render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Resource</FormLabel>
-                                    <Select onValueChange={field.onChange} defaultValue={field.value} disabled={loadingResources}>
+                                    <Select onValueChange={field.onChange} value={field.value} disabled={loadingResources}>
                                         <FormControl>
                                             <SelectTrigger>
                                             <SelectValue placeholder={loadingResources ? "Loading resources..." : "Select a resource to ask about"} />
