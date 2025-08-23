@@ -12,11 +12,11 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, Sparkles, Send, Lightbulb } from 'lucide-react';
+import { Loader2, Sparkles, Send, Lightbulb, ArrowLeft } from 'lucide-react';
 import { getResourceById, Resource } from '@/lib/firebase/resources';
 import { useAuth } from '@/hooks/use-auth';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 
 const formSchema = z.object({
@@ -31,6 +31,7 @@ export default function AskPage() {
   const { toast } = useToast();
   const { user } = useAuth();
   const searchParams = useSearchParams();
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -154,7 +155,10 @@ export default function AskPage() {
                                     )}
                                 />
                             </CardContent>
-                            <CardFooter>
+                            <CardFooter className="flex justify-between">
+                                <Button type="button" variant="outline" onClick={() => router.back()}>
+                                    <ArrowLeft /> Back
+                                </Button>
                                 <Button type="submit" disabled={loading}>
                                     {loading ? <Loader2 className="animate-spin" /> : <Send />}
                                     Ask Question
