@@ -11,6 +11,7 @@ import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import TestMakerButton from '@/components/resources/TestMakerButton';
+import PdfPreview from '@/components/resources/PdfPreview';
 
 type Props = {
   params: { id: string };
@@ -24,6 +25,9 @@ export default async function ResourceDetailPage({ params }: Props) {
   }
 
   const isLinkDisabled = resource.isComingSoon || !resource.pdfUrl;
+
+  const googleDocsViewerUrl = `https://docs.google.com/gview?url=${encodeURIComponent(resource.viewPdfUrl)}&embedded=true`;
+
 
   return (
     <div className="flex min-h-screen flex-col bg-secondary/20">
@@ -66,6 +70,10 @@ export default async function ResourceDetailPage({ params }: Props) {
                             <div className="prose dark:prose-invert max-w-none text-muted-foreground">
                                 <p>{resource.content}</p>
                             </div>
+                        </div>
+                         <div>
+                            <h2 className="text-2xl font-semibold mb-4 border-b pb-2">Preview</h2>
+                            <PdfPreview title={resource.title} url={googleDocsViewerUrl} />
                         </div>
                     </div>
                     <aside className="space-y-6">
