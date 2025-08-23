@@ -4,7 +4,6 @@ import Header from '@/components/layout/Header';
 import AskForm from './_components/AskForm';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 
-// This is a server component that will render the suspense boundary
 export default function AskPage() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
