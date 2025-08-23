@@ -8,8 +8,7 @@ export type Resource = {
   class?: string; // Optional since it may not be present for all streams
   stream: string[]; // Changed to array to support multiple streams
   imageUrl: string;
-  pdfUrl: string; // For download
-  viewPdfUrl: string; // For embedded view
+  pdfUrl: string; // For both download and view
   createdAt: string; // Should be an ISO string
   isComingSoon?: boolean;
   visibility?: 'private' | 'public';

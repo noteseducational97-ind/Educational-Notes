@@ -25,7 +25,7 @@ export default async function ResourceDetailPage({ params }: Props) {
   }
 
   const isLinkDisabled = resource.isComingSoon || !resource.pdfUrl;
-  const previewUrl = `https://docs.google.com/gview?url=${resource.viewPdfUrl}&embedded=true`;
+  const previewUrl = resource.pdfUrl ? `https://docs.google.com/gview?url=${resource.pdfUrl}&embedded=true` : '';
 
   return (
     <div className="flex min-h-screen flex-col bg-secondary/20">
@@ -57,7 +57,13 @@ export default async function ResourceDetailPage({ params }: Props) {
                     <div className="md:col-span-2 space-y-8">
                         <div>
                              <h2 className="text-2xl font-semibold mb-4 border-b pb-2">PDF Preview</h2>
-                             <PdfPreview url={previewUrl} title={resource.title} />
+                             {previewUrl ? (
+                                <PdfPreview url={previewUrl} title={resource.title} />
+                             ) : (
+                                <div className='flex items-center justify-center h-96 border rounded-lg bg-muted/50'>
+                                    <p className='text-muted-foreground'>No preview available.</p>
+                                </div>
+                             )}
                         </div>
                     </div>
                     <aside className="space-y-6">

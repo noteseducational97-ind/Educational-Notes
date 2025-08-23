@@ -25,6 +25,7 @@ import { MultiSelect } from '@/components/ui/multi-select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { cn } from '@/lib/utils';
+import PdfPreview from '@/components/resources/PdfPreview';
 
 const FormSchema = z.object({
   title: z.string().min(3, 'Title must be at least 3 characters.'),
@@ -35,7 +36,6 @@ const FormSchema = z.object({
   subject: z.array(z.string()).nonempty({ message: 'Select at least one subject.' }),
   imageUrl: z.string().url().optional().or(z.literal('')),
   pdfUrl: z.string().optional(),
-  viewPdfUrl: z.string().url({ message: 'A valid URL for the PDF preview is required.' }),
   isComingSoon: z.boolean().default(false),
   visibility: z.enum(['private', 'public']).default('public'),
 }).superRefine((data, ctx) => {
@@ -43,7 +43,7 @@ const FormSchema = z.object({
         if (!data.pdfUrl || !z.string().url().safeParse(data.pdfUrl).success) {
             ctx.addIssue({
                 code: z.ZodIssueCode.custom,
-                message: 'Download PDF URL is required and must be a valid URL when resource is not "Coming Soon".',
+                message: 'PDF URL is required and must be a valid URL when resource is not "Coming Soon".',
                 path: ['pdfUrl'],
             });
         }
@@ -77,17 +77,16 @@ export default function AddResourceAdminPage() {
       subject: [],
       imageUrl: '',
       pdfUrl: '',
-      viewPdfUrl: '',
       isComingSoon: false,
       visibility: 'public',
     },
   });
   
   const isComingSoon = form.watch('isComingSoon');
-  const viewPdfUrlValue = form.watch('viewPdfUrl');
+  const pdfUrlValue = form.watch('pdfUrl');
 
-  const isValidPdfUrl = viewPdfUrlValue && z.string().url().safeParse(viewPdfUrlValue).success;
-  const previewUrl = isValidPdfUrl ? `https://docs.google.com/gview?url=${viewPdfUrlValue}&embedded=true` : '';
+  const isValidPdfUrl = pdfUrlValue && z.string().url().safeParse(pdfUrlValue).success;
+  const previewUrl = isValidPdfUrl ? `https://docs.google.com/gview?url=${pdfUrlValue}&embedded=true` : '';
 
   async function onSubmit(values: z.infer<typeof FormSchema>) {
     setIsSubmitting(true);
@@ -300,34 +299,14 @@ export default function AddResourceAdminPage() {
                         <CardTitle className="flex items-center gap-2 text-lg"><Eye /> PDF Preview</CardTitle>
                       </CardHeader>
                       <CardContent>
-                        <div className="relative border rounded-lg overflow-hidden h-[600px]">
-                           <iframe
-                              src={previewUrl}
-                              className="w-full h-full"
-                              title="PDF Preview"
-                              allowFullScreen
-                            />
-                            <div className="absolute inset-0" onContextMenu={(e) => e.preventDefault()}></div>
-                        </div>
+                        <PdfPreview url={previewUrl} title="PDF Preview" />
                       </CardContent>
                     </Card>
                   )}
-                  
-                  <FormField
-                    control={form.control}
-                    name="viewPdfUrl"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>PDF View URL</FormLabel>
-                        <FormControl><Input placeholder="https://example.com/view.pdf" {...field} value={field.value ?? ''} disabled={isComingSoon} /></FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
 
                   <FormField control={form.control} name="pdfUrl" render={({ field }) => (
                       <FormItem>
-                        <FormLabel>PDF URL (for Download)</FormLabel>
+                        <FormLabel>PDF URL (for View & Download)</FormLabel>
                         <FormControl><Input placeholder="https://example.com/download.pdf" {...field} value={field.value ?? ''} disabled={isComingSoon} /></FormControl>
                         <FormMessage />
                       </FormItem>

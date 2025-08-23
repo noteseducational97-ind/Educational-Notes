@@ -97,7 +97,7 @@ export default function SavePage() {
   };
 
   const getPreviewUrl = (resource: Resource) => {
-    return resource.isComingSoon ? '#' : resource.viewPdfUrl || '#';
+    return resource.isComingSoon ? '#' : resource.pdfUrl || '#';
   };
 
   const getDownloadUrl = (resource: Resource) => {
