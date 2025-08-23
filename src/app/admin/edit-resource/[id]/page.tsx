@@ -34,19 +34,12 @@ const FormSchema = z.object({
   class: z.string().optional(),
   category: z.array(z.string()).nonempty({ message: 'Select at least one category.' }),
   subject: z.array(z.string()).nonempty({ message: 'Select at least one subject.' }),
-  imageUrl: z.string().optional(),
+  imageUrl: z.string().url().optional().or(z.literal('')),
   pdfUrl: z.string().optional(),
   isComingSoon: z.boolean().default(false),
   visibility: z.enum(['private', 'public']).default('public'),
 }).superRefine((data, ctx) => {
     if (!data.isComingSoon) {
-        if (!data.imageUrl || !z.string().url().safeParse(data.imageUrl).success) {
-            ctx.addIssue({
-                code: z.ZodIssueCode.custom,
-                message: 'Image URL is required when not "Coming Soon".',
-                path: ['imageUrl'],
-            });
-        }
         if (!data.pdfUrl || !z.string().url().safeParse(data.pdfUrl).success) {
             ctx.addIssue({
                 code: z.ZodIssueCode.custom,
@@ -327,7 +320,7 @@ export default function EditResourceAdminPage() {
                   </div>
                   <FormField control={form.control} name="imageUrl" render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Image URL</FormLabel>
+                        <FormLabel>Image URL (Optional)</FormLabel>
                         <FormControl><Input placeholder="https://example.com/image.png" {...field} value={field.value ?? ''} disabled={isComingSoon} /></FormControl>
                         <FormMessage />
                       </FormItem>

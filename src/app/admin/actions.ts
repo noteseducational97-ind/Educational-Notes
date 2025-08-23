@@ -12,19 +12,12 @@ const FormSchema = z.object({
   subject: z.array(z.string()).nonempty({ message: 'Select at least one subject.' }),
   class: z.string().optional(),
   stream: z.array(z.string()).nonempty({ message: 'Select at least one stream.' }),
-  imageUrl: z.string().optional(),
+  imageUrl: z.string().url().optional().or(z.literal('')),
   pdfUrl: z.string().optional(),
   isComingSoon: z.boolean().default(false),
   visibility: z.enum(['private', 'public']).default('public'),
 }).superRefine((data, ctx) => {
     if (!data.isComingSoon) {
-        if (!data.imageUrl || !z.string().url().safeParse(data.imageUrl).success) {
-            ctx.addIssue({
-                code: z.ZodIssueCode.custom,
-                message: 'Image URL is required and must be a valid URL when resource is not "Coming Soon".',
-                path: ['imageUrl'],
-            });
-        }
         if (!data.pdfUrl || !z.string().url().safeParse(data.pdfUrl).success) {
             ctx.addIssue({
                 code: z.ZodIssueCode.custom,
@@ -55,6 +48,9 @@ export async function addResourceAction(data: AddResourceInput) {
       errors: validatedFields.error.flatten().fieldErrors,
     };
   }
+  
+  const { imageUrl, ...restOfData } = validatedFields.data;
+  const finalImageUrl = imageUrl || 'https://placehold.co/600x400.png';
 
   const slug = createSlug(validatedFields.data.title);
   const resourceRef = db.collection('resources').doc(slug);
@@ -69,7 +65,8 @@ export async function addResourceAction(data: AddResourceInput) {
     }
 
     await resourceRef.set({
-      ...validatedFields.data,
+      ...restOfData,
+      imageUrl: finalImageUrl,
       id: slug,
       createdAt: new Date(),
     });
@@ -98,12 +95,16 @@ export async function updateResourceAction(id: string, data: AddResourceInput) {
       errors: validatedFields.error.flatten().fieldErrors,
     };
   }
+  
+  const { imageUrl, ...restOfData } = validatedFields.data;
+  const finalImageUrl = imageUrl || 'https://placehold.co/600x400.png';
 
   const resourceRef = db.collection('resources').doc(id);
 
   try {
     await resourceRef.update({
-      ...validatedFields.data,
+      ...restOfData,
+      imageUrl: finalImageUrl,
     });
 
     revalidatePath('/admin/uploaded-resources');
