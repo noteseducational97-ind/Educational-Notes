@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview An question answering AI agent.
@@ -31,17 +32,13 @@ const prompt = ai.definePrompt({
   name: 'questionAnswerPrompt',
   input: {schema: QuestionAnswerInputSchema},
   output: {schema: QuestionAnswerOutputSchema},
-  prompt: `You are an expert tutor. Your task is to provide a clear and concise answer to the user's question, but only if it is related to educational subjects like science, math, literature, history, etc.
+  prompt: `You are a helpful AI assistant. Your task is to provide a clear and concise answer to the user's question.
 
 {{#if photoDataUri}}
 You have been provided with an image to help answer the question.
 {{/if}}
 
-Carefully analyze the user's question. If the question is about a study-related topic, provide a helpful and accurate answer.
-
-If the question is NOT study-related (e.g., asking about personal opinions, making jokes, or other non-academic topics), you MUST politely decline. For example, you can say, "I can only answer questions related to educational topics. Please ask me something about your studies." Do not attempt to answer non-academic questions.
-
-Do not use any external knowledge or make assumptions if you cannot answer from your existing knowledge.
+Carefully analyze the user's question and provide a helpful and accurate answer.
 
 {{#if photoDataUri}}
 User's Image:
