@@ -53,7 +53,7 @@ export default async function ResourceDetailPage({ params }: Props) {
                     </div>
                 </CardHeader>
                 <CardContent className="p-6 md:p-8 grid md:grid-cols-2 gap-8">
-                     <div className="space-y-8 order-1 md:order-1">
+                     <div className="space-y-8 order-1">
                         <div>
                             <h2 className="text-2xl font-semibold mb-4 border-b pb-2">Preview</h2>
                             <Link href={resource.viewPdfUrl || '#'} target="_blank" rel="noopener noreferrer" className="block">
@@ -61,7 +61,7 @@ export default async function ResourceDetailPage({ params }: Props) {
                             </Link>
                         </div>
                     </div>
-                    <div className="space-y-8 order-2 md:order-2">
+                    <div className="space-y-8 order-2">
                         <div>
                             <h2 className="text-2xl font-semibold mb-4 border-b pb-2">Description</h2>
                             <p className="text-muted-foreground">{resource.content}</p>
