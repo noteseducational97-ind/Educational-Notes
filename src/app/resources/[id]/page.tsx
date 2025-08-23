@@ -13,6 +13,7 @@ import ResourceActions from '@/components/resources/ResourceActions';
 
 type Props = {
   params: { id: string };
+  searchParams: { [key: string]: string | string[] | undefined };
 };
 
 export default async function ResourceDetailPage({ params }: Props) {
