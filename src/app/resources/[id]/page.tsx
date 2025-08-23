@@ -5,13 +5,11 @@ import Header from '@/components/layout/Header';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Download, CalendarIcon, ExternalLink, FileText, HelpCircle, ArrowLeft } from 'lucide-react';
+import { Download, CalendarIcon, HelpCircle, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { format } from 'date-fns';
-import { cn } from '@/lib/utils';
-import Image from 'next/image';
-import TestMakerButton from '@/components/resources/TestMakerButton';
 import PdfPreview from '@/components/resources/PdfPreview';
+import TestMakerButton from '@/components/resources/TestMakerButton';
 
 type Props = {
   params: { id: string };
@@ -55,10 +53,12 @@ export default async function ResourceDetailPage({ params }: Props) {
                     </div>
                 </CardHeader>
                 <CardContent className="p-6 md:p-8 grid md:grid-cols-2 gap-8">
-                    <div className="space-y-8 order-1 md:order-1">
+                     <div className="space-y-8 order-1 md:order-1">
                         <div>
                             <h2 className="text-2xl font-semibold mb-4 border-b pb-2">Preview</h2>
-                            <PdfPreview title={resource.title} url={googleDocsViewerUrl} />
+                            <Link href={resource.viewPdfUrl || '#'} target="_blank" rel="noopener noreferrer" className="block">
+                                <PdfPreview title={resource.title} url={googleDocsViewerUrl} />
+                            </Link>
                         </div>
                     </div>
                     <div className="space-y-8 order-2 md:order-2">
@@ -93,12 +93,6 @@ export default async function ResourceDetailPage({ params }: Props) {
                             <CardFooter className="flex flex-col items-start gap-2 border-t pt-4">
                                 <h3 className="text-lg font-semibold">Actions</h3>
                                 <div className="flex flex-wrap gap-2">
-                                    <Button asChild disabled={isLinkDisabled}>
-                                        <Link href={resource.viewPdfUrl || '#'} target="_blank" rel="noopener noreferrer">
-                                            <ExternalLink className="mr-2 h-4 w-4" />
-                                            View PDF
-                                        </Link>
-                                    </Button>
                                     <Button asChild disabled={isLinkDisabled}>
                                         <Link href={resource.pdfUrl || '#'} target="_blank" rel="noopener noreferrer">
                                             <Download className="mr-2 h-4 w-4" />
