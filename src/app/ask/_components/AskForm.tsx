@@ -8,10 +8,10 @@ import * as z from 'zod';
 import { useToast } from '@/hooks/use-toast';
 import { answerQuestion } from '@/ai/flows/question-answer-flow';
 import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, Sparkles, Send, User, Trash2 } from 'lucide-react';
+import { Loader2, Sparkles, Send, Trash2 } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
@@ -63,7 +63,7 @@ export default function AskForm() {
 
   const getInitials = (name: string | null | undefined) => {
     if (!name) return 'U';
-    return name.split(' ').map((n) => n[0]).join('');
+    return name.split(' ').map((n) => n[0]).join('').toUpperCase();
   };
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
@@ -91,8 +91,8 @@ export default function AskForm() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto h-[calc(100vh-10rem)] flex flex-col">
-       <Card className="w-full shadow-lg flex-1 flex flex-col">
+    <div className="w-full max-w-4xl mx-auto h-[calc(100vh-10rem)] flex flex-col">
+       <Card className="flex-1 flex flex-col shadow-lg">
          <CardHeader className="border-b">
             <div className='flex justify-between items-center'>
                 <div>
@@ -126,12 +126,9 @@ export default function AskForm() {
                         </div>
                     ) : (
                         conversation.map((message, index) => (
-                            <div key={index} className={cn(
-                                "flex items-start gap-4",
-                                message.role === 'user' ? 'justify-end' : 'justify-start'
-                            )}>
+                            <div key={index} className={cn("flex items-start gap-4", message.role === 'user' && 'justify-end')}>
                                 {message.role === 'assistant' && (
-                                    <Avatar className="w-9 h-9 border">
+                                    <Avatar className="w-9 h-9 border flex-shrink-0">
                                         <div className='bg-primary w-full h-full flex items-center justify-center'>
                                              <Sparkles className="w-5 h-5 text-primary-foreground" />
                                         </div>
@@ -144,7 +141,7 @@ export default function AskForm() {
                                     <p className="text-sm prose prose-sm dark:prose-invert max-w-none">{message.content}</p>
                                 </div>
                                 {message.role === 'user' && (
-                                    <Avatar className="w-9 h-9 border">
+                                    <Avatar className="w-9 h-9 border flex-shrink-0">
                                         <AvatarImage src={user?.photoURL ?? ''} alt={user?.displayName ?? 'User'} />
                                         <AvatarFallback>{getInitials(user?.displayName)}</AvatarFallback>
                                     </Avatar>
@@ -153,13 +150,13 @@ export default function AskForm() {
                         ))
                     )}
                     {loading && (
-                         <div className="flex items-start gap-4 justify-start">
+                         <div className="flex items-start gap-4">
                             <Avatar className="w-9 h-9 border">
                                 <div className='bg-primary w-full h-full flex items-center justify-center'>
-                                        <Sparkles className="w-5 h-5 text-primary-foreground" />
+                                    <Sparkles className="w-5 h-5 text-primary-foreground" />
                                 </div>
                             </Avatar>
-                             <div className="max-w-[75%] rounded-2xl p-4 bg-secondary rounded-bl-none flex items-center">
+                             <div className="rounded-2xl p-4 bg-secondary rounded-bl-none flex items-center">
                                 <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
                              </div>
                          </div>
@@ -184,7 +181,9 @@ export default function AskForm() {
                                 onKeyDown={(e) => {
                                     if (e.key === 'Enter' && !e.shiftKey) {
                                         e.preventDefault();
-                                        form.handleSubmit(onSubmit)();
+                                        if (!loading && form.getValues('question')) {
+                                          form.handleSubmit(onSubmit)();
+                                        }
                                     }
                                 }}
                             />
@@ -193,7 +192,7 @@ export default function AskForm() {
                         </FormItem>
                         )}
                     />
-                    <Button type="submit" disabled={loading} size="icon" className="w-12 h-12">
+                    <Button type="submit" disabled={loading} size="icon" className="w-10 h-10 flex-shrink-0">
                         {loading ? <Loader2 className="animate-spin" /> : <Send />}
                         <span className="sr-only">Send</span>
                     </Button>
