@@ -25,14 +25,17 @@ export default function PdfPreview({ url, title }: PdfPreviewProps) {
         )
     }
     
-    let embedUrl = `https://docs.google.com/gview?url=${encodeURIComponent(url)}&embedded=true`;
+    let embedUrl = url;
 
-    // Check if it's a Google Drive link and construct the native embed URL
+    // Check if it's a Google Drive link and construct the native embed URL with toolbar hidden
     if (url.includes('drive.google.com')) {
         // From: https://drive.google.com/file/d/FILE_ID/view?usp=sharing
         // To:   https://drive.google.com/file/d/FILE_ID/preview
         const newUrl = url.replace('/view?usp=sharing', '/preview').replace('/view', '/preview');
         embedUrl = newUrl;
+    } else {
+        // For other URLs, use Google Docs viewer and hide toolbar
+        embedUrl = `https://docs.google.com/gview?url=${encodeURIComponent(url)}&embedded=true&rm=minimal`;
     }
 
 
@@ -54,6 +57,8 @@ export default function PdfPreview({ url, title }: PdfPreviewProps) {
                     width="100%"
                     height="100%"
                     style={{ border: 'none' }}
+                    // Allow fullscreen for better viewing experience
+                    allow="fullscreen"
                 >
                 </iframe>
             </CardContent>
