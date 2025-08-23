@@ -29,7 +29,7 @@ const prompt = ai.definePrompt({
   name: 'generateTestPrompt',
   input: {schema: GenerateTestInputSchema},
   output: {schema: GenerateTestOutputSchema},
-  prompt: `You are an expert test creator for students. Your task is to generate a multiple-choice question (MCQ) test based on the provided content.
+  prompt: `You are an expert test creator for students. Your task is to generate a comprehensive test based on the provided content.
 
 The test should be tailored for the following context:
 {{#if class}}
@@ -39,10 +39,13 @@ The test should be tailored for the following context:
 - Subject(s): {{#each subject}}{{{this}}}{{#unless @last}}, {{/unless}}{{/each}}
 {{/if}}
 
-The test should consist of 10 questions.
-Each question must have 4 options (A, B, C, D).
-Clearly indicate the correct answer for each question.
-The test should be formatted clearly and be ready for a student to take.
+The test should be structured into three sections based on marks:
+1.  **Section A: 1 Mark Questions** (5 multiple-choice questions)
+2.  **Section B: 2 Marks Questions** (3 short-answer questions)
+3.  **Section C: 3 Marks Questions** (2 long-answer questions)
+
+For each multiple-choice question, provide 4 options (A, B, C, D) and clearly indicate the correct answer.
+The entire test should be formatted clearly and be ready for a student to take.
 
 Use the following content to generate the test for the topic: {{{title}}}
 

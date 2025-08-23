@@ -35,19 +35,23 @@ export default function TestMakerButton({ resource, disabled = false }: TestMake
       
       const doc = new jsPDF();
       
+      // Add Header
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(16);
-      doc.text(`Test for: ${resource.title}`, 105, 20, { align: 'center' });
+      doc.setFontSize(20);
+      doc.text('Educational Notes', 105, 20, { align: 'center' });
       
+      doc.setFontSize(12);
+      doc.setFont('helvetica', 'normal');
+      doc.text(`Test for: ${resource.title}`, 105, 30, { align: 'center' });
+      doc.line(15, 35, 195, 35); // Horizontal line
+
+      // Add Test Content
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(12);
       
-      // The splitTextToSize function is important for handling long text.
-      // It splits the text into an array of strings, each fitting the specified width.
       const splitText = doc.splitTextToSize(result.testContent, 180);
-      doc.text(splitText, 15, 35);
+      doc.text(splitText, 15, 45);
       
-      // Sanitize the title for the filename
       const safeTitle = resource.title.replace(/[^a-z0-9]/gi, '_').toLowerCase();
       doc.save(`${safeTitle}_test.pdf`);
       
