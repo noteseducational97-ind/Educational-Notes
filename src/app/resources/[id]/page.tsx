@@ -24,7 +24,7 @@ export default async function ResourceDetailPage({ params }: Props) {
   }
 
   const isLinkDisabled = resource.isComingSoon || !resource.pdfUrl;
-  const previewUrl = `https://docs.google.com/gview?url=${resource.viewPdfUrl}&embedded=true`;
+  const previewUrl = `https://docs.google.com/gview?url=${resource.pdfUrl}&embedded=true`;
 
   return (
     <div className="flex min-h-screen flex-col bg-secondary/20">

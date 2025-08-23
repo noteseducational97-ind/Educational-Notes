@@ -33,7 +33,6 @@ const FormSchema = z.object({
   category: z.array(z.string()).nonempty({ message: 'Select at least one category.' }),
   subject: z.array(z.string()).nonempty({ message: 'Select at least one subject.' }),
   imageUrl: z.string().optional(),
-  viewPdfUrl: z.string().optional(),
   pdfUrl: z.string().optional(),
   isComingSoon: z.boolean().default(false),
   visibility: z.enum(['private', 'public']).default('public'),
@@ -44,13 +43,6 @@ const FormSchema = z.object({
                 code: z.ZodIssueCode.custom,
                 message: 'Image URL is required and must be a valid URL when resource is not "Coming Soon".',
                 path: ['imageUrl'],
-            });
-        }
-        if (!data.viewPdfUrl || !z.string().url().safeParse(data.viewPdfUrl).success) {
-            ctx.addIssue({
-                code: z.ZodIssueCode.custom,
-                message: 'View PDF URL is required and must be a valid URL when resource is not "Coming Soon".',
-                path: ['viewPdfUrl'],
             });
         }
         if (!data.pdfUrl || !z.string().url().safeParse(data.pdfUrl).success) {
@@ -89,7 +81,6 @@ export default function AddResourceAdminPage() {
       category: [],
       subject: [],
       imageUrl: '',
-      viewPdfUrl: '',
       pdfUrl: '',
       isComingSoon: false,
       visibility: 'public',
@@ -298,14 +289,6 @@ export default function AddResourceAdminPage() {
                       <FormItem>
                         <FormLabel>Image URL</FormLabel>
                         <FormControl><Input placeholder="https://example.com/image.png" {...field} value={field.value ?? ''} disabled={isComingSoon} /></FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField control={form.control} name="viewPdfUrl" render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>View PDF URL</FormLabel>
-                        <FormControl><Input placeholder="https://example.com/view.pdf" {...field} value={field.value ?? ''} disabled={isComingSoon} /></FormControl>
                         <FormMessage />
                       </FormItem>
                     )}

@@ -304,7 +304,7 @@ export default function DownloadsPage() {
                       <div className="flex items-center gap-2">
                            <Button asChild size="sm" variant="outline" disabled={disabled}>
                               <Link
-                                href={resource.viewPdfUrl || '#'}
+                                href={resource.pdfUrl || '#'}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="group inline-flex items-center gap-1"

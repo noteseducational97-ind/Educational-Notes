@@ -13,7 +13,6 @@ const FormSchema = z.object({
   class: z.string().optional(),
   stream: z.array(z.string()).nonempty({ message: 'Select at least one stream.' }),
   imageUrl: z.string().optional(),
-  viewPdfUrl: z.string().optional(),
   pdfUrl: z.string().optional(),
   isComingSoon: z.boolean().default(false),
   visibility: z.enum(['private', 'public']).default('public'),
@@ -24,13 +23,6 @@ const FormSchema = z.object({
                 code: z.ZodIssueCode.custom,
                 message: 'Image URL is required and must be a valid URL when resource is not "Coming Soon".',
                 path: ['imageUrl'],
-            });
-        }
-        if (!data.viewPdfUrl || !z.string().url().safeParse(data.viewPdfUrl).success) {
-            ctx.addIssue({
-                code: z.ZodIssueCode.custom,
-                message: 'View PDF URL is required and must be a valid URL when resource is not "Coming Soon".',
-                path: ['viewPdfUrl'],
             });
         }
         if (!data.pdfUrl || !z.string().url().safeParse(data.pdfUrl).success) {
