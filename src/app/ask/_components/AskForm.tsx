@@ -168,12 +168,12 @@ export default function AskForm() {
                 <div>
                     <CardTitle className="text-2xl flex items-center gap-2"><Sparkles className="text-primary"/>AI Assistant</CardTitle>
                     <CardDescription>
-                        {resourceId ? 'Ask questions about the current document.' : 'Your personal AI-powered tutor. Ask anything!'}
+                        {resourceId ? `Asking about "${resourceTitle}"` : 'Your personal AI-powered tutor. Ask anything!'}
                     </CardDescription>
                 </div>
                 {conversation.length > 0 && (
                     <div className="flex gap-2">
-                        <Button variant="outline" size="sm" onClick={() => { /* Implement history logic here */ }}>
+                        <Button variant="outline" size="sm" onClick={() => { /* Implement history logic here */ alert("History feature coming soon!"); }}>
                             <History className="mr-2 h-4 w-4"/> History
                         </Button>
                         <Button variant="outline" size="sm" onClick={() => setConversation([])}>
