@@ -212,27 +212,29 @@ export default function AskForm() {
         <div className="flex h-full">
             <div className={cn("flex flex-col flex-1 transition-all duration-300", isHistoryPanelOpen && "sm:w-[calc(100%-350px)]")}>
                 <CardHeader className="border-b">
-                    <div className='flex justify-between items-center'>
-                        <div className="flex items-center gap-4">
-                            <Button variant="outline" size="sm" onClick={handleNewChat}>
+                    <div className='flex flex-col md:flex-row justify-between items-center gap-4'>
+                        <div className="flex items-center gap-4 w-full md:w-auto">
+                             <Button variant="outline" size="sm" onClick={handleNewChat} className="flex-1 md:flex-initial">
                                 <PlusCircle className="mr-2 h-4 w-4" /> New Chat
                             </Button>
                         </div>
-                        <div className='text-center'>
-                            <CardTitle className="text-2xl flex items-center gap-2"><Sparkles />Educational AI Assistant</CardTitle>
-                            <CardDescription>
+                        <div className='text-center order-first md:order-none'>
+                            <CardTitle className="text-xl md:text-2xl flex items-center justify-center gap-2">
+                                <Sparkles />Educational AI Assistant
+                            </CardTitle>
+                            <CardDescription className="text-sm">
                                 {resourceId ? `Asking about "${resourceTitle}"` : 'Your personal AI-powered tutor. Ask anything!'}
                             </CardDescription>
                         </div>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 w-full md:w-auto justify-end">
                            {!isHistoryPanelOpen && (
-                            <Button variant="outline" size="sm" onClick={handleClearChat} disabled={conversation.length === 0}>
+                            <Button variant="outline" size="sm" onClick={handleClearChat} disabled={conversation.length === 0} className="flex-1 md:flex-initial">
                                 <Trash2 className="mr-2 h-4 w-4"/> Clear
                             </Button>
                            )}
                             {user && (
-                                <Button variant="outline" size="sm" onClick={() => setIsHistoryPanelOpen(!isHistoryPanelOpen)}>
-                                    {isHistoryPanelOpen ? <><PanelRightClose /> Hide History</> : <><PanelRightOpen /> Show History</>}
+                                <Button variant="outline" size="sm" onClick={() => setIsHistoryPanelOpen(!isHistoryPanelOpen)} className="flex-1 md:flex-initial">
+                                    {isHistoryPanelOpen ? <><PanelRightClose /> Hide</> : <><PanelRightOpen /> History</>}
                                 </Button>
                             )}
                         </div>
