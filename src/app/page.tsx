@@ -107,22 +107,24 @@ export default function Home() {
             </div>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {features.map((feature) => (
-                <Link href={feature.href} key={feature.title} className="block group">
-                  <Card className="hover:shadow-lg transition-shadow duration-300 hover:border-primary/50 flex flex-col h-full">
-                    <CardHeader>
-                      <div className="flex items-start justify-between gap-4">
-                          <div className="flex items-center gap-4">
-                            {feature.icon}
-                            <CardTitle className="text-lg font-medium">{feature.title}</CardTitle>
-                          </div>
-                          <ArrowRight className="h-5 w-5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                      </div>
-                    </CardHeader>
-                    <CardContent className="flex-grow">
-                      <CardDescription>{feature.description}</CardDescription>
-                    </CardContent>
-                  </Card>
-                </Link>
+                <Card 
+                  key={feature.title}
+                  className="group flex flex-col h-full cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl active:scale-100 active:shadow-md"
+                  onClick={() => router.push(feature.href)}
+                >
+                  <CardHeader>
+                    <div className="flex items-start justify-between gap-4">
+                        <div className="flex items-center gap-4">
+                          {feature.icon}
+                          <CardTitle className="text-lg font-medium">{feature.title}</CardTitle>
+                        </div>
+                        <ArrowRight className="h-5 w-5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    </div>
+                  </CardHeader>
+                  <CardContent className="flex-grow">
+                    <CardDescription>{feature.description}</CardDescription>
+                  </CardContent>
+                </Card>
               ))}
             </div>
           </div>
