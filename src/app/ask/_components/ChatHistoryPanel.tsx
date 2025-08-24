@@ -2,34 +2,26 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetDescription,
-} from '@/components/ui/sheet';
 import { getChatHistory } from '@/lib/firebase/chat';
 import type { Chat } from '@/types';
 import { useToast } from '@/hooks/use-toast';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Button } from '@/components/ui/button';
 import { MessageSquare, Trash2 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
+import { cn } from '@/lib/utils';
 
 type ChatHistoryPanelProps = {
-  isOpen: boolean;
-  onOpenChange: (isOpen: boolean) => void;
   onSelectChat: (chat: Chat) => void;
   userId: string;
+  isOpen: boolean;
 };
 
 export default function ChatHistoryPanel({
-  isOpen,
-  onOpenChange,
   onSelectChat,
   userId,
+  isOpen,
 }: ChatHistoryPanelProps) {
   const [history, setHistory] = useState<Chat[]>([]);
   const [loading, setLoading] = useState(true);
@@ -52,15 +44,14 @@ export default function ChatHistoryPanel({
   }, [isOpen, userId, toast]);
 
   return (
-    <Sheet open={isOpen} onOpenChange={onOpenChange}>
-      <SheetContent className="w-full sm:w-3/4 md:w-1/2 lg:w-1/3 xl:w-1/4">
-        <SheetHeader>
-          <SheetTitle>Chat History</SheetTitle>
-          <SheetDescription>
-            Select a previous conversation to continue.
-          </SheetDescription>
-        </SheetHeader>
-        <div className="h-[calc(100%-4rem)]">
+    <Card className="h-full w-[350px] border-l-2 border-r-0 border-t-0 border-b-0 rounded-none flex flex-col">
+        <CardHeader>
+            <CardTitle>Chat History</CardTitle>
+            <CardDescription>
+                Select a past conversation.
+            </CardDescription>
+        </CardHeader>
+        <CardContent className="p-0 flex-1 overflow-hidden">
             <ScrollArea className="h-full">
                 {loading ? (
                 <div className="flex justify-center items-center h-full">
@@ -91,8 +82,7 @@ export default function ChatHistoryPanel({
                 </div>
                 )}
             </ScrollArea>
-        </div>
-      </SheetContent>
-    </Sheet>
+        </CardContent>
+    </Card>
   );
 }
