@@ -6,7 +6,7 @@ import Header from '@/components/layout/Header';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowRight, Download, Bookmark, LogIn, UserPlus, FileText, Lightbulb, BookCheck, ClipboardList } from 'lucide-react';
+import { ShieldCheck, ArrowRight, Download, Bookmark, Users, LogIn, UserPlus, FileText, Lightbulb, BrainCircuit, BookCheck, ClipboardList, BookCopy } from 'lucide-react';
 import Image from 'next/image';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import Link from 'next/link';
@@ -134,7 +134,7 @@ export default function Home() {
                 <div className="grid md:grid-cols-2 gap-12 items-center">
                      <div className="flex justify-center">
                         <Image
-                            src="https://images.pexels.com/photos/373543/pexels-photo-373543.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+                            src="https://images.pexels.com/photos/8728383/pexels-photo-8728383.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
                             width="500"
                             height="500"
                             alt="AI concept image"
@@ -160,28 +160,37 @@ export default function Home() {
         </section>
         
         <section className="w-full py-12 md:py-24 lg:py-32 bg-primary/10">
-            <div className="container grid items-center justify-center gap-4 px-4 text-center md:px-6">
-                <div className="space-y-3 max-w-2xl mx-auto">
-                    <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight text-balance">Ready to Start Your Journey?</h2>
-                    <p className="text-muted-foreground text-balance">
-                        Create an account today to unlock a world of knowledge and save your progress.
-                    </p>
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-                      <Button asChild size="lg">
-                        <Link href="/signup">
-                          <UserPlus />
-                          Sign Up for Free
-                        </Link>
-                      </Button>
-                      <Button asChild size="lg" variant="secondary">
-                        <Link href="/login">
-                          <LogIn />
-                          Sign In
-                        </Link>
-                      </Button>
-                    </div>
-                </div>
+          <div
+            className="container grid items-center justify-center gap-4 px-4 text-center md:px-6"
+            style={{
+              backgroundImage: 'radial-gradient(circle at center, var(--tw-color-primary-foreground), transparent)',
+              backgroundSize: '150% 150%',
+              backgroundPosition: 'center',
+            }}
+          >
+            <div className="space-y-3 max-w-2xl mx-auto rounded-lg bg-background/80 backdrop-blur-sm p-8">
+              <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight text-balance">
+                Ready to Start Your Journey?
+              </h2>
+              <p className="text-muted-foreground text-balance">
+                Create an account today to unlock a world of knowledge and save your progress.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+                <Button asChild size="lg">
+                  <Link href="/signup">
+                    <UserPlus />
+                    Sign Up for Free
+                  </Link>
+                </Button>
+                <Button asChild size="lg" variant="secondary">
+                  <Link href="/login">
+                    <LogIn />
+                    Sign In
+                  </Link>
+                </Button>
+              </div>
             </div>
+          </div>
         </section>
 
       </main>
