@@ -55,7 +55,7 @@ export default function TestMakerButton({ resource, disabled = false }: TestMake
       doc.text('Sponsored by Pravin Khachane & Mangesh Shete Sir', pageWidth - margin, y, { align: 'right' });
       
       y += 15;
-      doc.text('Total Marks: 24', margin, y);
+      doc.text('Total Marks: 20', margin, y);
       doc.text('Time: 1 hr', pageWidth - margin, y, { align: 'right' });
 
       y += 15;
@@ -162,7 +162,7 @@ export default function TestMakerButton({ resource, disabled = false }: TestMake
             continue;
           } else if (line.startsWith('Section D:')) {
             currentSection = 'D';
-            processSection('Section D', '(8 Marks)');
+            processSection('Section D', '(4 Marks)');
             processLine('Ques. 4. Long Answer Question', true);
             continue;
           } else if (line.startsWith('Answer Key')) {
