@@ -159,38 +159,36 @@ export default function TestMakerButton({ resource, disabled = false }: TestMake
   };
 
   return (
-    <div className="flex flex-col gap-2">
-      <h4 className="text-sm font-medium text-muted-foreground border-b pb-2">AI Tools</h4>
-        <Button asChild variant="outline" className="w-full">
-          <Link href={`/ask?resourceId=${resource.id}`}>
-              <HelpCircle className="mr-2 h-4 w-4" />
-              Ask a Question
-          </Link>
+    <div className="flex flex-col gap-4">
+        <div className="space-y-2">
+            <h4 className="text-sm font-medium text-muted-foreground border-b pb-2">AI Tools</h4>
+             <Button asChild variant="ghost" className="w-full justify-start">
+                <Link href={`/ask?resourceId=${resource.id}`}>
+                    <HelpCircle className="mr-2 h-4 w-4" />
+                    Ask a Question
+                </Link>
+            </Button>
+        </div>
+      <div className="grid grid-cols-2 gap-2">
+        <Button
+            variant="secondary"
+            onClick={handleGenerateTest}
+            disabled={disabled || loading || mcqLoading}
+            className="flex-col h-auto py-2"
+        >
+            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <FileText className="h-4 w-4" />}
+            <span className="text-xs font-normal mt-1">{loading ? 'Generating...' : 'Regular Test'}</span>
         </Button>
-      <Button
-        variant="secondary"
-        onClick={handleGenerateTest}
-        disabled={disabled || loading || mcqLoading}
-      >
-        {loading ? (
-          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-        ) : (
-          <FileText className="mr-2 h-4 w-4" />
-        )}
-        {loading ? 'Generating...' : 'Test Make (Regular)'}
-      </Button>
-      <Button
-        variant="outline"
-        onClick={handleGenerateMcqTest}
-        disabled={disabled || loading || mcqLoading}
-      >
-        {mcqLoading ? (
-          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-        ) : (
-          <FileText className="mr-2 h-4 w-4" />
-        )}
-        {mcqLoading ? 'Generating...' : 'Test Make (MCQ)'}
-      </Button>
+        <Button
+            variant="outline"
+            onClick={handleGenerateMcqTest}
+            disabled={disabled || loading || mcqLoading}
+            className="flex-col h-auto py-2"
+        >
+            {mcqLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <FileText className="h-4 w-4" />}
+            <span className="text-xs font-normal mt-1">{mcqLoading ? 'Generating...' : 'MCQ Test'}</span>
+        </Button>
+      </div>
     </div>
   );
 }
