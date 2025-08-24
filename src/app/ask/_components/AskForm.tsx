@@ -275,43 +275,43 @@ export default function AskForm() {
   const showSuggestions = !loading && lastMessage?.role === 'assistant' && lastMessage.suggestions && lastMessage.suggestions.length > 0;
 
   return (
-    <Card className="flex flex-col shadow-lg h-full w-full max-w-7xl overflow-hidden">
+    <Card className="flex flex-col shadow-lg h-full w-full max-w-7xl overflow-hidden bg-primary text-primary-foreground">
         <div className="flex h-full">
             <div className={cn("flex flex-col flex-1 transition-all duration-300", isHistoryPanelOpen && "sm:w-[calc(100%-350px)]")}>
-                <CardHeader className="border-b">
+                <CardHeader className="border-b border-primary-foreground/20">
                     <div className='flex justify-between items-center'>
                         <div className="flex items-center gap-4">
-                            <Button variant="outline" size="sm" onClick={handleNewChat}>
+                            <Button variant="secondary" size="sm" onClick={handleNewChat}>
                                 <PlusCircle className="mr-2 h-4 w-4" /> New Chat
                             </Button>
                         </div>
                         <div className='text-center'>
-                            <CardTitle className="text-2xl flex items-center gap-2"><Sparkles className="text-primary"/>Educational AI Assistant</CardTitle>
-                            <CardDescription>
+                            <CardTitle className="text-2xl flex items-center gap-2"><Sparkles />Educational AI Assistant</CardTitle>
+                            <CardDescription className="text-primary-foreground/80">
                                 {resourceId ? `Asking about "${resourceTitle}"` : 'Your personal AI-powered tutor. Ask anything!'}
                             </CardDescription>
                         </div>
                         <div className="flex items-center gap-2">
                            {!isHistoryPanelOpen && (
-                            <Button variant="outline" size="sm" onClick={handleClearChat} disabled={conversation.length === 0}>
+                            <Button variant="secondary" size="sm" onClick={handleClearChat} disabled={conversation.length === 0}>
                                 <Trash2 className="mr-2 h-4 w-4"/> Clear
                             </Button>
                            )}
                             {user && (
-                                <Button variant="outline" size="sm" onClick={() => setIsHistoryPanelOpen(!isHistoryPanelOpen)}>
+                                <Button variant="secondary" size="sm" onClick={() => setIsHistoryPanelOpen(!isHistoryPanelOpen)}>
                                     {isHistoryPanelOpen ? <><PanelRightClose /> Hide History</> : <><PanelRightOpen /> Show History</>}
                                 </Button>
                             )}
                         </div>
                     </div>
                 </CardHeader>
-                <CardContent className="p-0 flex-1 overflow-hidden">
+                <CardContent className="p-0 flex-1 overflow-hidden bg-background">
                     <ScrollArea className="h-full" ref={scrollAreaRef}>
                         <div className="p-6 space-y-6">
                             {conversation.length === 0 ? (
                                 <div className="text-center py-12 flex flex-col items-center justify-center h-full">
                                     <Sparkles className="mx-auto h-12 w-12 text-muted-foreground/50" />
-                                    <h3 className="mt-4 text-lg font-medium">No messages yet</h3>
+                                    <h3 className="mt-4 text-lg font-medium text-foreground">No messages yet</h3>
                                     <p className="mt-1 text-sm text-muted-foreground max-w-md">
                                         {resourceId ? 'Ask a question about the document to start.' : 'Ask a question below to start the conversation.'}
                                     </p>
@@ -344,8 +344,8 @@ export default function AskForm() {
                                             </Avatar>
                                         )}
                                         <div className={cn(
-                                            "max-w-[75%] rounded-2xl p-4 space-y-2",
-                                            message.role === 'user' ? 'bg-primary text-primary-foreground rounded-br-none' : 'bg-secondary rounded-bl-none'
+                                            "max-w-[75%] rounded-2xl p-4 space-y-2 text-foreground",
+                                            message.role === 'user' ? 'bg-primary/90 text-primary-foreground rounded-br-none' : 'bg-secondary rounded-bl-none'
                                         )}>
                                             {message.image && (
                                             <div className="relative w-full aspect-video rounded-lg overflow-hidden">
@@ -416,7 +416,7 @@ export default function AskForm() {
                         </div>
                     </ScrollArea>
                 </CardContent>
-                <CardFooter className="border-t pt-4 bg-primary/10">
+                <CardFooter className="border-t pt-4 border-primary-foreground/20">
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-3">
                         {attachedImage && (
