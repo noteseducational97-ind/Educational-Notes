@@ -10,6 +10,7 @@ import { generateMcqTest } from '@/ai/flows/mcq-test-maker-flow';
 import type { Resource } from '@/types';
 import jsPDF from 'jspdf';
 import Link from 'next/link';
+import { cn } from '@/lib/utils';
 
 type TestMakerButtonProps = {
   resource: Resource;
@@ -159,10 +160,10 @@ export default function TestMakerButton({ resource, disabled = false }: TestMake
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="space-y-4">
         <div className="space-y-2">
             <h4 className="text-sm font-medium text-muted-foreground border-b pb-2">AI Tools</h4>
-             <Button asChild variant="ghost" className="w-full justify-start border-primary/20 bg-primary/10 hover:bg-primary/20 text-primary-foreground">
+             <Button asChild variant="ghost" className="w-full justify-start bg-yellow-400/20 hover:bg-yellow-400/30 text-yellow-800 dark:text-yellow-200 dark:hover:text-yellow-100">
                 <Link href={`/ask?resourceId=${resource.id}`}>
                     <HelpCircle className="mr-2 h-4 w-4" />
                     Ask a Question
@@ -174,7 +175,7 @@ export default function TestMakerButton({ resource, disabled = false }: TestMake
             variant="secondary"
             onClick={handleGenerateTest}
             disabled={disabled || loading || mcqLoading}
-            className="flex-col h-auto py-2"
+            className="flex-col h-auto py-2 bg-orange-400/20 hover:bg-orange-400/30 text-orange-800 dark:text-orange-200 dark:hover:text-orange-100"
         >
             {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <FileText className="h-4 w-4" />}
             <span className="text-xs font-normal mt-1">{loading ? 'Generating...' : 'Regular Test'}</span>
@@ -183,7 +184,7 @@ export default function TestMakerButton({ resource, disabled = false }: TestMake
             variant="outline"
             onClick={handleGenerateMcqTest}
             disabled={disabled || loading || mcqLoading}
-            className="flex-col h-auto py-2"
+            className="flex-col h-auto py-2 bg-green-400/20 hover:bg-green-400/30 text-green-800 dark:text-green-200 dark:hover:text-green-100 border-green-400/50"
         >
             {mcqLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <FileText className="h-4 w-4" />}
             <span className="text-xs font-normal mt-1">{mcqLoading ? 'Generating...' : 'MCQ Test'}</span>
