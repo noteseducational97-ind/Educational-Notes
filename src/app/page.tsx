@@ -4,13 +4,51 @@
 import { useAuth } from '@/hooks/use-auth';
 import Header from '@/components/layout/Header';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
-import { ShieldCheck, Send, Download, Bookmark, Users, LogIn, UserPlus, FileText, Lightbulb, BrainCircuit, BookCheck, ClipboardList } from 'lucide-react';
+import { ShieldCheck, ArrowRight, Download, Bookmark, Users, LogIn, UserPlus, FileText, Lightbulb, BrainCircuit, BookCheck, ClipboardList, BookCopy } from 'lucide-react';
 import Image from 'next/image';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
+
+const features = [
+    {
+        icon: <Download className="h-6 w-6 text-primary" />,
+        title: 'Study Notes',
+        description: 'High-quality, comprehensive study notes for various subjects and competitive exams, available for free.',
+        href: '/downloads',
+    },
+    {
+        icon: <FileText className="h-6 w-6 text-primary" />,
+        title: 'AI-Powered Test Maker',
+        description: 'Generate personalized practice tests from our resources to sharpen your knowledge and exam readiness.',
+        href: '/ask',
+    },
+    {
+        icon: <Lightbulb className="h-6 w-6 text-primary" />,
+        title: 'Instant AI Assistant',
+        description: 'Have a doubt? Ask our AI assistant for instant clarification on any topic, anytime.',
+        href: '/ask',
+    },
+    {
+        icon: <BookCheck className="h-6 w-6 text-primary" />,
+        title: 'Previous Year Questions',
+        description: 'Access a vast library of past exam papers (PYQs) to understand patterns and practice effectively.',
+        href: '/downloads',
+    },
+    {
+        icon: <ClipboardList className="h-6 w-6 text-primary" />,
+        title: 'Syllabus & Exam Guides',
+        description: 'Stay on track with detailed syllabus breakdowns and exam patterns for various boards and entrance tests.',
+        href: '/downloads',
+    },
+    {
+        icon: <Bookmark className="h-6 w-6 text-primary" />,
+        title: 'Personalized Watchlist',
+        description: 'Save and organize your most important resources for quick and easy access whenever you need them.',
+        href: '/save',
+    }
+];
 
 export default function Home() {
   const { user, loading } = useAuth();
@@ -24,18 +62,21 @@ export default function Home() {
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
       <main className="flex-1">
-        <section className="w-full py-20 md:py-32 lg:py-40 bg-gradient-to-br from-primary/10 to-background">
+        <section className="w-full py-20 md:py-32 lg:py-40 bg-gradient-to-br from-primary/10 via-background to-background">
           <div className="container px-4 md:px-6">
             <div className="grid gap-6 lg:grid-cols-[1fr_500px] lg:gap-12 xl:grid-cols-[1fr_600px]">
               <div className="flex flex-col justify-center space-y-4">
                 <div className="space-y-4">
-                  <h1 className="text-4xl font-bold tracking-tighter text-primary sm:text-5xl xl:text-6xl/none">
-                    Welcome To Educational Notes
+                   <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm font-semibold text-primary">
+                    Your All-in-One Learning Hub
+                  </div>
+                  <h1 className="text-4xl font-bold tracking-tighter text-foreground sm:text-5xl xl:text-6xl/none text-balance">
+                    Empowering Your Educational Journey
                   </h1>
-                   <p className="max-w-[600px] text-foreground/80 md:text-xl">Your mission to achieve the best educational material with high-quality notes, all free of cost.</p>
+                   <p className="max-w-[600px] text-muted-foreground md:text-xl text-balance">High-quality study materials, AI-powered tools, and expert-curated content—all completely free. Achieve academic excellence with us.</p>
                    <div className="flex flex-col gap-2 min-[400px]:flex-row">
                      <Button size="lg" asChild>
-                       <Link href="/downloads">Get Started</Link>
+                       <Link href="/downloads">Get Started <ArrowRight /></Link>
                      </Button>
                      <Button size="lg" variant="outline" asChild>
                        <Link href="/about">Learn More</Link>
@@ -49,81 +90,44 @@ export default function Home() {
                 height="400"
                 alt="A collection of books on a shelf."
                 data-ai-hint="books education"
-                className="mx-auto aspect-video overflow-hidden rounded-xl object-cover sm:w-full lg:order-last lg:aspect-square shadow-2xl"
+                className="mx-auto aspect-video overflow-hidden rounded-xl object-cover sm:w-full lg:order-last shadow-2xl"
               />
             </div>
           </div>
         </section>
 
-        <section className="w-full py-12 md:py-24 bg-secondary/30">
+        <section className="w-full py-12 md:py-24 lg:py-32 bg-secondary/30">
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center mb-12">
-              <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm text-primary font-semibold">What We Offer</div>
-              <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Your All-in-One Learning Hub</h2>
-              <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+              <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-balance">What We Offer</h2>
+              <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed text-balance">
                 From comprehensive notes to AI-powered tools, find everything you need to excel in your studies.
               </p>
             </div>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              <Card className="hover:shadow-lg transition-shadow duration-300">
-                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-lg font-medium">Study Notes</CardTitle>
-                  <Download className="h-6 w-6 text-primary" />
-                </CardHeader>
-                <CardContent>
-                  <CardDescription>High-quality, comprehensive study notes for various subjects and competitive exams, available for free.</CardDescription>
-                </CardContent>
-              </Card>
-              <Card className="hover:shadow-lg transition-shadow duration-300">
-                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-lg font-medium">AI-Powered Test Maker</CardTitle>
-                  <FileText className="h-6 w-6 text-primary" />
-                </CardHeader>
-                <CardContent>
-                  <CardDescription>Generate personalized practice tests from our resources to sharpen your knowledge and exam readiness.</CardDescription>
-                </CardContent>
-              </Card>
-              <Card className="hover:shadow-lg transition-shadow duration-300">
-                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-lg font-medium">Instant AI Assistant</CardTitle>
-                  <Lightbulb className="h-6 w-6 text-primary" />
-                </CardHeader>
-                <CardContent>
-                  <CardDescription>Have a doubt? Ask our AI assistant for instant clarification on any topic, anytime.</CardDescription>
-                </CardContent>
-              </Card>
-              <Card className="hover:shadow-lg transition-shadow duration-300">
-                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-lg font-medium">Previous Year Questions</CardTitle>
-                  <BookCheck className="h-6 w-6 text-primary" />
-                </CardHeader>
-                <CardContent>
-                  <CardDescription>Access a vast library of past exam papers (PYQs) to understand patterns and practice effectively.</CardDescription>
-                </CardContent>
-              </Card>
-              <Card className="hover:shadow-lg transition-shadow duration-300">
-                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-lg font-medium">Syllabus & Exam Guides</CardTitle>
-                  <ClipboardList className="h-6 w-6 text-primary" />
-                </CardHeader>
-                <CardContent>
-                  <CardDescription>Stay on track with detailed syllabus breakdowns and exam patterns for various boards and entrance tests.</CardDescription>
-                </CardContent>
-              </Card>
-               <Card className="hover:shadow-lg transition-shadow duration-300">
-                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-lg font-medium">Personalized Watchlist</CardTitle>
-                  <Bookmark className="h-6 w-6 text-primary" />
-                </CardHeader>
-                <CardContent>
-                  <CardDescription>Save and organize your most important resources for quick and easy access whenever you need them.</CardDescription>
-                </CardContent>
-              </Card>
+              {features.map((feature) => (
+                <Card key={feature.title} className="hover:shadow-lg transition-shadow duration-300 hover:border-primary/50 flex flex-col">
+                  <CardHeader>
+                    <div className="flex items-center gap-4">
+                        {feature.icon}
+                        <CardTitle className="text-lg font-medium">{feature.title}</CardTitle>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="flex-grow">
+                    <CardDescription>{feature.description}</CardDescription>
+                  </CardContent>
+                  <CardFooter>
+                    <Button variant="ghost" className="text-primary hover:text-primary" asChild>
+                        <Link href={feature.href}>Learn More <ArrowRight /></Link>
+                    </Button>
+                  </CardFooter>
+                </Card>
+              ))}
             </div>
           </div>
         </section>
 
-        <section className="w-full py-12 md:py-24">
+        <section className="w-full py-12 md:py-24 lg:py-32">
             <div className="container px-4 md:px-6">
                 <div className="grid md:grid-cols-2 gap-12 items-center">
                      <div className="flex justify-center">
@@ -137,12 +141,12 @@ export default function Home() {
                         />
                     </div>
                     <div>
-                        <div className="inline-block rounded-lg bg-secondary px-3 py-1 text-sm font-semibold text-secondary-foreground mb-4">Supercharge Your Learning</div>
-                        <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">Meet Your Personal AI Tutor</h2>
-                        <p className="mt-4 max-w-[600px] text-muted-foreground md:text-xl/relaxed">
+                        <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm font-semibold text-primary mb-4">Supercharge Your Learning</div>
+                        <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl text-balance">Meet Your Personal AI Tutor</h2>
+                        <p className="mt-4 max-w-[600px] text-muted-foreground md:text-xl/relaxed text-balance">
                            "The only limit to AI is human imagination." - Chris Duffey. Our AI assistant is here to break down complex topics, answer your toughest questions, and help you generate practice tests. It's like having a personal tutor available 24/7.
                         </p>
-                        <Button asChild className="mt-6">
+                        <Button asChild size="lg" className="mt-6">
                             <Link href="/ask">
                                 <Lightbulb className="mr-2 h-5 w-5" />
                                 Try the Assistant
@@ -153,18 +157,18 @@ export default function Home() {
             </div>
         </section>
         
-        <section className="w-full py-12 md:py-24 bg-primary/10">
+        <section className="w-full py-12 md:py-24 lg:py-32 bg-primary/10">
             <div className="container grid items-center justify-center gap-4 px-4 text-center md:px-6">
                 <div className="space-y-3 max-w-2xl mx-auto">
-                    <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">Ready to start your journey?</h2>
-                    <p className="text-muted-foreground">
-                        Create an account today and unlock a world of knowledge.
+                    <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight text-balance">Ready to Start Your Journey?</h2>
+                    <p className="text-muted-foreground text-balance">
+                        Create an account today to unlock a world of knowledge and save your progress.
                     </p>
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                    <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
                       <Button asChild size="lg">
                         <Link href="/signup">
                           <UserPlus />
-                          Sign Up
+                          Sign Up for Free
                         </Link>
                       </Button>
                       <Button asChild size="lg" variant="secondary">
