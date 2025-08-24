@@ -121,7 +121,9 @@ export default function AskForm() {
       };
       
       recognitionRef.current.onerror = (event: any) => {
-        if (event.error !== 'no-speech' && event.error !== 'aborted') {
+        if (event.error === 'network') {
+             toast({ variant: 'destructive', title: 'Voice Recognition Error', description: "Network error. Please check your internet connection and try again." });
+        } else if (event.error !== 'no-speech' && event.error !== 'aborted') {
           toast({ variant: 'destructive', title: 'Voice Recognition Error', description: `Error: ${event.error}` });
         }
         setIsListening(false);
