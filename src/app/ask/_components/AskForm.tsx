@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, Sparkles, Send, Trash2, Paperclip, X, History, LogIn, HelpCircle, PlusCircle, PanelRightClose, PanelRightOpen } from 'lucide-react';
+import { Loader2, Sparkles, Send, Trash2, Paperclip, X, History, LogIn, HelpCircle, PlusCircle, PanelRightClose, PanelRightOpen, Mic, MicOff } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
@@ -31,6 +31,7 @@ import {
 import type { Message, Chat } from '@/types';
 import { saveChat, getChatMessages, deleteChat } from '@/lib/firebase/chat';
 import ChatHistoryPanel from './ChatHistoryPanel';
+import ReactMarkdown from 'react-markdown';
 
 
 const formSchema = z.object({
@@ -284,7 +285,9 @@ export default function AskForm() {
                                                 <Image src={message.image} alt="User upload" fill className="object-contain" />
                                             </div>
                                             )}
-                                            <p className="text-sm prose prose-sm dark:prose-invert max-w-none">{message.content}</p>
+                                            <div className="text-sm prose prose-sm dark:prose-invert max-w-none">
+                                                <ReactMarkdown>{message.content}</ReactMarkdown>
+                                            </div>
                                             {message.generatedImage && (
                                             <div className="relative w-full aspect-video rounded-lg overflow-hidden mt-2">
                                                 <Image src={message.generatedImage} alt="Generated image" fill className="object-contain" />
