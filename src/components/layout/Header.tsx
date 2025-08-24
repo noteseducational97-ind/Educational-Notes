@@ -22,7 +22,7 @@ const navLinks = [
   { href: '/', label: 'Home', icon: Home },
   { href: '/downloads', label: 'Downloads', icon: Download },
   { href: '/save', label: 'Watchlist', icon: Bookmark },
-  { href: '/ask', label: 'Assistant', icon: Lightbulb },
+  { href: '/ask', label: 'Educational Assistant', icon: Lightbulb },
   { href: '/about', label: 'About', icon: Info },
 ];
 
@@ -175,3 +175,5 @@ export default function Header() {
     </>
   );
 }
+
+    

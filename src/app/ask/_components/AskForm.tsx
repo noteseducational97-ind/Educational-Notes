@@ -166,7 +166,7 @@ export default function AskForm() {
          <CardHeader className="border-b">
             <div className='flex justify-between items-center'>
                 <div>
-                    <CardTitle className="text-2xl flex items-center gap-2"><Sparkles className="text-primary"/>AI Assistant</CardTitle>
+                    <CardTitle className="text-2xl flex items-center gap-2"><Sparkles className="text-primary"/>Educational AI Assistant</CardTitle>
                     <CardDescription>
                         {resourceId ? `Asking about "${resourceTitle}"` : 'Your personal AI-powered tutor. Ask anything!'}
                     </CardDescription>
@@ -331,7 +331,7 @@ export default function AskForm() {
             <AlertDialogHeader>
                 <AlertDialogTitle>Message Limit Reached</AlertDialogTitle>
                 <AlertDialogDescription>
-                You've reached the message limit for guest users. Please sign in to continue your conversation with the AI assistant.
+                You've reached the message limit for guest users. Please sign in to continue your conversation with the Educational AI assistant.
                 </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
@@ -346,3 +346,5 @@ export default function AskForm() {
     </div>
   );
 }
+
+    
