@@ -107,22 +107,22 @@ export default function Home() {
             </div>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {features.map((feature) => (
-                <Card key={feature.title} className="hover:shadow-lg transition-shadow duration-300 hover:border-primary/50 flex flex-col">
-                  <CardHeader>
-                    <div className="flex items-center gap-4">
-                        {feature.icon}
-                        <CardTitle className="text-lg font-medium">{feature.title}</CardTitle>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="flex-grow">
-                    <CardDescription>{feature.description}</CardDescription>
-                  </CardContent>
-                  <CardFooter>
-                    <Button variant="ghost" className="text-primary hover:text-primary" asChild>
-                        <Link href={feature.href}>Learn More <ArrowRight /></Link>
-                    </Button>
-                  </CardFooter>
-                </Card>
+                <Link href={feature.href} key={feature.title} className="block group">
+                  <Card className="hover:shadow-lg transition-shadow duration-300 hover:border-primary/50 flex flex-col h-full">
+                    <CardHeader>
+                      <div className="flex items-start justify-between gap-4">
+                          <div className="flex items-center gap-4">
+                            {feature.icon}
+                            <CardTitle className="text-lg font-medium">{feature.title}</CardTitle>
+                          </div>
+                          <ArrowRight className="h-5 w-5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      </div>
+                    </CardHeader>
+                    <CardContent className="flex-grow">
+                      <CardDescription>{feature.description}</CardDescription>
+                    </CardContent>
+                  </Card>
+                </Link>
               ))}
             </div>
           </div>
