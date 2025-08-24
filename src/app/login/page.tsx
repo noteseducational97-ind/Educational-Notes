@@ -9,8 +9,6 @@ import LoginForm from '@/components/auth/LoginForm';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { EducationalNotesLogo } from '@/components/icons/EducationalNotesLogo';
-import Image from 'next/image';
-import Header from '@/components/layout/Header';
 
 export default function LoginPage() {
   const { user, loading } = useAuth();
@@ -27,54 +25,35 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col">
-      <Header />
-      <main className="flex-grow grid w-full lg:grid-cols-2">
-          <div className="hidden lg:relative lg:flex bg-blue-600">
-              <div className="relative z-10 flex flex-col items-center justify-center p-8 text-center text-white w-full">
-                  <Link href="/" className="flex items-center space-x-4 bg-black/50 p-4 rounded-xl">
-                      <EducationalNotesLogo className="h-16 w-16" />
-                  </Link>
-                  <h1 className="mt-4 text-4xl font-bold [text-shadow:_2px_2px_4px_rgb(0_0_0_/_50%)]">Educational Notes</h1>
-                  <p className="mt-2 text-lg [text-shadow:_1px_1px_2px_rgb(0_0_0_/_50%)]">Your journey to knowledge starts here.</p>
-              </div>
+    <div className="w-full lg:grid lg:min-h-screen lg:grid-cols-2 xl:min-h-screen">
+      <div className="hidden bg-gradient-to-br from-blue-200 via-indigo-200 to-purple-200 lg:flex flex-col items-center justify-center p-8 text-center">
+        <Link href="/" className="flex items-center space-x-4">
+            <EducationalNotesLogo className="h-16 w-16 text-primary" />
+        </Link>
+        <h1 className="mt-4 text-4xl font-bold text-primary-foreground [text-shadow:_2px_2px_4px_rgb(0_0_0_/_20%)]">
+            Welcome to Educational Notes
+        </h1>
+        <p className="mt-2 text-lg text-primary-foreground/80 [text-shadow:_1px_1px_2px_rgb(0_0_0_/_20%)]">
+            Your journey to knowledge starts here.
+        </p>
+      </div>
+      <div className="flex items-center justify-center py-12">
+        <div className="mx-auto grid w-[350px] gap-6">
+          <div className="grid gap-2 text-center">
+            <h1 className="text-3xl font-bold">Login</h1>
+            <p className="text-balance text-muted-foreground">
+              Enter your email below to login to your account
+            </p>
           </div>
-          <div className="flex items-center justify-center p-6 bg-background">
-              <div className="w-full max-w-md">
-                  <div className="flex justify-center mb-6 lg:hidden">
-                      <Link href="/" className="flex items-center space-x-2 text-foreground">
-                          <EducationalNotesLogo className="h-8 w-8 text-primary" />
-                          <span className="text-2xl font-bold">Educational Notes</span>
-                      </Link>
-                  </div>
-                  <Card className="w-full shadow-2xl">
-                      <CardHeader className="text-center">
-                          <CardTitle className="text-2xl font-bold tracking-tight">Welcome Back!</CardTitle>
-                          <CardDescription>Sign in to your Educational Notes account</CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                          <LoginForm />
-                      </CardContent>
-                      <CardFooter className="flex flex-col items-center space-y-2">
-                          <p className="text-sm">
-                          <Link
-                              href="/forgot-password"
-                              className="font-medium text-primary underline-offset-4 hover:underline"
-                          >
-                              Forgot your password?
-                          </Link>
-                          </p>
-                          <p className="text-sm text-muted-foreground">
-                          Don't have an account?{' '}
-                          <Link href="/signup" className="font-medium text-primary underline-offset-4 hover:underline">
-                              Sign up
-                          </Link>
-                          </p>
-                      </CardFooter>
-                  </Card>
-              </div>
+          <LoginForm />
+          <div className="mt-4 text-center text-sm">
+            Don&apos;t have an account?{' '}
+            <Link href="/signup" className="underline">
+              Sign up
+            </Link>
           </div>
-      </main>
+        </div>
+      </div>
     </div>
   );
 }
