@@ -226,8 +226,8 @@ export default function AskForm() {
                             </Button>
                            )}
                             {user && (
-                                <Button variant="outline" size="icon" onClick={() => setIsHistoryPanelOpen(!isHistoryPanelOpen)}>
-                                    {isHistoryPanelOpen ? <PanelRightClose /> : <PanelRightOpen />}
+                                <Button variant="outline" size="sm" onClick={() => setIsHistoryPanelOpen(!isHistoryPanelOpen)}>
+                                    {isHistoryPanelOpen ? <><PanelRightClose /> Hide History</> : <><PanelRightOpen /> Show History</>}
                                 </Button>
                             )}
                         </div>
