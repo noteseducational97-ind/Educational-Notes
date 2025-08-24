@@ -7,7 +7,6 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/use-auth';
 import LoginForm from '@/components/auth/LoginForm';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { EducationalNotesLogo } from '@/components/icons/EducationalNotesLogo';
 
 export default function LoginPage() {
