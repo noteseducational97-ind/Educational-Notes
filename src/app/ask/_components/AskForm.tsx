@@ -7,12 +7,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useToast } from '@/hooks/use-toast';
 import { answerQuestion } from '@/ai/flows/question-answer-flow';
-import { generateAudio } from '@/ai/flows/tts-flow';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, Sparkles, Send, Trash2, Paperclip, X, History, LogIn, HelpCircle, PlusCircle, PanelRightClose, PanelRightOpen, Volume2, PlayCircle } from 'lucide-react';
+import { Loader2, Sparkles, Send, Trash2, Paperclip, X, History, LogIn, HelpCircle, PlusCircle, PanelRightClose, PanelRightOpen } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
@@ -56,7 +55,6 @@ export default function AskForm() {
   const [attachedImage, setAttachedImage] = useState<string | null>(null);
   const [showLoginDialog, setShowLoginDialog] = useState(false);
   const [isHistoryPanelOpen, setIsHistoryPanelOpen] = useState(false);
-  const [audioLoading, setAudioLoading] = useState<number | null>(null);
   const { toast } = useToast();
   const { user } = useAuth();
   const router = useRouter();
@@ -174,27 +172,6 @@ export default function AskForm() {
       setLoading(false);
     }
   }
-  
-  const handlePlayAudio = async (text: string, index: number) => {
-    setAudioLoading(index);
-    try {
-        const result = await generateAudio(text);
-        if (result.media) {
-            const audio = new Audio(result.media);
-            audio.play();
-            audio.onended = () => setAudioLoading(null);
-        } else {
-            throw new Error('No audio data received.');
-        }
-    } catch (err: any) {
-        toast({
-            variant: 'destructive',
-            title: 'Audio Playback Error',
-            description: 'Could not generate or play audio. Please try again.',
-        });
-        setAudioLoading(null);
-    }
-  };
 
   const handleNewChat = () => {
     setConversation([]);
@@ -312,22 +289,6 @@ export default function AskForm() {
                                             <div className="relative w-full aspect-video rounded-lg overflow-hidden mt-2">
                                                 <Image src={message.generatedImage} alt="Generated image" fill className="object-contain" />
                                             </div>
-                                            )}
-                                             {message.role === 'assistant' && (
-                                                <Button
-                                                    size="sm"
-                                                    variant="outline"
-                                                    onClick={() => handlePlayAudio(message.content, index)}
-                                                    disabled={audioLoading !== null}
-                                                    className="mt-2"
-                                                >
-                                                    {audioLoading === index ? (
-                                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                                    ) : (
-                                                        <PlayCircle className="mr-2 h-4 w-4" />
-                                                    )}
-                                                    Play Audio
-                                                </Button>
                                             )}
                                         </div>
                                         {message.role === 'user' && (
