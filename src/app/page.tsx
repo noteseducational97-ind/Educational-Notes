@@ -64,26 +64,36 @@ export default function Home() {
       <main className="flex-1">
         <section className="w-full py-20 md:py-32 lg:py-40 bg-gradient-to-br from-yellow-200 via-orange-300 to-red-400 dark:from-yellow-800/50 dark:via-orange-900/50 dark:to-red-950/50">
           <div className="container px-4 md:px-6">
-            <div className="flex flex-col items-center justify-center text-center space-y-6">
-                <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm font-semibold text-primary">
-                Your All-in-One Learning Hub
-              </div>
-              <Image
-                src="https://images.pexels.com/photos/5905497/pexels-photo-5905497.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-                width="800"
-                height="450"
-                alt="A collection of books on a shelf."
-                data-ai-hint="books education"
-                className="mx-auto aspect-video overflow-hidden rounded-xl object-cover shadow-2xl"
-              />
-               <div className="flex flex-col gap-2 min-[400px]:flex-row">
-                 <Button size="lg" asChild>
-                   <Link href="/downloads">Get Started <ArrowRight /></Link>
-                 </Button>
-                 <Button size="lg" variant="outline" asChild>
-                   <Link href="/about">Learn More</Link>
-                 </Button>
-               </div>
+            <div className="grid md:grid-cols-2 gap-10 items-center">
+                <div className="flex flex-col items-start text-left space-y-6">
+                    <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm font-semibold text-primary-foreground">
+                        Your All-in-One Learning Hub
+                    </div>
+                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-foreground tracking-tighter">
+                        Empowering Your Educational Journey
+                    </h1>
+                    <p className="max-w-xl text-lg text-foreground/80">
+                        High-quality study materials, AI-powered tools, and expert-curated content—all completely free. Achieve academic excellence with us.
+                    </p>
+                    <div className="flex flex-col gap-2 min-[400px]:flex-row">
+                        <Button size="lg" asChild>
+                            <Link href="/downloads">Get Started <ArrowRight /></Link>
+                        </Button>
+                        <Button size="lg" variant="outline" asChild>
+                            <Link href="/about">Learn More</Link>
+                        </Button>
+                    </div>
+                </div>
+                 <div className="flex justify-center">
+                    <Image
+                        src="https://images.pexels.com/photos/4145190/pexels-photo-4145190.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+                        width="600"
+                        height="400"
+                        alt="A student smiling and learning online"
+                        data-ai-hint="student learning"
+                        className="mx-auto aspect-video overflow-hidden rounded-xl object-cover shadow-2xl"
+                    />
+                </div>
             </div>
           </div>
         </section>
@@ -124,7 +134,7 @@ export default function Home() {
                 <div className="grid md:grid-cols-2 gap-12 items-center">
                      <div className="flex justify-center">
                         <Image
-                            src="https://images.pexels.com/photos/8369533/pexels-photo-8369533.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+                            src="https://images.pexels.com/photos/8432262/pexels-photo-8432262.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
                             width="500"
                             height="500"
                             alt="AI concept image"
