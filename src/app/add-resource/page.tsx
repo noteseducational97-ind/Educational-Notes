@@ -36,7 +36,7 @@ const subjects = ['Physics', 'Chemistry', 'Mathematics', 'Biology', 'History', '
 const classes = ['class9', 'class10', 'class11', 'class12'];
 const streams = ['All', 'Science', 'Commerce', 'Arts'];
 
-export default function AddResourcePage() {
+export default function AddResourcePage({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }) {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
