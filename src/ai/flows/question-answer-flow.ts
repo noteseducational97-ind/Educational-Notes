@@ -69,7 +69,7 @@ const answerQuestionFlow = ai.defineFlow(
   },
   async (input) => {
     // If a resourceId is provided, fetch its content to use as context.
-    if (input.resourceId) {
+    if (input.resourceId && false) { // Reverted this logic to make AI open-ended
         const resource = await getResourceById(input.resourceId);
         if (!resource) {
             return { answer: "I'm sorry, I couldn't find the resource you're asking about." };
