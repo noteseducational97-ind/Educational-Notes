@@ -21,6 +21,7 @@ export type Message = {
     image?: string;
     generatedImage?: string;
     createdAt: Date;
+    suggestions?: string[];
 }
 
 export type Chat = {

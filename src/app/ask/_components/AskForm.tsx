@@ -150,6 +150,7 @@ export default function AskForm() {
         content: result.answer,
         generatedImage: result.imageUrl,
         createdAt: new Date(),
+        suggestions: result.suggestions,
       };
       
       const finalConversation = [...currentConversation, assistantMessage];
@@ -201,6 +202,9 @@ export default function AskForm() {
         setLoading(false);
     }
   }
+
+  const lastMessage = conversation[conversation.length - 1];
+  const showSuggestions = !loading && lastMessage?.role === 'assistant' && lastMessage.suggestions && lastMessage.suggestions.length > 0;
 
   return (
     <Card className="flex flex-col shadow-lg h-full w-full max-w-7xl overflow-hidden">
@@ -305,6 +309,23 @@ export default function AskForm() {
                                     </Avatar>
                                     <div className="rounded-2xl p-4 bg-secondary rounded-bl-none flex items-center">
                                         <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+                                    </div>
+                                </div>
+                            )}
+                             {showSuggestions && (
+                                <div className="flex justify-start pl-14">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 max-w-[75%]">
+                                        {lastMessage.suggestions?.map((prompt, i) => (
+                                            <Button
+                                                key={i}
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={() => handleExampleClick(prompt)}
+                                                className="text-left justify-start text-sm"
+                                            >
+                                                {prompt}
+                                            </Button>
+                                        ))}
                                     </div>
                                 </div>
                             )}

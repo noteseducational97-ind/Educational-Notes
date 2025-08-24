@@ -27,6 +27,7 @@ export type QuestionAnswerInput = z.infer<typeof QuestionAnswerInputSchema>;
 const QuestionAnswerOutputSchema = z.object({
   answer: z.string().describe('The AI-generated answer to the question.'),
   imageUrl: z.string().optional().describe('The URL of a generated image, if requested. Should be a data URI.'),
+  suggestions: z.array(z.string()).optional().describe('Up to 3 suggested follow-up questions.'),
 });
 export type QuestionAnswerOutput = z.infer<typeof QuestionAnswerOutputSchema>;
 
@@ -38,8 +39,11 @@ const prompt = ai.definePrompt({
       photoDataUri: QuestionAnswerInputSchema.shape.photoDataUri,
       resourceContent: z.string().optional().describe('The content of the resource to answer from.'),
   })},
-  output: {schema: z.object({ answer: z.string() }) }, // Output only text from here
-  prompt: `You are a helpful AI assistant. Your task is to provide clear, concise, and accurate answers to user questions.
+  output: {schema: z.object({ 
+    answer: z.string(),
+    suggestions: z.array(z.string()).optional().describe('Generate three relevant follow-up questions based on the answer you provided.'),
+  }) }, // Output includes text and suggestions
+  prompt: `You are a helpful AI assistant. Your task is to provide clear, concise, and accurate answers to user questions. After answering, generate three relevant follow-up questions a user might ask next.
 
 {{#if resourceContent}}
 You have been provided with specific content. You MUST answer the user's question based ONLY on this content. Do not use any external knowledge. If the answer is not in the content, state that you cannot answer based on the provided material.
@@ -78,7 +82,7 @@ const answerQuestionFlow = ai.defineFlow(
             question: input.question, 
             resourceContent: resource.content 
         });
-        return { answer: output!.answer };
+        return { answer: output!.answer, suggestions: output!.suggestions };
     }
       
     // If no resourceId, proceed with general Q&A logic.
@@ -95,7 +99,12 @@ const answerQuestionFlow = ai.defineFlow(
       });
       return {
           answer: `Here is the generated image as you requested for "${input.question}"`,
-          imageUrl: media?.url
+          imageUrl: media?.url,
+          suggestions: [
+            'Can you make this more vibrant?',
+            'Generate another image in a different style.',
+            'What other kinds of images can you create?',
+          ]
       }
     } else {
         // For text questions, or questions about an uploaded image.
@@ -105,6 +114,7 @@ const answerQuestionFlow = ai.defineFlow(
         });
         return {
             answer: output!.answer,
+            suggestions: output!.suggestions,
         };
     }
   }
