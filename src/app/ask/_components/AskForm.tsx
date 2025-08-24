@@ -123,9 +123,6 @@ export default function AskForm() {
     };
     
     recognition.onerror = (event: any) => {
-      // The 'network' error is common and can happen even with a good connection
-      // if the remote speech service is temporarily unavailable. We'll treat it
-      // as a non-critical warning to avoid spamming the user.
       if (event.error === 'network') {
           console.warn("Speech recognition network issue. This is often temporary.");
           toast({ title: 'Voice Recognition Network Issue', description: 'Please try again. This is often temporary.'});
