@@ -19,7 +19,7 @@ const QuestionAnswerInputSchema = z.object({
     .string()
     .optional()
     .describe(
-      "A photo, as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."
+      "A photo, as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'"
     ),
 });
 export type QuestionAnswerInput = z.infer<typeof QuestionAnswerInputSchema>;
@@ -43,7 +43,13 @@ const prompt = ai.definePrompt({
     answer: z.string(),
     suggestions: z.array(z.string()).optional().describe('Generate three relevant follow-up questions based on the answer you provided.'),
   }) }, // Output includes text and suggestions
-  prompt: `You are a helpful AI assistant. Your task is to provide clear, concise, and accurate answers to user questions. After answering, generate three relevant follow-up questions a user might ask next.
+  prompt: `You are a helpful AI assistant and a friendly study partner for students. Your primary task is to provide clear, concise, and accurate answers to user questions using simple, easy-to-understand language.
+
+**Formatting Rules:**
+- Use proper spacing, paragraphs, and lists to make the answer easy to read.
+- Break down complex ideas into smaller, digestible points.
+
+After providing a well-formatted and simple answer, generate three relevant follow-up questions a user might ask next.
 
 {{#if resourceContent}}
 You have been provided with specific content. You MUST answer the user's question based ONLY on this content. Do not use any external knowledge. If the answer is not in the content, state that you cannot answer based on the provided material.
