@@ -6,7 +6,8 @@ import { getChatHistory } from '@/lib/firebase/chat';
 import type { Chat } from '@/types';
 import { useToast } from '@/hooks/use-toast';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { MessageSquare, Trash2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { MessageSquare, Trash2, X } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
@@ -16,12 +17,14 @@ type ChatHistoryPanelProps = {
   onSelectChat: (chat: Chat) => void;
   userId: string;
   isOpen: boolean;
+  onClose: () => void;
 };
 
 export default function ChatHistoryPanel({
   onSelectChat,
   userId,
   isOpen,
+  onClose,
 }: ChatHistoryPanelProps) {
   const [history, setHistory] = useState<Chat[]>([]);
   const [loading, setLoading] = useState(true);
@@ -45,11 +48,16 @@ export default function ChatHistoryPanel({
 
   return (
     <Card className="h-full w-[350px] border-l-2 border-r-0 border-t-0 border-b-0 rounded-none flex flex-col">
-        <CardHeader>
-            <CardTitle>Chat History</CardTitle>
-            <CardDescription>
-                Select a past conversation.
-            </CardDescription>
+        <CardHeader className="flex flex-row justify-between items-center">
+            <div>
+                <CardTitle>Chat History</CardTitle>
+                <CardDescription>
+                    Select a past conversation.
+                </CardDescription>
+            </div>
+            <Button variant="ghost" size="icon" onClick={onClose}>
+                <X className="h-4 w-4" />
+            </Button>
         </CardHeader>
         <CardContent className="p-0 flex-1 overflow-hidden">
             <ScrollArea className="h-full">

@@ -380,7 +380,8 @@ export default function AskForm() {
                     <ChatHistoryPanel 
                         onSelectChat={handleSelectChat}
                         userId={user.uid}
-                        isOpen={isHistoryPanelOpen} // Pass isOpen to conditionally fetch
+                        isOpen={isHistoryPanelOpen}
+                        onClose={() => setIsHistoryPanelOpen(false)}
                     />
                 </div>
             )}
@@ -405,5 +406,3 @@ export default function AskForm() {
     </Card>
   );
 }
-
-    
