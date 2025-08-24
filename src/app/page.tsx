@@ -79,9 +79,6 @@ export default function Home() {
                         <Button size="lg" asChild>
                             <Link href="/downloads">Get Started <ArrowRight /></Link>
                         </Button>
-                        <Button size="lg" variant="outline" asChild>
-                            <Link href="/about">Learn More</Link>
-                        </Button>
                     </div>
                 </div>
                  <div className="flex justify-center">
