@@ -172,7 +172,7 @@ export default function AskForm() {
                     </CardDescription>
                 </div>
                 <div className="flex gap-2">
-                    <Button variant="outline" size="sm" onClick={() => { /* Implement history logic here */ alert("History feature coming soon!"); }}>
+                    <Button variant="outline" size="sm" onClick={() => { alert("History feature coming soon!"); }}>
                         <History className="mr-2 h-4 w-4"/> History
                     </Button>
                     <Button variant="outline" size="sm" onClick={() => setConversation([])} disabled={conversation.length === 0}>
