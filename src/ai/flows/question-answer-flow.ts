@@ -53,6 +53,7 @@ const prompt = ai.definePrompt({
 - Use bullet points (*) or numbered lists (1.) to break down complex ideas into smaller, digestible points.
 - Provide clear examples, potentially using code blocks (\`\`\`) or blockquotes (>) for emphasis.
 - Use tables to present data or comparisons where appropriate.
+- For mathematical equations and symbols, use LaTeX within Markdown code blocks where appropriate.
 - Ensure proper spacing between paragraphs and sections.
 
 {{#if resourceContent}}
@@ -83,7 +84,7 @@ const answerQuestionFlow = ai.defineFlow(
   },
   async (input) => {
     // If a resourceId is provided, fetch its content to use as context.
-    if (input.resourceId && false) { // Reverted this logic to make AI open-ended
+    if (input.resourceId) { 
         const resource = await getResourceById(input.resourceId);
         if (!resource) {
             return { answer: "I'm sorry, I couldn't find the resource you're asking about." };
@@ -130,4 +131,5 @@ const answerQuestionFlow = ai.defineFlow(
 export async function answerQuestion(input: QuestionAnswerInput): Promise<QuestionAnswerOutput> {
   return answerQuestionFlow(input);
 }
+
 
