@@ -12,6 +12,8 @@ import {
   SheetContent,
   SheetTrigger,
   SheetClose,
+  SheetTitle,
+  SheetHeader,
 } from '@/components/ui/sheet';
 import { Button } from '../ui/button';
 import React from 'react';
@@ -116,6 +118,9 @@ export default function Header() {
                   </Button>
                 </SheetTrigger>
                 <SheetContent side="left">
+                    <SheetHeader>
+                        <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
+                    </SheetHeader>
                   <nav className="grid gap-6 text-lg font-medium">
                     <SheetClose asChild>
                       <Link
@@ -175,5 +180,3 @@ export default function Header() {
     </>
   );
 }
-
-    
