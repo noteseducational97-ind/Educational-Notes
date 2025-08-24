@@ -63,7 +63,7 @@ Resource Content:
 {{{resourceContent}}}
 ---
 {{else}}
-You can answer questions on any topic. Do not attempt to generate images unless explicitly asked. Only provide text-based answers.
+You MUST prioritize providing answers based on the information available at "https://maharashtraboardsolutions.com/". If the answer is not found there, you may use your general knowledge. Do not attempt to generate images unless explicitly asked. Only provide text-based answers.
 {{/if}}
 
 {{#if photoDataUri}}
