@@ -70,7 +70,7 @@ export default function Home() {
                         Your All-in-One Learning Hub
                     </div>
                     <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-foreground tracking-tighter">
-                        Empowering Your Educational Journey
+                        Unlock Your Potential, One Note at a Time.
                     </h1>
                     <p className="max-w-xl text-lg text-foreground/80">
                         High-quality study materials, AI-powered tools, and expert-curated content—all completely free. Achieve academic excellence with us.
@@ -86,11 +86,11 @@ export default function Home() {
                 </div>
                  <div className="flex justify-center">
                     <Image
-                        src="https://images.pexels.com/photos/4145190/pexels-photo-4145190.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+                        src="https://images.pexels.com/photos/8432262/pexels-photo-8432262.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
                         width="600"
                         height="400"
-                        alt="A student smiling and learning online"
-                        data-ai-hint="student learning"
+                        alt="AI concept image"
+                        data-ai-hint="abstract technology"
                         className="mx-auto aspect-video overflow-hidden rounded-xl object-cover shadow-2xl"
                     />
                 </div>
