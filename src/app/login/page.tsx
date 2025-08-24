@@ -34,8 +34,8 @@ export default function LoginPage() {
         </div>
         <Card className="w-full shadow-2xl">
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl font-bold tracking-tight">Welcome Back</CardTitle>
-            <CardDescription>Sign in to your Educational Notes account</CardDescription>
+            <CardTitle className="text-2xl font-bold tracking-tight">Educational Notes</CardTitle>
+            <CardDescription>Sign in to your account</CardDescription>
           </CardHeader>
           <CardContent>
             <LoginForm />
