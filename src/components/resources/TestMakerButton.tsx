@@ -163,7 +163,7 @@ export default function TestMakerButton({ resource, disabled = false }: TestMake
           } else if (line.startsWith('Section D:')) {
             currentSection = 'D';
             processSection('Section D', '(4 Marks)');
-            processLine('Ques. 4. Long Answer Question', true);
+            processLine('Ques. 4. Long Answer Question (Any 1)', true);
             continue;
           } else if (line.startsWith('Answer Key')) {
               break;
