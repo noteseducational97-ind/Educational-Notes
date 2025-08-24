@@ -87,7 +87,7 @@ export default function Home() {
                 </div>
                  <div className="flex justify-center">
                     <Image
-                        src="https://images.pexels.com/photos/3768131/pexels-photo-3768131.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+                        src="https://images.pexels.com/photos/5905445/pexels-photo-5905445.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
                         width="600"
                         height="400"
                         alt="Student studying"
@@ -120,7 +120,6 @@ export default function Home() {
                           {feature.icon}
                           <CardTitle className="text-lg font-medium">{feature.title}</CardTitle>
                         </div>
-                        <ArrowRight className="h-5 w-5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     </div>
                   </CardHeader>
                   <CardContent className="flex-grow">
@@ -165,11 +164,6 @@ export default function Home() {
         <section className="w-full py-12 md:py-24 lg:py-32 bg-primary/10">
           <div
             className="container grid items-center justify-center gap-4 px-4 text-center md:px-6"
-            style={{
-              backgroundImage: 'radial-gradient(circle at center, var(--tw-color-primary-foreground), transparent)',
-              backgroundSize: '150% 150%',
-              backgroundPosition: 'center',
-            }}
           >
             <div className="space-y-3 max-w-2xl mx-auto rounded-lg bg-background/80 backdrop-blur-sm p-8">
               <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight text-balance">
