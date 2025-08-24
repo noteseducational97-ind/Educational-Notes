@@ -171,16 +171,14 @@ export default function AskForm() {
                         {resourceId ? `Asking about "${resourceTitle}"` : 'Your personal AI-powered tutor. Ask anything!'}
                     </CardDescription>
                 </div>
-                {conversation.length > 0 && (
-                    <div className="flex gap-2">
-                        <Button variant="outline" size="sm" onClick={() => { /* Implement history logic here */ alert("History feature coming soon!"); }}>
-                            <History className="mr-2 h-4 w-4"/> History
-                        </Button>
-                        <Button variant="outline" size="sm" onClick={() => setConversation([])}>
-                            <Trash2 className="mr-2 h-4 w-4"/> Clear Chat
-                        </Button>
-                    </div>
-                )}
+                <div className="flex gap-2">
+                    <Button variant="outline" size="sm" onClick={() => { /* Implement history logic here */ alert("History feature coming soon!"); }}>
+                        <History className="mr-2 h-4 w-4"/> History
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => setConversation([])} disabled={conversation.length === 0}>
+                        <Trash2 className="mr-2 h-4 w-4"/> Clear Chat
+                    </Button>
+                </div>
             </div>
          </CardHeader>
          <CardContent className="p-0 flex-1 overflow-hidden">
