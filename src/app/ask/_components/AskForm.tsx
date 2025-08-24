@@ -7,11 +7,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useToast } from '@/hooks/use-toast';
 import { answerQuestion } from '@/ai/flows/question-answer-flow';
+import { generateAudio } from '@/ai/flows/tts-flow';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, Sparkles, Send, Trash2, Paperclip, X, History, LogIn, HelpCircle, PlusCircle, PanelRightClose, PanelRightOpen } from 'lucide-react';
+import { Loader2, Sparkles, Send, Trash2, Paperclip, X, History, LogIn, HelpCircle, PlusCircle, PanelRightClose, PanelRightOpen, Mic, MicOff, Volume2, PlayCircle } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
@@ -55,6 +56,8 @@ export default function AskForm() {
   const [attachedImage, setAttachedImage] = useState<string | null>(null);
   const [showLoginDialog, setShowLoginDialog] = useState(false);
   const [isHistoryPanelOpen, setIsHistoryPanelOpen] = useState(false);
+  const [isListening, setIsListening] = useState(false);
+  const [audioLoading, setAudioLoading] = useState<number | null>(null);
   const { toast } = useToast();
   const { user } = useAuth();
   const router = useRouter();
@@ -64,6 +67,7 @@ export default function AskForm() {
 
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const recognitionRef = useRef<any>(null);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -97,6 +101,31 @@ export default function AskForm() {
   useEffect(() => {
     scrollToBottom();
   }, [conversation, scrollToBottom]);
+
+   useEffect(() => {
+    if (typeof window !== 'undefined' && 'webkitSpeechRecognition' in window) {
+      const SpeechRecognition = window.webkitSpeechRecognition;
+      recognitionRef.current = new SpeechRecognition();
+      recognitionRef.current.continuous = false;
+      recognitionRef.current.interimResults = false;
+      recognitionRef.current.lang = 'en-US';
+
+      recognitionRef.current.onresult = (event: any) => {
+        const transcript = event.results[0][0].transcript;
+        form.setValue('question', transcript);
+        setIsListening(false);
+      };
+      
+      recognitionRef.current.onerror = (event: any) => {
+        toast({ variant: 'destructive', title: 'Voice Recognition Error', description: event.error });
+        setIsListening(false);
+      };
+      
+      recognitionRef.current.onend = () => {
+        setIsListening(false);
+      };
+    }
+  }, [form, toast]);
   
   const getInitials = (name: string | null | undefined) => {
     if (!name) return 'U';
@@ -120,6 +149,15 @@ export default function AskForm() {
         form.handleSubmit(onSubmit)();
     }, 0);
   }
+
+  const toggleListening = () => {
+    if (isListening) {
+      recognitionRef.current?.stop();
+    } else {
+      recognitionRef.current?.start();
+    }
+    setIsListening(!isListening);
+  };
 
   async function onSubmit(values: FormValues) {
     if (loading) return;
@@ -172,6 +210,27 @@ export default function AskForm() {
       setLoading(false);
     }
   }
+  
+  const handlePlayAudio = async (text: string, index: number) => {
+    setAudioLoading(index);
+    try {
+        const result = await generateAudio(text);
+        if (result.media) {
+            const audio = new Audio(result.media);
+            audio.play();
+        } else {
+            throw new Error('No audio data received.');
+        }
+    } catch (err: any) {
+        toast({
+            variant: 'destructive',
+            title: 'Audio Playback Error',
+            description: 'Could not generate or play audio. Please try again.',
+        });
+    } finally {
+        setAudioLoading(null);
+    }
+  };
 
   const handleNewChat = () => {
     setConversation([]);
@@ -290,6 +349,22 @@ export default function AskForm() {
                                                 <Image src={message.generatedImage} alt="Generated image" fill className="object-contain" />
                                             </div>
                                             )}
+                                             {message.role === 'assistant' && (
+                                                <Button
+                                                    size="sm"
+                                                    variant="outline"
+                                                    onClick={() => handlePlayAudio(message.content, index)}
+                                                    disabled={audioLoading === index}
+                                                    className="mt-2"
+                                                >
+                                                    {audioLoading === index ? (
+                                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                                    ) : (
+                                                        <PlayCircle className="mr-2 h-4 w-4" />
+                                                    )}
+                                                    Play Audio
+                                                </Button>
+                                            )}
                                         </div>
                                         {message.role === 'user' && (
                                             <Avatar className="w-9 h-9 border flex-shrink-0">
@@ -314,7 +389,7 @@ export default function AskForm() {
                             )}
                              {showSuggestions && (
                                 <div className="flex justify-start pl-14">
-                                    <div className="grid grid-cols-1 gap-2 max-w-[75%]">
+                                    <div className="flex flex-col gap-2 max-w-[75%]">
                                         {lastMessage.suggestions?.map((prompt, i) => (
                                             <Button
                                                 key={i}
@@ -373,7 +448,7 @@ export default function AskForm() {
                                                 accept="image/*"
                                             />
                                             <Input 
-                                                placeholder="e.g., What is this? Explain it to me." 
+                                                placeholder={isListening ? "Listening..." : "e.g., What is this? Explain it to me."}
                                                 {...field} 
                                                 className="flex-1 resize-none border-0 shadow-none focus-visible:ring-0"
                                                 onKeyDown={(e) => {
@@ -385,6 +460,16 @@ export default function AskForm() {
                                                     }
                                                 }}
                                             />
+                                            <Button
+                                                type="button"
+                                                variant={isListening ? "destructive" : "ghost"}
+                                                size="icon"
+                                                onClick={toggleListening}
+                                                className="shrink-0 text-muted-foreground"
+                                            >
+                                                {isListening ? <MicOff /> : <Mic />}
+                                                <span className="sr-only">{isListening ? 'Stop listening' : 'Start listening'}</span>
+                                            </Button>
                                             <Button type="submit" disabled={loading || !form.getValues('question')} size="icon" className="shrink-0 rounded-full mr-1">
                                                 {loading ? <Loader2 className="animate-spin" /> : <Send />}
                                                 <span className="sr-only">Send</span>
@@ -430,3 +515,5 @@ export default function AskForm() {
     </Card>
   );
 }
+
+    

@@ -22,6 +22,7 @@ export type Message = {
     generatedImage?: string;
     createdAt: Date;
     suggestions?: string[];
+    audioUrl?: string;
 }
 
 export type Chat = {
@@ -29,3 +30,5 @@ export type Chat = {
     title: string;
     updatedAt: string;
 }
+
+    
