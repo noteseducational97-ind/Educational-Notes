@@ -30,6 +30,15 @@ export default function LoginPage() {
     <div className="flex min-h-screen flex-col">
       <Header />
       <main className="flex-grow grid w-full lg:grid-cols-2">
+          <div className="hidden lg:relative lg:flex bg-blue-600">
+              <div className="relative z-10 flex flex-col items-center justify-center p-8 text-center text-white w-full">
+                  <Link href="/" className="flex items-center space-x-4 bg-black/50 p-4 rounded-xl">
+                      <EducationalNotesLogo className="h-16 w-16" />
+                  </Link>
+                  <h1 className="mt-4 text-4xl font-bold [text-shadow:_2px_2px_4px_rgb(0_0_0_/_50%)]">Educational Notes</h1>
+                  <p className="mt-2 text-lg [text-shadow:_1px_1px_2px_rgb(0_0_0_/_50%)]">Your journey to knowledge starts here.</p>
+              </div>
+          </div>
           <div className="flex items-center justify-center p-6 bg-background">
               <div className="w-full max-w-md">
                   <div className="flex justify-center mb-6 lg:hidden">
@@ -63,23 +72,6 @@ export default function LoginPage() {
                           </p>
                       </CardFooter>
                   </Card>
-              </div>
-          </div>
-           <div className="hidden lg:relative lg:flex">
-              <Image 
-                  src="https://images.pexels.com/photos/159711/books-bookstore-book-reading-159711.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-                  alt="Library"
-                  fill
-                  className="object-cover"
-                  data-ai-hint="library books"
-              />
-              <div className="absolute inset-0 bg-primary/30 backdrop-blur-sm" />
-              <div className="relative z-10 flex flex-col items-center justify-center p-8 text-center text-white">
-                  <Link href="/" className="flex items-center space-x-4 bg-black/50 p-4 rounded-xl">
-                      <EducationalNotesLogo className="h-16 w-16" />
-                  </Link>
-                  <h1 className="mt-4 text-4xl font-bold [text-shadow:_2px_2px_4px_rgb(0_0_0_/_50%)]">Educational Notes</h1>
-                  <p className="mt-2 text-lg [text-shadow:_1px_1px_2px_rgb(0_0_0_/_50%)]">Your journey to knowledge starts here.</p>
               </div>
           </div>
       </main>
