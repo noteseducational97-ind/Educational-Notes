@@ -86,11 +86,11 @@ export default function Home() {
                 </div>
                  <div className="flex justify-center">
                     <Image
-                        src="https://images.pexels.com/photos/546819/pexels-photo-546819.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+                        src="https://images.pexels.com/photos/159711/books-bookstore-book-reading-159711.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
                         width="600"
                         height="400"
-                        alt="AI concept image"
-                        data-ai-hint="abstract technology"
+                        alt="Student studying"
+                        data-ai-hint="student study"
                         className="mx-auto aspect-video overflow-hidden rounded-xl object-cover shadow-2xl"
                     />
                 </div>
