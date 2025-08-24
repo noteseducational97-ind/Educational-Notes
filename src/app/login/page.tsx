@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect } from 'react';
@@ -8,6 +9,7 @@ import LoginForm from '@/components/auth/LoginForm';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { EducationalNotesLogo } from '@/components/icons/EducationalNotesLogo';
+import Header from '@/components/layout/Header';
 
 export default function LoginPage() {
   const { user, loading } = useAuth();
@@ -24,15 +26,16 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-100 to-blue-300 dark:from-blue-800/50 dark:to-blue-950/50 p-4">
-      <div className="w-full max-w-md">
-        <div className="flex justify-center mb-6">
-          <Link href="/" className="flex items-center space-x-2 text-foreground">
-            <EducationalNotesLogo className="h-8 w-8 text-primary" />
-          </Link>
-        </div>
-        <Card className="w-full shadow-2xl">
+    <div className="flex min-h-screen flex-col bg-background">
+      <Header />
+      <main className="flex flex-1 items-center justify-center p-4">
+        <Card className="w-full max-w-md shadow-2xl">
           <CardHeader className="text-center">
+             <div className="flex justify-center mb-4">
+                <Link href="/" className="flex items-center space-x-2 text-foreground">
+                    <EducationalNotesLogo className="h-8 w-8 text-primary" />
+                </Link>
+            </div>
             <CardTitle className="text-2xl font-bold tracking-tight">Educational Notes</CardTitle>
             <CardDescription>Sign in To Educational Notes</CardDescription>
           </CardHeader>
@@ -53,7 +56,7 @@ export default function LoginPage() {
             </p>
           </CardFooter>
         </Card>
-      </div>
+      </main>
     </div>
   );
 }
