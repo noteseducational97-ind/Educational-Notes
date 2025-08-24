@@ -142,7 +142,7 @@ export default function Home() {
                         />
                     </div>
                     <div>
-                        <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm font-semibold text-primary mb-4">Supercharge Your Learning</div>
+                        <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm font-semibold text-primary mb-4">artificial intelligence</div>
                         <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl text-balance">Meet Your Own Personalize Ai Assistant</h2>
                         <p className="mt-4 max-w-[600px] text-muted-foreground md:text-xl/relaxed text-balance">
                            Our AI assistant is here to break down complex topics, answer your toughest questions, and even generate practice tests from any resource. It's like having a personal tutor available 24/7.
