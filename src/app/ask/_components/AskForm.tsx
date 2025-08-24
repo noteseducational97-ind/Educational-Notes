@@ -119,6 +119,7 @@ export default function AskForm() {
     recognition.onresult = (event: any) => {
       const transcript = event.results[0][0].transcript;
       form.setValue('question', transcript);
+      setIsListening(false);
     };
     
     recognition.onerror = (event: any) => {
@@ -127,7 +128,9 @@ export default function AskForm() {
       // as a non-critical warning to avoid spamming the user.
       if (event.error === 'network') {
           console.warn("Speech recognition network issue. This is often temporary.");
-          return; // Don't show a toast for this specific error.
+          toast({ title: 'Voice Recognition Network Issue', description: 'Please try again. This is often temporary.'});
+          setIsListening(false);
+          return;
       }
       
       let description = "An unknown error occurred.";
@@ -179,6 +182,7 @@ export default function AskForm() {
 
     if (isListening) {
       recognitionRef.current.stop();
+      setIsListening(false);
     } else {
       try {
         recognitionRef.current.start();
