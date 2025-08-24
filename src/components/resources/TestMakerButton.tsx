@@ -216,7 +216,7 @@ export default function TestMakerButton({ resource, disabled = false }: TestMake
     ) : (
         <FileText className="mr-2 h-4 w-4" />
     )}
-    {loading ? 'Generating...' : 'Test Maker'}
+    {loading ? 'Generating...' : 'Test make (regular)'}
     </Button>
   );
 }
