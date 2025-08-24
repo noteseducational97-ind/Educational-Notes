@@ -161,10 +161,9 @@ export default function AskForm() {
     }
 
     if (isListening) {
-      recognitionRef.current?.stop();
-      setIsListening(false);
+      recognitionRef.current.stop();
     } else {
-      recognitionRef.current?.start();
+      recognitionRef.current.start();
       setIsListening(true);
     }
   };
