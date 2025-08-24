@@ -9,6 +9,7 @@ import LoginForm from '@/components/auth/LoginForm';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { EducationalNotesLogo } from '@/components/icons/EducationalNotesLogo';
+import Image from 'next/image';
 
 export default function LoginPage() {
   const { user, loading } = useAuth();
@@ -26,14 +27,24 @@ export default function LoginPage() {
 
   return (
     <div className="grid min-h-screen w-full lg:grid-cols-2">
-        <div className="hidden lg:flex flex-col items-center justify-center bg-sky-200 dark:bg-sky-900/50 p-8 text-center">
-            <Link href="/" className="flex items-center space-x-4">
-                <EducationalNotesLogo className="h-16 w-16 text-primary" />
-            </Link>
-            <h1 className="mt-4 text-4xl font-bold text-slate-900 dark:text-slate-100">Educational Notes</h1>
-            <p className="mt-2 text-lg text-slate-700 dark:text-slate-300">Your journey to knowledge starts here.</p>
+        <div className="hidden lg:relative lg:flex">
+            <Image 
+                src="https://images.pexels.com/photos/159711/books-bookstore-book-reading-159711.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+                alt="Library"
+                fill
+                className="object-cover"
+                data-ai-hint="library books"
+            />
+            <div className="absolute inset-0 bg-sky-500/30 backdrop-blur-sm" />
+            <div className="relative z-10 flex flex-col items-center justify-center p-8 text-center text-white">
+                <Link href="/" className="flex items-center space-x-4 bg-black/50 p-4 rounded-xl">
+                    <EducationalNotesLogo className="h-16 w-16" />
+                </Link>
+                <h1 className="mt-4 text-4xl font-bold [text-shadow:_2px_2px_4px_rgb(0_0_0_/_50%)]">Educational Notes</h1>
+                <p className="mt-2 text-lg [text-shadow:_1px_1px_2px_rgb(0_0_0_/_50%)]">Your journey to knowledge starts here.</p>
+            </div>
         </div>
-        <div className="flex items-center justify-center p-6">
+        <div className="flex items-center justify-center p-6 bg-secondary/50">
             <div className="w-full max-w-md">
                 <div className="flex justify-center mb-6 lg:hidden">
                     <Link href="/" className="flex items-center space-x-2 text-foreground">
