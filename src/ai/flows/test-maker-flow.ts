@@ -42,7 +42,7 @@ The test must be structured into four sections based on marks, in this exact ord
 
 After all the questions, provide a separate "Answer Key" section that clearly lists the correct answer for every question (e.g., "Section A: 1. B, 2. A", "Section B: 1. [Brief Answer]", etc.).
 
-The questions should be highly relevant to the provided content and appropriate for the specified class, subjects, and streams.
+The questions should be highly relevant to the provided content and appropriate for the specified class, subjects, and streams. Use clear, simple, and direct language that is easy for students to understand. Avoid overly complex or ambiguous wording.
 
 Formatting Rules:
 - Add a blank line before the start of each new section (e.g., before "Section B").
