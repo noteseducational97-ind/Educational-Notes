@@ -103,8 +103,8 @@ export default function AskForm() {
   }, [conversation, scrollToBottom]);
 
    useEffect(() => {
-    if (typeof window !== 'undefined' && 'webkitSpeechRecognition' in window) {
-      const SpeechRecognition = window.webkitSpeechRecognition;
+    if (typeof window !== 'undefined' && ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)) {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
       recognitionRef.current = new SpeechRecognition();
       recognitionRef.current.continuous = false;
       recognitionRef.current.interimResults = false;
@@ -117,13 +117,17 @@ export default function AskForm() {
       };
       
       recognitionRef.current.onerror = (event: any) => {
-        toast({ variant: 'destructive', title: 'Voice Recognition Error', description: event.error });
+        if (event.error !== 'no-speech' && event.error !== 'aborted') {
+          toast({ variant: 'destructive', title: 'Voice Recognition Error', description: `Error: ${event.error}` });
+        }
         setIsListening(false);
       };
       
       recognitionRef.current.onend = () => {
         setIsListening(false);
       };
+    } else {
+        console.warn("Speech recognition not supported by this browser.");
     }
   }, [form, toast]);
   
@@ -151,12 +155,18 @@ export default function AskForm() {
   }
 
   const toggleListening = () => {
+    if (!recognitionRef.current) {
+        toast({ variant: 'destructive', title: 'Not Supported', description: 'Voice recognition is not supported in your browser.' });
+        return;
+    }
+
     if (isListening) {
       recognitionRef.current?.stop();
+      setIsListening(false);
     } else {
       recognitionRef.current?.start();
+      setIsListening(true);
     }
-    setIsListening(!isListening);
   };
 
   async function onSubmit(values: FormValues) {
@@ -218,6 +228,7 @@ export default function AskForm() {
         if (result.media) {
             const audio = new Audio(result.media);
             audio.play();
+            audio.onended = () => setAudioLoading(null);
         } else {
             throw new Error('No audio data received.');
         }
@@ -227,7 +238,6 @@ export default function AskForm() {
             title: 'Audio Playback Error',
             description: 'Could not generate or play audio. Please try again.',
         });
-    } finally {
         setAudioLoading(null);
     }
   };
@@ -354,7 +364,7 @@ export default function AskForm() {
                                                     size="sm"
                                                     variant="outline"
                                                     onClick={() => handlePlayAudio(message.content, index)}
-                                                    disabled={audioLoading === index}
+                                                    disabled={audioLoading !== null}
                                                     className="mt-2"
                                                 >
                                                     {audioLoading === index ? (
@@ -389,7 +399,7 @@ export default function AskForm() {
                             )}
                              {showSuggestions && (
                                 <div className="flex justify-start pl-14">
-                                    <div className="flex flex-col gap-2 max-w-[75%]">
+                                    <div className="flex flex-col items-start gap-2 max-w-[75%]">
                                         {lastMessage.suggestions?.map((prompt, i) => (
                                             <Button
                                                 key={i}
@@ -515,5 +525,3 @@ export default function AskForm() {
     </Card>
   );
 }
-
-    
