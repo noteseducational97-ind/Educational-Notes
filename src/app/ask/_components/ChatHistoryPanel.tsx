@@ -80,11 +80,11 @@ export default function ChatHistoryPanel({
 };
 
   return (
-    <Card className="h-full w-[350px] border-l-2 border-primary-foreground/20 rounded-none flex flex-col bg-primary text-primary-foreground">
-        <CardHeader className="flex flex-row justify-between items-center border-b border-primary-foreground/20">
+    <Card className="h-full w-[350px] border-l rounded-none flex flex-col">
+        <CardHeader className="flex flex-row justify-between items-center border-b">
             <div>
                 <CardTitle>Chat History</CardTitle>
-                <CardDescription className="text-primary-foreground/80">
+                <CardDescription>
                     Select a past conversation.
                 </CardDescription>
             </div>
@@ -103,7 +103,7 @@ export default function ChatHistoryPanel({
                     {history.map((chat) => (
                     <div
                         key={chat.id}
-                        className="group flex items-center justify-between p-3 rounded-lg hover:bg-primary-foreground/10 border border-primary-foreground/20"
+                        className="group flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 border"
                     >
                         <div
                             className="flex-grow cursor-pointer"
@@ -112,7 +112,7 @@ export default function ChatHistoryPanel({
                             <p className="font-semibold truncate">
                                 {chat.title}
                             </p>
-                            <p className="text-xs text-primary-foreground/70">
+                            <p className="text-xs text-muted-foreground">
                                 {formatDistanceToNow(new Date(chat.updatedAt), { addSuffix: true })}
                             </p>
                         </div>
@@ -152,7 +152,7 @@ export default function ChatHistoryPanel({
                     ))}
                 </div>
                 ) : (
-                <div className="flex flex-col items-center justify-center h-full text-center text-primary-foreground/70 p-4">
+                <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground p-4">
                     <MessageSquare className="h-12 w-12 mb-4" />
                     <p className="font-medium">No History Found</p>
                     <p className="text-sm">Your past conversations will appear here.</p>
@@ -163,3 +163,5 @@ export default function ChatHistoryPanel({
     </Card>
   );
 }
+
+    
