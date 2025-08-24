@@ -43,31 +43,33 @@ export default function ResourceActions({ resource }: ResourceActionsProps) {
 
   return (
     <>
-      <div className="flex flex-wrap gap-2">
-        {user ? (
-          <Button asChild disabled={isLinkDisabled}>
-            <Link href={getDownloadUrl()} target="_blank" rel="noopener noreferrer">
-              <Download className="mr-2 h-4 w-4" />
-              Download PDF
-            </Link>
-          </Button>
-        ) : (
-          <Button onClick={handleDownloadClick} disabled={isLinkDisabled}>
-            <Download className="mr-2 h-4 w-4" />
-            Download PDF
-          </Button>
-        )}
-        {user && (
-          <>
-            <Button asChild variant="outline">
-              <Link href={`/ask?resourceId=${resource.id}`}>
-                <HelpCircle className="mr-2 h-4 w-4" />
-                Ask a Question
-              </Link>
+      <div className="flex flex-col gap-2">
+        <div className="flex flex-wrap gap-2">
+            {user ? (
+            <Button asChild disabled={isLinkDisabled}>
+                <Link href={getDownloadUrl()} target="_blank" rel="noopener noreferrer">
+                <Download className="mr-2 h-4 w-4" />
+                Download PDF
+                </Link>
             </Button>
-            <TestMakerButton resource={resource} disabled={isLinkDisabled} />
-          </>
-        )}
+            ) : (
+            <Button onClick={handleDownloadClick} disabled={isLinkDisabled}>
+                <Download className="mr-2 h-4 w-4" />
+                Download PDF
+            </Button>
+            )}
+            {user && (
+            <>
+                <Button asChild variant="outline">
+                <Link href={`/ask?resourceId=${resource.id}`}>
+                    <HelpCircle className="mr-2 h-4 w-4" />
+                    Ask a Question
+                </Link>
+                </Button>
+            </>
+            )}
+        </div>
+        {user && <TestMakerButton resource={resource} disabled={isLinkDisabled} />}
       </div>
 
       <AlertDialog open={showLoginDialog} onOpenChange={setShowLoginDialog}>
