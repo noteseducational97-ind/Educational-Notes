@@ -28,6 +28,9 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import type { Message, Chat } from '@/types';
+import { saveChat, getChatMessages, deleteChat } from '@/lib/firebase/chat';
+import ChatHistoryPanel from './ChatHistoryPanel';
 
 
 const formSchema = z.object({
@@ -35,13 +38,6 @@ const formSchema = z.object({
 });
 
 type FormValues = z.infer<typeof formSchema>;
-
-type Message = {
-    role: 'user' | 'assistant';
-    content: string;
-    image?: string;
-    generatedImage?: string;
-}
 
 const defaultExamplePrompts = [
     'What is Beats frequency?',
@@ -55,8 +51,10 @@ const GUEST_MESSAGE_LIMIT = 5;
 export default function AskForm() {
   const [loading, setLoading] = useState(false);
   const [conversation, setConversation] = useState<Message[]>([]);
+  const [chatId, setChatId] = useState<string | null>(null);
   const [attachedImage, setAttachedImage] = useState<string | null>(null);
   const [showLoginDialog, setShowLoginDialog] = useState(false);
+  const [isHistoryPanelOpen, setIsHistoryPanelOpen] = useState(false);
   const { toast } = useToast();
   const { user } = useAuth();
   const router = useRouter();
@@ -126,15 +124,18 @@ export default function AskForm() {
   async function onSubmit(values: FormValues) {
     if (loading) return;
 
-    const userMessagesCount = conversation.filter(m => m.role === 'user').length;
-    if (!user && userMessagesCount >= GUEST_MESSAGE_LIMIT) {
-        setShowLoginDialog(true);
-        return;
+    if (!user) {
+        const userMessagesCount = conversation.filter(m => m.role === 'user').length;
+        if (userMessagesCount >= GUEST_MESSAGE_LIMIT) {
+            setShowLoginDialog(true);
+            return;
+        }
     }
 
     setLoading(true);
-    const userMessage: Message = { role: 'user', content: values.question, image: attachedImage ?? undefined };
-    setConversation(prev => [...prev, userMessage]);
+    const userMessage: Message = { role: 'user', content: values.question, image: attachedImage ?? undefined, createdAt: new Date() };
+    const currentConversation = [...conversation, userMessage];
+    setConversation(currentConversation);
     form.reset();
     setAttachedImage(null);
 
@@ -148,8 +149,17 @@ export default function AskForm() {
         role: 'assistant', 
         content: result.answer,
         generatedImage: result.imageUrl,
+        createdAt: new Date(),
       };
-      setConversation(prev => [...prev, assistantMessage]);
+      
+      const finalConversation = [...currentConversation, assistantMessage];
+      setConversation(finalConversation);
+
+      if (user) {
+        const newChatId = await saveChat(user.uid, chatId, finalConversation);
+        setChatId(newChatId);
+      }
+
     } catch (error: any) {
       toast({
         variant: 'destructive',
@@ -164,7 +174,31 @@ export default function AskForm() {
 
   const handleNewChat = () => {
     setConversation([]);
+    setChatId(null);
     router.push('/ask');
+  }
+
+  const handleClearChat = async () => {
+    if (chatId && user) {
+        await deleteChat(user.uid, chatId);
+        toast({ title: 'Chat Deleted', description: 'This conversation has been removed from your history.' });
+    }
+    handleNewChat();
+  }
+  
+  const handleSelectChat = async (selectedChat: Chat) => {
+    if (!user) return;
+    setLoading(true);
+    setIsHistoryPanelOpen(false);
+    try {
+        const messages = await getChatMessages(user.uid, selectedChat.id);
+        setChatId(selectedChat.id);
+        setConversation(messages);
+    } catch {
+        toast({ variant: 'destructive', title: 'Error', description: 'Could not load the selected chat.' });
+    } finally {
+        setLoading(false);
+    }
   }
 
   return (
@@ -184,10 +218,12 @@ export default function AskForm() {
                     </CardDescription>
                 </div>
                 <div className="flex items-center gap-2">
-                    <Button variant="outline" size="sm">
-                        <History className="mr-2 h-4 w-4"/> History
-                    </Button>
-                    <Button variant="outline" size="sm" onClick={() => setConversation([])}>
+                    {user && (
+                        <Button variant="outline" size="sm" onClick={() => setIsHistoryPanelOpen(true)}>
+                            <History className="mr-2 h-4 w-4"/> History
+                        </Button>
+                    )}
+                    <Button variant="outline" size="sm" onClick={handleClearChat} disabled={conversation.length === 0}>
                         <Trash2 className="mr-2 h-4 w-4"/> Clear Chat
                     </Button>
                 </div>
@@ -355,10 +391,14 @@ export default function AskForm() {
             </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>
+        {user && (
+            <ChatHistoryPanel 
+                isOpen={isHistoryPanelOpen}
+                onOpenChange={setIsHistoryPanelOpen}
+                onSelectChat={handleSelectChat}
+                userId={user.uid}
+            />
+        )}
     </div>
   );
 }
-
-    
-
-    

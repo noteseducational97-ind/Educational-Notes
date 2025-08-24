@@ -14,3 +14,17 @@ export type Resource = {
   isComingSoon?: boolean;
   visibility?: 'private' | 'public';
 };
+
+export type Message = {
+    role: 'user' | 'assistant';
+    content: string;
+    image?: string;
+    generatedImage?: string;
+    createdAt: Date;
+}
+
+export type Chat = {
+    id: string;
+    title: string;
+    updatedAt: string;
+}
