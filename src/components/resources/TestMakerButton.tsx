@@ -3,12 +3,13 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { FileText, Loader2 } from 'lucide-react';
+import { FileText, Loader2, HelpCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { generateTest } from '@/ai/flows/test-maker-flow';
 import { generateMcqTest } from '@/ai/flows/mcq-test-maker-flow';
 import type { Resource } from '@/types';
 import jsPDF from 'jspdf';
+import Link from 'next/link';
 
 type TestMakerButtonProps = {
   resource: Resource;
@@ -159,7 +160,13 @@ export default function TestMakerButton({ resource, disabled = false }: TestMake
 
   return (
     <div className="flex flex-col gap-2">
-      <h4 className="text-sm font-medium text-muted-foreground border-b pb-2">AI Test Generation</h4>
+      <h4 className="text-sm font-medium text-muted-foreground border-b pb-2">AI Tools</h4>
+        <Button asChild variant="outline" className="w-full">
+          <Link href={`/ask?resourceId=${resource.id}`}>
+              <HelpCircle className="mr-2 h-4 w-4" />
+              Ask a Question
+          </Link>
+        </Button>
       <Button
         variant="secondary"
         onClick={handleGenerateTest}
