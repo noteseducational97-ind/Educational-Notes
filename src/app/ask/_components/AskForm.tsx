@@ -175,6 +175,7 @@ export default function AskForm() {
   const handleNewChat = () => {
     setConversation([]);
     setChatId(null);
+    setIsHistoryPanelOpen(false);
     router.push('/ask');
   }
 
@@ -223,7 +224,7 @@ export default function AskForm() {
                             </Button>
                             {user && (
                                 <Button variant="outline" size="icon" onClick={() => setIsHistoryPanelOpen(!isHistoryPanelOpen)}>
-                                    {isHistoryPanelOpen ? <PanelRightClose /> : <History />}
+                                    {isHistoryPanelOpen ? <PanelRightClose /> : <PanelRightOpen />}
                                 </Button>
                             )}
                         </div>
