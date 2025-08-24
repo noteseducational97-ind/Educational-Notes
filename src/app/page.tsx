@@ -76,14 +76,16 @@ export default function Home() {
                         High-quality study materials, AI-powered tools, and expert-curated content—all completely free. Achieve academic excellence with us.
                     </p>
                     <div className="flex flex-col gap-2 min-[400px]:flex-row">
-                        <Button size="lg" asChild>
-                            <Link href="/downloads">Get Started <ArrowRight /></Link>
-                        </Button>
+                       {!user && (
+                            <Button size="lg" asChild>
+                                <Link href="/signup">Get Started <ArrowRight /></Link>
+                            </Button>
+                        )}
                     </div>
                 </div>
                  <div className="flex justify-center">
                     <Image
-                        src="https://images.pexels.com/photos/159711/books-bookstore-book-reading-159711.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+                        src="https://images.pexels.com/photos/3768131/pexels-photo-3768131.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
                         width="600"
                         height="400"
                         alt="Student studying"
@@ -131,7 +133,7 @@ export default function Home() {
                 <div className="grid md:grid-cols-2 gap-12 items-center">
                      <div className="flex justify-center">
                         <Image
-                            src="https://images.pexels.com/photos/8728383/pexels-photo-8728383.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+                            src="https://images.pexels.com/photos/8438918/pexels-photo-8438918.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
                             width="500"
                             height="500"
                             alt="AI concept image"
