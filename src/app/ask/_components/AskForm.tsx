@@ -12,7 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, Sparkles, Send, Trash2, Paperclip, X, History, LogIn, HelpCircle, PlusCircle, PanelRightClose, PanelRightOpen, Mic, MicOff, Volume2, PlayCircle } from 'lucide-react';
+import { Loader2, Sparkles, Send, Trash2, Paperclip, X, History, LogIn, HelpCircle, PlusCircle, PanelRightClose, PanelRightOpen, Volume2, PlayCircle } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
@@ -56,7 +56,6 @@ export default function AskForm() {
   const [attachedImage, setAttachedImage] = useState<string | null>(null);
   const [showLoginDialog, setShowLoginDialog] = useState(false);
   const [isHistoryPanelOpen, setIsHistoryPanelOpen] = useState(false);
-  const [isListening, setIsListening] = useState(false);
   const [audioLoading, setAudioLoading] = useState<number | null>(null);
   const { toast } = useToast();
   const { user } = useAuth();
@@ -67,7 +66,6 @@ export default function AskForm() {
 
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const recognitionRef = useRef<any>(null);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -101,49 +99,6 @@ export default function AskForm() {
   useEffect(() => {
     scrollToBottom();
   }, [conversation, scrollToBottom]);
-
-   useEffect(() => {
-    if (typeof window === 'undefined') return;
-
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    if (!SpeechRecognition) {
-      console.warn("Speech recognition not supported by this browser.");
-      return;
-    }
-    
-    const recognition = new SpeechRecognition();
-    recognition.continuous = false;
-    recognition.interimResults = false;
-    recognition.lang = 'en-US';
-
-    recognition.onresult = (event: any) => {
-      const transcript = event.results[0][0].transcript;
-      form.setValue('question', transcript);
-    };
-    
-    recognition.onerror = (event: any) => {
-      if (event.error === 'network') {
-          console.warn("Speech recognition network issue. This is often temporary.");
-          toast({ title: 'Voice Recognition Network Issue', description: 'Please try again. This is often temporary.'});
-          return;
-      }
-      
-      let description = "An unknown error occurred.";
-      if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
-           description = "Microphone access denied. Please enable it in your browser settings.";
-      } else if (event.error === 'no-speech') {
-           description = "No speech was detected. Please try again.";
-      }
-      
-      toast({ variant: 'destructive', title: 'Voice Recognition Error', description });
-    };
-    
-    recognition.onend = () => {
-      setIsListening(false);
-    };
-
-    recognitionRef.current = recognition;
-  }, [form, toast]);
   
   const getInitials = (name: string | null | undefined) => {
     if (!name) return 'U';
@@ -167,27 +122,6 @@ export default function AskForm() {
         form.handleSubmit(onSubmit)();
     }, 0);
   }
-
-  const toggleListening = () => {
-    if (!recognitionRef.current) {
-        toast({ variant: 'destructive', title: 'Not Supported', description: 'Voice recognition is not supported in your browser.' });
-        return;
-    }
-
-    if (isListening) {
-      recognitionRef.current.stop();
-      setIsListening(false);
-    } else {
-      try {
-        recognitionRef.current.start();
-        setIsListening(true);
-      } catch(e) {
-        console.error("Could not start recognition", e);
-        toast({ variant: 'destructive', title: 'Could Not Start Mic', description: 'Please ensure your microphone is connected and permissions are allowed.' });
-        setIsListening(false);
-      }
-    }
-  };
 
   async function onSubmit(values: FormValues) {
     if (loading) return;
@@ -478,7 +412,7 @@ export default function AskForm() {
                                                 accept="image/*"
                                             />
                                             <Input 
-                                                placeholder={isListening ? "Listening..." : "e.g., What is this? Explain it to me."}
+                                                placeholder="e.g., What is this? Explain it to me."
                                                 {...field} 
                                                 className="flex-1 resize-none border-0 shadow-none focus-visible:ring-0"
                                                 onKeyDown={(e) => {
@@ -490,16 +424,6 @@ export default function AskForm() {
                                                     }
                                                 }}
                                             />
-                                            <Button
-                                                type="button"
-                                                variant={isListening ? "destructive" : "ghost"}
-                                                size="icon"
-                                                onClick={toggleListening}
-                                                className="shrink-0 text-muted-foreground"
-                                            >
-                                                {isListening ? <MicOff /> : <Mic />}
-                                                <span className="sr-only">{isListening ? 'Stop listening' : 'Start listening'}</span>
-                                            </Button>
                                             <Button type="submit" disabled={loading || !form.getValues('question')} size="icon" className="shrink-0 rounded-full mr-1">
                                                 {loading ? <Loader2 className="animate-spin" /> : <Send />}
                                                 <span className="sr-only">Send</span>
