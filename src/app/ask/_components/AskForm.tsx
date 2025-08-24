@@ -119,14 +119,12 @@ export default function AskForm() {
     recognition.onresult = (event: any) => {
       const transcript = event.results[0][0].transcript;
       form.setValue('question', transcript);
-      setIsListening(false);
     };
     
     recognition.onerror = (event: any) => {
       if (event.error === 'network') {
           console.warn("Speech recognition network issue. This is often temporary.");
           toast({ title: 'Voice Recognition Network Issue', description: 'Please try again. This is often temporary.'});
-          setIsListening(false);
           return;
       }
       
@@ -138,7 +136,6 @@ export default function AskForm() {
       }
       
       toast({ variant: 'destructive', title: 'Voice Recognition Error', description });
-      setIsListening(false);
     };
     
     recognition.onend = () => {
