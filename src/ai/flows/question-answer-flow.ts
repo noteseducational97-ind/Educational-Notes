@@ -41,11 +41,10 @@ const prompt = ai.definePrompt({
   })},
   output: {schema: z.object({ 
     answer: z.string(),
-    suggestions: z.array(z.string()).optional().describe('Generate three relevant follow-up questions based on the answer you provided.'),
-  }) }, // Output includes text and suggestions
+  }) },
   prompt: `You are a helpful AI assistant and a friendly study partner for students. Your primary task is to provide clear, concise, and accurate answers to user questions.
 
-**Core Instruction: Explain concepts in the simplest way possible, as if you were explaining them to a 10th-grade student. Use analogies and simple examples to make complex topics easy to understand.**
+**Core Instruction: Explain concepts in the simplest way possible, as if you were explaining them to a 10th-grade student. Use analogies and simple examples to make complex topics easy to understand. Only answer the question that is asked. Do not provide any additional information or suggestions.**
 
 **Formatting Rules:**
 - **Use Markdown for all formatting.**
@@ -55,8 +54,6 @@ const prompt = ai.definePrompt({
 - Provide clear examples, potentially using code blocks (\`\`\`) or blockquotes (>) for emphasis.
 - Use tables to present data or comparisons where appropriate.
 - Ensure proper spacing between paragraphs and sections.
-
-After providing a well-formatted and simple answer, generate three relevant follow-up questions a user might ask next.
 
 {{#if resourceContent}}
 You have been provided with specific content. You MUST answer the user's question based ONLY on this content. Do not use any external knowledge. If the answer is not in the content, state that you cannot answer based on the provided material.
@@ -95,7 +92,7 @@ const answerQuestionFlow = ai.defineFlow(
             question: input.question, 
             resourceContent: resource.content 
         });
-        return { answer: output!.answer, suggestions: output!.suggestions };
+        return { answer: output!.answer, suggestions: undefined };
     }
       
     // If no resourceId, proceed with general Q&A logic.
@@ -113,11 +110,7 @@ const answerQuestionFlow = ai.defineFlow(
       return {
           answer: `Here is the generated image as you requested for "${input.question}"`,
           imageUrl: media?.url,
-          suggestions: [
-            'Can you make this more vibrant?',
-            'Generate another image in a different style.',
-            'What other kinds of images can you create?',
-          ]
+          suggestions: undefined,
       }
     } else {
         // For text questions, or questions about an uploaded image.
@@ -127,7 +120,7 @@ const answerQuestionFlow = ai.defineFlow(
         });
         return {
             answer: output!.answer,
-            suggestions: output!.suggestions,
+            suggestions: undefined,
         };
     }
   }
