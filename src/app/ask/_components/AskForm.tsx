@@ -46,7 +46,7 @@ const defaultExamplePrompts = [
     'What is CPU?',
 ];
 
-const GUEST_MESSAGE_LIMIT = 5;
+const GUEST_MESSAGE_LIMIT = 3;
 
 export default function AskForm() {
   const [loading, setLoading] = useState(false);
@@ -404,3 +404,5 @@ export default function AskForm() {
     </Card>
   );
 }
+
+    
