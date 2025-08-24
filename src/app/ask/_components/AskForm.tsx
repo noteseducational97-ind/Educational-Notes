@@ -104,7 +104,11 @@ export default function AskForm() {
 
    useEffect(() => {
     if (typeof window !== 'undefined' && ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)) {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        console.warn("Speech recognition not supported by this browser.");
+        return;
+      }
       recognitionRef.current = new SpeechRecognition();
       recognitionRef.current.continuous = false;
       recognitionRef.current.interimResults = false;
@@ -163,8 +167,14 @@ export default function AskForm() {
     if (isListening) {
       recognitionRef.current.stop();
     } else {
-      recognitionRef.current.start();
-      setIsListening(true);
+      try {
+        recognitionRef.current.start();
+        setIsListening(true);
+      } catch(e) {
+        console.error("Could not start recognition", e);
+        toast({ variant: 'destructive', title: 'Error Starting Mic', description: 'Could not start voice recognition.' });
+        setIsListening(false);
+      }
     }
   };
 
