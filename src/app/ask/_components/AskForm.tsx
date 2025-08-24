@@ -103,39 +103,43 @@ export default function AskForm() {
   }, [conversation, scrollToBottom]);
 
    useEffect(() => {
-    if (typeof window !== 'undefined' && ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)) {
-      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-      if (!SpeechRecognition) {
-        console.warn("Speech recognition not supported by this browser.");
-        return;
-      }
-      recognitionRef.current = new SpeechRecognition();
-      recognitionRef.current.continuous = false;
-      recognitionRef.current.interimResults = false;
-      recognitionRef.current.lang = 'en-US';
+    if (typeof window === 'undefined') return;
 
-      recognitionRef.current.onresult = (event: any) => {
-        const transcript = event.results[0][0].transcript;
-        form.setValue('question', transcript);
-        setIsListening(false);
-      };
-      
-      recognitionRef.current.onerror = (event: any) => {
-        if (event.error === 'network') {
-             toast({ variant: 'destructive', title: 'Voice Recognition Error', description: "Network error. Please check your internet connection and try again." });
-        } else if (event.error !== 'no-speech' && event.error !== 'aborted') {
-          toast({ variant: 'destructive', title: 'Voice Recognition Error', description: `Error: ${event.error}` });
-          setIsListening(false);
-        }
-      };
-      
-      recognitionRef.current.onend = () => {
-        // This can be called automatically by the browser, so we only toggle state if it was manually stopped.
-        // The `isListening` state will be managed in `toggleListening` function.
-      };
-    } else {
-        console.warn("Speech recognition not supported by this browser.");
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      console.warn("Speech recognition not supported by this browser.");
+      return;
     }
+    
+    const recognition = new SpeechRecognition();
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognition.lang = 'en-US';
+
+    recognition.onresult = (event: any) => {
+      const transcript = event.results[0][0].transcript;
+      form.setValue('question', transcript);
+    };
+    
+    recognition.onerror = (event: any) => {
+      console.error("Speech recognition error:", event.error);
+      let description = "An unknown error occurred.";
+      if (event.error === 'network') {
+           description = "Network error. Please check your internet connection.";
+      } else if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
+           description = "Microphone access denied. Please enable it in your browser settings.";
+      } else if (event.error === 'no-speech') {
+           description = "No speech was detected. Please try again.";
+      }
+      toast({ variant: 'destructive', title: 'Voice Recognition Error', description });
+      setIsListening(false);
+    };
+    
+    recognition.onend = () => {
+      setIsListening(false);
+    };
+
+    recognitionRef.current = recognition;
   }, [form, toast]);
   
   const getInitials = (name: string | null | undefined) => {
@@ -169,14 +173,13 @@ export default function AskForm() {
 
     if (isListening) {
       recognitionRef.current.stop();
-      setIsListening(false);
     } else {
       try {
         recognitionRef.current.start();
         setIsListening(true);
       } catch(e) {
         console.error("Could not start recognition", e);
-        toast({ variant: 'destructive', title: 'Error Starting Mic', description: 'Could not start voice recognition.' });
+        toast({ variant: 'destructive', title: 'Could Not Start Mic', description: 'Please ensure your microphone is connected and permissions are allowed.' });
         setIsListening(false);
       }
     }
@@ -538,5 +541,3 @@ export default function AskForm() {
     </Card>
   );
 }
-
-    
