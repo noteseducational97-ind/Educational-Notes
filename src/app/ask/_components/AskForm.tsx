@@ -213,12 +213,7 @@ export default function AskForm() {
             <div className={cn("flex flex-col flex-1 transition-all duration-300", isHistoryPanelOpen && "sm:w-[calc(100%-350px)]")}>
                 <CardHeader className="border-b">
                     <div className='flex flex-col md:flex-row justify-between items-center gap-4'>
-                        <div className="flex items-center gap-4 w-full md:w-auto">
-                             <Button variant="outline" size="sm" onClick={handleNewChat} className="flex-1 md:flex-initial">
-                                <PlusCircle className="mr-2 h-4 w-4" /> New Chat
-                            </Button>
-                        </div>
-                        <div className='text-center order-first md:order-none'>
+                        <div className='text-center w-full md:w-auto order-2 md:order-1'>
                             <CardTitle className="text-xl md:text-2xl flex items-center justify-center gap-2">
                                 <Sparkles />Educational AI Assistant
                             </CardTitle>
@@ -226,7 +221,10 @@ export default function AskForm() {
                                 {resourceId ? `Asking about "${resourceTitle}"` : 'Your personal AI-powered tutor. Ask anything!'}
                             </CardDescription>
                         </div>
-                        <div className="flex items-center gap-2 w-full md:w-auto justify-end">
+                        <div className="flex items-center gap-2 w-full md:w-auto order-1 md:order-2 justify-between md:justify-end">
+                           <Button variant="outline" size="sm" onClick={handleNewChat} className="flex-1 md:flex-initial">
+                                <PlusCircle className="mr-2 h-4 w-4" /> New Chat
+                            </Button>
                            {!isHistoryPanelOpen && (
                             <Button variant="outline" size="sm" onClick={handleClearChat} disabled={conversation.length === 0} className="flex-1 md:flex-initial">
                                 <Trash2 className="mr-2 h-4 w-4"/> Clear
