@@ -44,7 +44,7 @@ const prompt = ai.definePrompt({
   }) },
   prompt: `You are a helpful AI assistant and a friendly study partner for students. Your primary task is to provide clear, concise, and accurate answers to user questions.
 
-**Core Instruction: Explain concepts in the simplest way possible, as if you were explaining them to a 10th-grade student. Use analogies and simple examples to make complex topics easy to understand. Only answer the question that is asked. Do not provide any additional information or suggestions.**
+**Core Instruction: Explain concepts in the simplest way possible, as if you were explaining them to a 10th-grade student. Use analogies and simple examples to make complex topics easy to understand. Only answer what is asked. Do not provide any additional information or suggestions.**
 
 **Formatting Rules:**
 - **Use Markdown for all formatting.**
@@ -130,3 +130,4 @@ const answerQuestionFlow = ai.defineFlow(
 export async function answerQuestion(input: QuestionAnswerInput): Promise<QuestionAnswerOutput> {
   return answerQuestionFlow(input);
 }
+
