@@ -122,15 +122,21 @@ export default function AskForm() {
     };
     
     recognition.onerror = (event: any) => {
-      console.error("Speech recognition error:", event.error);
-      let description = "An unknown error occurred.";
+      // The 'network' error is common and can happen even with a good connection
+      // if the remote speech service is temporarily unavailable. We'll treat it
+      // as a non-critical warning to avoid spamming the user.
       if (event.error === 'network') {
-           description = "Network error. Please check your internet connection.";
-      } else if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
+          console.warn("Speech recognition network issue. This is often temporary.");
+          return; // Don't show a toast for this specific error.
+      }
+      
+      let description = "An unknown error occurred.";
+      if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
            description = "Microphone access denied. Please enable it in your browser settings.";
       } else if (event.error === 'no-speech') {
            description = "No speech was detected. Please try again.";
       }
+      
       toast({ variant: 'destructive', title: 'Voice Recognition Error', description });
       setIsListening(false);
     };
