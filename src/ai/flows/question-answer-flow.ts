@@ -97,9 +97,9 @@ const answerQuestionFlow = ai.defineFlow(
     }
       
     // If no resourceId, proceed with general Q&A logic.
-    // Check if the user is explicitly asking to generate an image, and no image was uploaded.
     const wantsImageGeneration = /image|generate|create/i.test(input.question);
     
+    // If the user wants to generate an image and hasn't uploaded one for context.
     if (wantsImageGeneration && !input.photoDataUri) {
       const { media } = await ai.generate({
         model: 'googleai/gemini-2.0-flash-preview-image-generation',
@@ -111,19 +111,17 @@ const answerQuestionFlow = ai.defineFlow(
       return {
           answer: `Here is the generated image as you requested for "${input.question}"`,
           imageUrl: media?.url,
-          suggestions: undefined,
       }
-    } else {
-        // For text questions, or questions about an uploaded image.
-        const { output } = await prompt({
-            question: input.question,
-            photoDataUri: input.photoDataUri,
-        });
-        return {
-            answer: output!.answer,
-            suggestions: undefined,
-        };
-    }
+    } 
+    
+    // For all other cases (text questions, or questions about an uploaded image).
+    const { output } = await prompt({
+        question: input.question,
+        photoDataUri: input.photoDataUri,
+    });
+    return {
+        answer: output!.answer,
+    };
   }
 );
 
@@ -131,5 +129,3 @@ const answerQuestionFlow = ai.defineFlow(
 export async function answerQuestion(input: QuestionAnswerInput): Promise<QuestionAnswerOutput> {
   return answerQuestionFlow(input);
 }
-
-

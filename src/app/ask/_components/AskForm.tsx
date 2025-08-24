@@ -225,11 +225,9 @@ export default function AskForm() {
                            <Button variant="outline" size="sm" onClick={handleNewChat} className="flex-1 md:flex-initial">
                                 <PlusCircle className="mr-2 h-4 w-4" /> New Chat
                             </Button>
-                           {!isHistoryPanelOpen && (
-                            <Button variant="outline" size="sm" onClick={handleClearChat} disabled={conversation.length === 0} className="flex-1 md:flex-initial">
+                           <Button variant="outline" size="sm" onClick={handleClearChat} disabled={conversation.length === 0} className="flex-1 md:flex-initial">
                                 <Trash2 className="mr-2 h-4 w-4"/> Clear
                             </Button>
-                           )}
                             {user && (
                                 <Button variant="outline" size="sm" onClick={() => setIsHistoryPanelOpen(!isHistoryPanelOpen)} className="flex-1 md:flex-initial">
                                     {isHistoryPanelOpen ? <><PanelRightClose /> Hide</> : <><PanelRightOpen /> History</>}
