@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, Sparkles, Send, Trash2, Paperclip, X, History, LogIn, HelpCircle } from 'lucide-react';
+import { Loader2, Sparkles, Send, Trash2, Paperclip, X, History, LogIn, HelpCircle, PlusCircle } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
@@ -160,18 +160,28 @@ export default function AskForm() {
     }
   }
 
+  const handleNewChat = () => {
+    setConversation([]);
+    router.push('/ask');
+  }
+
   return (
     <div className="h-full w-full max-w-7xl">
        <Card className="flex flex-col shadow-lg h-full">
          <CardHeader className="border-b">
             <div className='flex justify-between items-center'>
-                <div>
+                 <div className="flex items-center gap-4">
+                    <Button variant="outline" size="sm" onClick={handleNewChat}>
+                        <PlusCircle className="mr-2 h-4 w-4" /> New Chat
+                    </Button>
+                </div>
+                <div className='text-center'>
                     <CardTitle className="text-2xl flex items-center gap-2"><Sparkles className="text-primary"/>Educational AI Assistant</CardTitle>
                     <CardDescription>
                         {resourceId ? `Asking about "${resourceTitle}"` : 'Your personal AI-powered tutor. Ask anything!'}
                     </CardDescription>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex items-center gap-2">
                     <Button variant="outline" size="sm" onClick={() => { alert("History feature coming soon!"); }}>
                         <History className="mr-2 h-4 w-4"/> History
                     </Button>
@@ -346,5 +356,7 @@ export default function AskForm() {
     </div>
   );
 }
+
+    
 
     
