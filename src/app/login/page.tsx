@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useEffect } from 'react';
@@ -35,7 +34,7 @@ export default function LoginPage() {
                 className="object-cover"
                 data-ai-hint="library books"
             />
-            <div className="absolute inset-0 bg-sky-500/30 backdrop-blur-sm" />
+            <div className="absolute inset-0 bg-primary/30 backdrop-blur-sm" />
             <div className="relative z-10 flex flex-col items-center justify-center p-8 text-center text-white">
                 <Link href="/" className="flex items-center space-x-4 bg-black/50 p-4 rounded-xl">
                     <EducationalNotesLogo className="h-16 w-16" />
@@ -44,7 +43,7 @@ export default function LoginPage() {
                 <p className="mt-2 text-lg [text-shadow:_1px_1px_2px_rgb(0_0_0_/_50%)]">Your journey to knowledge starts here.</p>
             </div>
         </div>
-        <div className="flex items-center justify-center p-6 bg-secondary/50">
+        <div className="flex items-center justify-center p-6 bg-background">
             <div className="w-full max-w-md">
                 <div className="flex justify-center mb-6 lg:hidden">
                     <Link href="/" className="flex items-center space-x-2 text-foreground">
