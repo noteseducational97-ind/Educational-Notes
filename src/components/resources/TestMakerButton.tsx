@@ -55,7 +55,7 @@ export default function TestMakerButton({ resource, disabled = false }: TestMake
       doc.text('Sponsored by Pravin Khachane & Mangesh Shete Sir', pageWidth - margin, y, { align: 'right' });
       
       y += 15;
-      doc.text('Total Marks: 28', margin, y);
+      doc.text('Total Marks: 24', margin, y);
       doc.text('Time: 1 hr', pageWidth - margin, y, { align: 'right' });
 
       y += 15;
@@ -157,7 +157,7 @@ export default function TestMakerButton({ resource, disabled = false }: TestMake
             continue;
           } else if (line.startsWith('Section C:')) {
             currentSection = 'C';
-            processSection('Section C', '(9 Marks)');
+            processSection('Section C', '(6 Marks)');
             processLine('Ques. 3. Answer The following Question (Any 2)', true);
             continue;
           } else if (line.startsWith('Section D:')) {
