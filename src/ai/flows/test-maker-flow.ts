@@ -47,6 +47,7 @@ The questions should be of a medium difficulty level, highly relevant to the pro
 Formatting Rules:
 - Add a blank line before the start of each new section (e.g., before "Section B").
 - Do NOT add any extra blank lines between questions within the same section.
+- For Sections C and D, do NOT add choice text like "(Answer any two)" or "(Answer any one)" to the individual sub-questions. This instruction should only appear in the main question heading for the section.
 
 Topic Details:
 - Chapter/Title: {{{title}}}
