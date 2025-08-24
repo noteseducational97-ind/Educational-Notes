@@ -164,7 +164,7 @@ export default function TestMakerButton({ resource, disabled = false }: TestMake
         <div className="space-y-2">
             <h4 className="text-sm font-medium text-muted-foreground border-b pb-2">AI Tools</h4>
              <Button asChild variant="ghost" className="w-full justify-start bg-yellow-400/20 hover:bg-yellow-400/30 text-yellow-800 dark:text-yellow-200 dark:hover:text-yellow-100">
-                <Link href={`/ask?resourceId=${resource.id}`}>
+                <Link href={`/ask?resourceId=${resource.id}&title=${encodeURIComponent(resource.title)}`}>
                     <HelpCircle className="mr-2 h-4 w-4" />
                     Ask a Question
                 </Link>

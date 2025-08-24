@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -41,7 +41,7 @@ type Message = {
     generatedImage?: string;
 }
 
-const examplePrompts = [
+const defaultExamplePrompts = [
     'What is Beats frequency?',
     'What is electrochemistry?',
     'Generate an image of a cat programmer',
@@ -60,6 +60,8 @@ export default function AskForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const resourceId = searchParams.get('resourceId');
+  const resourceTitle = searchParams.get('title');
+
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -69,6 +71,19 @@ export default function AskForm() {
       question: '',
     },
   });
+
+  const examplePrompts = useMemo(() => {
+    if (resourceTitle) {
+      return [
+        `What are the key concepts of "${resourceTitle}"?`,
+        `Summarize "${resourceTitle}".`,
+        `Explain the introduction of "${resourceTitle}".`,
+        `Generate a short quiz about "${resourceTitle}".`,
+      ];
+    }
+    return defaultExamplePrompts;
+  }, [resourceTitle]);
+
 
   const scrollToBottom = useCallback(() => {
     if (scrollAreaRef.current) {
@@ -101,7 +116,6 @@ export default function AskForm() {
 
   const handleExampleClick = (prompt: string) => {
     form.setValue('question', prompt);
-    // Use a timeout to ensure the value is set before submitting
     setTimeout(() => {
         form.handleSubmit(onSubmit)();
     }, 0);
@@ -179,24 +193,23 @@ export default function AskForm() {
                              <p className="mt-1 text-sm text-muted-foreground max-w-md">
                                 {resourceId ? 'Ask a question about the document to start.' : 'Ask a question below to start the conversation.'}
                              </p>
-                            {!resourceId && (
-                                <div className="mt-8 w-full max-w-2xl">
-                                    <p className="mb-4 text-sm font-medium text-muted-foreground">
-                                        Or try one of these examples:
-                                    </p>
-                                    <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                                        {examplePrompts.map((prompt, i) => (
-                                            <Button
-                                                key={i}
-                                                variant="outline"
-                                                onClick={() => handleExampleClick(prompt)}
-                                            >
-                                                {prompt}
-                                            </Button>
-                                        ))}
-                                    </div>
+                            <div className="mt-8 w-full max-w-2xl">
+                                <p className="mb-4 text-sm font-medium text-muted-foreground">
+                                    Or try one of these examples:
+                                </p>
+                                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                                    {examplePrompts.map((prompt, i) => (
+                                        <Button
+                                            key={i}
+                                            variant="outline"
+                                            onClick={() => handleExampleClick(prompt)}
+                                            className="text-left justify-start"
+                                        >
+                                            {prompt}
+                                        </Button>
+                                    ))}
                                 </div>
-                            )}
+                            </div>
                         </div>
                     ) : (
                         conversation.map((message, index) => (
@@ -335,5 +348,3 @@ export default function AskForm() {
     </div>
   );
 }
-
-    
