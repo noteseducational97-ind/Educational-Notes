@@ -194,6 +194,7 @@ export default function AskForm() {
         const messages = await getChatMessages(user.uid, selectedChat.id);
         setChatId(selectedChat.id);
         setConversation(messages);
+        setIsHistoryPanelOpen(false);
     } catch {
         toast({ variant: 'destructive', title: 'Error', description: 'Could not load the selected chat.' });
     } finally {
@@ -219,9 +220,11 @@ export default function AskForm() {
                             </CardDescription>
                         </div>
                         <div className="flex items-center gap-2">
+                           {!isHistoryPanelOpen && (
                             <Button variant="outline" size="sm" onClick={handleClearChat} disabled={conversation.length === 0}>
                                 <Trash2 className="mr-2 h-4 w-4"/> Clear
                             </Button>
+                           )}
                             {user && (
                                 <Button variant="outline" size="icon" onClick={() => setIsHistoryPanelOpen(!isHistoryPanelOpen)}>
                                     {isHistoryPanelOpen ? <PanelRightClose /> : <PanelRightOpen />}

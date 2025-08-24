@@ -46,6 +46,11 @@ export default function ChatHistoryPanel({
     }
   }, [isOpen, userId, toast]);
 
+  const handleSelectChat = (chat: Chat) => {
+    onSelectChat(chat);
+    onClose();
+  }
+
   return (
     <Card className="h-full w-[350px] border-l-2 border-r-0 border-t-0 border-b-0 rounded-none flex flex-col">
         <CardHeader className="flex flex-row justify-between items-center">
@@ -71,7 +76,7 @@ export default function ChatHistoryPanel({
                     <div
                         key={chat.id}
                         className="p-3 rounded-lg hover:bg-accent cursor-pointer border"
-                        onClick={() => onSelectChat(chat)}
+                        onClick={() => handleSelectChat(chat)}
                     >
                         <p className="font-semibold truncate">
                         {chat.title}
