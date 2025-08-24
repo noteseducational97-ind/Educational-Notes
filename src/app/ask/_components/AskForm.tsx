@@ -314,7 +314,7 @@ export default function AskForm() {
                             )}
                              {showSuggestions && (
                                 <div className="flex justify-start pl-14">
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 max-w-[75%]">
+                                    <div className="grid grid-cols-1 gap-2 max-w-[75%]">
                                         {lastMessage.suggestions?.map((prompt, i) => (
                                             <Button
                                                 key={i}
