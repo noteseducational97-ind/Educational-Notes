@@ -125,12 +125,13 @@ export default function AskForm() {
              toast({ variant: 'destructive', title: 'Voice Recognition Error', description: "Network error. Please check your internet connection and try again." });
         } else if (event.error !== 'no-speech' && event.error !== 'aborted') {
           toast({ variant: 'destructive', title: 'Voice Recognition Error', description: `Error: ${event.error}` });
+          setIsListening(false);
         }
-        setIsListening(false);
       };
       
       recognitionRef.current.onend = () => {
-        setIsListening(false);
+        // This can be called automatically by the browser, so we only toggle state if it was manually stopped.
+        // The `isListening` state will be managed in `toggleListening` function.
       };
     } else {
         console.warn("Speech recognition not supported by this browser.");
@@ -168,6 +169,7 @@ export default function AskForm() {
 
     if (isListening) {
       recognitionRef.current.stop();
+      setIsListening(false);
     } else {
       try {
         recognitionRef.current.start();
