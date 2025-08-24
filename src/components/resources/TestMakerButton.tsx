@@ -162,7 +162,7 @@ export default function TestMakerButton({ resource, disabled = false }: TestMake
     <div className="flex flex-col gap-4">
         <div className="space-y-2">
             <h4 className="text-sm font-medium text-muted-foreground border-b pb-2">AI Tools</h4>
-             <Button asChild variant="outline" className="w-full justify-start border-primary/20 bg-primary/10 hover:bg-primary/20 text-primary-foreground">
+             <Button asChild variant="ghost" className="w-full justify-start border-primary/20 bg-primary/10 hover:bg-primary/20 text-primary-foreground">
                 <Link href={`/ask?resourceId=${resource.id}`}>
                     <HelpCircle className="mr-2 h-4 w-4" />
                     Ask a Question
