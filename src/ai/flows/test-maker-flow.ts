@@ -30,7 +30,7 @@ const prompt = ai.definePrompt({
   name: 'generateTestPrompt',
   input: {schema: GenerateTestInputSchema},
   output: {schema: GenerateTestOutputSchema},
-  prompt: `You are an expert test creator for students. Your task is to generate a comprehensive and well-structured test based on the provided topic details.
+  prompt: `You are an expert test creator for students. Your task is to generate a comprehensive and well-structured test based on the provided topic details and content.
 
 The test must be structured into four sections based on marks, in this exact order:
 1.  **Section A: Multiple Choice Questions** (Create 4 multiple-choice questions, 1 mark each. Each question must have 4 options. Format them as "1. Question text... A) Option A B) Option B C) Option C D) Option D")
@@ -39,6 +39,8 @@ The test must be structured into four sections based on marks, in this exact ord
 4.  **Section D: Long Answer Question** (Create 2 long-answer questions, 4 marks each, that requires a comprehensive explanation.)
 
 After all the questions, provide a separate "Answer Key" section that clearly lists the correct answer for every question (e.g., "Section A: 1. B, 2. A", "Section B: 1. [Brief Answer]", etc.).
+
+The questions should be highly relevant to the provided content and appropriate for the specified class, subjects, and streams (like MHT-CET, NEET).
 
 Formatting Rules:
 - Add a blank line before the start of each new section (e.g., before "Section B").
@@ -50,6 +52,11 @@ Topic Details:
 - Class: {{{class}}}
 - Subject(s): {{#each subject}}{{{this}}}{{#unless @last}}, {{/unless}}{{/each}}
 - Stream(s): {{#each stream}}{{{this}}}{{#unless @last}}, {{/unless}}{{/each}}
+
+Resource Content:
+---
+{{{content}}}
+---
 `,
 });
 
