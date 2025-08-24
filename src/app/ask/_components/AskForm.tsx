@@ -34,6 +34,8 @@ const formSchema = z.object({
   question: z.string().min(1, 'Cannot send an empty message.'),
 });
 
+type FormValues = z.infer<typeof formSchema>;
+
 type Message = {
     role: 'user' | 'assistant';
     content: string;
@@ -65,7 +67,7 @@ export default function AskForm() {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       question: '',
@@ -121,7 +123,7 @@ export default function AskForm() {
     }, 0);
   }
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: FormValues) {
     if (loading) return;
 
     const userMessagesCount = conversation.filter(m => m.role === 'user').length;
