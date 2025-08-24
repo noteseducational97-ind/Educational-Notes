@@ -30,7 +30,6 @@ export default function LoginPage() {
         <div className="flex justify-center mb-6">
           <Link href="/" className="flex items-center space-x-2 text-foreground">
             <EducationalNotesLogo className="h-8 w-8 text-primary" />
-            <span className="text-2xl font-bold">Educational Notes</span>
           </Link>
         </div>
         <Card className="w-full shadow-2xl">
