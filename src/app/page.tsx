@@ -133,11 +133,11 @@ export default function Home() {
                 <div className="grid md:grid-cols-2 gap-12 items-center">
                      <div className="flex justify-center">
                         <Image
-                            src="https://images.pexels.com/photos/15526174/pexels-photo-15526174.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+                            src="https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
                             width="500"
                             height="500"
                             alt="AI concept image"
-                            data-ai-hint="abstract technology"
+                            data-ai-hint="robot technology"
                             className="rounded-full aspect-square object-cover shadow-2xl"
                         />
                     </div>
