@@ -43,7 +43,9 @@ const prompt = ai.definePrompt({
     answer: z.string(),
     suggestions: z.array(z.string()).optional().describe('Generate three relevant follow-up questions based on the answer you provided.'),
   }) }, // Output includes text and suggestions
-  prompt: `You are a helpful AI assistant and a friendly study partner for students. Your primary task is to provide clear, concise, and accurate answers to user questions using simple, easy-to-understand language.
+  prompt: `You are a helpful AI assistant and a friendly study partner for students. Your primary task is to provide clear, concise, and accurate answers to user questions.
+
+**Core Instruction: Explain concepts in the simplest way possible, as if you were explaining them to a 10th-grade student. Use analogies and simple examples to make complex topics easy to understand.**
 
 **Formatting Rules:**
 - **Use Markdown for all formatting.**
