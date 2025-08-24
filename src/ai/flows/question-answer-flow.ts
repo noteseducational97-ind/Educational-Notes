@@ -10,14 +10,16 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
+import { getResourceById } from '@/lib/firebase/resources';
 
 const QuestionAnswerInputSchema = z.object({
   question: z.string().describe("The user's question."),
+  resourceId: z.string().optional().describe('The ID of the resource to use as context.'),
   photoDataUri: z
     .string()
     .optional()
     .describe(
-      "A photo of a plant, as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."
+      "A photo, as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."
     ),
 });
 export type QuestionAnswerInput = z.infer<typeof QuestionAnswerInputSchema>;
@@ -31,11 +33,23 @@ export type QuestionAnswerOutput = z.infer<typeof QuestionAnswerOutputSchema>;
 
 const prompt = ai.definePrompt({
   name: 'questionAnswerPrompt',
-  input: {schema: QuestionAnswerInputSchema},
+  input: {schema: z.object({
+      question: QuestionAnswerInputSchema.shape.question,
+      photoDataUri: QuestionAnswerInputSchema.shape.photoDataUri,
+      resourceContent: z.string().optional().describe('The content of the resource to answer from.'),
+  })},
   output: {schema: z.object({ answer: z.string() }) }, // Output only text from here
-  prompt: `You are a helpful AI assistant. Your task is to provide clear, concise, and accurate answers to user questions on any topic.
+  prompt: `You are a helpful AI assistant. Your task is to provide clear, concise, and accurate answers to user questions.
 
-Do not attempt to generate images. Only provide text-based answers.
+{{#if resourceContent}}
+You have been provided with specific content. You MUST answer the user's question based ONLY on this content. Do not use any external knowledge. If the answer is not in the content, state that you cannot answer based on the provided material.
+Resource Content:
+---
+{{{resourceContent}}}
+---
+{{else}}
+You can answer questions on any topic. Do not attempt to generate images unless explicitly asked. Only provide text-based answers.
+{{/if}}
 
 {{#if photoDataUri}}
 You have been provided with an image to help answer the question. Use it as context.
@@ -54,6 +68,20 @@ const answerQuestionFlow = ai.defineFlow(
     outputSchema: QuestionAnswerOutputSchema,
   },
   async (input) => {
+    // If a resourceId is provided, fetch its content to use as context.
+    if (input.resourceId) {
+        const resource = await getResourceById(input.resourceId);
+        if (!resource) {
+            return { answer: "I'm sorry, I couldn't find the resource you're asking about." };
+        }
+        const { output } = await prompt({ 
+            question: input.question, 
+            resourceContent: resource.content 
+        });
+        return { answer: output!.answer };
+    }
+      
+    // If no resourceId, proceed with general Q&A logic.
     // Check if the user is explicitly asking to generate an image, and no image was uploaded.
     const wantsImageGeneration = /image|generate|create/i.test(input.question);
     
@@ -71,7 +99,10 @@ const answerQuestionFlow = ai.defineFlow(
       }
     } else {
         // For text questions, or questions about an uploaded image.
-        const { output } = await prompt(input);
+        const { output } = await prompt({
+            question: input.question,
+            photoDataUri: input.photoDataUri,
+        });
         return {
             answer: output!.answer,
         };

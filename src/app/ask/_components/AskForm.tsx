@@ -11,13 +11,13 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, Sparkles, Send, Trash2, Paperclip, X, History, LogIn } from 'lucide-react';
+import { Loader2, Sparkles, Send, Trash2, Paperclip, X, History, LogIn, HelpCircle } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/use-auth';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -58,6 +58,8 @@ export default function AskForm() {
   const { toast } = useToast();
   const { user } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const resourceId = searchParams.get('resourceId');
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -123,7 +125,8 @@ export default function AskForm() {
     try {
       const result = await answerQuestion({
         question: values.question,
-        photoDataUri: attachedImage ?? undefined
+        photoDataUri: attachedImage ?? undefined,
+        resourceId: resourceId ?? undefined,
       });
       const assistantMessage: Message = { 
         role: 'assistant', 
@@ -150,7 +153,9 @@ export default function AskForm() {
             <div className='flex justify-between items-center'>
                 <div>
                     <CardTitle className="text-2xl flex items-center gap-2"><Sparkles className="text-primary"/>AI Assistant</CardTitle>
-                    <CardDescription>Your personal AI-powered tutor. Ask anything!</CardDescription>
+                    <CardDescription>
+                        {resourceId ? 'Ask questions about the current document.' : 'Your personal AI-powered tutor. Ask anything!'}
+                    </CardDescription>
                 </div>
                 {conversation.length > 0 && (
                     <div className="flex gap-2">
@@ -172,24 +177,26 @@ export default function AskForm() {
                              <Sparkles className="mx-auto h-12 w-12 text-muted-foreground/50" />
                              <h3 className="mt-4 text-lg font-medium">No messages yet</h3>
                              <p className="mt-1 text-sm text-muted-foreground max-w-md">
-                                Ask a question below to start the conversation.
+                                {resourceId ? 'Ask a question about the document to start.' : 'Ask a question below to start the conversation.'}
                              </p>
-                            <div className="mt-8 w-full max-w-2xl">
-                                <p className="mb-4 text-sm font-medium text-muted-foreground">
-                                    Or try one of these examples:
-                                </p>
-                                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                                    {examplePrompts.map((prompt, i) => (
-                                        <Button
-                                            key={i}
-                                            variant="outline"
-                                            onClick={() => handleExampleClick(prompt)}
-                                        >
-                                            {prompt}
-                                        </Button>
-                                    ))}
+                            {!resourceId && (
+                                <div className="mt-8 w-full max-w-2xl">
+                                    <p className="mb-4 text-sm font-medium text-muted-foreground">
+                                        Or try one of these examples:
+                                    </p>
+                                    <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                                        {examplePrompts.map((prompt, i) => (
+                                            <Button
+                                                key={i}
+                                                variant="outline"
+                                                onClick={() => handleExampleClick(prompt)}
+                                            >
+                                                {prompt}
+                                            </Button>
+                                        ))}
+                                    </div>
                                 </div>
-                            </div>
+                            )}
                         </div>
                     ) : (
                         conversation.map((message, index) => (
