@@ -159,30 +159,31 @@ export default function TestMakerButton({ resource, disabled = false }: TestMake
 
   return (
     <div className="flex flex-col gap-2">
-        <Button
+      <h4 className="text-sm font-medium text-muted-foreground border-b pb-2">AI Test Generation</h4>
+      <Button
         variant="secondary"
         onClick={handleGenerateTest}
         disabled={disabled || loading || mcqLoading}
-        >
+      >
         {loading ? (
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
         ) : (
-            <FileText className="mr-2 h-4 w-4" />
+          <FileText className="mr-2 h-4 w-4" />
         )}
         {loading ? 'Generating...' : 'Test Make (Regular)'}
-        </Button>
-        <Button
+      </Button>
+      <Button
         variant="outline"
         onClick={handleGenerateMcqTest}
         disabled={disabled || loading || mcqLoading}
-        >
+      >
         {mcqLoading ? (
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
         ) : (
-            <FileText className="mr-2 h-4 w-4" />
+          <FileText className="mr-2 h-4 w-4" />
         )}
         {mcqLoading ? 'Generating...' : 'Test Make (MCQ)'}
-        </Button>
+      </Button>
     </div>
   );
 }

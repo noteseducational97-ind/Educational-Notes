@@ -43,30 +43,28 @@ export default function ResourceActions({ resource }: ResourceActionsProps) {
 
   return (
     <>
-      <div className="flex flex-col gap-2">
-        <div className="flex flex-wrap gap-2">
+      <div className="flex flex-col gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {user ? (
-            <Button asChild disabled={isLinkDisabled}>
+            <Button asChild disabled={isLinkDisabled} className="w-full">
                 <Link href={getDownloadUrl()} target="_blank" rel="noopener noreferrer">
                 <Download className="mr-2 h-4 w-4" />
                 Download PDF
                 </Link>
             </Button>
             ) : (
-            <Button onClick={handleDownloadClick} disabled={isLinkDisabled}>
+            <Button onClick={handleDownloadClick} disabled={isLinkDisabled} className="w-full">
                 <Download className="mr-2 h-4 w-4" />
                 Download PDF
             </Button>
             )}
             {user && (
-            <>
-                <Button asChild variant="outline">
+                <Button asChild variant="outline" className="w-full">
                 <Link href={`/ask?resourceId=${resource.id}`}>
                     <HelpCircle className="mr-2 h-4 w-4" />
                     Ask a Question
                 </Link>
                 </Button>
-            </>
             )}
         </div>
         {user && <TestMakerButton resource={resource} disabled={isLinkDisabled} />}
