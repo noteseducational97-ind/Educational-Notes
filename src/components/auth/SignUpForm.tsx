@@ -11,6 +11,7 @@ import {
   updateProfile,
   signInWithPopup,
   GoogleAuthProvider,
+  sendEmailVerification,
 } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import { auth, db } from '@/lib/firebase/client';
@@ -76,7 +77,6 @@ export default function SignUpForm() {
       const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
       const user = userCredential.user;
       
-      // Update profile and save to Firestore
       await updateProfile(user, {
         displayName: values.username,
       });
@@ -88,7 +88,14 @@ export default function SignUpForm() {
         createdAt: new Date(),
       });
       
-      router.push('/');
+      await sendEmailVerification(user);
+      
+      toast({
+        title: 'Account Created!',
+        description: "We've sent a verification link to your email address.",
+      });
+
+      router.push('/verify-email');
 
     } catch (error: any) {
       toast({
