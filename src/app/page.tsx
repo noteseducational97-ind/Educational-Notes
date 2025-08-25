@@ -64,7 +64,7 @@ export default function Home() {
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
       <main className="flex-1">
-        <section className="w-full py-20 md:py-32 lg:py-40 bg-gradient-to-br from-blue-100 via-blue-200 to-blue-300 dark:from-blue-900/50 dark:via-blue-950/50 dark:to-background">
+        <section className="w-full py-20 md:py-32 lg:py-40 bg-gradient-to-br from-blue-100 via-sky-100 to-blue-200 dark:from-blue-900/20 dark:via-sky-950/20 dark:to-background">
           <div className="container px-4 md:px-6">
             <div className="grid md:grid-cols-2 gap-10 items-center">
                 <div className="flex flex-col items-start text-left space-y-6">

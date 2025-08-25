@@ -140,7 +140,7 @@ export default function SignUpForm() {
                 <FormControl>
                   <div className="relative">
                     <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input placeholder="Rahul Patil" {...field} className="pl-10 text-card-foreground bg-card/80 placeholder:text-card-foreground/70" />
+                    <Input placeholder="Rahul Patil" {...field} className="pl-10" />
                   </div>
                 </FormControl>
                 <FormMessage />
@@ -156,7 +156,7 @@ export default function SignUpForm() {
                 <FormControl>
                   <div className="relative">
                     <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input placeholder="email@gmail.com" {...field} className="pl-10 text-card-foreground bg-card/80 placeholder:text-card-foreground/70" />
+                    <Input placeholder="email@gmail.com" {...field} className="pl-10" />
                   </div>
                 </FormControl>
                 <FormMessage />
@@ -172,7 +172,7 @@ export default function SignUpForm() {
                 <FormControl>
                   <div className="relative">
                     <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input type="password" placeholder="••••••••" {...field} className="pl-10 text-card-foreground bg-card/80 placeholder:text-card-foreground/70" />
+                    <Input type="password" placeholder="••••••••" {...field} className="pl-10" />
                   </div>
                 </FormControl>
                 <FormMessage />
@@ -188,14 +188,14 @@ export default function SignUpForm() {
                 <FormControl>
                   <div className="relative">
                     <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input type="password" placeholder="••••••••" {...field} className="pl-10 text-card-foreground bg-card/80 placeholder:text-card-foreground/70" />
+                    <Input type="password" placeholder="••••••••" {...field} className="pl-10" />
                   </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <Button type="submit" className="w-full" disabled={loading} variant="secondary">
+          <Button type="submit" className="w-full" disabled={loading}>
             {loading ? <Loader2 className="animate-spin" /> : <UserPlus />}
             Create Account
           </Button>
@@ -203,13 +203,13 @@ export default function SignUpForm() {
       </Form>
        <div className="relative">
         <div className="absolute inset-0 flex items-center">
-          <span className="w-full border-t border-primary-foreground/50" />
+          <span className="w-full border-t border-border" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-primary px-2 text-primary-foreground">Or continue with</span>
+          <span className="bg-card px-2 text-muted-foreground">Or continue with</span>
         </div>
       </div>
-      <Button variant="secondary" className="w-full" onClick={handleGoogleSignIn} disabled={googleLoading}>
+      <Button variant="outline" className="w-full" onClick={handleGoogleSignIn} disabled={googleLoading}>
         {googleLoading ? <Loader2 className="animate-spin" /> : <GoogleIcon />}
         Sign up with Google
       </Button>
