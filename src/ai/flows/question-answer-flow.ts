@@ -11,6 +11,7 @@
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 import { getResourceById } from '@/lib/firebase/resources';
+import { generateAudio } from './tts-flow';
 
 const QuestionAnswerInputSchema = z.object({
   question: z.string().describe("The user's question."),
@@ -28,6 +29,7 @@ const QuestionAnswerOutputSchema = z.object({
   answer: z.string().describe('The AI-generated answer to the question.'),
   imageUrl: z.string().optional().describe('The URL of a generated image, if requested. Should be a data URI.'),
   suggestions: z.array(z.string()).optional().describe('Up to 3 suggested follow-up questions.'),
+  audioUrl: z.string().optional().describe('The data URI of the generated audio for the answer.'),
 });
 export type QuestionAnswerOutput = z.infer<typeof QuestionAnswerOutputSchema>;
 
@@ -42,7 +44,7 @@ const prompt = ai.definePrompt({
   output: {schema: z.object({ 
     answer: z.string(),
   }) },
-  prompt: `You are a helpful AI assistant and a friendly study partner for students. Your primary task is to provide clear, concise, and accurate answers to user questions.
+  prompt: `You are a helpful AI assistant and a friendly study partner for students. Your primary task is to provide clear, concise, and accurate answers to user questions, adapting your response to the complexity of the question. Your goal is to make learning easier.
 
 **Core Instruction: Adapt your response to the user's question. Your goal is to make learning easier. If the user asks for a simple definition, provide one. If they ask for a detailed explanation, give a thorough answer. Structure your answers with a brief, clear definition first, followed by a full, detailed explanation. Use analogies and simple examples to make complex topics easy to understand, as if you were explaining them to a 10th-grade student.**
 
@@ -93,7 +95,10 @@ const answerQuestionFlow = ai.defineFlow(
             question: input.question, 
             resourceContent: resource.content 
         });
-        return { answer: output!.answer, suggestions: undefined };
+        
+        const audioResult = await generateAudio(output!.answer);
+
+        return { answer: output!.answer, suggestions: undefined, audioUrl: audioResult.media };
     }
       
     // If no resourceId, proceed with general Q&A logic.
@@ -119,8 +124,12 @@ const answerQuestionFlow = ai.defineFlow(
         question: input.question,
         photoDataUri: input.photoDataUri,
     });
+    
+    const audioResult = await generateAudio(output!.answer);
+    
     return {
         answer: output!.answer,
+        audioUrl: audioResult.media,
     };
   }
 );

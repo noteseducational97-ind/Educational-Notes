@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, Sparkles, Send, Trash2, Paperclip, X, History, LogIn, HelpCircle, PlusCircle, PanelRightClose, PanelRightOpen, Mic, MicOff } from 'lucide-react';
+import { Loader2, Sparkles, Send, Trash2, Paperclip, X, History, LogIn, HelpCircle, PlusCircle, PanelRightClose, PanelRightOpen, Volume2, Pause, Play } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
@@ -56,6 +56,8 @@ export default function AskForm() {
   const [attachedImage, setAttachedImage] = useState<string | null>(null);
   const [showLoginDialog, setShowLoginDialog] = useState(false);
   const [isHistoryPanelOpen, setIsHistoryPanelOpen] = useState(false);
+  const [audioPlayer, setAudioPlayer] = useState<{audio: HTMLAudioElement; isPlaying: boolean; messageIndex: number} | null>(null);
+
   const { toast } = useToast();
   const { user } = useAuth();
   const router = useRouter();
@@ -65,6 +67,7 @@ export default function AskForm() {
 
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -94,6 +97,13 @@ export default function AskForm() {
         }
     }
   }, []);
+  
+  useEffect(() => {
+    return () => {
+      audioPlayer?.audio.pause();
+    };
+  }, [audioPlayer]);
+
 
   useEffect(() => {
     scrollToBottom();
@@ -102,6 +112,27 @@ export default function AskForm() {
   const getInitials = (name: string | null | undefined) => {
     if (!name) return 'U';
     return name.split(' ').map((n) => n[0]).join('').toUpperCase();
+  };
+  
+  const toggleAudio = (audioSrc: string, index: number) => {
+    if (audioPlayer && audioPlayer.messageIndex === index) {
+      if (audioPlayer.isPlaying) {
+        audioPlayer.audio.pause();
+        setAudioPlayer({ ...audioPlayer, isPlaying: false });
+      } else {
+        audioPlayer.audio.play();
+        setAudioPlayer({ ...audioPlayer, isPlaying: true });
+      }
+    } else {
+      audioPlayer?.audio.pause();
+      const newAudio = new Audio(audioSrc);
+      newAudio.play();
+      const newPlayer = { audio: newAudio, isPlaying: true, messageIndex: index };
+      setAudioPlayer(newPlayer);
+      newAudio.onended = () => {
+        setAudioPlayer(null);
+      };
+    }
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -152,6 +183,7 @@ export default function AskForm() {
         generatedImage: result.imageUrl,
         createdAt: new Date(),
         suggestions: result.suggestions,
+        audioUrl: result.audioUrl,
       };
       
       const finalConversation = [...currentConversation, assistantMessage];
@@ -221,15 +253,15 @@ export default function AskForm() {
                                 {resourceId ? `Asking about "${resourceTitle}"` : 'Your personal AI-powered tutor. Ask anything!'}
                             </CardDescription>
                         </div>
-                        <div className="flex items-center gap-2 w-full md:w-auto order-1 md:order-2 justify-between md:justify-end">
-                           <Button variant="outline" size="sm" onClick={handleNewChat} className="flex-1 md:flex-initial">
+                        <div className="flex items-center gap-2 w-full md:w-auto order-1 md:order-2 justify-center md:justify-end">
+                           <Button variant="outline" size="sm" onClick={handleNewChat}>
                                 <PlusCircle className="mr-2 h-4 w-4" /> New Chat
                             </Button>
-                           <Button variant="outline" size="sm" onClick={handleClearChat} disabled={conversation.length === 0} className="flex-1 md:flex-initial">
+                           <Button variant="outline" size="sm" onClick={handleClearChat} disabled={conversation.length === 0}>
                                 <Trash2 className="mr-2 h-4 w-4"/> Clear
                             </Button>
                             {user && (
-                                <Button variant="outline" size="sm" onClick={() => setIsHistoryPanelOpen(!isHistoryPanelOpen)} className="flex-1 md:flex-initial">
+                                <Button variant="outline" size="sm" onClick={() => setIsHistoryPanelOpen(!isHistoryPanelOpen)}>
                                     {isHistoryPanelOpen ? <><PanelRightClose /> Hide</> : <><PanelRightOpen /> History</>}
                                 </Button>
                             )}
@@ -290,6 +322,17 @@ export default function AskForm() {
                                             <div className="relative w-full aspect-video rounded-lg overflow-hidden mt-2">
                                                 <Image src={message.generatedImage} alt="Generated image" fill className="object-contain" />
                                             </div>
+                                            )}
+                                            {message.audioUrl && (
+                                                <Button
+                                                    size="sm"
+                                                    variant="outline"
+                                                    onClick={() => toggleAudio(message.audioUrl!, index)}
+                                                    className="mt-2"
+                                                    >
+                                                    {audioPlayer?.isPlaying && audioPlayer?.messageIndex === index ? <Pause className="mr-2" /> : <Play className="mr-2" />}
+                                                    {audioPlayer?.isPlaying && audioPlayer?.messageIndex === index ? 'Pause' : 'Play Audio'}
+                                                </Button>
                                             )}
                                         </div>
                                         {message.role === 'user' && (
