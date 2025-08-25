@@ -249,6 +249,9 @@ export default function AskForm() {
                             <Sparkles />Educational AI Assistant
                         </CardTitle>
                         <div className="flex items-center gap-2">
+                             <Button variant="outline" size="sm" className="hidden md:flex" onClick={handleNewChat}>
+                                <PlusCircle className="mr-2 h-4 w-4" /> New Chat
+                            </Button>
                             <Button variant="outline" size="sm" className="hidden md:flex" onClick={handleClearChat} disabled={conversation.length === 0}>
                                 <Trash2 className="mr-2 h-4 w-4"/> Clear
                             </Button>
@@ -260,20 +263,17 @@ export default function AskForm() {
                             )}
                         </div>
                     </div>
-                    <div className="flex items-center gap-2 w-full justify-start pt-2">
-                        <Button variant="outline" size="icon" className="md:hidden" onClick={handleNewChat}>
+                     <div className="flex items-center gap-2 w-full justify-start md:hidden pt-2">
+                        <Button variant="outline" size="icon" onClick={handleNewChat}>
                             <PlusCircle className="h-4 w-4" />
                             <span className="sr-only">New Chat</span>
                         </Button>
-                        <Button variant="outline" size="sm" className="hidden md:flex" onClick={handleNewChat}>
-                            <PlusCircle className="mr-2 h-4 w-4" /> New Chat
-                        </Button>
-                        <Button variant="outline" size="icon" className="md:hidden" onClick={handleClearChat} disabled={conversation.length === 0}>
+                        <Button variant="outline" size="icon" onClick={handleClearChat} disabled={conversation.length === 0}>
                             <Trash2 className="h-4 w-4"/>
                             <span className="sr-only">Clear Chat</span>
                         </Button>
                          {user && (
-                            <Button variant="outline" size="icon" className="md:hidden" onClick={() => setIsHistoryPanelOpen(!isHistoryPanelOpen)}>
+                            <Button variant="outline" size="icon" onClick={() => setIsHistoryPanelOpen(!isHistoryPanelOpen)}>
                                 {isHistoryPanelOpen ? <PanelRightClose /> : <History />}
                                 <span className="sr-only">{isHistoryPanelOpen ? 'Hide History' : 'Show History'}</span>
                             </Button>
