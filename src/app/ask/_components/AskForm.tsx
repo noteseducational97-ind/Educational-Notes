@@ -247,9 +247,6 @@ export default function AskForm() {
                     <CardTitle className="text-xl md:text-2xl flex items-center justify-center gap-2">
                         <Sparkles />Educational AI Assistant
                     </CardTitle>
-                    <CardDescription className="text-sm">
-                        {resourceId ? `Asking about "${resourceTitle}"` : 'Your personal AI-powered tutor. Ask anything!'}
-                    </CardDescription>
                     <div className="flex items-center gap-2 w-full justify-center pt-2">
                         <Button variant="outline" size="icon" className="md:hidden" onClick={handleNewChat}>
                             <PlusCircle className="h-4 w-4" />
