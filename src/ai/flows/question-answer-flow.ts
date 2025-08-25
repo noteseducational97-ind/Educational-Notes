@@ -96,9 +96,7 @@ const answerQuestionFlow = ai.defineFlow(
             resourceContent: resource.content 
         });
         
-        const audioResult = await generateAudio(output!.answer);
-
-        return { answer: output!.answer, suggestions: undefined, audioUrl: audioResult.media };
+        return { answer: output!.answer, suggestions: undefined };
     }
       
     // If no resourceId, proceed with general Q&A logic.
@@ -125,11 +123,8 @@ const answerQuestionFlow = ai.defineFlow(
         photoDataUri: input.photoDataUri,
     });
     
-    const audioResult = await generateAudio(output!.answer);
-    
     return {
         answer: output!.answer,
-        audioUrl: audioResult.media,
     };
   }
 );
