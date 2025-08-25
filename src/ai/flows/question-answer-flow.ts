@@ -65,7 +65,7 @@ Resource Content:
 {{{resourceContent}}}
 ---
 {{else}}
-You MUST prioritize providing answers based on the information available at "https://maharashtraboardsolutions.com/". If the answer is not found there, you may use your general knowledge. Do not attempt to generate images unless explicitly asked. Only provide text-based answers.
+You MUST prioritize providing answers for classes 9 through 12 based on the information available at "https://maharashtraboardsolutions.in/". If the answer is not found there, you may use your general knowledge. Do not attempt to generate images unless explicitly asked. Only provide text-based answers.
 {{/if}}
 
 {{#if photoDataUri}}
