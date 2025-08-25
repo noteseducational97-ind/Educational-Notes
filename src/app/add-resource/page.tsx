@@ -27,7 +27,7 @@ const formSchema = z.object({
   stream: z.enum(['All', 'Science', 'Commerce', 'Arts']),
   category: z.enum(['All', 'Notes', 'PYQ', 'Syllabus']),
   subject: z.enum(['Physics', 'Chemistry', 'Mathematics', 'Biology', 'History', 'Computer Science']),
-  imageUrl: z.string().url('Please enter a valid image URL.'),
+  imageUrl: z.any().refine(file => file?.[0], { message: 'Image is required.' }),
   pdfUrl: z.string().url('Please enter a valid PDF URL.').optional().or(z.literal('')),
 });
 
@@ -47,7 +47,6 @@ export default function AddResourcePage({ searchParams }: { searchParams: { [key
       title: '',
       description: '',
       content: '',
-      imageUrl: '',
       pdfUrl: '',
     },
   });
@@ -55,7 +54,16 @@ export default function AddResourcePage({ searchParams }: { searchParams: { [key
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
     try {
-      await addResource(values);
+      // Note: In a real app, you would upload the image file to a storage service (like Firebase Storage)
+      // and get back a URL to save in the database. For this prototype, we are passing a placeholder.
+      const placeholderImageUrl = 'https://placehold.co/600x400.png';
+      
+      const resourceData = {
+        ...values,
+        imageUrl: placeholderImageUrl,
+      };
+
+      await addResource(resourceData);
       toast({
         title: 'Success',
         description: 'Resource has been uploaded successfully.',
@@ -177,9 +185,13 @@ export default function AddResourcePage({ searchParams }: { searchParams: { [key
                     name="imageUrl"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Image URL</FormLabel>
+                        <FormLabel>Cover Image</FormLabel>
                         <FormControl>
-                          <Input placeholder="https://example.com/image.png" {...field} />
+                          <Input 
+                            type="file" 
+                            accept="image/*"
+                            onChange={(e) => field.onChange(e.target.files)}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
