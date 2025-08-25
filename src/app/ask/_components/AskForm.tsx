@@ -243,44 +243,40 @@ export default function AskForm() {
     <Card className="flex flex-col shadow-lg h-full w-full max-w-7xl overflow-hidden">
         <div className="flex h-full">
             <div className={cn("flex flex-col flex-1 transition-all duration-300", isHistoryPanelOpen && "sm:w-[calc(100%-350px)]")}>
-                <CardHeader className="border-b">
-                    <div className='flex flex-col md:flex-row justify-between items-center gap-4'>
-                        <div className='text-center w-full md:w-auto order-2 md:order-1'>
-                            <CardTitle className="text-xl md:text-2xl flex items-center justify-center gap-2">
-                                <Sparkles />Educational AI Assistant
-                            </CardTitle>
-                            <CardDescription className="text-sm">
-                                {resourceId ? `Asking about "${resourceTitle}"` : 'Your personal AI-powered tutor. Ask anything!'}
-                            </CardDescription>
-                        </div>
-                         <div className="flex items-center gap-2 w-full md:w-auto order-1 md:order-2 justify-center md:justify-end">
-                           <Button variant="outline" size="icon" className="md:hidden" onClick={handleNewChat}>
-                                <PlusCircle className="h-4 w-4" />
-                                <span className="sr-only">New Chat</span>
-                           </Button>
-                           <Button variant="outline" size="sm" className="hidden md:flex" onClick={handleNewChat}>
-                                <PlusCircle className="mr-2 h-4 w-4" /> New Chat
-                            </Button>
-                           <Button variant="outline" size="icon" className="md:hidden" onClick={handleClearChat} disabled={conversation.length === 0}>
-                                <Trash2 className="h-4 w-4"/>
-                                <span className="sr-only">Clear Chat</span>
-                            </Button>
-                           <Button variant="outline" size="sm" className="hidden md:flex" onClick={handleClearChat} disabled={conversation.length === 0}>
-                                <Trash2 className="mr-2 h-4 w-4"/> Clear
-                            </Button>
-                            {user && (
-                                <>
-                                    <Button variant="outline" size="icon" className="md:hidden" onClick={() => setIsHistoryPanelOpen(!isHistoryPanelOpen)}>
-                                        {isHistoryPanelOpen ? <PanelRightClose /> : <PanelRightOpen />}
-                                        <span className="sr-only">{isHistoryPanelOpen ? 'Hide History' : 'Show History'}</span>
-                                    </Button>
-                                    <Button variant="outline" size="sm" className="hidden md:flex" onClick={() => setIsHistoryPanelOpen(!isHistoryPanelOpen)}>
-                                        {isHistoryPanelOpen ? <PanelRightClose className="mr-2 h-4 w-4"/> : <PanelRightOpen className="mr-2 h-4 w-4" />} 
-                                        {isHistoryPanelOpen ? 'Hide' : 'History'}
-                                    </Button>
-                                </>
-                            )}
-                        </div>
+                <CardHeader className="border-b text-center">
+                    <CardTitle className="text-xl md:text-2xl flex items-center justify-center gap-2">
+                        <Sparkles />Educational AI Assistant
+                    </CardTitle>
+                    <CardDescription className="text-sm">
+                        {resourceId ? `Asking about "${resourceTitle}"` : 'Your personal AI-powered tutor. Ask anything!'}
+                    </CardDescription>
+                    <div className="flex items-center gap-2 w-full justify-center pt-2">
+                        <Button variant="outline" size="icon" className="md:hidden" onClick={handleNewChat}>
+                            <PlusCircle className="h-4 w-4" />
+                            <span className="sr-only">New Chat</span>
+                        </Button>
+                        <Button variant="outline" size="sm" className="hidden md:flex" onClick={handleNewChat}>
+                            <PlusCircle className="mr-2 h-4 w-4" /> New Chat
+                        </Button>
+                        <Button variant="outline" size="icon" className="md:hidden" onClick={handleClearChat} disabled={conversation.length === 0}>
+                            <Trash2 className="h-4 w-4"/>
+                            <span className="sr-only">Clear Chat</span>
+                        </Button>
+                        <Button variant="outline" size="sm" className="hidden md:flex" onClick={handleClearChat} disabled={conversation.length === 0}>
+                            <Trash2 className="mr-2 h-4 w-4"/> Clear
+                        </Button>
+                        {user && (
+                            <>
+                                <Button variant="outline" size="icon" className="md:hidden" onClick={() => setIsHistoryPanelOpen(!isHistoryPanelOpen)}>
+                                    {isHistoryPanelOpen ? <PanelRightClose /> : <PanelRightOpen />}
+                                    <span className="sr-only">{isHistoryPanelOpen ? 'Hide History' : 'Show History'}</span>
+                                </Button>
+                                <Button variant="outline" size="sm" className="hidden md:flex" onClick={() => setIsHistoryPanelOpen(!isHistoryPanelOpen)}>
+                                    {isHistoryPanelOpen ? <PanelRightClose className="mr-2 h-4 w-4"/> : <PanelRightOpen className="mr-2 h-4 w-4" />} 
+                                    {isHistoryPanelOpen ? 'Hide' : 'History'}
+                                </Button>
+                            </>
+                        )}
                     </div>
                 </CardHeader>
                 <CardContent className="p-0 flex-1 overflow-hidden">
@@ -489,7 +485,3 @@ export default function AskForm() {
     </Card>
   );
 }
-
-    
-
-    
