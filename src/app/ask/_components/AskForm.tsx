@@ -10,8 +10,8 @@ import { answerQuestion } from '@/ai/flows/question-answer-flow';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, Sparkles, Send, Trash2, Paperclip, X, History, LogIn, HelpCircle, PlusCircle, PanelRightClose, PanelRightOpen, Volume2, Pause, Play } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Loader2, Sparkles, Send, Trash2, Paperclip, X, History, LogIn, PlusCircle, PanelRightClose, PanelRightOpen, Copy, Download } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
@@ -32,6 +32,7 @@ import type { Message, Chat } from '@/types';
 import { saveChat, getChatMessages, deleteChat } from '@/lib/firebase/chat';
 import ChatHistoryPanel from './ChatHistoryPanel';
 import ReactMarkdown from 'react-markdown';
+import jsPDF from 'jspdf';
 
 
 const formSchema = z.object({
@@ -47,7 +48,7 @@ const defaultExamplePrompts = [
     'What is CPU?',
 ];
 
-const GUEST_MESSAGE_LIMIT = 3;
+const GUEST_MESSAGE_LIMIT = 5;
 
 export default function AskForm() {
   const [loading, setLoading] = useState(false);
@@ -124,6 +125,25 @@ export default function AskForm() {
     }, 0);
   }
 
+  const handleCopy = (text: string) => {
+    navigator.clipboard.writeText(text);
+    toast({
+      title: 'Copied to clipboard!',
+      description: 'The answer has been copied.',
+    });
+  }
+
+  const handleDownload = (content: string) => {
+    const doc = new jsPDF();
+    const splitText = doc.splitTextToSize(content, 180);
+    doc.text(splitText, 10, 10);
+    doc.save('answer.pdf');
+    toast({
+      title: 'Download Started',
+      description: 'Your answer is being downloaded as a PDF.',
+    });
+  };
+
   async function onSubmit(values: FormValues) {
     if (loading) return;
 
@@ -161,7 +181,9 @@ export default function AskForm() {
 
       if (user) {
         const newChatId = await saveChat(user.uid, chatId, finalConversation);
-        setChatId(newChatId);
+        if(!chatId) {
+            setChatId(newChatId);
+        }
       }
 
     } catch (error: any) {
@@ -219,10 +241,10 @@ export default function AskForm() {
                             <Sparkles />Educational AI Assistant
                         </CardTitle>
                         <div className="flex items-center gap-2">
-                             <Button variant="outline" size="sm" className="hidden md:flex" onClick={handleNewChat}>
+                            <Button variant="outline" size="sm" className="hidden md:flex" onClick={handleNewChat}>
                                 <PlusCircle className="mr-2 h-4 w-4" /> New Chat
                             </Button>
-                            <Button variant="outline" size="sm" className="hidden md:flex" onClick={handleClearChat} disabled={conversation.length === 0}>
+                             <Button variant="outline" size="sm" className="hidden md:flex" onClick={handleClearChat} disabled={conversation.length === 0}>
                                 <Trash2 className="mr-2 h-4 w-4"/> Clear
                             </Button>
                             {user && (
@@ -280,7 +302,7 @@ export default function AskForm() {
                                 </div>
                             ) : (
                                 conversation.map((message, index) => (
-                                    <div key={index} className={cn("flex items-start gap-4", message.role === 'user' && 'justify-end')}>
+                                    <div key={index} className={cn("flex items-start gap-4", message.role === 'user' ? 'justify-end' : 'group/message')}>
                                         {message.role === 'assistant' && (
                                             <Avatar className="w-9 h-9 border flex-shrink-0">
                                                 <div className='bg-primary w-full h-full flex items-center justify-center'>
@@ -311,6 +333,16 @@ export default function AskForm() {
                                                 <AvatarImage src={user?.photoURL || undefined} alt={user?.displayName ?? 'User'} />
                                                 <AvatarFallback>{getInitials(user?.displayName)}</AvatarFallback>
                                             </Avatar>
+                                        )}
+                                        {message.role === 'assistant' && (
+                                        <div className="opacity-0 group-hover/message:opacity-100 transition-opacity self-center flex gap-1">
+                                            <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => handleCopy(message.content)}>
+                                                <Copy className="h-4 w-4"/>
+                                            </Button>
+                                            <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => handleDownload(message.content)}>
+                                                <Download className="h-4 w-4"/>
+                                            </Button>
+                                        </div>
                                         )}
                                     </div>
                                 ))

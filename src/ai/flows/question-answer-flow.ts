@@ -11,7 +11,6 @@
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 import { getResourceById } from '@/lib/firebase/resources';
-import { generateAudio } from './tts-flow';
 
 const QuestionAnswerInputSchema = z.object({
   question: z.string().describe("The user's question."),
@@ -33,16 +32,16 @@ const QuestionAnswerOutputSchema = z.object({
 export type QuestionAnswerOutput = z.infer<typeof QuestionAnswerOutputSchema>;
 
 
-const prompt = ai.definePrompt({
+const AnswerPromptInputSchema = z.object({
+    question: QuestionAnswerInputSchema.shape.question,
+    photoDataUri: QuestionAnswerInputSchema.shape.photoDataUri,
+    resourceContent: z.string().optional().describe('The content of the resource to answer from.'),
+});
+
+const answerPrompt = ai.definePrompt({
   name: 'questionAnswerPrompt',
-  input: {schema: z.object({
-      question: QuestionAnswerInputSchema.shape.question,
-      photoDataUri: QuestionAnswerInputSchema.shape.photoDataUri,
-      resourceContent: z.string().optional().describe('The content of the resource to answer from.'),
-  })},
-  output: {schema: z.object({ 
-    answer: z.string(),
-  }) },
+  input: {schema: AnswerPromptInputSchema },
+  output: {schema: z.object({ answer: z.string() }) },
   prompt: `You are a helpful AI assistant and a friendly study partner for students, specifically tailored for an Indian audience. Your primary task is to provide clear, concise, and accurate answers to user questions. Your goal is to make learning easier and more relatable.
 
 **Core Instruction: Adapt your response to the user's question. Your goal is to make learning easier. If the user asks for a simple definition, provide one. If they ask for a detailed explanation, give a thorough answer. Structure your answers with a brief, clear definition first, followed by a full, detailed explanation. Use analogies and simple examples relevant to an Indian context to make complex topics easy to understand, as if you were explaining them to a 10th-grade student.**
@@ -77,6 +76,25 @@ User's Question:
 `,
 });
 
+const suggestionPrompt = ai.definePrompt({
+    name: 'suggestionPrompt',
+    input: { schema: z.object({
+        question: z.string(),
+        answer: z.string(),
+    })},
+    output: { schema: z.object({
+        suggestions: z.array(z.string()).describe('Up to 3 suggested follow-up questions.'),
+    })},
+    prompt: `Based on the following question and answer, please generate up to 3 relevant, interesting, and insightful follow-up questions that a student might ask next.
+
+Original Question: "{{{question}}}"
+
+Answer:
+{{{answer}}}
+
+Generate up to 3 follow-up questions.`
+});
+
 const answerQuestionFlow = ai.defineFlow(
   {
     name: 'answerQuestionFlow',
@@ -90,16 +108,22 @@ const answerQuestionFlow = ai.defineFlow(
         if (!resource) {
             return { answer: "I'm sorry, I couldn't find the resource you're asking about." };
         }
-        const { output } = await prompt({ 
+        const { output: answerOutput } = await answerPrompt({ 
             question: input.question, 
             resourceContent: resource.content 
         });
+
+        if (!answerOutput) {
+            return { answer: "I'm sorry, I couldn't generate an answer for this resource." };
+        }
         
-        return { answer: output!.answer, suggestions: undefined };
+        const { output: suggestionOutput } = await suggestionPrompt({ question: input.question, answer: answerOutput.answer });
+
+        return { answer: answerOutput.answer, suggestions: suggestionOutput?.suggestions };
     }
       
     // If no resourceId, proceed with general Q&A logic.
-    const wantsImageGeneration = /image|generate|create/i.test(input.question);
+    const wantsImageGeneration = /image|generate|create|draw/i.test(input.question);
     
     // If the user wants to generate an image and hasn't uploaded one for context.
     if (wantsImageGeneration && !input.photoDataUri) {
@@ -117,13 +141,20 @@ const answerQuestionFlow = ai.defineFlow(
     } 
     
     // For all other cases (text questions, or questions about an uploaded image).
-    const { output } = await prompt({
+    const { output: answerOutput } = await answerPrompt({
         question: input.question,
         photoDataUri: input.photoDataUri,
     });
+
+    if (!answerOutput) {
+        return { answer: "I'm sorry, I couldn't generate an answer to your question." };
+    }
     
+    const { output: suggestionOutput } = await suggestionPrompt({ question: input.question, answer: answerOutput.answer });
+
     return {
-        answer: output!.answer,
+        answer: answerOutput.answer,
+        suggestions: suggestionOutput?.suggestions
     };
   }
 );
@@ -132,3 +163,5 @@ const answerQuestionFlow = ai.defineFlow(
 export async function answerQuestion(input: QuestionAnswerInput): Promise<QuestionAnswerOutput> {
   return answerQuestionFlow(input);
 }
+
+    
