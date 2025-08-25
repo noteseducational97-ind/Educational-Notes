@@ -112,12 +112,20 @@ export default function SignUpForm() {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
 
+      let displayName = user.displayName;
+      if (!displayName) {
+        displayName = prompt('Please enter your name:');
+        if (displayName) {
+          await updateProfile(user, { displayName });
+        }
+      }
+
       await setDoc(doc(db, "users", user.uid), {
         uid: user.uid,
-        displayName: user.displayName,
+        displayName: displayName,
         email: user.email,
         createdAt: new Date(),
-      }, { merge: true }); // Use merge to avoid overwriting existing data if user signs in with google after email signup
+      }, { merge: true });
 
       router.push('/');
     } catch (error: any) {
