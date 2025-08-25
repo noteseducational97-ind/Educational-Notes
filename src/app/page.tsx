@@ -69,13 +69,13 @@ export default function Home() {
             <div className="grid md:grid-cols-2 gap-10 items-center">
                 <div className="flex flex-col items-start text-left space-y-6">
                     <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm font-semibold text-primary-foreground">
-                        Your All-in-One Learning Hub
+                        Your Ultimate Study Partner
                     </div>
                     <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-foreground tracking-tighter">
-                        Unlock Your Potential, One Note at a Time.
+                        Master Your Subjects with AI-Powered Learning
                     </h1>
                     <p className="max-w-xl text-lg text-foreground/80">
-                        High-quality study materials, AI-powered tools, and expert-curated content—all completely free. Achieve academic excellence with us.
+                        Get free access to expert-curated notes, generate practice tests with AI, and get instant answers to your toughest questions. Your path to academic success starts here.
                     </p>
                     <div className="flex flex-col gap-2 min-[400px]:flex-row">
                        {!user && (
