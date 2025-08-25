@@ -253,17 +253,32 @@ export default function AskForm() {
                                 {resourceId ? `Asking about "${resourceTitle}"` : 'Your personal AI-powered tutor. Ask anything!'}
                             </CardDescription>
                         </div>
-                        <div className="flex items-center gap-2 w-full md:w-auto order-1 md:order-2 justify-center md:justify-end">
-                           <Button variant="outline" size="sm" onClick={handleNewChat}>
+                         <div className="flex items-center gap-2 w-full md:w-auto order-1 md:order-2 justify-center md:justify-end">
+                           <Button variant="outline" size="icon" className="md:hidden" onClick={handleNewChat}>
+                                <PlusCircle className="h-4 w-4" />
+                                <span className="sr-only">New Chat</span>
+                           </Button>
+                           <Button variant="outline" size="sm" className="hidden md:flex" onClick={handleNewChat}>
                                 <PlusCircle className="mr-2 h-4 w-4" /> New Chat
                             </Button>
-                           <Button variant="outline" size="sm" onClick={handleClearChat} disabled={conversation.length === 0}>
+                           <Button variant="outline" size="icon" className="md:hidden" onClick={handleClearChat} disabled={conversation.length === 0}>
+                                <Trash2 className="h-4 w-4"/>
+                                <span className="sr-only">Clear Chat</span>
+                            </Button>
+                           <Button variant="outline" size="sm" className="hidden md:flex" onClick={handleClearChat} disabled={conversation.length === 0}>
                                 <Trash2 className="mr-2 h-4 w-4"/> Clear
                             </Button>
                             {user && (
-                                <Button variant="outline" size="sm" onClick={() => setIsHistoryPanelOpen(!isHistoryPanelOpen)}>
-                                    {isHistoryPanelOpen ? <><PanelRightClose /> Hide</> : <><PanelRightOpen /> History</>}
-                                </Button>
+                                <>
+                                    <Button variant="outline" size="icon" className="md:hidden" onClick={() => setIsHistoryPanelOpen(!isHistoryPanelOpen)}>
+                                        {isHistoryPanelOpen ? <PanelRightClose /> : <PanelRightOpen />}
+                                        <span className="sr-only">{isHistoryPanelOpen ? 'Hide History' : 'Show History'}</span>
+                                    </Button>
+                                    <Button variant="outline" size="sm" className="hidden md:flex" onClick={() => setIsHistoryPanelOpen(!isHistoryPanelOpen)}>
+                                        {isHistoryPanelOpen ? <PanelRightClose className="mr-2 h-4 w-4"/> : <PanelRightOpen className="mr-2 h-4 w-4" />} 
+                                        {isHistoryPanelOpen ? 'Hide' : 'History'}
+                                    </Button>
+                                </>
                             )}
                         </div>
                     </div>
@@ -474,5 +489,7 @@ export default function AskForm() {
     </Card>
   );
 }
+
+    
 
     
