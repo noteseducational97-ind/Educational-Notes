@@ -33,9 +33,40 @@ export async function addResource(resource: AddResourceData) {
   }
 }
 
-export async function getResources(options: { includePrivate?: boolean, isAdmin?: boolean } = { includePrivate: false, isAdmin: false }): Promise<Resource[]> {
+type GetResourcesFilters = {
+    streams?: string[];
+    class?: string;
+    categories?: string[];
+    subjects?: string[];
+}
+
+export async function getResources(options: { includePrivate?: boolean, isAdmin?: boolean, filters?: GetResourcesFilters } = {}): Promise<Resource[]> {
+    const { includePrivate = false, isAdmin = false, filters = {} } = options;
+
     try {
-        let query: FirebaseFirestore.Query<FirebaseFirestore.DocumentData> = db.collection('resources').orderBy('createdAt', 'desc');
+        let query: FirebaseFirestore.Query = db.collection('resources');
+
+        if (filters.streams && filters.streams.length > 0) {
+            query = query.where('stream', 'array-contains-any', filters.streams);
+        }
+        if (filters.class) {
+            query = query.where('class', '==', filters.class);
+        }
+        if (filters.categories && filters.categories.length > 0) {
+            query = query.where('category', 'array-contains-any', filters.categories);
+        }
+        if (filters.subjects && filters.subjects.length > 0) {
+            query = query.where('subject', 'array-contains-any', filters.subjects);
+        }
+        
+        if (!isAdmin) {
+            query = query.where('isComingSoon', '==', false);
+            if (!includePrivate) {
+                query = query.where('visibility', '==', 'public');
+            }
+        }
+        
+        query = query.orderBy('createdAt', 'desc');
         
         const querySnapshot = await query.get();
         
@@ -44,26 +75,14 @@ export async function getResources(options: { includePrivate?: boolean, isAdmin?
         }
 
         const allDocs = querySnapshot.docs;
-        let visibleResources;
+        let visibleResources = allDocs;
 
-        if (options.isAdmin) {
-            // Admins see everything
-            visibleResources = allDocs;
-        } else {
-            // Filter for public/logged-in users
-            visibleResources = allDocs.filter(doc => {
-                const data = doc.data();
-                if (data.isComingSoon) {
-                    return false;
-                }
-                if (data.visibility === 'public') {
-                    return true;
-                }
-                if (options.includePrivate && data.visibility === 'private') {
-                    return true; // Show private to logged-in users
-                }
-                return false;
-            });
+        if (!isAdmin && includePrivate) {
+           // Post-filter for public OR private, since Firestore doesn't support OR queries on different fields.
+           visibleResources = allDocs.filter(doc => {
+               const data = doc.data();
+               return data.visibility === 'public' || data.visibility === 'private';
+           });
         }
 
 

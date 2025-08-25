@@ -4,8 +4,7 @@
 import Header from '@/components/layout/Header';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { getResources, Resource, addToWatchlist, removeFromWatchlist, getWatchlist } from '@/lib/firebase/resources';
-import { format } from 'date-fns';
-import { ArrowUpRight, Download, BookOpen, Bookmark, BookmarkCheck, Clock, Lock, LogIn, ExternalLink, HelpCircle } from 'lucide-react';
+import { ArrowUpRight, Download, BookOpen, Bookmark, BookmarkCheck, Clock, Lock, LogIn, ExternalLink } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState, useMemo, useCallback } from 'react';
 import {
@@ -65,19 +64,24 @@ export default function DownloadsPage() {
   const [selectedSubjects, setSelectedSubjects] = useState<string[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const fetchInitialData = useCallback(async () => {
+  const fetchResourcesAndWatchlist = useCallback(async () => {
     try {
       setLoading(true);
-      const fetchedResources = await getResources({ includePrivate: !!user });
-      setResources(fetchedResources);
+      const filters = {
+        streams: selectedStreams,
+        class: selectedClass === 'All' ? undefined : selectedClass,
+        categories: selectedCategories,
+        subjects: selectedSubjects,
+      };
       
-      if (user) {
-        const watchlistItems = await getWatchlist(user.uid);
-        setWatchlistIds(new Set(watchlistItems.map(item => item.id)));
-      } else {
-        const guestWatchlist = JSON.parse(localStorage.getItem(GUEST_WATCHLIST_KEY) || '[]');
-        setWatchlistIds(new Set(guestWatchlist));
-      }
+      const [fetchedResources, watchlistItems] = await Promise.all([
+          getResources({ includePrivate: !!user, filters }),
+          user ? getWatchlist(user.uid) : Promise.resolve(JSON.parse(localStorage.getItem(GUEST_WATCHLIST_KEY) || '[]').map((id: string) => ({id})))
+      ]);
+
+      setResources(fetchedResources);
+      setWatchlistIds(new Set(watchlistItems.map(item => item.id)));
+      setCurrentPage(1); // Reset page on filter change
 
     } catch (error) {
       console.error("Failed to fetch data", error);
@@ -89,11 +93,11 @@ export default function DownloadsPage() {
     } finally {
       setLoading(false);
     }
-  }, [user, toast]);
+  }, [user, toast, selectedStreams, selectedClass, selectedCategories, selectedSubjects]);
 
   useEffect(() => {
-    fetchInitialData();
-  }, [fetchInitialData]);
+    fetchResourcesAndWatchlist();
+  }, [fetchResourcesAndWatchlist]);
   
   const handleToggleWatchlist = async (resource: Resource) => {
     setSaving(resource.id);
@@ -142,24 +146,12 @@ export default function DownloadsPage() {
     }
   };
 
-  const filteredResources = useMemo(() => {
-    setCurrentPage(1); // Reset to first page on filter change
-    return resources.filter(resource => {
-      const streamMatch = selectedStreams.length === 0 || resource.stream.some(s => selectedStreams.includes(s));
-      const classMatch = selectedClass === 'All' || !resource.class || resource.class === selectedClass;
-      const categoryMatch = selectedCategories.length === 0 || resource.category.some(c => selectedCategories.includes(c));
-      const subjectMatch = selectedSubjects.length === 0 || resource.subject.some(s => selectedSubjects.includes(s));
-      
-      return streamMatch && classMatch && categoryMatch && subjectMatch;
-    });
-  }, [resources, selectedStreams, selectedClass, selectedCategories, selectedSubjects]);
-
   const paginatedResources = useMemo(() => {
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-    return filteredResources.slice(startIndex, startIndex + ITEMS_PER_PAGE);
-  }, [filteredResources, currentPage]);
+    return resources.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  }, [resources, currentPage]);
 
-  const totalPages = Math.ceil(filteredResources.length / ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(resources.length / ITEMS_PER_PAGE);
   
   const getDownloadUrl = (resource: Resource) => {
     return resource.isComingSoon ? '#' : resource.pdfUrl || '#';
@@ -377,5 +369,3 @@ export default function DownloadsPage() {
     </div>
   );
 }
-
-    
