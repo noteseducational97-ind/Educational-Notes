@@ -74,3 +74,5 @@ export async function deleteChat(userId: string, chatId: string): Promise<void> 
     await db.collection('users').doc(userId).collection('chats').doc(chatId).delete();
     // No path revalidation needed as history is fetched on client-side
 }
+
+    
