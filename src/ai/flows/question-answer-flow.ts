@@ -29,7 +29,6 @@ const QuestionAnswerOutputSchema = z.object({
   answer: z.string().describe('The AI-generated answer to the question.'),
   imageUrl: z.string().optional().describe('The URL of a generated image, if requested. Should be a data URI.'),
   suggestions: z.array(z.string()).optional().describe('Up to 3 suggested follow-up questions.'),
-  audioUrl: z.string().optional().describe('The data URI of the generated audio for the answer.'),
 });
 export type QuestionAnswerOutput = z.infer<typeof QuestionAnswerOutputSchema>;
 

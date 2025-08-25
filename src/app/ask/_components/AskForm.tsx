@@ -56,7 +56,6 @@ export default function AskForm() {
   const [attachedImage, setAttachedImage] = useState<string | null>(null);
   const [showLoginDialog, setShowLoginDialog] = useState(false);
   const [isHistoryPanelOpen, setIsHistoryPanelOpen] = useState(false);
-  const [audioPlayer, setAudioPlayer] = useState<{audio: HTMLAudioElement; isPlaying: boolean; messageIndex: number} | null>(null);
 
   const { toast } = useToast();
   const { user } = useAuth();
@@ -67,7 +66,6 @@ export default function AskForm() {
 
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -98,12 +96,6 @@ export default function AskForm() {
     }
   }, []);
   
-  useEffect(() => {
-    return () => {
-      audioPlayer?.audio.pause();
-    };
-  }, [audioPlayer]);
-
 
   useEffect(() => {
     scrollToBottom();
@@ -112,27 +104,6 @@ export default function AskForm() {
   const getInitials = (name: string | null | undefined) => {
     if (!name) return 'U';
     return name.split(' ').map((n) => n[0]).join('').toUpperCase();
-  };
-  
-  const toggleAudio = (audioSrc: string, index: number) => {
-    if (audioPlayer && audioPlayer.messageIndex === index) {
-      if (audioPlayer.isPlaying) {
-        audioPlayer.audio.pause();
-        setAudioPlayer({ ...audioPlayer, isPlaying: false });
-      } else {
-        audioPlayer.audio.play();
-        setAudioPlayer({ ...audioPlayer, isPlaying: true });
-      }
-    } else {
-      audioPlayer?.audio.pause();
-      const newAudio = new Audio(audioSrc);
-      newAudio.play();
-      const newPlayer = { audio: newAudio, isPlaying: true, messageIndex: index };
-      setAudioPlayer(newPlayer);
-      newAudio.onended = () => {
-        setAudioPlayer(null);
-      };
-    }
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -183,7 +154,6 @@ export default function AskForm() {
         generatedImage: result.imageUrl,
         createdAt: new Date(),
         suggestions: result.suggestions,
-        audioUrl: result.audioUrl,
       };
       
       const finalConversation = [...currentConversation, assistantMessage];
@@ -334,17 +304,6 @@ export default function AskForm() {
                                             <div className="relative w-full aspect-video rounded-lg overflow-hidden mt-2">
                                                 <Image src={message.generatedImage} alt="Generated image" fill className="object-contain" />
                                             </div>
-                                            )}
-                                            {message.audioUrl && (
-                                                <Button
-                                                    size="sm"
-                                                    variant="outline"
-                                                    onClick={() => toggleAudio(message.audioUrl!, index)}
-                                                    className="mt-2"
-                                                    >
-                                                    {audioPlayer?.isPlaying && audioPlayer?.messageIndex === index ? <Pause className="mr-2" /> : <Play className="mr-2" />}
-                                                    {audioPlayer?.isPlaying && audioPlayer?.messageIndex === index ? 'Pause' : 'Play Audio'}
-                                                </Button>
                                             )}
                                         </div>
                                         {message.role === 'user' && (
