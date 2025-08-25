@@ -87,7 +87,7 @@ export default function Home() {
                 </div>
                  <div className="flex justify-center">
                     <Image
-                        src="https://images.pexels.com/photos/5905445/pexels-photo-5905445.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+                        src="https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzdHVkeXxlbnwwfHx8fDE3NTYxMTc3Nzl8MA&ixlib=rb-4.1.0&q=80&w=1080"
                         width="600"
                         height="400"
                         alt="Student studying"
