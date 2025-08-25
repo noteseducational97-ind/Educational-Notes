@@ -243,11 +243,24 @@ export default function AskForm() {
     <Card className="flex flex-col shadow-lg h-full w-full max-w-7xl overflow-hidden">
         <div className="flex h-full">
             <div className={cn("flex flex-col flex-1 transition-all duration-300", isHistoryPanelOpen && "sm:w-[calc(100%-350px)]")}>
-                <CardHeader className="border-b text-center">
-                    <CardTitle className="text-xl md:text-2xl flex items-center justify-center gap-2">
-                        <Sparkles />Educational AI Assistant
-                    </CardTitle>
-                    <div className="flex items-center gap-2 w-full justify-center pt-2">
+                <CardHeader className="border-b">
+                    <div className="flex justify-between items-center">
+                        <CardTitle className="text-xl md:text-2xl flex items-center gap-2">
+                            <Sparkles />Educational AI Assistant
+                        </CardTitle>
+                        <div className="flex items-center gap-2">
+                            <Button variant="outline" size="sm" className="hidden md:flex" onClick={handleClearChat} disabled={conversation.length === 0}>
+                                <Trash2 className="mr-2 h-4 w-4"/> Clear
+                            </Button>
+                            {user && (
+                                <Button variant="outline" size="sm" className="hidden md:flex" onClick={() => setIsHistoryPanelOpen(!isHistoryPanelOpen)}>
+                                    {isHistoryPanelOpen ? <PanelRightClose className="mr-2 h-4 w-4"/> : <History className="mr-2 h-4 w-4" />} 
+                                    {isHistoryPanelOpen ? 'Hide' : 'History'}
+                                </Button>
+                            )}
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-2 w-full justify-start pt-2">
                         <Button variant="outline" size="icon" className="md:hidden" onClick={handleNewChat}>
                             <PlusCircle className="h-4 w-4" />
                             <span className="sr-only">New Chat</span>
@@ -259,20 +272,11 @@ export default function AskForm() {
                             <Trash2 className="h-4 w-4"/>
                             <span className="sr-only">Clear Chat</span>
                         </Button>
-                        <Button variant="outline" size="sm" className="hidden md:flex" onClick={handleClearChat} disabled={conversation.length === 0}>
-                            <Trash2 className="mr-2 h-4 w-4"/> Clear
-                        </Button>
-                        {user && (
-                            <>
-                                <Button variant="outline" size="icon" className="md:hidden" onClick={() => setIsHistoryPanelOpen(!isHistoryPanelOpen)}>
-                                    {isHistoryPanelOpen ? <PanelRightClose /> : <PanelRightOpen />}
-                                    <span className="sr-only">{isHistoryPanelOpen ? 'Hide History' : 'Show History'}</span>
-                                </Button>
-                                <Button variant="outline" size="sm" className="hidden md:flex" onClick={() => setIsHistoryPanelOpen(!isHistoryPanelOpen)}>
-                                    {isHistoryPanelOpen ? <PanelRightClose className="mr-2 h-4 w-4"/> : <PanelRightOpen className="mr-2 h-4 w-4" />} 
-                                    {isHistoryPanelOpen ? 'Hide' : 'History'}
-                                </Button>
-                            </>
+                         {user && (
+                            <Button variant="outline" size="icon" className="md:hidden" onClick={() => setIsHistoryPanelOpen(!isHistoryPanelOpen)}>
+                                {isHistoryPanelOpen ? <PanelRightClose /> : <History />}
+                                <span className="sr-only">{isHistoryPanelOpen ? 'Hide History' : 'Show History'}</span>
+                            </Button>
                         )}
                     </div>
                 </CardHeader>
@@ -482,3 +486,5 @@ export default function AskForm() {
     </Card>
   );
 }
+
+    
