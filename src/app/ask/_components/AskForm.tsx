@@ -10,7 +10,7 @@ import { answerQuestion } from '@/ai/flows/question-answer-flow';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Loader2, Sparkles, Send, Trash2, Paperclip, X, History, LogIn, PlusCircle, PanelRightClose, PanelRightOpen, Copy, Download } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
