@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils';
 import Footer from '@/components/layout/Footer';
 import { Inter } from 'next/font/google';
 import { ThemeProvider } from '@/providers/theme-provider';
+import BottomNav from '@/components/layout/BottomNav';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -34,8 +35,11 @@ export default function RootLayout({
         >
           <AuthProvider>
             <div className="relative flex min-h-dvh flex-col">
-              {children}
+              <div className="pb-16 md:pb-0 flex-1">
+                {children}
+              </div>
               <Footer />
+              <BottomNav />
             </div>
             <Toaster />
           </AuthProvider>

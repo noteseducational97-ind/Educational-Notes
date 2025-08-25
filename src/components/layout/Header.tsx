@@ -131,35 +131,24 @@ export default function Header() {
                         <span>Educational Notes</span>
                       </Link>
                     </SheetClose>
-                    {navLinks.map(({ href, label, icon: Icon }) => (
-                          <MobileNavLink key={label} href={href}>
-                            <Icon className="h-5 w-5" />
-                            {label}
-                          </MobileNavLink>
-                       )
-                    )}
-                    <hr className="my-2"/>
-                    {user ? (
+                    {isAdmin && (
                       <>
-                        {isAdmin && (
-                          <>
-                            <MobileNavLink href="/admin">
-                               <LayoutDashboard className="h-5 w-5" />
-                               Admin
-                            </MobileNavLink>
-                            <MobileNavLink href="/admin/users">
-                               <Users className="h-5 w-5" />
-                               Manage Users
-                            </MobileNavLink>
-                            <MobileNavLink href="/admin/uploaded-resources">
-                              <BookCopy className="h-5 w-5" />
-                              Manage Resources
-                            </MobileNavLink>
-                          </>
-                        )}
+                        <MobileNavLink href="/admin">
+                            <LayoutDashboard className="h-5 w-5" />
+                            Admin
+                        </MobileNavLink>
+                        <MobileNavLink href="/admin/users">
+                            <Users className="h-5 w-5" />
+                            Manage Users
+                        </MobileNavLink>
+                        <MobileNavLink href="/admin/uploaded-resources">
+                          <BookCopy className="h-5 w-5" />
+                          Manage Resources
+                        </MobileNavLink>
                       </>
-                    ) : (
-                      <>
+                    )}
+                    {!user && (
+                       <>
                         <MobileNavLink href="/login">
                           <LogIn className="h-5 w-5" />
                           Sign In
