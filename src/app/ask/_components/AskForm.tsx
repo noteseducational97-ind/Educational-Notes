@@ -299,7 +299,7 @@ export default function AskForm() {
                                                     key={i}
                                                     variant="outline"
                                                     onClick={() => handleExampleClick(prompt)}
-                                                    className="text-left justify-start"
+                                                    className="text-left justify-start h-auto whitespace-normal"
                                                 >
                                                     {prompt}
                                                 </Button>
