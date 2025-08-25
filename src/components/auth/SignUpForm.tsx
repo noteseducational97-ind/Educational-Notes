@@ -11,7 +11,6 @@ import {
   updateProfile,
   signInWithPopup,
   GoogleAuthProvider,
-  sendEmailVerification,
 } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import { auth, db } from '@/lib/firebase/client';
@@ -88,14 +87,12 @@ export default function SignUpForm() {
         createdAt: new Date(),
       });
       
-      await sendEmailVerification(user);
-      
       toast({
         title: 'Account Created!',
-        description: "We've sent a verification link to your email address.",
+        description: "You have successfully signed up.",
       });
 
-      router.push('/verify-email');
+      router.push('/');
 
     } catch (error: any) {
       toast({

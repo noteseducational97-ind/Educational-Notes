@@ -60,18 +60,8 @@ export default function LoginForm() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, values.email, values.password);
-      if (!userCredential.user.emailVerified) {
-        await auth.signOut();
-        toast({
-          variant: "destructive",
-          title: "Email not verified",
-          description: "Please check your inbox and verify your email address to log in.",
-        })
-        router.push(`/verify-email?email=${values.email}`);
-      } else {
-        router.push('/');
-      }
+      await signInWithEmailAndPassword(auth, values.email, values.password);
+      router.push('/');
     } catch (error: any) {
       toast({
         variant: 'destructive',
