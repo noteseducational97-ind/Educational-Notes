@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { FileText, Loader2, HelpCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { generateMcqTest } from '@/ai/flows/mcq-test-maker-flow';
+import { generateRegularTest } from '@/ai/flows/test-maker-flow';
 import type { Resource } from '@/types';
 import jsPDF from 'jspdf';
 import Link from 'next/link';
@@ -17,6 +18,7 @@ type TestMakerButtonProps = {
 
 export default function TestMakerButton({ resource, disabled = false }: TestMakerButtonProps) {
   const [mcqLoading, setMcqLoading] = useState(false);
+  const [regularLoading, setRegularLoading] = useState(false);
   const { toast } = useToast();
   
  const createPdf = (testContent: string, title: string) => {
@@ -40,14 +42,16 @@ export default function TestMakerButton({ resource, disabled = false }: TestMake
     const margin = 40;
     const contentWidth = pageWidth - margin * 2;
     let y = 0;
-    
-    const drawBorder = () => {
+
+    const drawPageBorders = () => {
         doc.setLineWidth(1);
-        doc.rect(margin - 15, margin - 15, contentWidth + 30, pageHeight - (margin - 15) * 2);
+        doc.rect(20, 20, pageWidth - 40, pageHeight - 40);
+        doc.setLineWidth(0.5);
+        doc.rect(25, 25, pageWidth - 50, pageHeight - 50);
     }
     
     // Initial Border
-    drawBorder();
+    drawPageBorders();
 
     // --- Header ---
     doc.setFont('helvetica', 'bold');
@@ -69,7 +73,10 @@ export default function TestMakerButton({ resource, disabled = false }: TestMake
 
     doc.text(`Chapter: ${title}`, margin, y);
     y += 15;
+    
+    // Use the marks line from content if available, otherwise default.
     doc.text(marksLineFromContent, margin, y);
+    
     doc.text(timeText, pageWidth - margin, y, { align: 'right' });
     
     y += 20;
@@ -83,7 +90,7 @@ export default function TestMakerButton({ resource, disabled = false }: TestMake
     const checkPageBreak = (neededHeight = 20) => {
       if (y + neededHeight > doc.internal.pageSize.getHeight() - 60) {
           doc.addPage();
-          drawBorder();
+          drawPageBorders();
           y = margin + 10;
       }
     }
@@ -95,19 +102,55 @@ export default function TestMakerButton({ resource, disabled = false }: TestMake
         checkPageBreak();
 
         // Bold section headers
-        if (line.match(/^Section [A-D]:/i) || line.match(/^Answer Key:/i) || line.match(/Multiple Choice Questions/i)) {
+        const isSectionHeader = line.match(/^Section [A-D]:/i) || line.match(/^Answer Key:/i) || line.match(/Multiple Choice Questions/i) || line.match(/Short Answer Questions/i) || line.match(/Long Answer Questions/i);
+        const hasMarks = /\(\d+ Marks\)/.test(line);
+
+        if (isSectionHeader) {
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(12);
             y += (i === 0 ? 0 : 10);
             checkPageBreak();
-            doc.text(line, pageWidth / 2, y, { align: 'center'});
+            if (hasMarks) {
+              const parts = line.split('(');
+              doc.text(parts[0], margin, y);
+              doc.text(`(${parts[1]}`, pageWidth - margin, y, { align: 'right' });
+            } else {
+              doc.text(line, pageWidth / 2, y, { align: 'center'});
+            }
             y += 20;
             doc.setFont('helvetica', 'normal');
             doc.setFontSize(11);
             continue;
         }
 
-        // Handle questions, options, and answers
+        // Handle MCQ options in two columns
+        if (line.match(/^[A-D]\)/) && lines[i+1]?.match(/^[A-D]\)/)) {
+            const option1 = line;
+            const option2 = lines[i+1]?.trim() || '';
+            
+            if (option1.startsWith("A)") && option2.startsWith("B)")) {
+                const splitLines1 = doc.splitTextToSize(option1, contentWidth / 2 - 5);
+                const splitLines2 = doc.splitTextToSize(option2, contentWidth / 2 - 5);
+                checkPageBreak(Math.max(splitLines1.length, splitLines2.length) * 12);
+                doc.text(splitLines1, margin, y);
+                doc.text(splitLines2, margin + contentWidth / 2, y);
+                y += Math.max(splitLines1.length, splitLines2.length) * 12 + 4;
+                i++; // Skip next line since it's processed
+                continue;
+            }
+             if (option1.startsWith("C)") && option2.startsWith("D)")) {
+                const splitLines1 = doc.splitTextToSize(option1, contentWidth / 2 - 5);
+                const splitLines2 = doc.splitTextToSize(option2, contentWidth / 2 - 5);
+                checkPageBreak(Math.max(splitLines1.length, splitLines2.length) * 12);
+                doc.text(splitLines1, margin, y);
+                doc.text(splitLines2, margin + contentWidth / 2, y);
+                y += Math.max(splitLines1.length, splitLines2.length) * 12 + 4;
+                i++; // Skip next line since it's processed
+                continue;
+            }
+        }
+
+        // Handle questions, other options, and answers
         const splitLines = doc.splitTextToSize(line, contentWidth);
         checkPageBreak(splitLines.length * 12);
         doc.text(splitLines, margin, y);
@@ -125,7 +168,7 @@ export default function TestMakerButton({ resource, disabled = false }: TestMake
     doc.text(`Time of Creation: ${new Date().toLocaleTimeString()}`, pageWidth - margin, finalY, { align: 'right' });
 
     const safeTitle = title.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-    doc.save(`${safeTitle}_mcq_test.pdf`);
+    doc.save(`${safeTitle}_test.pdf`);
   }
 
   const handleGenerateMcqTest = async () => {
@@ -162,6 +205,41 @@ export default function TestMakerButton({ resource, disabled = false }: TestMake
       setMcqLoading(false);
     }
   };
+  
+  const handleGenerateRegularTest = async () => {
+    setRegularLoading(true);
+    toast({
+      title: 'Generating Regular Test...',
+      description: 'The AI is creating your test paper. This may take a moment.',
+    });
+
+    try {
+      const result = await generateRegularTest({
+        title: resource.title,
+        content: resource.content,
+        class: resource.class,
+        subject: resource.subject,
+        stream: resource.stream,
+      });
+      
+      createPdf(result.testContent, `${resource.title}`);
+      
+      toast({
+        title: 'Success!',
+        description: 'Your test paper has been generated and is downloading now.',
+      });
+
+    } catch (error) {
+      console.error('Error generating regular test:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Failed to generate the test paper. The AI might be busy. Please try again later.',
+      });
+    } finally {
+      setRegularLoading(false);
+    }
+  };
 
   return (
     <div className="space-y-4">
@@ -173,16 +251,25 @@ export default function TestMakerButton({ resource, disabled = false }: TestMake
                     Ask a Question
                 </Link>
             </Button>
+             <Button
+                variant="secondary"
+                onClick={handleGenerateRegularTest}
+                disabled={disabled || regularLoading}
+                className="w-full bg-orange-400/20 hover:bg-orange-400/30 text-orange-800 dark:text-orange-200 dark:hover:text-orange-100 border-orange-400/50"
+            >
+                {regularLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <FileText className="h-4 w-4" />}
+                {regularLoading ? 'Generating...' : 'Regular Test'}
+            </Button>
+            <Button
+                variant="secondary"
+                onClick={handleGenerateMcqTest}
+                disabled={disabled || mcqLoading}
+                className="w-full bg-green-400/20 hover:bg-green-400/30 text-green-800 dark:text-green-200 dark:hover:text-green-100 border-green-400/50"
+            >
+                {mcqLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <FileText className="h-4 w-4" />}
+                {mcqLoading ? 'Generating...' : 'Generate MCQ Test'}
+            </Button>
         </div>
-        <Button
-            variant="secondary"
-            onClick={handleGenerateMcqTest}
-            disabled={disabled || mcqLoading}
-            className="w-full bg-green-400/20 hover:bg-green-400/30 text-green-800 dark:text-green-200 dark:hover:text-green-100 border-green-400/50"
-        >
-            {mcqLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <FileText className="h-4 w-4" />}
-            {mcqLoading ? 'Generating...' : 'Generate MCQ Test'}
-        </Button>
     </div>
   );
 }
