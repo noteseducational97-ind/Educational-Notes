@@ -32,7 +32,7 @@ const prompt = ai.definePrompt({
   output: {schema: RegularTestOutputSchema},
   prompt: `You are an expert test creator for students, specializing in Indian competitive exams and school curricula. Your task is to generate a comprehensive 20-mark test based on the provided topic details and content.
 
-**Crucially, all questions must be derived *only* from the "Resource Content" provided below.** Do not introduce any external information.
+**Crucially, all questions must be derived *only* from the "Resource Content" provided below.** Do not introduce any external information or an answer key.
 
 The test must be structured as follows:
 
@@ -58,14 +58,10 @@ The test must be structured as follows:
 - Each question is worth 4 marks.
 - Include the instruction "(Solve Any 1)".
 
-**Answer Key**
-- At the very end of the test, provide an "Answer Key" section that lists the correct answer for every question from all sections.
-
 Formatting Rules:
 - Use clear headings for each section (e.g., "Section A: Multiple Choice Questions (4 Marks)").
 - Format each question as "Q1. Question text...".
 - Add a blank line between each question.
-- Add a blank line before the "Answer Key" section.
 
 Topic Details:
 - Chapter/Title: {{{title}}}
