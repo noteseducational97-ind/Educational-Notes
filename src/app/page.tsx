@@ -68,7 +68,7 @@ export default function Home() {
           <div className="container px-4 md:px-6">
             <div className="grid md:grid-cols-2 gap-10 items-center">
                 <div className="flex flex-col items-start text-left space-y-6">
-                    <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm font-semibold text-primary-foreground">
+                    <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm font-semibold text-primary">
                         Your Ultimate Advantage for Exam Success
                     </div>
                     <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-foreground tracking-tighter">
