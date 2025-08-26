@@ -251,29 +251,7 @@ export default function DownloadsPage() {
                     const disabled = isLinkDisabled(resource);
                     return (
                     <Card key={resource.id} className="flex flex-col hover:border-primary/50 transition-colors duration-300 overflow-hidden">
-                        <Link
-                        href={`/resources/${resource.id}`}
-                        className={cn("group block", disabled && "pointer-events-none cursor-not-allowed")}
-                        >
-                        <div className="relative aspect-video">
-                            <Image 
-                                src={resource.isComingSoon ? 'https://placehold.co/600x400.png' : resource.imageUrl || 'https://placehold.co/600x400.png'}
-                                alt={resource.title}
-                                fill
-                                className={cn("object-cover group-hover:scale-105 transition-transform duration-300", disabled && "filter grayscale")}/>
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                            {resource.isComingSoon && (
-                                <div className="absolute inset-0 flex items-center justify-center">
-                                    <Badge variant="secondary" className="text-lg py-2 px-4"><Clock className="mr-2 h-5 w-5" />Coming Soon</Badge>
-                                </div>
-                            )}
-                            {resource.visibility === 'private' && (
-                                <div className="absolute top-2 right-2">
-                                    <Badge variant="destructive" className="text-lg py-1 px-3"><Lock className="mr-1 h-4 w-4" />Private</Badge>
-                                </div>
-                            )}
-                        </div>
-                        </Link>
+                        
                         <CardHeader className="flex-grow">
                         <CardTitle className="text-xl">
                             <Link
@@ -377,5 +355,3 @@ export default function DownloadsPage() {
     </div>
   );
 }
-
-    

@@ -12,7 +12,6 @@ const FormSchema = z.object({
   subject: z.array(z.string()).nonempty({ message: 'Select at least one subject.' }),
   class: z.string().optional(),
   stream: z.array(z.string()).nonempty({ message: 'Select at least one stream.' }),
-  imageUrl: z.string().url().optional().or(z.literal('')),
   pdfUrl: z.string().optional(),
   viewPdfUrl: z.string().url('A valid view URL for the PDF is required.'),
   isComingSoon: z.boolean().default(false),
@@ -50,8 +49,8 @@ export async function addResourceAction(data: AddResourceInput) {
     };
   }
   
-  const { imageUrl, ...restOfData } = validatedFields.data;
-  const finalImageUrl = imageUrl || 'https://placehold.co/600x400.png';
+  const { ...restOfData } = validatedFields.data;
+  const finalImageUrl = 'https://placehold.co/600x400.png';
 
   const slug = createSlug(validatedFields.data.title);
   const resourceRef = db.collection('resources').doc(slug);
@@ -97,8 +96,8 @@ export async function updateResourceAction(id: string, data: AddResourceInput) {
     };
   }
   
-  const { imageUrl, ...restOfData } = validatedFields.data;
-  const finalImageUrl = imageUrl || 'https://placehold.co/600x400.png';
+  const { ...restOfData } = validatedFields.data;
+  const finalImageUrl = 'https://placehold.co/600x400.png';
 
   const resourceRef = db.collection('resources').doc(id);
 

@@ -143,28 +143,6 @@ export default function SavePage() {
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {paginatedItems.map((resource) => (
                     <Card key={resource.id} className="flex flex-col hover:border-primary/50 transition-colors duration-300 overflow-hidden">
-                    <Link
-                        href={`/resources/${resource.id}`}
-                        className="group block"
-                    >
-                        <div className="relative aspect-video">
-                            <Image 
-                                src={resource.isComingSoon ? 'https://placehold.co/600x400.png' : resource.imageUrl || 'https://placehold.co/600x400.png'}
-                                alt={resource.title}
-                                fill
-                                className={cn(
-                                    "object-cover group-hover:scale-105 transition-transform duration-300",
-                                    isLinkDisabled(resource) && "filter grayscale"
-                                )}
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                            {resource.visibility === 'private' && (
-                            <div className="absolute top-2 right-2">
-                                    <Badge variant="destructive" className="text-lg py-1 px-3"><Lock className="mr-1 h-4 w-4" />Private</Badge>
-                                </div>
-                            )}
-                        </div>
-                    </Link>
                     <CardHeader className="flex-grow">
                         <CardTitle className="text-xl">
                         <Link

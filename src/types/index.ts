@@ -7,7 +7,7 @@ export type Resource = {
   subject: string[];
   class?: string; // Optional since it may not be present for all streams
   stream: string[]; // Changed to array to support multiple streams
-  imageUrl: string;
+  imageUrl?: string;
   pdfUrl: string; 
   viewPdfUrl: string; // For the embedded preview
   createdAt: string; // Should be an ISO string
@@ -29,7 +29,3 @@ export type Chat = {
     title: string;
     updatedAt: string;
 }
-
-    
-
-    

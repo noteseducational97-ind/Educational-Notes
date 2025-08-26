@@ -34,7 +34,6 @@ const FormSchema = z.object({
   class: z.string().optional(),
   category: z.array(z.string()).nonempty({ message: 'Select at least one category.' }),
   subject: z.array(z.string()).nonempty({ message: 'Select at least one subject.' }),
-  imageUrl: z.string().url().optional().or(z.literal('')),
   pdfUrl: z.string().optional(),
   viewPdfUrl: z.string().url('A valid view URL for the PDF is required.'),
   isComingSoon: z.boolean().default(false),
@@ -76,7 +75,6 @@ export default function AddResourceAdminPage() {
       class: '',
       category: [],
       subject: [],
-      imageUrl: '',
       pdfUrl: '',
       viewPdfUrl: '',
       isComingSoon: false,
@@ -285,15 +283,6 @@ export default function AddResourceAdminPage() {
                         />
                    </div>
 
-                  <FormField control={form.control} name="imageUrl" render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Image URL (Optional)</FormLabel>
-                        <FormControl><Input placeholder="https://example.com/image.png" {...field} value={field.value ?? ''} /></FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  
                   <FormField control={form.control} name="viewPdfUrl" render={({ field }) => (
                       <FormItem>
                         <FormLabel>PDF View URL</FormLabel>
