@@ -72,7 +72,7 @@ export default function Home() {
                         Your Ultimate Advantage for Exam Success
                     </div>
                     <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-foreground tracking-tighter">
-                        Unlock Your Potential, One Note at a Time.
+                        The Perfect Note for Every Student.
                     </h1>
                     <p className="max-w-xl text-lg text-foreground/80">
                         High-quality study materials, AI-powered tools, and expert-curated content—all completely free. Achieve academic excellence with us.
