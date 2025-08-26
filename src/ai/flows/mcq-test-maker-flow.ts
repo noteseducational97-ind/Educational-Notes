@@ -10,19 +10,26 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
-import { GenerateTestInput, GenerateTestOutput as BaseGenerateTestOutput } from './test-maker-flow';
 
-// Re-exporting types from the main test maker flow
-export type { GenerateTestInput };
+const GenerateTestInputSchema = z.object({
+  title: z.string().describe('The title of the resource material.'),
+  content: z.string().describe('The full text content of the resource material to base the test on.'),
+  class: z.string().optional().describe('The class level for which the test is being generated (e.g., "12").'),
+  subject: z.array(z.string()).optional().describe('The subject(s) of the resource material.'),
+  stream: z.array(z.string()).optional().describe('The stream(s) the resource material belongs to (e.g., "Science").'),
+});
+export type GenerateTestInput = z.infer<typeof GenerateTestInputSchema>;
 
-// The output for this flow is also a test content string
-export type GenerateTestOutput = BaseGenerateTestOutput;
+const GenerateTestOutputSchema = z.object({
+  testContent: z.string().describe('The full generated test content, formatted as a string with questions, and options.'),
+});
+export type GenerateTestOutput = z.infer<typeof GenerateTestOutputSchema>;
 
 
 const prompt = ai.definePrompt({
   name: 'generateMcqTestPrompt',
-  input: {schema: z.custom<GenerateTestInput>()},
-  output: {schema: z.custom<GenerateTestOutput>()},
+  input: {schema: GenerateTestInputSchema},
+  output: {schema: GenerateTestOutputSchema},
   prompt: `You are an expert test creator for students, specializing in Indian competitive exams like NEET and MHT-CET, as well as regular school curricula. Your task is to generate a multiple-choice question (MCQ) test based on the provided topic details and content.
 
 **Crucially, all questions must be derived *only* from the "Resource Content" provided below.** Do not introduce any external information.
@@ -56,8 +63,8 @@ Resource Content:
 const generateMcqTestFlow = ai.defineFlow(
   {
     name: 'generateMcqTestFlow',
-    inputSchema: z.custom<GenerateTestInput>(),
-    outputSchema: z.custom<GenerateTestOutput>(),
+    inputSchema: GenerateTestInputSchema,
+    outputSchema: GenerateTestOutputSchema,
   },
   async input => {
     const {output} = await prompt(input);

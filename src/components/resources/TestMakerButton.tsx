@@ -5,7 +5,6 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { FileText, Loader2, HelpCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { generateTest } from '@/ai/flows/test-maker-flow';
 import { generateMcqTest } from '@/ai/flows/mcq-test-maker-flow';
 import type { Resource } from '@/types';
 import jsPDF from 'jspdf';
@@ -17,7 +16,6 @@ type TestMakerButtonProps = {
 };
 
 export default function TestMakerButton({ resource, disabled = false }: TestMakerButtonProps) {
-  const [loading, setLoading] = useState(false);
   const [mcqLoading, setMcqLoading] = useState(false);
   const { toast } = useToast();
   
@@ -42,29 +40,14 @@ export default function TestMakerButton({ resource, disabled = false }: TestMake
     const margin = 40;
     const contentWidth = pageWidth - margin * 2;
     let y = 0;
-
-    const drawWatermark = () => {
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(60);
-        doc.setTextColor(220, 220, 220); // A light gray color
-        doc.text(
-            'Educational Notes', 
-            pageWidth / 2, 
-            pageHeight / 2, 
-            { align: 'center', angle: -45 }
-        );
-        doc.setTextColor(0, 0, 0); // Reset text color
-    };
     
     const drawBorder = () => {
         doc.setLineWidth(1);
         doc.rect(margin - 15, margin - 15, contentWidth + 30, pageHeight - (margin - 15) * 2);
     }
     
-    // Initial Border & Watermark
+    // Initial Border
     drawBorder();
-    drawWatermark();
-
 
     // --- Header ---
     doc.setFont('helvetica', 'bold');
@@ -81,8 +64,8 @@ export default function TestMakerButton({ resource, disabled = false }: TestMake
     y += 20;
 
     const testLinesForHeader = testContent.split('\n');
-    const marksLineFromContent = testLinesForHeader.find(line => line.toLowerCase().includes('marks:')) || 'Total Marks: 20';
-    const timeText = title.toLowerCase().includes("mcq") ? 'Time: 1 Hr.' : 'Time: 1 Hr.';
+    const marksLineFromContent = testLinesForHeader.find(line => line.toLowerCase().includes('marks')) || 'Total Marks: 20';
+    const timeText = 'Time: 1 Hr.';
 
     doc.text(`Chapter: ${title}`, margin, y);
     y += 15;
@@ -101,7 +84,6 @@ export default function TestMakerButton({ resource, disabled = false }: TestMake
       if (y + neededHeight > doc.internal.pageSize.getHeight() - 60) {
           doc.addPage();
           drawBorder();
-          drawWatermark();
           y = margin + 10;
       }
     }
@@ -113,7 +95,7 @@ export default function TestMakerButton({ resource, disabled = false }: TestMake
         checkPageBreak();
 
         // Bold section headers
-        if (line.match(/^Section [A-D]:/i) || line.match(/^Answer Key:/i)) {
+        if (line.match(/^Section [A-D]:/i) || line.match(/^Answer Key:/i) || line.match(/Multiple Choice Questions/i)) {
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(12);
             y += (i === 0 ? 0 : 10);
@@ -143,44 +125,8 @@ export default function TestMakerButton({ resource, disabled = false }: TestMake
     doc.text(`Time of Creation: ${new Date().toLocaleTimeString()}`, pageWidth - margin, finalY, { align: 'right' });
 
     const safeTitle = title.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-    doc.save(`${safeTitle}_test.pdf`);
+    doc.save(`${safeTitle}_mcq_test.pdf`);
   }
-
-
-  const handleGenerateTest = async () => {
-    setLoading(true);
-    toast({
-      title: 'Generating Regular Test...',
-      description: 'The AI is creating your personalized test. This may take a moment.',
-    });
-
-    try {
-      const result = await generateTest({
-        title: resource.title,
-        content: resource.content,
-        class: resource.class,
-        subject: resource.subject,
-        stream: resource.stream,
-      });
-      
-      createPdf(result.testContent, resource.title);
-      
-      toast({
-        title: 'Success!',
-        description: 'Your test has been generated and is downloading now.',
-      });
-
-    } catch (error) {
-      console.error('Error generating test:', error);
-      toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: 'Failed to generate the test. The AI might be busy. Please try again later.',
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleGenerateMcqTest = async () => {
     setMcqLoading(true);
@@ -198,7 +144,7 @@ export default function TestMakerButton({ resource, disabled = false }: TestMake
         stream: resource.stream,
       });
       
-      createPdf(result.testContent, `${resource.title} (MCQ)`);
+      createPdf(result.testContent, `${resource.title}`);
       
       toast({
         title: 'Success!',
@@ -228,26 +174,15 @@ export default function TestMakerButton({ resource, disabled = false }: TestMake
                 </Link>
             </Button>
         </div>
-      <div className="grid grid-cols-2 gap-2">
         <Button
             variant="secondary"
-            onClick={handleGenerateTest}
-            disabled={disabled || loading || mcqLoading}
-            className="flex-col h-auto py-2 bg-orange-400/20 hover:bg-orange-400/30 text-orange-800 dark:text-orange-200 dark:hover:text-orange-100"
-        >
-            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <FileText className="h-4 w-4" />}
-            <span className="text-xs font-normal mt-1">{loading ? 'Generating...' : 'Regular Test'}</span>
-        </Button>
-        <Button
-            variant="outline"
             onClick={handleGenerateMcqTest}
-            disabled={disabled || loading || mcqLoading}
-            className="flex-col h-auto py-2 bg-green-400/20 hover:bg-green-400/30 text-green-800 dark:text-green-200 dark:hover:text-green-100 border-green-400/50"
+            disabled={disabled || mcqLoading}
+            className="w-full bg-green-400/20 hover:bg-green-400/30 text-green-800 dark:text-green-200 dark:hover:text-green-100 border-green-400/50"
         >
             {mcqLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <FileText className="h-4 w-4" />}
-            <span className="text-xs font-normal mt-1">{mcqLoading ? 'Generating...' : 'MCQ Test'}</span>
+            {mcqLoading ? 'Generating...' : 'Generate MCQ Test'}
         </Button>
-      </div>
     </div>
   );
 }
