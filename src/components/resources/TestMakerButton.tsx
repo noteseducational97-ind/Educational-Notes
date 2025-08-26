@@ -83,7 +83,7 @@ export default function TestMakerButton({ resource, disabled = false }: TestMake
     
     y += 15;
     const testLinesForHeader = testContent.split('\n');
-    const marksLineFromContent = testLinesForHeader.find(line => line.includes('Total Marks:')) || '';
+    const marksLineFromContent = testLinesForHeader.find(line => line.includes('Marks')) || '';
     doc.text(`Chapter Name: ${title}`, margin, y);
     doc.text(`- Sponsored by Pravin Khachane and Mangesh Shete`, pageWidth - margin, y, { align: 'right' });
     
@@ -111,7 +111,7 @@ export default function TestMakerButton({ resource, disabled = false }: TestMake
 
     for(let i = 0; i < lines.length; i++) {
         const line = lines[i].trim();
-        if (line === '' || line.includes('Total Marks:')) continue; // Skip empty lines and total marks line in header
+        if (line === '' || (line.includes('Marks') && !line.match(/^Ques\./))) continue; // Skip empty lines and header marks line
 
         checkPageBreak();
 
