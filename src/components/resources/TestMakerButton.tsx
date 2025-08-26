@@ -39,7 +39,7 @@ export default function TestMakerButton({ resource, disabled = false }: TestMake
 
     const pageWidth = doc.internal.pageSize.getWidth();
     const pageHeight = doc.internal.pageSize.getHeight();
-    const margin = 30; // Narrower margin
+    const margin = 40;
     const contentWidth = pageWidth - margin * 2;
     let y = 0;
 
@@ -58,9 +58,7 @@ export default function TestMakerButton({ resource, disabled = false }: TestMake
     
     const drawBorder = () => {
         doc.setLineWidth(1);
-        doc.rect(margin - 5, margin - 5, contentWidth + 10, pageHeight - (margin - 5) * 2);
-        doc.setLineWidth(0.5);
-        doc.rect(margin - 8, margin - 8, contentWidth + 16, pageHeight - (margin - 8) * 2);
+        doc.rect(margin - 15, margin - 15, contentWidth + 30, pageHeight - (margin - 15) * 2);
     }
     
     // Initial Border & Watermark
@@ -70,32 +68,31 @@ export default function TestMakerButton({ resource, disabled = false }: TestMake
 
     // --- Header ---
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(16);
-    doc.text('Educational Notes', pageWidth / 2, 40, { align: 'center' });
-
-    y = 50;
-    doc.setLineWidth(1);
+    doc.setFontSize(18);
+    doc.text('Educational Notes', pageWidth / 2, 60, { align: 'center' });
+    y = 75;
+    doc.setLineWidth(1.5);
     doc.line(margin, y, pageWidth - margin, y);
     y += 5;
 
     doc.setFontSize(11);
     doc.setFont('helvetica', 'normal');
     
-    y += 15;
+    y += 20;
+
     const testLinesForHeader = testContent.split('\n');
-    const marksLineFromContent = testLinesForHeader.find(line => line.includes('Marks')) || '';
-    doc.text(`Chapter Name: ${title}`, margin, y);
-    doc.text(`- Sponsored by Pravin Khachane and Mangesh Shete`, pageWidth - margin, y, { align: 'right' });
-    
+    const marksLineFromContent = testLinesForHeader.find(line => line.toLowerCase().includes('marks:')) || 'Total Marks: 20';
+    const timeText = title.toLowerCase().includes("mcq") ? 'Time: 1 Hr.' : 'Time: 1 Hr.';
+
+    doc.text(`Chapter: ${title}`, margin, y);
     y += 15;
-    const timeText = title.includes("MCQ") ? 'Time: 1 hr' : 'Time: 1hr';
     doc.text(marksLineFromContent, margin, y);
     doc.text(timeText, pageWidth - margin, y, { align: 'right' });
     
-    y += 15;
-    doc.setLineWidth(1);
+    y += 20;
+    doc.setLineWidth(1.5);
     doc.line(margin, y, pageWidth - margin, y);
-    y += 5;
+    y += 25;
     
     // --- Test Content ---
     const lines = testContent.split('\n');
@@ -103,104 +100,36 @@ export default function TestMakerButton({ resource, disabled = false }: TestMake
     const checkPageBreak = (neededHeight = 20) => {
       if (y + neededHeight > doc.internal.pageSize.getHeight() - 60) {
           doc.addPage();
-          drawBorder(); // Add border to new page
-          drawWatermark(); // Add watermark to new page
+          drawBorder();
+          drawWatermark();
           y = margin + 10;
       }
     }
 
     for(let i = 0; i < lines.length; i++) {
-        const line = lines[i].trim();
-        if (line === '' || (line.includes('Marks') && !line.match(/^Ques\./))) continue; // Skip empty lines and header marks line
+        let line = lines[i].trim();
+        if (!line) continue;
 
         checkPageBreak();
 
-        if (line.match(/^Section [A-D]/)) {
-            // Section Header (e.g., "Section A")
-            y += 20;
-            checkPageBreak();
+        // Bold section headers
+        if (line.match(/^Section [A-D]:/i) || line.match(/^Answer Key:/i)) {
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(12);
-            doc.text(line, pageWidth / 2, y, { align: 'center' });
+            y += (i === 0 ? 0 : 10);
+            checkPageBreak();
+            doc.text(line, pageWidth / 2, y, { align: 'center'});
             y += 20;
             doc.setFont('helvetica', 'normal');
             doc.setFontSize(11);
-        } else if (line.match(/^Ques\. [0-9]+/)) {
-            // Question Block Title (e.g., "Ques. 1 Multiple Choice Questions (4 Marks)")
-            const parts = line.split('(');
-            const questionTitle = parts[0].trim();
-            const marks = parts[1] ? `(${parts[1]}` : '';
-
-            y += 10;
-            checkPageBreak();
-            doc.setFont('helvetica', 'bold');
-            doc.text(questionTitle, margin, y);
-            if (marks) {
-                doc.text(marks, pageWidth - margin, y, { align: 'right' });
-            }
-            doc.setFont('helvetica', 'normal');
-            y += 20;
-            
-            const isMcqSection = line.includes('Multiple Choice');
-
-            if (isMcqSection) {
-                while (i + 1 < lines.length && lines[i + 1].trim().match(/^[0-9]+\./)) {
-                    i++; 
-                    const questionLine = lines[i].trim();
-                    const options = [];
-                    // Greedily consume up to 4 options
-                    for (let j = 1; j <= 4 && (i + j) < lines.length; j++) {
-                        const optionLine = lines[i + j].trim();
-                        if (optionLine.match(/^[A-D]\)/)) {
-                            options.push(optionLine);
-                        } else {
-                            break; // Stop if it's not an option line
-                        }
-                    }
-
-                    checkPageBreak(50);
-                    const splitQuestion = doc.splitTextToSize(questionLine, contentWidth - 15);
-                    doc.text(splitQuestion, margin + 15, y);
-                    y += (splitQuestion.length * 12) + 8;
-
-                    if (options.length > 0) {
-                        const optionPairs = [];
-                        for(let k = 0; k < options.length; k+=2) {
-                            optionPairs.push(options.slice(k, k+2));
-                        }
-
-                        optionPairs.forEach(pair => {
-                            checkPageBreak(20);
-                            const firstOpt = pair[0] || '';
-                            const secondOpt = pair[1] || '';
-                            doc.text(firstOpt, margin + 25, y);
-                            doc.text(secondOpt, margin + contentWidth / 2, y);
-                            y += 15;
-                        });
-                    }
-                    
-                    i += options.length;
-                    y += 5; // Extra space between MCQs
-                }
-
-            }
-
-        } else if (line.match(/^Answer Key:/)) {
-            y += 20;
-            checkPageBreak();
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(12);
-            doc.text(line, pageWidth / 2, y, { align: 'center' });
-            y += 15;
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(11);
-        } else {
-            // Handle regular questions and answers
-            const splitLines = doc.splitTextToSize(line, contentWidth - 15);
-            checkPageBreak(splitLines.length * 12);
-            doc.text(splitLines, margin + 15, y);
-            y += splitLines.length * 12 + 4;
+            continue;
         }
+
+        // Handle questions, options, and answers
+        const splitLines = doc.splitTextToSize(line, contentWidth);
+        checkPageBreak(splitLines.length * 12);
+        doc.text(splitLines, margin, y);
+        y += splitLines.length * 12 + 4;
     }
     
     // -- Footer --
@@ -210,6 +139,7 @@ export default function TestMakerButton({ resource, disabled = false }: TestMake
     doc.setFontSize(9);
     doc.setFont('helvetica', 'italic');
     doc.text(`Date Of creation: ${new Date().toLocaleDateString()}`, margin, finalY);
+    doc.text(`- Sponsored by Pravin Khachane and Mangesh Shete -`, pageWidth / 2, finalY, { align: 'center' });
     doc.text(`Time of Creation: ${new Date().toLocaleTimeString()}`, pageWidth - margin, finalY, { align: 'right' });
 
     const safeTitle = title.replace(/[^a-z0-9]/gi, '_').toLowerCase();
