@@ -4,6 +4,7 @@
 import { initializeApp, getApps, cert, getApp, App } from 'firebase-admin/app';
 import { getAuth } from 'firebase-admin/auth';
 import { revalidatePath } from 'next/cache';
+import { db } from './server';
 
 const serviceAccountString = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
 
@@ -47,8 +48,7 @@ export const listAllUsers = async () => {
       disabled: user.disabled,
       creationTime: new Date(user.metadata.creationTime).toLocaleDateString(),
     }));
-    // Exclude the admin user from this list
-    return allUsers.filter(user => user.email !== 'noteseducational97@gmail.com');
+    return allUsers;
   } catch (error) {
     console.error('Error listing users:', error);
     return [];
@@ -58,7 +58,7 @@ export const listAllUsers = async () => {
 export async function updateUserDisabledStatus(uid: string, disabled: boolean) {
   try {
     await adminAuth.updateUser(uid, { disabled });
-    revalidatePath('/admin');
+    revalidatePath('/admin/users');
   } catch (error) {
     console.error('Error updating user status:', error);
     throw new Error('Failed to update user status.');
@@ -67,8 +67,15 @@ export async function updateUserDisabledStatus(uid: string, disabled: boolean) {
 
 export async function deleteUser(uid: string) {
   try {
+    // Delete from Auth
     await adminAuth.deleteUser(uid);
-    revalidatePath('/admin');
+    
+    // Delete from Firestore
+    const userDocRef = db.collection('users').doc(uid);
+    await userDocRef.delete();
+
+    revalidatePath('/admin/users');
+    revalidatePath('/admin'); // To update stats
   } catch (error) {
     console.error('Error deleting user:', error);
     throw new Error('Failed to delete user.');
