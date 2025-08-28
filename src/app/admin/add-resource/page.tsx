@@ -18,8 +18,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Loader2, ArrowLeft, Upload, Lock, Users, Eye } from 'lucide-react';
+import { Loader2, ArrowLeft, Upload, Lock, Users } from 'lucide-react';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { MultiSelect } from '@/components/ui/multi-select';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -83,9 +82,6 @@ export default function AddResourceAdminPage() {
   });
   
   const isComingSoon = form.watch('isComingSoon');
-  const viewPdfUrlValue = form.watch('viewPdfUrl');
-
-  const isValidPdfUrl = viewPdfUrlValue && z.string().url().safeParse(viewPdfUrlValue).success;
   
   async function onSubmit(values: z.infer<typeof FormSchema>) {
     setIsSubmitting(true);
@@ -175,26 +171,22 @@ export default function AddResourceAdminPage() {
                         </FormItem>
                       )}
                     />
-                    <FormField
-                      control={form.control}
-                      name="class"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Class</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select a class" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                                {allclasses.map(c => <SelectItem key={c} value={c}>Class {c}</SelectItem>)}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                     <FormField
+                        control={form.control}
+                        name="class"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Class</FormLabel>
+                                <MultiSelect
+                                    options={allclasses.map(c => ({ value: c, label: `Class ${c}` }))}
+                                    onValueChange={(value) => field.onChange(value.length > 0 ? value[0] : '')}
+                                    defaultValue={field.value ? [field.value] : []}
+                                    placeholder="Select a class (optional)..."
+                                />
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                        />
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <FormField
