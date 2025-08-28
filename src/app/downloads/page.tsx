@@ -5,25 +5,15 @@ import Header from '@/components/layout/Header';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { getResources, Resource, addToWatchlist, removeFromWatchlist, getWatchlist } from '@/lib/firebase/resources';
 import { format } from 'date-fns';
-import { ArrowUpRight, Download, BookOpen, Bookmark, BookmarkCheck, Clock, Lock, LogIn, ExternalLink, HelpCircle } from 'lucide-react';
+import { ArrowUpRight, Download, BookOpen, Bookmark, BookmarkCheck, Clock, Lock, LogIn, ExternalLink, HelpCircle, CheckCircle } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState, useMemo, useCallback } from 'react';
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { Badge } from '@/components/ui/badge';
 import Image from 'next/image';
 import { useAuth } from '@/hooks/use-auth';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
-import { Label } from '@/components/ui/label';
-import { MultiSelect } from '@/components/ui/multi-select';
 import { cn } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 import {
@@ -38,14 +28,13 @@ import {
 } from '@/components/ui/alert-dialog';
 import Pagination from '@/components/shared/Pagination';
 
-const allStreams = ['Science', 'MHT-CET', 'NEET', 'Commerce'];
-const allclasses = ['All', '9', '10', '11', '12'];
-const allSubjects = [
-    'Physics', 'Chemistry', 'Maths', 'Biology',
-    'Accountancy', 'Business Studies', 'Economics',
-    'History', 'Geography', 'Political Science', 'Sociology'
+const contentCategories = [
+    'Notes', 'Text Book', 'Textual Answer', 'Important Point', 
+    'PYQ', 'Syllabus', 'Test', 'Other Study Material'
 ];
-const allCategories = ['Notes', 'Previous Year Questions', 'Syllabus'];
+
+const subjects = ['Physics', 'Chemistry', 'Mathematics', 'Biology'];
+
 const GUEST_WATCHLIST_KEY = 'guest-watchlist';
 const ITEMS_PER_PAGE = 9;
 
@@ -59,8 +48,6 @@ export default function DownloadsPage() {
   const [watchlistIds, setWatchlistIds] = useState<Set<string>>(new Set());
   const [showLoginDialog, setShowLoginDialog] = useState(false);
 
-  const [selectedStreams, setSelectedStreams] = useState<string[]>([]);
-  const [selectedClass, setSelectedClass] = useState('All');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedSubjects, setSelectedSubjects] = useState<string[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -141,18 +128,23 @@ export default function DownloadsPage() {
         setSaving(null);
     }
   };
+  
+  const toggleFilter = (value: string, type: 'category' | 'subject') => {
+    const updater = type === 'category' ? setSelectedCategories : setSelectedSubjects;
+    updater(prev => 
+      prev.includes(value) ? prev.filter(item => item !== value) : [...prev, value]
+    );
+  };
 
   const filteredResources = useMemo(() => {
     setCurrentPage(1); // Reset to first page on filter change
     return resources.filter(resource => {
-      const streamMatch = selectedStreams.length === 0 || resource.stream.some(s => selectedStreams.includes(s));
-      const classMatch = selectedClass === 'All' || !resource.class || resource.class === selectedClass;
       const categoryMatch = selectedCategories.length === 0 || resource.category.some(c => selectedCategories.includes(c));
       const subjectMatch = selectedSubjects.length === 0 || resource.subject.some(s => selectedSubjects.includes(s));
       
-      return streamMatch && classMatch && categoryMatch && subjectMatch;
+      return categoryMatch && subjectMatch;
     });
-  }, [resources, selectedStreams, selectedClass, selectedCategories, selectedSubjects]);
+  }, [resources, selectedCategories, selectedSubjects]);
 
   const paginatedResources = useMemo(() => {
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -173,6 +165,25 @@ export default function DownloadsPage() {
     }
   }
 
+  const FilterCard = ({ label, type, selectedItems }: { label: string; type: 'category' | 'subject'; selectedItems: string[] }) => {
+    const isSelected = selectedItems.includes(label);
+    return (
+      <Card
+        onClick={() => toggleFilter(label, type)}
+        className={cn(
+          'cursor-pointer transition-all duration-200 hover:shadow-md hover:-translate-y-1',
+          isSelected ? 'border-primary ring-2 ring-primary/50 bg-primary/5' : 'bg-card'
+        )}
+      >
+        <CardContent className="p-4 flex items-center justify-between">
+          <span className={cn('font-medium', isSelected && 'text-primary')}>{label}</span>
+          {isSelected && <CheckCircle className="h-5 w-5 text-primary" />}
+        </CardContent>
+      </Card>
+    );
+  };
+
+
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
@@ -184,8 +195,28 @@ export default function DownloadsPage() {
               A curated list of study materials and useful links to accelerate your learning.
             </p>
           </div>
-
           
+          <div className="mb-12 space-y-8">
+            <div>
+              <h2 className="text-2xl font-bold text-center mb-6">Select Your Criteria</h2>
+              <div className='mb-6'>
+                <h3 className="text-lg font-semibold text-muted-foreground mb-4">Content Type</h3>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                  {contentCategories.map(cat => (
+                    <FilterCard key={cat} label={cat} type="category" selectedItems={selectedCategories} />
+                  ))}
+                </div>
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-muted-foreground mb-4">Subject</h3>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                  {subjects.map(sub => (
+                    <FilterCard key={sub} label={sub} type="subject" selectedItems={selectedSubjects} />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
 
           {authLoading || loading ? (
             <LoadingSpinner />
