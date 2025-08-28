@@ -50,7 +50,7 @@ export default function AdminDashboardPage() {
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
-      <main className="flex-1 bg-secondary/40">
+      <main className="flex-1 bg-secondary/30">
         <div className="container mx-auto px-4 py-8 md:px-6">
           <h1 className="text-3xl font-bold text-foreground mb-6">Admin Dashboard</h1>
           

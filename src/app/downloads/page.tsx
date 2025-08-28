@@ -185,7 +185,7 @@ export default function DownloadsPage() {
             </p>
           </div>
 
-          <Card className="mb-8 shadow-lg">
+          <Card className="mb-8 shadow-lg bg-card">
             <CardHeader>
                 <CardTitle className="text-xl">Select Your Criteria</CardTitle>
                 <CardDescription>Narrow down the study materials to find exactly what you need.</CardDescription>
@@ -250,7 +250,7 @@ export default function DownloadsPage() {
                     const isSaved = watchlistIds.has(resource.id);
                     const disabled = isLinkDisabled(resource);
                     return (
-                    <Card key={resource.id} className="flex flex-col hover:border-primary/50 transition-colors duration-300 overflow-hidden">
+                    <Card key={resource.id} className="flex flex-col hover:border-primary/50 transition-colors duration-300 overflow-hidden bg-card">
                         
                         <CardHeader className="flex-grow">
                         <CardTitle className="text-xl">

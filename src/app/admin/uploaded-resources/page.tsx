@@ -85,7 +85,7 @@ export default function UploadedResourcesPage() {
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
-      <main className="flex-1 bg-secondary/40">
+      <main className="flex-1 bg-secondary/30">
         <div className="container mx-auto px-4 py-8 md:px-6">
             <div className="flex justify-between items-center mb-6">
                 <div className="flex flex-col">

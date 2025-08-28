@@ -26,7 +26,7 @@ export default function SignUpPage() {
   }
   
   return (
-    <div className="flex min-h-screen flex-col bg-gradient-to-br from-blue-100 via-sky-100 to-blue-200 dark:from-blue-900/20 dark:via-sky-950/20 dark:to-background">
+    <div className="flex min-h-screen flex-col bg-background">
         <Header />
         <main className="flex flex-1 items-center justify-center p-4">
             <Card className="w-full max-w-md shadow-2xl bg-card text-card-foreground">
