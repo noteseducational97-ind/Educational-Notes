@@ -10,7 +10,6 @@ const FormSchema = z.object({
   content: z.string().min(10, 'Content must be at least 10 characters.'),
   category: z.array(z.string()).nonempty({ message: 'Select at least one category.' }),
   subject: z.array(z.string()).nonempty({ message: 'Select at least one subject.' }),
-  class: z.string().optional(),
   stream: z.array(z.string()).nonempty({ message: 'Select at least one stream.' }),
   pdfUrl: z.string().optional(),
   viewPdfUrl: z.string().url('A valid view URL for the PDF is required.'),

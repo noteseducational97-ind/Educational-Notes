@@ -30,7 +30,6 @@ const FormSchema = z.object({
   title: z.string().min(3, 'Title must be at least 3 characters.'),
   content: z.string().min(10, 'Content must be at least 10 characters.'),
   stream: z.array(z.string()).nonempty({ message: 'Select at least one stream.' }),
-  class: z.string().optional(),
   category: z.array(z.string()).nonempty({ message: 'Select at least one category.' }),
   subject: z.array(z.string()).nonempty({ message: 'Select at least one subject.' }),
   pdfUrl: z.string().optional(),
@@ -78,7 +77,6 @@ export default function EditResourceAdminPage() {
       pdfUrl: '',
       viewPdfUrl: '',
       stream: [],
-      class: '',
       category: [],
       subject: [],
       isComingSoon: false,
@@ -214,7 +212,7 @@ export default function EditResourceAdminPage() {
                         name="subject"
                         render={({ field }) => (
                           <FormItem>
-                              <FormLabel>Subject</FormLabel>
+                              <FormLabel>Subject(s)</FormLabel>
                               <MultiSelect
                                   options={allSubjects.map(s => ({ value: s, label: s }))}
                                   onValueChange={field.onChange}
@@ -232,7 +230,7 @@ export default function EditResourceAdminPage() {
                       name="category"
                       render={({ field }) => (
                         <FormItem>
-                              <FormLabel>Category</FormLabel>
+                              <FormLabel>Category(s)</FormLabel>
                               <MultiSelect
                                   options={categories.map(c => ({ value: c, label: c }))}
                                   onValueChange={field.onChange}
