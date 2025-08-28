@@ -169,8 +169,11 @@ export async function getAdminStats() {
 
         const [usersSnapshot, resourcesSnapshot] = await Promise.all([usersPromise, resourcesPromise]);
 
+        // Filter out the admin user from the count
+        const manageableUsers = usersSnapshot.docs.filter(doc => doc.data().email !== 'noteseducational97@gmail.com');
+
         return {
-            userCount: usersSnapshot.size,
+            userCount: manageableUsers.length,
             resourceCount: resourcesSnapshot.size,
         };
     } catch (error) {
