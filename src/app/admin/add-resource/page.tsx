@@ -58,7 +58,7 @@ const allSubjects = [
     'Accountancy', 'Business Studies', 'Economics',
     'History', 'Geography', 'Political Science', 'Sociology'
 ];
-const categories = ['Notes', 'Previous Year Questions', 'Syllabus'];
+const categories = ['Notes', 'Previous Year Questions', 'Syllabus', 'Text Book', 'Textual Answer', 'Important Point', 'Test', 'Other Study Material'];
 
 export default function AddResourceAdminPage() {
   const { user, isAdmin, loading: authLoading } = useAuth();
