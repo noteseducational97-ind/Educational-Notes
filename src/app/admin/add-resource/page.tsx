@@ -50,8 +50,7 @@ const FormSchema = z.object({
 });
 
 
-const allStreams = ['Science', 'MHT-CET', 'NEET', 'Commerce'];
-const allclasses = ['9', '10', '11', '12'];
+const allStreams = ['Science', 'MHT-CET', 'NEET', 'Commerce', 'Class 12', 'Class 11', 'Class 10'];
 const allSubjects = [
     'Physics', 'Chemistry', 'Maths', 'Biology',
     'Accountancy', 'Business Studies', 'Economics',
@@ -160,12 +159,12 @@ export default function AddResourceAdminPage() {
                       name="stream"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Stream(s)</FormLabel>
+                          <FormLabel>Stream(s) / Class</FormLabel>
                             <MultiSelect
                                 options={allStreams.map(s => ({ value: s, label: s }))}
                                 onValueChange={field.onChange}
                                 defaultValue={field.value}
-                                placeholder="Select streams..."
+                                placeholder="Select streams or classes..."
                             />
                           <FormMessage />
                         </FormItem>
@@ -173,20 +172,20 @@ export default function AddResourceAdminPage() {
                     />
                      <FormField
                         control={form.control}
-                        name="class"
+                        name="subject"
                         render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Class</FormLabel>
-                                <MultiSelect
-                                    options={allclasses.map(c => ({ value: c, label: `Class ${c}` }))}
-                                    onValueChange={(value) => field.onChange(value.length > 0 ? value[0] : '')}
-                                    defaultValue={field.value ? [field.value] : []}
-                                    placeholder="Select a class (optional)..."
-                                />
-                                <FormMessage />
-                            </FormItem>
+                          <FormItem>
+                              <FormLabel>Subject</FormLabel>
+                              <MultiSelect
+                                  options={allSubjects.map(s => ({ value: s, label: s }))}
+                                  onValueChange={field.onChange}
+                                  defaultValue={field.value}
+                                  placeholder="Select subjects..."
+                              />
+                              <FormMessage />
+                          </FormItem>
                         )}
-                        />
+                    />
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <FormField
@@ -204,22 +203,6 @@ export default function AddResourceAdminPage() {
                               <FormMessage />
                           </FormItem>
                       )}
-                    />
-                    <FormField
-                        control={form.control}
-                        name="subject"
-                        render={({ field }) => (
-                          <FormItem>
-                              <FormLabel>Subject</FormLabel>
-                              <MultiSelect
-                                  options={allSubjects.map(s => ({ value: s, label: s }))}
-                                  onValueChange={field.onChange}
-                                  defaultValue={field.value}
-                                  placeholder="Select subjects..."
-                              />
-                              <FormMessage />
-                          </FormItem>
-                        )}
                     />
                   </div>
                    <div className="space-y-4">

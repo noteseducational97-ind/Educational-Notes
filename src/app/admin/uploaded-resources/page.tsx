@@ -128,9 +128,8 @@ export default function UploadedResourcesPage() {
                             <TableHead>Status</TableHead>
                             <TableHead>Visibility</TableHead>
                             <TableHead>Category</TableHead>
-                            <TableHead>Class</TableHead>
                              <TableHead>Subject</TableHead>
-                            <TableHead>Stream(s)</TableHead>
+                            <TableHead>Stream/Class</TableHead>
                             <TableHead className="text-right">Actions</TableHead>
                           </TableRow>
                         </TableHeader>
@@ -158,7 +157,6 @@ export default function UploadedResourcesPage() {
                                         {resource.category.map(c => <Badge key={c} variant="secondary">{c}</Badge>)}
                                     </div>
                                   </TableCell>
-                                  <TableCell>{resource.class ? `Class ${resource.class}`: 'N/A'}</TableCell>
                                    <TableCell>
                                      <div className="flex flex-wrap gap-1">
                                         {resource.subject.map(s => <Badge key={s} variant="outline">{s}</Badge>)}
