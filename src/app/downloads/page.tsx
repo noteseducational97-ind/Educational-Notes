@@ -179,18 +179,23 @@ export default function DownloadsPage() {
   const FilterCard = ({ label, type, selectedItems }: { label: string; type: 'criteria' | 'category' | 'subject'; selectedItems: string[] }) => {
     const isSelected = selectedItems.includes(label);
     return (
-      <Card
+      <div
         onClick={() => toggleFilter(label, type)}
         className={cn(
-          'cursor-pointer transition-all duration-200 hover:shadow-md hover:-translate-y-1',
-          isSelected ? 'border-primary ring-2 ring-primary/50 bg-primary/5' : 'bg-card'
+          "relative cursor-pointer rounded-lg border-2 p-4 flex justify-center items-center text-center transition-all duration-300",
+          "hover:border-primary hover:bg-primary/5 hover:-translate-y-1",
+          isSelected ? "bg-primary/10 border-primary" : "border-muted"
         )}
       >
-        <CardContent className="p-4 flex items-center justify-between">
-          <span className={cn('font-medium', isSelected && 'text-primary')}>{label}</span>
-          {isSelected && <CheckCircle className="h-5 w-5 text-primary" />}
-        </CardContent>
-      </Card>
+        <span className={cn('font-semibold text-sm', isSelected ? 'text-primary' : 'text-muted-foreground')}>
+          {label}
+        </span>
+        {isSelected && (
+          <div className="absolute top-1 right-1 bg-primary rounded-full p-0.5">
+            <CheckCircle className="h-4 w-4 text-primary-foreground" />
+          </div>
+        )}
+      </div>
     );
   };
 
@@ -207,9 +212,12 @@ export default function DownloadsPage() {
             </p>
           </div>
           
-          <div className="mb-12 space-y-8">
-            <div>
-              <h2 className="text-2xl font-bold text-center mb-6">Select Your Criteria</h2>
+           <Card className="mb-12">
+            <CardHeader>
+              <CardTitle>Select Your Criteria</CardTitle>
+              <CardDescription>Narrow down the study materials to find exactly what you need.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-8">
                <div className='mb-6'>
                 <h3 className="text-lg font-semibold text-muted-foreground mb-4">Criteria</h3>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
@@ -234,8 +242,8 @@ export default function DownloadsPage() {
                   ))}
                 </div>
               </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
 
           {authLoading || loading ? (
             <LoadingSpinner />
