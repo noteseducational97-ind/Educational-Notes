@@ -401,13 +401,13 @@ export default function AskForm() {
                                 render={({ field }) => (
                                 <FormItem>
                                     <FormControl>
-                                        <div className="relative flex w-full items-center rounded-full bg-background border shadow-sm">
+                                        <div className="relative flex w-full items-center">
                                             <Button
                                                 type="button"
                                                 variant="ghost"
                                                 size="icon"
                                                 onClick={() => fileInputRef.current?.click()}
-                                                className="shrink-0 text-muted-foreground"
+                                                className="absolute left-1 shrink-0 text-muted-foreground"
                                             >
                                                 <Paperclip />
                                                 <span className="sr-only">Attach file</span>
@@ -422,7 +422,7 @@ export default function AskForm() {
                                             <Input 
                                                 placeholder="e.g., What is this? Explain it to me."
                                                 {...field} 
-                                                className="flex-1 resize-none border-0 shadow-none focus-visible:ring-0"
+                                                className="flex-1 resize-none border-0 shadow-none focus-visible:ring-0 pl-12 pr-12"
                                                 onKeyDown={(e) => {
                                                     if (e.key === 'Enter' && !e.shiftKey && !loading) {
                                                         e.preventDefault();
@@ -432,7 +432,7 @@ export default function AskForm() {
                                                     }
                                                 }}
                                             />
-                                            <Button type="submit" disabled={loading || !form.getValues('question')} size="icon" className="shrink-0 rounded-full mr-1">
+                                            <Button type="submit" disabled={loading || !form.getValues('question')} size="icon" className="absolute right-1 shrink-0 rounded-full">
                                                 {loading ? <Loader2 className="animate-spin" /> : <Send />}
                                                 <span className="sr-only">Send</span>
                                             </Button>

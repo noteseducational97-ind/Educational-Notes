@@ -185,7 +185,7 @@ export default function DownloadsPage() {
             </p>
           </div>
 
-          <Card className="mb-8 shadow-lg bg-card">
+          <Card className="mb-8 shadow-sm bg-card">
             <CardHeader>
                 <CardTitle className="text-xl">Select Your Criteria</CardTitle>
                 <CardDescription>Narrow down the study materials to find exactly what you need.</CardDescription>
