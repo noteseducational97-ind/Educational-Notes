@@ -185,61 +185,7 @@ export default function DownloadsPage() {
             </p>
           </div>
 
-          <Card className="mb-8 shadow-sm bg-card">
-            <CardHeader>
-                <CardTitle className="text-xl">Select Your Criteria</CardTitle>
-                <CardDescription>Narrow down the study materials to find exactly what you need.</CardDescription>
-            </CardHeader>
-            <CardContent className='space-y-6'>
-                <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
-                    <div>
-                        <Label className='text-base font-medium'>Stream(s)</Label>
-                        <MultiSelect
-                            options={allStreams.map(s => ({ value: s, label: s }))}
-                            onValueChange={setSelectedStreams}
-                            defaultValue={selectedStreams}
-                            placeholder="Filter streams..."
-                            className="mt-2"
-                        />
-                    </div>
-                    <div>
-                      <Label className='text-base font-medium'>Class</Label>
-                      <Select onValueChange={setSelectedClass} value={selectedClass}>
-                        <SelectTrigger className='mt-2'>
-                            <SelectValue placeholder="Select Class" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectGroup>
-                                {allclasses.map(c => <SelectItem key={c} value={c}>{c === 'All' ? 'All Classes' : `Class ${c}`}</SelectItem>)}
-                            </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <Label className='text-base font-medium'>Categories</Label>
-                    <MultiSelect
-                      options={allCategories.map(c => ({ value: c, label: c }))}
-                      onValueChange={setSelectedCategories}
-                      defaultValue={selectedCategories}
-                      placeholder="Filter categories..."
-                      className="mt-2"
-                    />
-                  </div>
-                  <div>
-                    <Label className='text-base font-medium'>Subjects</Label>
-                    <MultiSelect
-                      options={allSubjects.map(s => ({ value: s, label: s }))}
-                      onValueChange={setSelectedSubjects}
-                      defaultValue={selectedSubjects}
-                      placeholder="Filter subjects..."
-                      className="mt-2"
-                    />
-                  </div>
-                </div>
-            </CardContent>
-          </Card>
+          
 
           {authLoading || loading ? (
             <LoadingSpinner />
