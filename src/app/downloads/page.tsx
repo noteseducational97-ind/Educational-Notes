@@ -194,7 +194,7 @@ export default function DownloadsPage() {
                     options={contentCategories.map(c => ({ label: c, value: c }))}
                     onValueChange={setSelectedCategories}
                     defaultValue={selectedCategories}
-                    placeholder="Select content type..."
+                    placeholder="Select category..."
                 />
                 <MultiSelect
                     options={subjects.map(s => ({ label: s, value: s }))}
@@ -319,5 +319,3 @@ export default function DownloadsPage() {
     </div>
   );
 }
-
-    
