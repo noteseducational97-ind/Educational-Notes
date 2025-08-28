@@ -49,7 +49,7 @@ const FormSchema = z.object({
 });
 
 
-const allStreams = ['Science', 'MHT-CET', 'NEET', 'Commerce', 'Class 12', 'Class 11', 'Class 10'];
+const allStreams = ['MHT-CET', 'Class 12', 'Class 11', 'Class 10'];
 const allSubjects = [
     'Physics', 'Chemistry', 'Maths', 'Biology',
     'Accountancy', 'Business Studies', 'Economics',
