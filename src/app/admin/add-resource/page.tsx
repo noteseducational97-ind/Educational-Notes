@@ -53,8 +53,6 @@ const allStreams = ['MHT-CET', 'Class 12', 'Class 11', 'Class 10'];
 const allSubjects = [
     'Physics', 'Chemistry', 'Mathematics', 'Biology',
     'English', 'Math-1', 'Math-2', 'Science-1', 'Science-2',
-    'Accountancy', 'Business Studies', 'Economics',
-    'History', 'Geography', 'Political Science', 'Sociology'
 ];
 const categories = ['Notes', 'Previous Year Questions', 'Syllabus', 'Text Book', 'Textual Answer', 'Important Point', 'Test', 'Other Study Material'];
 
@@ -292,5 +290,3 @@ export default function AddResourceAdminPage() {
     </div>
   );
 }
-
-    

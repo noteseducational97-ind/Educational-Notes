@@ -86,13 +86,14 @@ export default function DownloadsPage() {
   }, [fetchInitialData]);
 
   const availableSubjects = useMemo(() => {
+    const subjects = new Set<string>();
     if (selectedCriteria.includes('Class 10')) {
-      return class10Subjects;
+      class10Subjects.forEach(s => subjects.add(s));
     }
     if (selectedCriteria.includes('Class 11') || selectedCriteria.includes('Class 12') || selectedCriteria.includes('MHT-CET')) {
-      return scienceSubjects;
+      scienceSubjects.forEach(s => subjects.add(s));
     }
-    return [...new Set([...scienceSubjects, ...class10Subjects])];
+    return Array.from(subjects);
   }, [selectedCriteria]);
 
   useEffect(() => {
@@ -152,8 +153,7 @@ export default function DownloadsPage() {
     return resources.filter(resource => {
       const criteriaMatch = selectedCriteria.length === 0 || 
         selectedCriteria.some(crit => 
-            resource.stream.some(s => s.toLowerCase().includes(crit.toLowerCase())) ||
-            (resource.class && `Class ${resource.class}` === crit)
+            resource.stream.some(s => s.toLowerCase().includes(crit.toLowerCase()))
         );
       const categoryMatch = selectedCategories.length === 0 || resource.category.some(c => selectedCategories.includes(c));
       const subjectMatch = selectedSubjects.length === 0 || resource.subject.some(s => selectedSubjects.includes(s));
@@ -333,5 +333,3 @@ export default function DownloadsPage() {
     </div>
   );
 }
-
-    
