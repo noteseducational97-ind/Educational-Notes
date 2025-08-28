@@ -38,7 +38,7 @@ const adminAuth = getAuth(app);
 export const listAllUsers = async () => {
   try {
     const userRecords = await adminAuth.listUsers();
-    return userRecords.users.map((user) => ({
+    const allUsers = userRecords.users.map((user) => ({
       uid: user.uid,
       email: user.email,
       displayName: user.displayName,
@@ -47,6 +47,8 @@ export const listAllUsers = async () => {
       disabled: user.disabled,
       creationTime: new Date(user.metadata.creationTime).toLocaleDateString(),
     }));
+    // Exclude the admin user from this list
+    return allUsers.filter(user => user.email !== 'noteseducational97@gmail.com');
   } catch (error) {
     console.error('Error listing users:', error);
     return [];
