@@ -28,6 +28,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import Pagination from '@/components/shared/Pagination';
 
+const criteria = ['Class 12', 'Class 11', 'Class 10', 'MHT-CET'];
 const contentCategories = [
     'Notes', 'Text Book', 'Textual Answer', 'Important Point', 
     'PYQ', 'Syllabus', 'Test', 'Other Study Material'
@@ -48,6 +49,7 @@ export default function DownloadsPage() {
   const [watchlistIds, setWatchlistIds] = useState<Set<string>>(new Set());
   const [showLoginDialog, setShowLoginDialog] = useState(false);
 
+  const [selectedCriteria, setSelectedCriteria] = useState<string[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedSubjects, setSelectedSubjects] = useState<string[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -129,8 +131,12 @@ export default function DownloadsPage() {
     }
   };
   
-  const toggleFilter = (value: string, type: 'category' | 'subject') => {
-    const updater = type === 'category' ? setSelectedCategories : setSelectedSubjects;
+  const toggleFilter = (value: string, type: 'criteria' | 'category' | 'subject') => {
+    const updater = {
+      criteria: setSelectedCriteria,
+      category: setSelectedCategories,
+      subject: setSelectedSubjects,
+    }[type];
     updater(prev => 
       prev.includes(value) ? prev.filter(item => item !== value) : [...prev, value]
     );
@@ -139,12 +145,17 @@ export default function DownloadsPage() {
   const filteredResources = useMemo(() => {
     setCurrentPage(1); // Reset to first page on filter change
     return resources.filter(resource => {
+      const criteriaMatch = selectedCriteria.length === 0 || 
+        selectedCriteria.some(crit => 
+            resource.stream.some(s => s.toLowerCase().includes(crit.toLowerCase())) ||
+            (resource.class && `Class ${resource.class}` === crit)
+        );
       const categoryMatch = selectedCategories.length === 0 || resource.category.some(c => selectedCategories.includes(c));
       const subjectMatch = selectedSubjects.length === 0 || resource.subject.some(s => selectedSubjects.includes(s));
       
-      return categoryMatch && subjectMatch;
+      return criteriaMatch && categoryMatch && subjectMatch;
     });
-  }, [resources, selectedCategories, selectedSubjects]);
+  }, [resources, selectedCriteria, selectedCategories, selectedSubjects]);
 
   const paginatedResources = useMemo(() => {
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -165,7 +176,7 @@ export default function DownloadsPage() {
     }
   }
 
-  const FilterCard = ({ label, type, selectedItems }: { label: string; type: 'category' | 'subject'; selectedItems: string[] }) => {
+  const FilterCard = ({ label, type, selectedItems }: { label: string; type: 'criteria' | 'category' | 'subject'; selectedItems: string[] }) => {
     const isSelected = selectedItems.includes(label);
     return (
       <Card
@@ -199,6 +210,14 @@ export default function DownloadsPage() {
           <div className="mb-12 space-y-8">
             <div>
               <h2 className="text-2xl font-bold text-center mb-6">Select Your Criteria</h2>
+               <div className='mb-6'>
+                <h3 className="text-lg font-semibold text-muted-foreground mb-4">Criteria</h3>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                  {criteria.map(crit => (
+                    <FilterCard key={crit} label={crit} type="criteria" selectedItems={selectedCriteria} />
+                  ))}
+                </div>
+              </div>
               <div className='mb-6'>
                 <h3 className="text-lg font-semibold text-muted-foreground mb-4">Content Type</h3>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
