@@ -62,11 +62,7 @@ export default function AdminUsersPage() {
   const fetchUsers = () => {
     setLoadingData(true);
     listAllUsers()
-      .then(allUsers => {
-        const adminEmail = 'noteseducational97@gmail.com';
-        const filteredUsers = allUsers.filter(u => u.email !== adminEmail);
-        setUsers(filteredUsers);
-      })
+      .then(setUsers)
       .finally(() => setLoadingData(false));
   };
   
