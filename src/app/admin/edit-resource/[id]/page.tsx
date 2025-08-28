@@ -51,7 +51,8 @@ const FormSchema = z.object({
 
 const allStreams = ['MHT-CET', 'Class 12', 'Class 11', 'Class 10'];
 const allSubjects = [
-    'Physics', 'Chemistry', 'Maths', 'Biology',
+    'Physics', 'Chemistry', 'Mathematics', 'Biology',
+    'English', 'Math-1', 'Math-2', 'Science-1', 'Science-2',
     'Accountancy', 'Business Studies', 'Economics',
     'History', 'Geography', 'Political Science', 'Sociology'
 ];
@@ -330,3 +331,5 @@ export default function EditResourceAdminPage() {
     </div>
   );
 }
+
+    

@@ -4,7 +4,6 @@
 import Header from '@/components/layout/Header';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { getResources, Resource, addToWatchlist, removeFromWatchlist, getWatchlist } from '@/lib/firebase/resources';
-import { format } from 'date-fns';
 import { ArrowUpRight, Download, BookOpen, Bookmark, BookmarkCheck, Clock, Lock, LogIn, ExternalLink, HelpCircle, CheckCircle } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState, useMemo, useCallback } from 'react';
@@ -35,7 +34,8 @@ const contentCategories = [
     'PYQ', 'Syllabus', 'Test', 'Other Study Material'
 ];
 
-const subjects = ['Physics', 'Chemistry', 'Mathematics', 'Biology'];
+const scienceSubjects = ['Physics', 'Chemistry', 'Mathematics', 'Biology'];
+const class10Subjects = ['English', 'Math-1', 'Math-2', 'Science-1', 'Science-2'];
 
 const GUEST_WATCHLIST_KEY = 'guest-watchlist';
 const ITEMS_PER_PAGE = 9;
@@ -84,7 +84,22 @@ export default function DownloadsPage() {
   useEffect(() => {
     fetchInitialData();
   }, [fetchInitialData]);
-  
+
+  const availableSubjects = useMemo(() => {
+    if (selectedCriteria.includes('Class 10')) {
+      return class10Subjects;
+    }
+    if (selectedCriteria.includes('Class 11') || selectedCriteria.includes('Class 12') || selectedCriteria.includes('MHT-CET')) {
+      return scienceSubjects;
+    }
+    return [...new Set([...scienceSubjects, ...class10Subjects])];
+  }, [selectedCriteria]);
+
+  useEffect(() => {
+    // When available subjects change, filter out any selected subjects that are no longer available.
+    setSelectedSubjects(prev => prev.filter(subject => availableSubjects.includes(subject)));
+  }, [availableSubjects]);
+
   const handleToggleWatchlist = async (resource: Resource) => {
     setSaving(resource.id);
     const isSaved = watchlistIds.has(resource.id);
@@ -197,7 +212,7 @@ export default function DownloadsPage() {
                     placeholder="Select category..."
                 />
                 <MultiSelect
-                    options={subjects.map(s => ({ label: s, value: s }))}
+                    options={availableSubjects.map(s => ({ label: s, value: s }))}
                     onValueChange={setSelectedSubjects}
                     defaultValue={selectedSubjects}
                     placeholder="Select subjects..."
@@ -232,7 +247,6 @@ export default function DownloadsPage() {
                             <div className='flex flex-wrap gap-1'>
                                 {resource.category.map(c => <Badge key={c} variant="secondary">{c}</Badge>)}
                             </div>
-                            {resource.class && <Badge variant="outline">Class {resource.class}</Badge>}
                             <div className='flex flex-wrap gap-1'>
                                 {resource.stream.map(s => <Badge key={s} variant="outline">{s}</Badge>)}
                             </div>
@@ -319,3 +333,5 @@ export default function DownloadsPage() {
     </div>
   );
 }
+
+    
