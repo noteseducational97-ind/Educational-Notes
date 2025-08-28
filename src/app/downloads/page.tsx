@@ -27,6 +27,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import Pagination from '@/components/shared/Pagination';
+import { MultiSelect } from '@/components/ui/multi-select';
 
 const criteria = ['Class 12', 'Class 11', 'Class 10', 'MHT-CET'];
 const contentCategories = [
@@ -131,17 +132,6 @@ export default function DownloadsPage() {
     }
   };
   
-  const toggleFilter = (value: string, type: 'criteria' | 'category' | 'subject') => {
-    const updater = {
-      criteria: setSelectedCriteria,
-      category: setSelectedCategories,
-      subject: setSelectedSubjects,
-    }[type];
-    updater(prev => 
-      prev.includes(value) ? prev.filter(item => item !== value) : [...prev, value]
-    );
-  };
-
   const filteredResources = useMemo(() => {
     setCurrentPage(1); // Reset to first page on filter change
     return resources.filter(resource => {
@@ -176,30 +166,6 @@ export default function DownloadsPage() {
     }
   }
 
-  const FilterCard = ({ label, type, selectedItems }: { label: string; type: 'criteria' | 'category' | 'subject'; selectedItems: string[] }) => {
-    const isSelected = selectedItems.includes(label);
-    return (
-      <div
-        onClick={() => toggleFilter(label, type)}
-        className={cn(
-          "relative cursor-pointer rounded-lg border-2 p-4 flex justify-center items-center text-center transition-all duration-300",
-          "hover:border-primary hover:bg-primary/5 hover:-translate-y-1",
-          isSelected ? "bg-primary/10 border-primary" : "border-muted"
-        )}
-      >
-        <span className={cn('font-semibold text-sm', isSelected ? 'text-primary' : 'text-muted-foreground')}>
-          {label}
-        </span>
-        {isSelected && (
-          <div className="absolute top-1 right-1 bg-primary rounded-full p-0.5">
-            <CheckCircle className="h-4 w-4 text-primary-foreground" />
-          </div>
-        )}
-      </div>
-    );
-  };
-
-
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
@@ -217,31 +183,25 @@ export default function DownloadsPage() {
               <CardTitle>Select Your Criteria</CardTitle>
               <CardDescription>Narrow down the study materials to find exactly what you need.</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-8">
-               <div className='mb-6'>
-                <h3 className="text-lg font-semibold text-muted-foreground mb-4">Criteria</h3>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                  {criteria.map(crit => (
-                    <FilterCard key={crit} label={crit} type="criteria" selectedItems={selectedCriteria} />
-                  ))}
-                </div>
-              </div>
-              <div className='mb-6'>
-                <h3 className="text-lg font-semibold text-muted-foreground mb-4">Content Type</h3>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                  {contentCategories.map(cat => (
-                    <FilterCard key={cat} label={cat} type="category" selectedItems={selectedCategories} />
-                  ))}
-                </div>
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-muted-foreground mb-4">Subject</h3>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                  {subjects.map(sub => (
-                    <FilterCard key={sub} label={sub} type="subject" selectedItems={selectedSubjects} />
-                  ))}
-                </div>
-              </div>
+            <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <MultiSelect
+                    options={criteria.map(c => ({ label: c, value: c }))}
+                    onValueChange={setSelectedCriteria}
+                    defaultValue={selectedCriteria}
+                    placeholder="Select criteria..."
+                />
+                <MultiSelect
+                    options={contentCategories.map(c => ({ label: c, value: c }))}
+                    onValueChange={setSelectedCategories}
+                    defaultValue={selectedCategories}
+                    placeholder="Select content type..."
+                />
+                <MultiSelect
+                    options={subjects.map(s => ({ label: s, value: s }))}
+                    onValueChange={setSelectedSubjects}
+                    defaultValue={selectedSubjects}
+                    placeholder="Select subjects..."
+                />
             </CardContent>
           </Card>
 
@@ -359,3 +319,5 @@ export default function DownloadsPage() {
     </div>
   );
 }
+
+    
