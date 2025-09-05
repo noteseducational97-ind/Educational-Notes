@@ -90,29 +90,7 @@ export default function OmrSheetMakerPage() {
         const pdfWidth = pdf.internal.pageSize.getWidth();
         const pdfHeight = pdf.internal.pageSize.getHeight();
         
-        // Calculate the aspect ratio of the captured image
-        const imgProps = pdf.getImageProperties(imgData);
-        const canvasWidth = imgProps.width;
-        const canvasHeight = imgProps.height;
-        const ratio = canvasHeight / canvasWidth;
-
-        let finalImgHeight = pdfWidth * ratio;
-        
-        // If image is too tall for one page, it will be split.
-        let heightLeft = finalImgHeight;
-        let position = 0;
-
-        // Add the first page, scaling it to fit the width and preserving aspect ratio
-        pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, finalImgHeight);
-        heightLeft -= pdfHeight;
-
-        // Add subsequent pages if needed
-        while (heightLeft > 0) {
-            position -= pdfHeight; // Move the image "up" on the new page
-            pdf.addPage();
-            pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, finalImgHeight);
-            heightLeft -= pdfHeight;
-        }
+        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
 
         pdf.save(`${values.title.replace(/ /g, '_')}_OMR_Sheet.pdf`);
 

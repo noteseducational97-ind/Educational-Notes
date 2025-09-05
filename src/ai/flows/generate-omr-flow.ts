@@ -68,7 +68,7 @@ const generateOmrFlow = ai.defineFlow(
   async (input) => {
     const { questionCount, optionsPerQuestion, optionStyle } = input;
     const columns = 4;
-    const rows = Math.ceil(questionCount / columns);
+    const rowsPerColumn = Math.ceil(questionCount / columns);
 
     const getOptionLabel = (index: number) => {
       if (optionStyle === 'alphabetic') {
@@ -84,17 +84,17 @@ const generateOmrFlow = ai.defineFlow(
     const optionsCellHtml = `<td style="border: 1px solid #ccc; padding: 5px; display: flex; justify-content: center; align-items: center; gap: 5px;">${optionsHtml}</td>`;
 
     let tableBody = '';
-    for (let r = 0; r < rows; r++) {
+    for (let r = 1; r <= rowsPerColumn; r++) {
       tableBody += '<tr>';
       for (let c = 0; c < columns; c++) {
-        const questionNumber = r + rows * c + 1;
+        const questionNumber = r + (c * rowsPerColumn);
         if (questionNumber <= questionCount) {
           tableBody += `<td style="border: 1px solid #ccc; text-align: center; padding: 5px;">${questionNumber}</td>`;
           tableBody += optionsCellHtml;
         } else {
           // Fill empty cells if the last row is not full
-          tableBody += `<td style="border: 1px solid #ccc; text-align: center; padding: 5px;"></td>`;
-          tableBody += `<td style="border: 1px solid #ccc; text-align: center; padding: 5px;"></td>`;
+          tableBody += `<td style="border: 1px solid #ccc; padding: 5px;"></td>`;
+          tableBody += `<td style="border: 1px solid #ccc; padding: 5px;"></td>`;
         }
       }
       tableBody += '</tr>';
