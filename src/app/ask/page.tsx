@@ -12,9 +12,9 @@ function AskPageContent() {
 
 export default function AskPage() {
   return (
-    <div className="flex h-screen flex-col bg-background">
+    <div className="flex h-screen flex-col bg-muted/30">
       <Header />
-      <main className="flex-1 flex items-center justify-center p-4 overflow-hidden">
+      <main className="flex-1 flex items-center justify-center p-2 sm:p-4 md:p-6 overflow-hidden">
         <div className="h-full w-full flex items-center justify-center">
             <Suspense fallback={<LoadingSpinner />}>
                 <AskPageContent />

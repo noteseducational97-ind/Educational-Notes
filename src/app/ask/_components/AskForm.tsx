@@ -10,7 +10,6 @@ import { answerQuestion } from '@/ai/flows/question-answer-flow';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Loader2, Sparkles, Send, Trash2, Paperclip, X, History, LogIn, PlusCircle, PanelRightClose, PanelRightOpen, Copy, Download } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -232,14 +231,14 @@ export default function AskForm() {
   const showSuggestions = !loading && lastMessage?.role === 'assistant' && lastMessage.suggestions && lastMessage.suggestions.length > 0;
 
   return (
-    <Card className="flex flex-col shadow-lg h-full w-full max-w-7xl overflow-hidden">
+    <div className="flex flex-col shadow-lg h-full w-full max-w-7xl overflow-hidden border rounded-lg">
         <div className="flex h-full">
             <div className={cn("flex flex-col flex-1 transition-all duration-300", isHistoryPanelOpen && "sm:w-[calc(100%-350px)]")}>
-                <CardHeader className="border-b">
+                <div className="border-b p-4">
                     <div className="flex justify-between items-center">
-                        <CardTitle className="text-xl md:text-2xl flex items-center gap-2">
+                        <h2 className="text-xl md:text-2xl font-bold flex items-center gap-2">
                             <Sparkles />Educational AI Assistant
-                        </CardTitle>
+                        </h2>
                         <div className="flex items-center gap-2">
                             <Button variant="outline" size="sm" className="hidden md:flex" onClick={handleNewChat}>
                                 <PlusCircle className="mr-2 h-4 w-4" /> New Chat
@@ -271,8 +270,8 @@ export default function AskForm() {
                             </Button>
                         )}
                     </div>
-                </CardHeader>
-                <CardContent className="p-0 flex-1 overflow-hidden">
+                </div>
+                <div className="p-0 flex-1 overflow-hidden">
                     <ScrollArea className="h-full" ref={scrollAreaRef}>
                         <div className="p-6 space-y-6">
                             {conversation.length === 0 ? (
@@ -378,8 +377,8 @@ export default function AskForm() {
                             )}
                         </div>
                     </ScrollArea>
-                </CardContent>
-                <CardFooter className="border-t pt-4">
+                </div>
+                <div className="border-t p-4">
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-3">
                         {attachedImage && (
@@ -444,7 +443,7 @@ export default function AskForm() {
                             />
                         </form>
                     </Form>
-                </CardFooter>
+                </div>
             </div>
             {user && (
                 <div className={cn("hidden transition-all duration-300", isHistoryPanelOpen && "block")}>
@@ -474,8 +473,6 @@ export default function AskForm() {
             </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>
-    </Card>
+    </div>
   );
 }
-
-    
