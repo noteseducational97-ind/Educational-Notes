@@ -31,57 +31,69 @@ const prompt = ai.definePrompt({
   input: { schema: GenerateOmrInputSchema },
   output: { schema: GenerateOmrOutputSchema },
   prompt: `
-    You are an expert web developer specializing in creating beautiful, printable HTML designs.
-    Your task is to generate a self-contained HTML file for a modern OMR (Optical Mark Recognition) answer sheet, optimized for A4 printing. The HTML must have a white background.
+    You are an expert web developer specializing in creating precise, printable HTML designs.
+    Your task is to generate a self-contained HTML file for a modern OMR (Optical Mark Recognition) answer sheet, optimized for A4 printing. The entire output must be a single HTML string with inline CSS.
 
-    **Design Principles:**
-    *   **Clean & Modern:** Use a minimalist design with plenty of white space.
-    *   **Professional Typography:** Use a standard, elegant sans-serif font like 'Inter' or 'Lato'. Font size should be readable (e.g., 10pt or 11pt).
-    *   **Space-Efficient Layout:** Use a multi-column layout (4 columns is ideal) to fit as many questions as possible without looking cluttered.
-    *   **Subtle Styling:** Use light gray for borders and lines. Avoid harsh black lines.
+    **Design Requirements:**
+    *   **Table-Based Layout:** The entire OMR sheet must be a single HTML \`<table>\`.
+    *   **Multi-Column Format:** The table must have 5 sets of "Ques. No." and "Option" columns, for a total of 10 \`<th>\` headers in the table head.
+    *   **Question Distribution:** Distribute the \`{{{questionCount}}}\` questions evenly across the 5 columns. For example, for 100 questions, you will have 20 rows.
+    *   **Styling:** Use inline CSS for all styling. The table should have a \`1px solid #ccc\` border on all cells (\`th\`, \`td\`). Text should be centered.
+    *   **Bubbles:** Options should be rendered as circular bubbles with the letter/number inside.
 
     **HTML Structure & Styling (Inline CSS):**
-    1.  **Page Container:**
-        *   Create a main \`<div>\` that acts as the A4 page container.
-        *   It must have a noticeable but soft border: \`border: 1px solid #ccc;\`.
-        *   Use padding to ensure content doesn't touch the edges (e.g., \`padding: 20mm;\`).
-        *   Set the box-sizing to \`border-box\`.
-        *   **Crucially, it must have a white background: \`background-color: white;\`.**
+    1.  **Main Container (\`<div>\`):**
+        *   Wrap the entire output in a \`<div>\` with a white background (\`background-color: white;\`) and appropriate padding (e.g., \`padding: 20px;\`).
     2.  **Header Section:**
-        *   The header should contain the \`{{{title}}}\` and (if provided) the \`{{{subtitle}}}\`.
-        *   Style the title with a larger font size and bold weight. The subtitle should be smaller and lighter.
-        *   Add a subtle horizontal line (\`<hr style="border-top: 1px solid #eee;">\`) below the header.
-        *   Ensure there's ample margin below the header before the questions start.
-    3.  **Questions Grid:**
-        *   Use a CSS Grid (\`display: grid;\`) for the main content area to create the 4-column layout. Use \`grid-template-columns: repeat(4, 1fr);\` and add a \`gap\` for spacing between columns.
-    4.  **Individual Question Block:**
-        *   Each question block should be a flex container to align items neatly.
-        *   The question number should be bold and separated from the options.
-    5.  **Answer Options:**
-        *   For each question, generate \`{{{optionsPerQuestion}}}\` options.
-        *   Label options with uppercase letters (A, B, C...) if \`{{{optionStyle}}}\` is 'alphabetic', or numbers (1, 2, 3...) if 'numeric'.
-        *   Each option consists of the label and a circular bubble. The bubble must be a perfect circle (\`border-radius: 50%;\`), with a grey border.
-        *   Ensure the label and its corresponding bubble are vertically aligned perfectly.
+        *   Place the \`{{{title}}}\` and (if provided) \`{{{subtitle}}}\` above the table. Style the title with a larger font size and bold weight.
+    3.  **Table (\`<table>\`):**
+        *   Set \`width: 100%; border-collapse: collapse;\`.
+    4.  **Table Header (\`<thead>\`):**
+        *   Create one \`<tr>\` with 10 \`<th>\` elements.
+        *   Repeat "Ques. No." and "Option" 5 times.
+        *   Style headers with \`border: 1px solid #ccc; padding: 8px; text-align: center; background-color: #f2f2f2;\`.
+    5.  **Table Body (\`<tbody>\`):**
+        *   Generate the necessary number of \`<tr>\` rows to accommodate all questions.
+        *   Each \`<tr>\` will contain 10 \`<td>\`s (5 for question numbers, 5 for options).
+        *   Question Number Cell: Center the number vertically and horizontally.
+        *   Options Cell: Use a flex container (\`display: flex; justify-content: center; align-items: center; gap: 5px;\`) to hold the bubbles.
+    6.  **Answer Bubbles (\`<span>\`):**
+        *   Each bubble should be a \`<span>\` styled to be a perfect circle with a border.
+        *   Example bubble style: \`display: flex; justify-content: center; align-items: center; width: 20px; height: 20px; border: 1px solid #999; border-radius: 50%; font-size: 10pt;\`.
 
-    **Final Output:**
-    Return the complete, self-contained HTML document as a single string in the 'htmlContent' field. Do not add any markdown, comments, or explanations outside of the HTML code.
-
-    **Example Snippet for one Question Block (use this styling as a guide):**
+    **Example Snippet for one Table Row (\`<tr>\`) with 100 Questions (this is row 1):**
     \`\`\`html
-    <div style="display: flex; align-items: center; margin-bottom: 8px; font-size: 11pt;">
-        <strong style="margin-right: 10px; width: 30px;">1.</strong>
-        <div style="display: flex; align-items: center; gap: 8px;">
-            <span>A</span>
-            <span style="display: inline-block; width: 14px; height: 14px; border: 1px solid #999; border-radius: 50%;"></span>
-            <span>B</span>
-            <span style="display: inline-block; width: 14px; height: 14px; border: 1px solid #999; border-radius: 50%;"></span>
-            <span>C</span>
-            <span style="display: inline-block; width: 14px; height: 14px; border: 1px solid #999; border-radius: 50%;"></span>
-            <span>D</span>
-            <span style="display: inline-block; width: 14px; height: 14px; border: 1px solid #999; border-radius: 50%;"></span>
-        </div>
-    </div>
+    <tr>
+        <td style="border: 1px solid #ccc; text-align: center; padding: 5px;">1</td>
+        <td style="border: 1px solid #ccc; text-align: center; padding: 5px; display: flex; justify-content: center; align-items: center; gap: 5px;">
+            <span style="display: flex; justify-content: center; align-items: center; width: 20px; height: 20px; border: 1px solid #999; border-radius: 50%;">A</span>
+            <span style="display: flex; justify-content: center; align-items: center; width: 20px; height: 20px; border: 1px solid #999; border-radius: 50%;">B</span>
+            <span style="display: flex; justify-content: center; align-items: center; width: 20px; height: 20px; border: 1px solid #999; border-radius: 50%;">C</span>
+            <span style="display: flex; justify-content: center; align-items: center; width: 20px; height: 20px; border: 1px solid #999; border-radius: 50%;">D</span>
+        </td>
+        <td style="border: 1px solid #ccc; text-align: center; padding: 5px;">21</td>
+        <td style="border: 1px solid #ccc; text-align: center; padding: 5px; display: flex; justify-content: center; align-items: center; gap: 5px;">
+            <span style="display: flex; justify-content: center; align-items: center; width: 20px; height: 20px; border: 1px solid #999; border-radius: 50%;">A</span>
+            <span style="display: flex; justify-content: center; align-items: center; width: 20px; height: 20px; border: 1px solid #999; border-radius: 50%;">B</span>
+            <span style="display: flex; justify-content: center; align-items: center; width: 20px; height: 20px; border: 1px solid #999; border-radius: 50%;">C</span>
+            <span style="display: flex; justify-content: center; align-items: center; width: 20px; height: 20px; border: 1px solid #999; border-radius: 50%;">D</span>
+        </td>
+        <td style="border: 1px solid #ccc; text-align: center; padding: 5px;">41</td>
+        <td style="border: 1px solid #ccc; text-align: center; padding: 5px; display: flex; justify-content: center; align-items: center; gap: 5px;">
+            ...options...
+        </td>
+        <td style="border: 1px solid #ccc; text-align: center; padding: 5px;">61</td>
+        <td style="border: 1px solid #ccc; text-align: center; padding: 5px; display: flex; justify-content: center; align-items: center; gap: 5px;">
+            ...options...
+        </td>
+        <td style="border: 1px solid #ccc; text-align: center; padding: 5px;">81</td>
+        <td style="border: 1px solid #ccc; text-align: center; padding: 5px; display: flex; justify-content: center; align-items: center; gap: 5px;">
+            ...options...
+        </td>
+    </tr>
     \`\`\`
+
+    Return the complete, self-contained HTML document as a single string in the 'htmlContent' field. Do not add any markdown, comments, or explanations outside of the HTML code.
   `,
 });
 
