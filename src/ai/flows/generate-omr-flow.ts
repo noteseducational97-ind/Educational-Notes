@@ -58,25 +58,25 @@ const prompt = ai.definePrompt({
         *   Question Number Cell: Center the number vertically and horizontally.
         *   Options Cell: Use a flex container (\`display: flex; justify-content: center; align-items: center; gap: 5px;\`) to hold the bubbles.
     6.  **Answer Bubbles (\`<span>\`):**
-        *   Each bubble should be a \`<span>\` styled to be a perfect circle with a border.
-        *   Example bubble style: \`display: inline-flex; justify-content: center; align-items: center; width: 24px; height: 24px; border: 1px solid #999; border-radius: 50%; font-size: 10pt; vertical-align: middle;\`.
+        *   Each bubble should be a \`<span>\` styled to be a perfect circle with a border. The text inside must be perfectly centered.
+        *   Example bubble style: \`display: flex; justify-content: center; align-items: center; width: 24px; height: 24px; border: 1px solid #999; border-radius: 50%; font-size: 10pt;\`.
 
     **Example Snippet for one Table Row (\`<tr>\`) with 100 Questions (this is row 1):**
     \`\`\`html
     <tr>
         <td style="border: 1px solid #ccc; text-align: center; padding: 5px;">1</td>
         <td style="border: 1px solid #ccc; text-align: center; padding: 5px; display: flex; justify-content: center; align-items: center; gap: 5px;">
-            <span style="display: inline-flex; justify-content: center; align-items: center; width: 24px; height: 24px; border: 1px solid #999; border-radius: 50%; font-size: 10pt; vertical-align: middle;">A</span>
-            <span style="display: inline-flex; justify-content: center; align-items: center; width: 24px; height: 24px; border: 1px solid #999; border-radius: 50%; font-size: 10pt; vertical-align: middle;">B</span>
-            <span style="display: inline-flex; justify-content: center; align-items: center; width: 24px; height: 24px; border: 1px solid #999; border-radius: 50%; font-size: 10pt; vertical-align: middle;">C</span>
-            <span style="display: inline-flex; justify-content: center; align-items: center; width: 24px; height: 24px; border: 1px solid #999; border-radius: 50%; font-size: 10pt; vertical-align: middle;">D</span>
+            <span style="display: flex; justify-content: center; align-items: center; width: 24px; height: 24px; border: 1px solid #999; border-radius: 50%; font-size: 10pt;">A</span>
+            <span style="display: flex; justify-content: center; align-items: center; width: 24px; height: 24px; border: 1px solid #999; border-radius: 50%; font-size: 10pt;">B</span>
+            <span style="display: flex; justify-content: center; align-items: center; width: 24px; height: 24px; border: 1px solid #999; border-radius: 50%; font-size: 10pt;">C</span>
+            <span style="display: flex; justify-content: center; align-items: center; width: 24px; height: 24px; border: 1px solid #999; border-radius: 50%; font-size: 10pt;">D</span>
         </td>
         <td style="border: 1px solid #ccc; text-align: center; padding: 5px;">21</td>
         <td style="border: 1px solid #ccc; text-align: center; padding: 5px; display: flex; justify-content: center; align-items: center; gap: 5px;">
-            <span style="display: inline-flex; justify-content: center; align-items: center; width: 24px; height: 24px; border: 1px solid #999; border-radius: 50%; font-size: 10pt; vertical-align: middle;">A</span>
-            <span style="display: inline-flex; justify-content: center; align-items: center; width: 24px; height: 24px; border: 1px solid #999; border-radius: 50%; font-size: 10pt; vertical-align: middle;">B</span>
-            <span style="display: inline-flex; justify-content: center; align-items: center; width: 24px; height: 24px; border: 1px solid #999; border-radius: 50%; font-size: 10pt; vertical-align: middle;">C</span>
-            <span style="display: inline-flex; justify-content: center; align-items: center; width: 24px; height: 24px; border: 1px solid #999; border-radius: 50%; font-size: 10pt; vertical-align: middle;">D</span>
+            <span style="display: flex; justify-content: center; align-items: center; width: 24px; height: 24px; border: 1px solid #999; border-radius: 50%; font-size: 10pt;">A</span>
+            <span style="display: flex; justify-content: center; align-items: center; width: 24px; height: 24px; border: 1px solid #999; border-radius: 50%; font-size: 10pt;">B</span>
+            <span style="display: flex; justify-content: center; align-items: center; width: 24px; height: 24px; border: 1px solid #999; border-radius: 50%; font-size: 10pt;">C</span>
+            <span style="display: flex; justify-content: center; align-items: center; width: 24px; height: 24px; border: 1px solid #999; border-radius: 50%; font-size: 10pt;">D</span>
         </td>
         <td style="border: 1px solid #ccc; text-align: center; padding: 5px;">41</td>
         <td style="border: 1px solid #ccc; text-align: center; padding: 5px; display: flex; justify-content: center; align-items: center; gap: 5px;">
