@@ -44,15 +44,18 @@ export default function ToolsPage() {
                         className="group flex flex-col h-full transition-all duration-300"
                     >
                         <CardHeader>
-                            <div className="flex items-start justify-between">
-                                {tool.icon}
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-4">
+                                    {tool.icon}
+                                    <CardTitle className="text-xl font-semibold">{tool.title}</CardTitle>
+                                </div>
                                 <span className="inline-block rounded-full bg-secondary px-3 py-1 text-xs font-semibold text-secondary-foreground">
                                     {tool.status}
                                 </span>
                             </div>
                         </CardHeader>
-                        <CardContent className="flex-grow space-y-2">
-                            <CardTitle className="text-xl font-semibold">{tool.title}</CardTitle>
+                        <CardContent className="flex-grow">
+                             {/* Content can go here if needed in the future */}
                         </CardContent>
                         <CardContent>
                              <Button disabled>
