@@ -12,9 +12,13 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Loader2, ArrowLeft, Wand2, FileText, Download, Eye } from 'lucide-react';
+import { Loader2, ArrowLeft, Download, FileText } from 'lucide-react';
 import Link from 'next/link';
 import { useToast } from '@/hooks/use-toast';
+import { generateOmrSheet } from '@/ai/flows/generate-omr-flow';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
+
 
 const formSchema = z.object({
   title: z.string().min(3, 'Title is required').max(100),
@@ -46,23 +50,64 @@ export default function OmrSheetMakerPage() {
     setLoading(true);
     toast({
       title: 'Generating OMR Sheet...',
-      description: 'Your download will begin shortly.',
+      description: 'The AI is creating your custom sheet. Please wait.',
     });
     
     try {
-        await new Promise(resolve => setTimeout(resolve, 1500)); 
-
-        const sampleUrl = 'https://www.omrsheet.com/images/sample-omr-sheets/100-questions-omr-sheet.pdf';
+        const result = await generateOmrSheet(values);
         
-        window.open(sampleUrl, '_blank');
+        if (!result.htmlContent) {
+            throw new Error("AI failed to generate the OMR sheet HTML.");
+        }
+
+        const pdf = new jsPDF({
+            orientation: 'p',
+            unit: 'mm',
+            format: values.pageSize.toLowerCase()
+        });
+
+        // Create a hidden element to render the HTML
+        const container = document.createElement('div');
+        container.innerHTML = result.htmlContent;
+        container.style.position = 'fixed';
+        container.style.top = '-9999px';
+        container.style.left = '-9999px';
+        container.style.width = values.pageSize === 'A4' ? '210mm' : '216mm'; // A4/Letter width
+        document.body.appendChild(container);
+
+        const canvas = await html2canvas(container, { scale: 2 });
+        document.body.removeChild(container);
+        
+        const imgData = canvas.toDataURL('image/png');
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = pdf.internal.pageSize.getHeight();
+        const canvasWidth = canvas.width;
+        const canvasHeight = canvas.height;
+        const ratio = canvasWidth / canvasHeight;
+        const imgHeight = pdfWidth / ratio;
+
+        let heightLeft = imgHeight;
+        let position = 0;
+
+        pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
+        heightLeft -= pdfHeight;
+
+        while (heightLeft >= 0) {
+            position = heightLeft - imgHeight;
+            pdf.addPage();
+            pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
+            heightLeft -= pdfHeight;
+        }
+
+        pdf.save(`${values.title.replace(/ /g, '_')}_OMR_Sheet.pdf`);
 
         toast({
-            title: 'OMR Sheet Ready!',
-            description: 'Your OMR sheet has been opened in a new tab.',
+            title: 'Download Ready!',
+            description: 'Your custom OMR sheet has been downloaded.',
         });
 
     } catch (error) {
-        console.error("Download failed", error);
+        console.error("OMR generation failed", error);
         toast({
             variant: 'destructive',
             title: 'Generation Failed',
