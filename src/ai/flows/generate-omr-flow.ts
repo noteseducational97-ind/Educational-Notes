@@ -28,7 +28,7 @@ export type GenerateOmrOutput = z.infer<typeof GenerateOmrOutputSchema>;
 
 const prompt = ai.definePrompt({
   name: 'generateOmrPrompt',
-  input: { schema: GenerateOmrInputSchema },
+  input: { schema: GenerateOmrInputSchema.extend({ tableBody: z.string() }) },
   output: { schema: GenerateOmrOutputSchema },
   prompt: `
     You are an expert web developer specializing in creating precise, printable HTML designs.
@@ -37,7 +37,6 @@ const prompt = ai.definePrompt({
     **Design Requirements:**
     *   **Table-Based Layout:** The entire OMR sheet must be a single HTML \`<table>\`.
     *   **Multi-Column Format:** The table must have 5 sets of "Ques. No." and "Option" columns, for a total of 10 \`<th>\` headers in the table head. This is for a landscape layout.
-    *   **Question Distribution:** Distribute the \`{{{questionCount}}}\` questions evenly across the 5 columns. You must calculate the number of rows required. For example, for 100 questions, you need 20 rows. For 101 questions, you need 21 rows. For each row, you must generate all 5 question number cells and their corresponding 5 option cells.
     *   **Styling:** Use inline CSS for all styling. The table should have a \`1px solid #ccc\` border on all cells (\`th\`, \`td\`). Text should be centered.
     *   **Bubbles:** Options should be rendered as circular bubbles with the letter/number inside.
 
@@ -53,48 +52,10 @@ const prompt = ai.definePrompt({
         *   Repeat "Ques. No." and "Option" 5 times.
         *   Style headers with \`border: 1px solid #ccc; padding: 8px; text-align: center; background-color: #f2f2f2;\`.
     5.  **Table Body (\`<tbody>\`):**
-        *   Generate the necessary number of \`<tr>\` rows to accommodate all questions.
-        *   Each \`<tr>\` will contain 10 \`<td>\`s (5 for question numbers, 5 for options).
-        *   Question Number Cell: Center the number vertically and horizontally.
-        *   Options Cell: Use a flex container (\`display: flex; justify-content: center; align-items: center; gap: 5px;\`) to hold the bubbles.
-        *   You must generate a \`<td>\` for every question number and option set in the row, even if it exceeds the total question count (leave the cell empty in that case).
-    6.  **Answer Bubbles (\`<span>\`):**
-        *   Each bubble should be a \`<span>\` styled to be a perfect circle with a border. The text inside must be perfectly centered.
-        *   Example bubble style: \`display: flex; justify-content: center; align-items: center; width: 24px; height: 24px; border: 1px solid #999; border-radius: 50%; font-size: 10pt;\`.
+        *   The table body is pre-generated and provided below. You must insert it directly into the \`<tbody>\` tag.
+        {{{tableBody}}}
 
-    **Example Snippet for one Table Row (\`<tr>\`) with 100 Questions (this is row 1):**
-    \`\`\`html
-    <tr>
-        <td style="border: 1px solid #ccc; text-align: center; padding: 5px;">1</td>
-        <td style="border: 1px solid #ccc; text-align: center; padding: 5px; display: flex; justify-content: center; align-items: center; gap: 5px;">
-            <span style="display: flex; justify-content: center; align-items: center; width: 24px; height: 24px; border: 1px solid #999; border-radius: 50%; font-size: 10pt;">A</span>
-            <span style="display: flex; justify-content: center; align-items: center; width: 24px; height: 24px; border: 1px solid #999; border-radius: 50%; font-size: 10pt;">B</span>
-            <span style="display: flex; justify-content: center; align-items: center; width: 24px; height: 24px; border: 1px solid #999; border-radius: 50%; font-size: 10pt;">C</span>
-            <span style="display: flex; justify-content: center; align-items: center; width: 24px; height: 24px; border: 1px solid #999; border-radius: 50%; font-size: 10pt;">D</span>
-        </td>
-        <td style="border: 1px solid #ccc; text-align: center; padding: 5px;">21</td>
-        <td style="border: 1px solid #ccc; text-align: center; padding: 5px; display: flex; justify-content: center; align-items: center; gap: 5px;">
-            <span style="display: flex; justify-content: center; align-items: center; width: 24px; height: 24px; border: 1px solid #999; border-radius: 50%; font-size: 10pt;">A</span>
-            <span style="display: flex; justify-content: center; align-items: center; width: 24px; height: 24px; border: 1px solid #999; border-radius: 50%; font-size: 10pt;">B</span>
-            <span style="display: flex; justify-content: center; align-items: center; width: 24px; height: 24px; border: 1px solid #999; border-radius: 50%; font-size: 10pt;">C</span>
-            <span style="display: flex; justify-content: center; align-items: center; width: 24px; height: 24px; border: 1px solid #999; border-radius: 50%; font-size: 10pt;">D</span>
-        </td>
-        <td style="border: 1px solid #ccc; text-align: center; padding: 5px;">41</td>
-        <td style="border: 1px solid #ccc; text-align: center; padding: 5px; display: flex; justify-content: center; align-items: center; gap: 5px;">
-            ...options...
-        </td>
-        <td style="border: 1px solid #ccc; text-align: center; padding: 5px;">61</td>
-        <td style="border: 1px solid #ccc; text-align: center; padding: 5px; display: flex; justify-content: center; align-items: center; gap: 5px;">
-            ...options...
-        </td>
-        <td style="border: 1px solid #ccc; text-align: center; padding: 5px;">81</td>
-        <td style="border: 1px solid #ccc; text-align: center; padding: 5px; display: flex; justify-content: center; align-items: center; gap: 5px;">
-            ...options...
-        </td>
-    </tr>
-    \`\`\`
-
-    Return the complete, self-contained HTML document with the entire table body fully generated for all questions. Do not add any markdown, comments, or explanations outside of the HTML code.
+    Return the complete, self-contained HTML document. Do not add any markdown, comments, or explanations outside of the HTML code.
   `,
 });
 
@@ -105,10 +66,45 @@ const generateOmrFlow = ai.defineFlow(
     outputSchema: GenerateOmrOutputSchema,
   },
   async (input) => {
-    const { output } = await prompt(input);
+    const { questionCount, optionsPerQuestion, optionStyle } = input;
+    const columns = 5;
+    const rows = Math.ceil(questionCount / columns);
+
+    const getOptionLabel = (index: number) => {
+      if (optionStyle === 'alphabetic') {
+        return String.fromCharCode(65 + index); // A, B, C...
+      }
+      return (index + 1).toString(); // 1, 2, 3...
+    };
+
+    const optionsHtml = Array.from({ length: optionsPerQuestion }, (_, i) => 
+        `<span style="display: flex; justify-content: center; align-items: center; width: 24px; height: 24px; border: 1px solid #999; border-radius: 50%; font-size: 10pt;">${getOptionLabel(i)}</span>`
+    ).join('');
+
+    const optionsCellHtml = `<td style="border: 1px solid #ccc; padding: 5px; display: flex; justify-content: center; align-items: center; gap: 5px;">${optionsHtml}</td>`;
+
+    let tableBody = '';
+    for (let r = 0; r < rows; r++) {
+      tableBody += '<tr>';
+      for (let c = 0; c < columns; c++) {
+        const questionNumber = r + c * rows + 1;
+        if (questionNumber <= questionCount) {
+          tableBody += `<td style="border: 1px solid #ccc; text-align: center; padding: 5px;">${questionNumber}</td>`;
+          tableBody += optionsCellHtml;
+        } else {
+          // Fill empty cells if the last row is not full
+          tableBody += `<td style="border: 1px solid #ccc; text-align: center; padding: 5px;"></td>`;
+          tableBody += `<td style="border: 1px solid #ccc; text-align: center; padding: 5px;"></td>`;
+        }
+      }
+      tableBody += '</tr>';
+    }
+
+    const { output } = await prompt({ ...input, tableBody });
     return output!;
   }
 );
+
 
 export async function generateOmrSheet(input: GenerateOmrInput): Promise<GenerateOmrOutput> {
   return generateOmrFlow(input);
