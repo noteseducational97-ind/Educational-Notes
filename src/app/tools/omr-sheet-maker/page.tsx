@@ -69,31 +69,20 @@ export default function OmrSheetMakerPage() {
         // This is a sample URL. In a real scenario, this would be the URL to your generated PDF.
         const sampleUrl = 'https://www.bodhprep.com/OMR-Sheets/200-questions-omr-sheet.pdf';
         
-        // This is a workaround for cross-origin download limitations.
-        // It fetches the PDF and creates a local blob URL to trigger the download.
-        const response = await fetch(sampleUrl);
-        if (!response.ok) throw new Error('Network response was not ok.');
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `${values.title.replace(/ /g, '_') || 'omr-sheet'}.pdf`;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        window.URL.revokeObjectURL(url);
+        // Open the URL in a new tab. The browser's built-in PDF viewer will handle viewing/downloading.
+        window.open(sampleUrl, '_blank');
 
         toast({
-            title: 'Download Started!',
-            description: 'Your OMR sheet has been downloaded.',
+            title: 'OMR Sheet Ready!',
+            description: 'Your OMR sheet has been opened in a new tab.',
         });
 
     } catch (error) {
         console.error("Download failed", error);
         toast({
             variant: 'destructive',
-            title: 'Download Failed',
-            description: 'Could not download the OMR sheet. Please try again.',
+            title: 'Generation Failed',
+            description: 'Could not generate the OMR sheet. Please try again.',
         });
     } finally {
         setLoading(false);
