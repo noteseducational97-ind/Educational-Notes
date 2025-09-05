@@ -43,7 +43,7 @@ export default function ToolsPage() {
                         key={tool.title}
                         className="group flex flex-col h-full transition-all duration-300"
                     >
-                        <CardHeader>
+                        <CardContent className="p-6 flex flex-col gap-4">
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-4">
                                     {tool.icon}
@@ -53,8 +53,6 @@ export default function ToolsPage() {
                                     {tool.status}
                                 </span>
                             </div>
-                        </CardHeader>
-                        <CardContent>
                              <Button disabled>
                                 Launch Tool <ArrowRight className="ml-2 h-4 w-4" />
                             </Button>
