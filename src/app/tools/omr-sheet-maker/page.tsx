@@ -69,35 +69,46 @@ export default function OmrSheetMakerPage() {
         // Create a hidden element to render the HTML
         const container = document.createElement('div');
         container.innerHTML = result.htmlContent;
-        container.style.position = 'fixed';
-        container.style.top = '-9999px';
-        container.style.left = '-9999px';
-        container.style.width = values.pageSize === 'A4' ? '210mm' : '216mm'; // A4/Letter width
+        // Resetting generic styles to ensure html2canvas captures only what's in the generated HTML
+        container.style.position = 'absolute';
+        container.style.top = '0';
+        container.style.left = '0';
+        container.style.width = values.pageSize === 'A4' ? '210mm' : '216mm';
+        container.style.padding = '0';
+        container.style.margin = '0';
+        container.style.visibility = 'hidden';
         document.body.appendChild(container);
 
-        const canvas = await html2canvas(container, { scale: 2 });
+        const canvas = await html2canvas(container, {
+            scale: 2, // Higher scale for better quality
+            useCORS: true,
+            logging: false
+        });
         document.body.removeChild(container);
         
         const imgData = canvas.toDataURL('image/png');
         const pdfWidth = pdf.internal.pageSize.getWidth();
         const pdfHeight = pdf.internal.pageSize.getHeight();
-        const canvasWidth = canvas.width;
-        const canvasHeight = canvas.height;
-        const ratio = canvasWidth / canvasHeight;
-        let imgHeight = pdfWidth / ratio;
         
-        // If the calculated image height is greater than the page height, it means the content spans multiple pages.
-        // We'll add the image and then add new pages as necessary.
-        let heightLeft = imgHeight;
+        // Calculate the aspect ratio of the captured image
+        const imgProps = pdf.getImageProperties(imgData);
+        const imgWidth = imgProps.width;
+        const imgHeight = imgProps.height;
+        const ratio = imgWidth / imgHeight;
+
+        let finalImgHeight = pdfWidth / ratio;
+        
+        // If image is too tall for one page, it will be split.
+        let heightLeft = finalImgHeight;
         let position = 0;
 
-        pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
+        pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, finalImgHeight);
         heightLeft -= pdfHeight;
 
         while (heightLeft > 0) {
             position = -heightLeft;
             pdf.addPage();
-            pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
+            pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, finalImgHeight);
             heightLeft -= pdfHeight;
         }
 
