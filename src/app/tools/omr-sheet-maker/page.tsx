@@ -21,17 +21,8 @@ const formSchema = z.object({
   subtitle: z.string().max(100).optional(),
   questionCount: z.coerce.number().min(1, 'At least one question is required').max(200, 'Maximum 200 questions'),
   pageSize: z.enum(['A4', 'Letter']),
-  answerSheetType: z.enum(['multiple-choice', 'numeric-grid']),
-  optionsPerQuestion: z.coerce.number().min(2, 'At least 2 options required').max(10, 'Maximum 10 options').optional(),
-  optionStyle: z.enum(['alphabetic', 'numeric']).optional(),
-}).refine(data => {
-    if (data.answerSheetType === 'multiple-choice') {
-        return !!data.optionsPerQuestion && !!data.optionStyle;
-    }
-    return true;
-}, {
-    message: 'Number of options and style are required for multiple choice.',
-    path: ['optionsPerQuestion'],
+  optionsPerQuestion: z.coerce.number().min(2, 'At least 2 options required').max(10, 'Maximum 10 options'),
+  optionStyle: z.enum(['alphabetic', 'numeric']),
 });
 
 
@@ -46,13 +37,10 @@ export default function OmrSheetMakerPage() {
       subtitle: 'Physics & Chemistry',
       questionCount: 100,
       pageSize: 'A4',
-      answerSheetType: 'multiple-choice',
       optionsPerQuestion: 4,
       optionStyle: 'alphabetic',
     },
   });
-
-  const answerSheetType = form.watch('answerSheetType');
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
@@ -61,15 +49,11 @@ export default function OmrSheetMakerPage() {
       description: 'Your download will begin shortly.',
     });
     
-    // In a real application, this would call a backend service to generate a PDF.
-    // For this demo, we'll simulate a fetch and trigger a download.
     try {
-        await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate network delay
+        await new Promise(resolve => setTimeout(resolve, 1500)); 
 
-        // This is a sample URL. In a real scenario, this would be the URL to your generated PDF.
         const sampleUrl = 'https://www.bodhprep.com/OMR-Sheets/200-questions-omr-sheet.pdf';
         
-        // Open the URL in a new tab. The browser's built-in PDF viewer will handle viewing/downloading.
         window.open(sampleUrl, '_blank');
 
         toast({
@@ -172,43 +156,7 @@ export default function OmrSheetMakerPage() {
                             />
                           </div>
                           
-                          <FormField
-                            control={form.control}
-                            name="answerSheetType"
-                            render={({ field }) => (
-                              <FormItem className="space-y-3">
-                                <FormLabel>Answer Sheet Type</FormLabel>
-                                <FormControl>
-                                  <RadioGroup
-                                    onValueChange={field.onChange}
-                                    defaultValue={field.value}
-                                    className="flex flex-col space-y-1"
-                                  >
-                                    <FormItem className="flex items-center space-x-3 space-y-0">
-                                      <FormControl>
-                                        <RadioGroupItem value="multiple-choice" />
-                                      </FormControl>
-                                      <FormLabel className="font-normal">
-                                        Multiple Choice
-                                      </FormLabel>
-                                    </FormItem>
-                                    <FormItem className="flex items-center space-x-3 space-y-0">
-                                      <FormControl>
-                                        <RadioGroupItem value="numeric-grid" />
-                                      </FormControl>
-                                      <FormLabel className="font-normal">
-                                        Numeric Grid-in (for integer answers, 0-9)
-                                      </FormLabel>
-                                    </FormItem>
-                                  </RadioGroup>
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-
-                          {answerSheetType === 'multiple-choice' && (
-                            <div className='space-y-6 rounded-md border p-4'>
+                          <div className='space-y-6 rounded-md border p-4'>
                                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                                      <FormField
                                         control={form.control}
@@ -255,7 +203,6 @@ export default function OmrSheetMakerPage() {
                                         />
                                 </div>
                             </div>
-                          )}
                         </CardContent>
                         <CardFooter className="flex justify-between border-t pt-6">
                             <Button variant="outline" asChild>
