@@ -15,14 +15,26 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Loader2, ArrowLeft, Wand2 } from 'lucide-react';
 import Link from 'next/link';
 import { useToast } from '@/hooks/use-toast';
+import { Separator } from '@/components/ui/separator';
 
 const formSchema = z.object({
   title: z.string().min(3, 'Title is required').max(100),
   subtitle: z.string().max(100).optional(),
   questionCount: z.coerce.number().min(1, 'At least one question is required').max(200, 'Maximum 200 questions'),
   pageSize: z.enum(['A4', 'Letter']),
-  omrType: z.enum(['4-options', '5-options', 'numeric']),
+  answerSheetType: z.enum(['multiple-choice', 'numeric-grid']),
+  optionsPerQuestion: z.coerce.number().min(2, 'At least 2 options required').max(10, 'Maximum 10 options').optional(),
+  optionStyle: z.enum(['alphabetic', 'numeric']).optional(),
+}).refine(data => {
+    if (data.answerSheetType === 'multiple-choice') {
+        return !!data.optionsPerQuestion && !!data.optionStyle;
+    }
+    return true;
+}, {
+    message: 'Number of options and style are required for multiple choice.',
+    path: ['optionsPerQuestion'],
 });
+
 
 export default function OmrSheetMakerPage() {
   const [loading, setLoading] = useState(false);
@@ -35,9 +47,13 @@ export default function OmrSheetMakerPage() {
       subtitle: '',
       questionCount: 100,
       pageSize: 'A4',
-      omrType: '4-options',
+      answerSheetType: 'multiple-choice',
+      optionsPerQuestion: 4,
+      optionStyle: 'alphabetic',
     },
   });
+
+  const answerSheetType = form.watch('answerSheetType');
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
@@ -78,7 +94,7 @@ export default function OmrSheetMakerPage() {
                       name="title"
                       render={({ field }) => (
                         <FormItem className="sm:col-span-2">
-                          <FormLabel>Title</FormLabel>
+                          <FormLabel>Test Title</FormLabel>
                           <FormControl>
                             <Input placeholder="e.g., Physics Mock Test 1" {...field} />
                           </FormControl>
@@ -136,12 +152,13 @@ export default function OmrSheetMakerPage() {
                       )}
                     />
                   </div>
-                   <FormField
+                  
+                  <FormField
                     control={form.control}
-                    name="omrType"
+                    name="answerSheetType"
                     render={({ field }) => (
                       <FormItem className="space-y-3">
-                        <FormLabel>Type of OMR</FormLabel>
+                        <FormLabel>Answer Sheet Type</FormLabel>
                         <FormControl>
                           <RadioGroup
                             onValueChange={field.onChange}
@@ -150,26 +167,18 @@ export default function OmrSheetMakerPage() {
                           >
                             <FormItem className="flex items-center space-x-3 space-y-0">
                               <FormControl>
-                                <RadioGroupItem value="4-options" />
+                                <RadioGroupItem value="multiple-choice" />
                               </FormControl>
                               <FormLabel className="font-normal">
-                                4 Options (e.g., A, B, C, D)
+                                Multiple Choice
                               </FormLabel>
                             </FormItem>
                             <FormItem className="flex items-center space-x-3 space-y-0">
                               <FormControl>
-                                <RadioGroupItem value="5-options" />
+                                <RadioGroupItem value="numeric-grid" />
                               </FormControl>
                               <FormLabel className="font-normal">
-                                5 Options (e.g., A, B, C, D, E)
-                              </FormLabel>
-                            </FormItem>
-                            <FormItem className="flex items-center space-x-3 space-y-0">
-                              <FormControl>
-                                <RadioGroupItem value="numeric" />
-                              </FormControl>
-                              <FormLabel className="font-normal">
-                                Numeric (0-9 bubbles for integer answers)
+                                Numeric Grid-in (for integer answers, 0-9)
                               </FormLabel>
                             </FormItem>
                           </RadioGroup>
@@ -178,6 +187,56 @@ export default function OmrSheetMakerPage() {
                       </FormItem>
                     )}
                   />
+
+                  {answerSheetType === 'multiple-choice' && (
+                    <div className='space-y-6 rounded-md border p-4'>
+                        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                             <FormField
+                                control={form.control}
+                                name="optionsPerQuestion"
+                                render={({ field }) => (
+                                    <FormItem>
+                                    <FormLabel>Number of Options</FormLabel>
+                                    <FormControl>
+                                        <Input type="number" min={2} max={10} {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                    </FormItem>
+                                )}
+                                />
+                             <FormField
+                                control={form.control}
+                                name="optionStyle"
+                                render={({ field }) => (
+                                    <FormItem className="space-y-2">
+                                    <FormLabel>Option Style</FormLabel>
+                                    <FormControl>
+                                        <RadioGroup
+                                        onValueChange={field.onChange}
+                                        defaultValue={field.value}
+                                        className="flex flex-row space-x-4"
+                                        >
+                                        <FormItem className="flex items-center space-x-2 space-y-0">
+                                            <FormControl>
+                                            <RadioGroupItem value="alphabetic" />
+                                            </FormControl>
+                                            <FormLabel className="font-normal">A, B, C...</FormLabel>
+                                        </FormItem>
+                                        <FormItem className="flex items-center space-x-2 space-y-0">
+                                            <FormControl>
+                                            <RadioGroupItem value="numeric" />
+                                            </FormControl>
+                                            <FormLabel className="font-normal">1, 2, 3...</FormLabel>
+                                        </FormItem>
+                                        </RadioGroup>
+                                    </FormControl>
+                                    <FormMessage />
+                                    </FormItem>
+                                )}
+                                />
+                        </div>
+                    </div>
+                  )}
                 </CardContent>
                 <CardFooter className="flex justify-between border-t pt-6">
                     <Button variant="outline" asChild>
