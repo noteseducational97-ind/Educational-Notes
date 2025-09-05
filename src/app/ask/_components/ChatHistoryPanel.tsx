@@ -7,7 +7,7 @@ import type { Chat } from '@/types';
 import { useToast } from '@/hooks/use-toast';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
-import { MessageSquare, Trash2, X } from 'lucide-react';
+import { MessageSquare, Trash2, X, PlusCircle } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
@@ -23,6 +23,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+import { useRouter } from 'next/navigation';
 
 type ChatHistoryPanelProps = {
   onSelectChat: (chat: Chat) => void;
@@ -40,6 +41,7 @@ export default function ChatHistoryPanel({
   const [history, setHistory] = useState<Chat[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
+  const router = useRouter();
 
   useEffect(() => {
     if (isOpen && userId) {
@@ -59,7 +61,6 @@ export default function ChatHistoryPanel({
 
   const handleSelectChat = (chat: Chat) => {
     onSelectChat(chat);
-    onClose();
   }
   
   const handleDeleteChat = async (chatId: string) => {
@@ -79,37 +80,44 @@ export default function ChatHistoryPanel({
     }
 };
 
+ const handleNewChat = () => {
+    router.push('/ask');
+    onClose();
+  }
+
+  if (!isOpen) return null;
+
   return (
-    <Card className="h-full w-[350px] border-l rounded-none flex flex-col">
-        <CardHeader className="flex flex-row justify-between items-center border-b">
-            <div>
-                <CardTitle>Chat History</CardTitle>
-                <CardDescription>
-                    Select a past conversation.
-                </CardDescription>
+    <div className="h-full w-[300px] bg-background border-r flex flex-col">
+        <div className="flex items-center justify-between border-b p-4">
+            <h2 className="text-lg font-semibold">History</h2>
+            <div className="flex items-center gap-2">
+                 <Button variant="ghost" size="icon" onClick={handleNewChat}>
+                    <PlusCircle className="h-4 w-4" />
+                </Button>
+                <Button variant="ghost" size="icon" onClick={onClose}>
+                    <X className="h-4 w-4" />
+                </Button>
             </div>
-            <Button variant="ghost" size="icon" onClick={onClose}>
-                <X className="h-4 w-4" />
-            </Button>
-        </CardHeader>
-        <CardContent className="p-0 flex-1 overflow-hidden">
+        </div>
+        <div className="flex-1 overflow-hidden">
             <ScrollArea className="h-full">
                 {loading ? (
                 <div className="flex justify-center items-center h-full">
                     <LoadingSpinner className="min-h-0" />
                 </div>
                 ) : history.length > 0 ? (
-                <div className="space-y-2 p-4">
+                <div className="space-y-1 p-2">
                     {history.map((chat) => (
                     <div
                         key={chat.id}
-                        className="group flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 border"
+                        className="group flex items-center justify-between p-2 rounded-lg hover:bg-muted border border-transparent hover:border-border"
                     >
                         <div
                             className="flex-grow cursor-pointer"
                             onClick={() => handleSelectChat(chat)}
                         >
-                            <p className="font-semibold truncate">
+                            <p className="font-medium text-sm truncate">
                                 {chat.title}
                             </p>
                             <p className="text-xs text-muted-foreground">
@@ -153,17 +161,13 @@ export default function ChatHistoryPanel({
                 </div>
                 ) : (
                 <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground p-4">
-                    <MessageSquare className="h-12 w-12 mb-4" />
-                    <p className="font-medium">No History Found</p>
-                    <p className="text-sm">Your past conversations will appear here.</p>
+                    <MessageSquare className="h-10 w-10 mb-4" />
+                    <p className="font-medium text-sm">No History Found</p>
+                    <p className="text-xs">Your past conversations will appear here.</p>
                 </div>
                 )}
             </ScrollArea>
-        </CardContent>
-    </Card>
+        </div>
+    </div>
   );
 }
-
-    
-
-    
