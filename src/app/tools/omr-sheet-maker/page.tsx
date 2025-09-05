@@ -15,7 +15,6 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Loader2, ArrowLeft, Wand2, FileText, Download, Eye } from 'lucide-react';
 import Link from 'next/link';
 import { useToast } from '@/hooks/use-toast';
-import ResourcePreviewer from '@/components/resources/ResourcePreviewer';
 
 const formSchema = z.object({
   title: z.string().min(3, 'Title is required').max(100),
@@ -38,7 +37,6 @@ const formSchema = z.object({
 
 export default function OmrSheetMakerPage() {
   const [loading, setLoading] = useState(false);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -56,38 +54,62 @@ export default function OmrSheetMakerPage() {
 
   const answerSheetType = form.watch('answerSheetType');
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
-    // In a real application, this would call a backend service to generate a PDF
-    // and return a URL. For this demo, we'll use a placeholder and a timeout.
     toast({
       title: 'Generating OMR Sheet...',
-      description: 'Your custom OMR sheet is being created.',
+      description: 'Your download will begin shortly.',
     });
     
-    setTimeout(() => {
-      // Example URL - replace with a real one if available
-      const sampleUrl = 'https://www.bodhprep.com/OMR-Sheets/200-questions-omr-sheet.pdf';
-      setPreviewUrl(sampleUrl);
-      setLoading(false);
-       toast({
-        title: 'Preview Ready!',
-        description: 'Your OMR sheet has been generated. You can now download it.',
-      });
-    }, 2000);
+    // In a real application, this would call a backend service to generate a PDF.
+    // For this demo, we'll simulate a fetch and trigger a download.
+    try {
+        await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate network delay
+
+        // This is a sample URL. In a real scenario, this would be the URL to your generated PDF.
+        const sampleUrl = 'https://www.bodhprep.com/OMR-Sheets/200-questions-omr-sheet.pdf';
+        
+        // This is a workaround for cross-origin download limitations.
+        // It fetches the PDF and creates a local blob URL to trigger the download.
+        const response = await fetch(sampleUrl);
+        if (!response.ok) throw new Error('Network response was not ok.');
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${values.title.replace(/ /g, '_') || 'omr-sheet'}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+
+        toast({
+            title: 'Download Started!',
+            description: 'Your OMR sheet has been downloaded.',
+        });
+
+    } catch (error) {
+        console.error("Download failed", error);
+        toast({
+            variant: 'destructive',
+            title: 'Download Failed',
+            description: 'Could not download the OMR sheet. Please try again.',
+        });
+    } finally {
+        setLoading(false);
+    }
   }
 
   return (
     <div className="flex min-h-screen flex-col bg-secondary/30">
       <Header />
       <main className="flex-1 py-8">
-        <div className="container mx-auto max-w-7xl">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+        <div className="container mx-auto max-w-2xl">
               <Card>
                 <CardHeader>
                   <CardTitle className="text-2xl font-bold">OMR Sheet Maker</CardTitle>
                   <CardDescription>
-                    Create a custom OMR answer sheet for your practice tests.
+                    Create and download a custom OMR answer sheet for your practice tests.
                   </CardDescription>
                 </CardHeader>
                 <Form {...form}>
@@ -253,37 +275,13 @@ export default function OmrSheetMakerPage() {
                                 </Link>
                             </Button>
                             <Button type="submit" disabled={loading}>
-                                {loading ? <Loader2 className="animate-spin" /> : <Wand2 />}
-                                Generate Sheet
+                                {loading ? <Loader2 className="animate-spin" /> : <Download />}
+                                Generate & Download
                             </Button>
                         </CardFooter>
                     </form>
                 </Form>
               </Card>
-
-              <div className="lg:sticky lg:top-24">
-                <Card>
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-2"><Eye /> OMR Preview</CardTitle>
-                        <CardDescription>A preview of your generated sheet will appear here.</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                       <ResourcePreviewer
-                            url={previewUrl || ''}
-                            title={form.getValues('title')}
-                       />
-                    </CardContent>
-                    <CardFooter className="border-t pt-4">
-                        <Button className="w-full" disabled={!previewUrl || loading} asChild>
-                            <a href={previewUrl || '#'} download target="_blank" rel="noopener noreferrer">
-                                <Download />
-                                Download PDF
-                            </a>
-                        </Button>
-                    </CardFooter>
-                </Card>
-              </div>
-            </div>
         </div>
       </main>
     </div>
