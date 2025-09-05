@@ -52,7 +52,7 @@ export default function OmrSheetMakerPage() {
     try {
         await new Promise(resolve => setTimeout(resolve, 1500)); 
 
-        const sampleUrl = 'https://iittm.ac.in/pdf/180-Question-OMR-Sheet.pdf';
+        const sampleUrl = 'https://www.omrsheet.com/images/sample-omr-sheets/100-questions-omr-sheet.pdf';
         
         window.open(sampleUrl, '_blank');
 
