@@ -33,12 +33,6 @@ type Tool = {
 
 const allTools: Tool[] = [
     {
-        icon: <ScanLine className="h-8 w-8 text-primary" />,
-        title: 'OMR Sheet Maker',
-        description: 'Generate and print custom OMR sheets for exam practice.',
-        href: '/tools/omr-sheet-maker',
-    },
-    {
         icon: <Calculator className="h-8 w-8 text-primary" />,
         title: 'Percentage Calculator',
         description: 'Quickly calculate percentages for marks, attendance, or other needs.',
