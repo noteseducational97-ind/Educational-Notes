@@ -66,26 +66,24 @@ export default function OmrSheetMakerPage() {
             format: values.pageSize.toLowerCase()
         });
 
-        // Create a hidden element to render the HTML
+        // Create a temporary, off-screen element to render the HTML for PDF conversion
         const container = document.createElement('div');
         container.innerHTML = result.htmlContent;
-        // Resetting generic styles to ensure html2canvas captures only what's in the generated HTML
         container.style.position = 'absolute';
+        container.style.left = '-9999px'; // Position off-screen
         container.style.top = '0';
-        container.style.left = '0';
+        container.style.zIndex = '1000'; // Ensure it's on top layer for rendering
         container.style.width = values.pageSize === 'A4' ? '210mm' : '216mm';
-        container.style.padding = '0';
-        container.style.margin = '0';
-        container.style.visibility = 'hidden';
-        container.style.backgroundColor = 'white'; // Ensure background is white for rendering
+        container.style.backgroundColor = 'white'; // Explicitly set background
         document.body.appendChild(container);
 
         const canvas = await html2canvas(container, {
             scale: 2, // Higher scale for better quality
             useCORS: true,
             logging: false,
-            backgroundColor: '#ffffff' // Explicitly set background color for canvas
+            backgroundColor: '#ffffff' // Ensure canvas background is white
         });
+        
         document.body.removeChild(container);
         
         const imgData = canvas.toDataURL('image/png');
@@ -94,9 +92,9 @@ export default function OmrSheetMakerPage() {
         
         // Calculate the aspect ratio of the captured image
         const imgProps = pdf.getImageProperties(imgData);
-        const imgWidth = imgProps.width;
-        const imgHeight = imgProps.height;
-        const ratio = imgWidth / imgHeight;
+        const canvasWidth = imgProps.width;
+        const canvasHeight = imgProps.height;
+        const ratio = canvasWidth / canvasHeight;
 
         let finalImgHeight = pdfWidth / ratio;
         
@@ -104,11 +102,13 @@ export default function OmrSheetMakerPage() {
         let heightLeft = finalImgHeight;
         let position = 0;
 
+        // Add the first page
         pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, finalImgHeight);
         heightLeft -= pdfHeight;
 
+        // Add subsequent pages if needed
         while (heightLeft > 0) {
-            position = -heightLeft;
+            position -= pdfHeight; // Move the image "up" on the new page
             pdf.addPage();
             pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, finalImgHeight);
             heightLeft -= pdfHeight;
