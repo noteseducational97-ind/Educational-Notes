@@ -12,7 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Loader2, ArrowLeft, Wand2 } from 'lucide-react';
+import { Loader2, ArrowLeft, Wand2, FileText } from 'lucide-react';
 import Link from 'next/link';
 import { useToast } from '@/hooks/use-toast';
 import { Separator } from '@/components/ui/separator';
@@ -96,7 +96,10 @@ export default function OmrSheetMakerPage() {
                         <FormItem className="sm:col-span-2">
                           <FormLabel>Test Title</FormLabel>
                           <FormControl>
-                            <Input placeholder="e.g., Physics Mock Test 1" {...field} />
+                            <div className="relative">
+                                <FileText className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                                <Input placeholder="e.g., Physics Mock Test 1" {...field} className="pl-10" />
+                            </div>
                           </FormControl>
                           <FormMessage />
                         </FormItem>
