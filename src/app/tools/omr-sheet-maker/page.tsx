@@ -94,15 +94,15 @@ export default function OmrSheetMakerPage() {
         const imgProps = pdf.getImageProperties(imgData);
         const canvasWidth = imgProps.width;
         const canvasHeight = imgProps.height;
-        const ratio = canvasWidth / canvasHeight;
+        const ratio = canvasHeight / canvasWidth;
 
-        let finalImgHeight = pdfWidth / ratio;
+        let finalImgHeight = pdfWidth * ratio;
         
         // If image is too tall for one page, it will be split.
         let heightLeft = finalImgHeight;
         let position = 0;
 
-        // Add the first page
+        // Add the first page, scaling it to fit the width and preserving aspect ratio
         pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, finalImgHeight);
         heightLeft -= pdfHeight;
 

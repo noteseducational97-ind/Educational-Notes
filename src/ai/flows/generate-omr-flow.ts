@@ -87,7 +87,7 @@ const generateOmrFlow = ai.defineFlow(
     for (let r = 0; r < rows; r++) {
       tableBody += '<tr>';
       for (let c = 0; c < columns; c++) {
-        const questionNumber = r * columns + c + 1;
+        const questionNumber = r + rows * c + 1;
         if (questionNumber <= questionCount) {
           tableBody += `<td style="border: 1px solid #ccc; text-align: center; padding: 5px;">${questionNumber}</td>`;
           tableBody += optionsCellHtml;
