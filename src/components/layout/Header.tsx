@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Home, Download, Bookmark, Info, Shield, Menu, PlusCircle, LogIn, UserPlus, BookCopy, UserCog, LayoutDashboard, Users, Loader2, Lightbulb } from 'lucide-react';
+import { Home, Download, Bookmark, Info, Shield, Menu, PlusCircle, LogIn, UserPlus, BookCopy, UserCog, LayoutDashboard, Users, Loader2, Lightbulb, Wrench } from 'lucide-react';
 import UserNav from './UserNav';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/use-auth';
@@ -24,6 +24,7 @@ const navLinks = [
   { href: '/', label: 'Home', icon: Home },
   { href: '/downloads', label: 'Downloads', icon: Download },
   { href: '/save', label: 'Watchlist', icon: Bookmark },
+  { href: '/tools', label: 'Tools', icon: Wrench },
   { href: '/about', label: 'About', icon: Info },
 ];
 
