@@ -36,7 +36,7 @@ const allTools: Tool[] = [
         icon: <ScanLine className="h-8 w-8 text-primary" />,
         title: 'OMR Sheet Maker',
         description: 'Generate and print custom OMR sheets for exam practice.',
-        href: '#',
+        href: '/tools/omr-sheet-maker',
     },
     {
         icon: <Calculator className="h-8 w-8 text-primary" />,
