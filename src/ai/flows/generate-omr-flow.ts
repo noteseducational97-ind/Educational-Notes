@@ -31,33 +31,58 @@ const prompt = ai.definePrompt({
   input: { schema: GenerateOmrInputSchema },
   output: { schema: GenerateOmrOutputSchema },
   prompt: `
-    You are an expert HTML and CSS developer tasked with generating a printable OMR (Optical Mark Recognition) answer sheet.
-    The user will provide specifications, and you must generate a single, self-contained HTML file with inline CSS that is optimized for printing on A4 paper.
+    You are an expert web developer specializing in creating beautiful, printable HTML designs.
+    Your task is to generate a self-contained HTML file for a modern OMR (Optical Mark Recognition) answer sheet, optimized for A4 printing.
 
-    **Instructions:**
-    1.  **HTML Structure:** Create a well-structured HTML document. Use a main container with a border for the entire printable area.
-    2.  **Header:** The sheet must have a header containing the '{{{title}}}' and, if provided, the '{{{subtitle}}}'. Center them and provide ample spacing.
-    3.  **Question Blocks:** The main content should be a CSS grid or flexbox container that arranges question blocks in multiple columns (target 4 columns, but allow it to be responsive).
-    4.  **Question Numbering:** For each of the '{{{questionCount}}}' questions, display the question number.
-    5.  **Answer Options:** For each question, generate '{{{optionsPerQuestion}}}' options.
-        *   If '{{{optionStyle}}}' is 'alphabetic', label the options with uppercase letters (A, B, C, ...).
-        *   If '{{{optionStyle}}}' is 'numeric', label them with numbers (1, 2, 3, ...).
-    6.  **Styling (Inline CSS):**
-        *   Use a clean, professional, and print-friendly design.
-        *   The main container must have a visible border (e.g., '2px solid #333').
-        *   Each option should be a letter/number next to an empty, perfectly circular bubble for marking. The bubble and the label should be vertically aligned.
-        *   Use a standard sans-serif font like Arial.
-        *   Ensure proper spacing and padding throughout for a clean, uncluttered look. The layout must be space-efficient.
-    7.  **Output:** Return the complete HTML document as a single string in the 'htmlContent' field. Do not include any explanations, just the raw HTML code.
+    **Design Principles:**
+    *   **Clean & Modern:** Use a minimalist design with plenty of white space.
+    *   **Professional Typography:** Use a standard, elegant sans-serif font like 'Inter' or 'Lato'. Font size should be readable (e.g., 10pt or 11pt).
+    *   **Space-Efficient Layout:** Use a multi-column layout (4 columns is ideal) to fit as many questions as possible without looking cluttered.
+    *   **Subtle Styling:** Use light gray for borders and lines. Avoid harsh black lines.
 
-    **Example for one question block (if alphabetic with 4 options):**
-    <div class="question-block">
-        <span class="q-num">1.</span>
-        <div class="option">A <span class="bubble"></span></div>
-        <div class="option">B <span class="bubble"></span></div>
-        <div class="option">C <span class="bubble"></span></div>
-        <div class="option">D <span class="bubble"></span></div>
+    **HTML Structure & Styling (Inline CSS):**
+    1.  **Page Container:**
+        *   Create a main \`<div>\` that acts as the A4 page container.
+        *   It must have a noticeable but soft border: \`border: 1px solid #ccc;\`.
+        *   Use padding to ensure content doesn't touch the edges (e.g., \`padding: 20mm;\`).
+        *   Set the box-sizing to \`border-box\`.
+    2.  **Header Section:**
+        *   The header should contain the \`{{{title}}}\` and (if provided) the \`{{{subtitle}}}\`.
+        *   Style the title with a larger font size and bold weight. The subtitle should be smaller and lighter.
+        *   Add a subtle horizontal line (\`<hr style="border-top: 1px solid #eee;">\`) below the header.
+        *   Ensure there's ample margin below the header before the questions start.
+    3.  **Questions Grid:**
+        *   Use a CSS Grid (\`display: grid;\`) for the main content area to create the 4-column layout. Use \`grid-template-columns: repeat(4, 1fr);\` and add a \`gap\` for spacing between columns.
+    4.  **Individual Question Block:**
+        *   Each question block should be a flex container to align items neatly.
+        *   The question number should be bold and separated from the options.
+    5.  **Answer Options:**
+        *   For each question, generate \`{{{optionsPerQuestion}}}\` options.
+        *   Label options with uppercase letters (A, B, C...) if \`{{{optionStyle}}}\` is 'alphabetic', or numbers (1, 2, 3...) if 'numeric'.
+        *   Each option consists of the label and a circular bubble. The bubble must be a perfect circle (\`border-radius: 50%;\`), with a grey border.
+        *   Ensure the label and its corresponding bubble are vertically aligned perfectly.
+
+    **Final Output:**
+    Return the complete, self-contained HTML document as a single string in the 'htmlContent' field. Do not add any markdown, comments, or explanations outside of the HTML code.
+
+    **Example Snippet for one Question Block (use this styling as a guide):**
+    \`\`\`html
+    <div style="display: flex; align-items: center; margin-bottom: 8px; font-size: 11pt;">
+        <strong style="margin-right: 10px; width: 30px;">1.</strong>
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <span>A</span>
+            <span style="display: inline-block; width: 14px; height: 14px; border: 1px solid #999; border-radius: 50%;"></span>
+            <span>B</span>
+            <span style="display: inline-block; width: 14px; height: 14px; border: 1px solid #999; border-radius: 50%;"></span>
+            <span>C</span>
+            <span style="display: inline-block; width: 14px; height: 14px; border: 1px solid #999; border-radius: 50%;"></span>
+            <span>D</span>
+            <span style="display: inline-block; width: 14px
+
+; height: 14px; border: 1px solid #999; border-radius: 50%;"></span>
+        </div>
     </div>
+    \`\`\`
   `,
 });
 
