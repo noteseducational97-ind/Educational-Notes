@@ -45,12 +45,6 @@ const allTools: Tool[] = [
         href: '#',
     },
     {
-        icon: <FileText className="h-8 w-8 text-muted-foreground" />,
-        title: 'AI Test Maker',
-        description: 'Generate practice tests and quizzes from your study material.',
-        isComingSoon: true,
-    },
-    {
         icon: <GraduationCap className="h-8 w-8 text-muted-foreground" />,
         title: 'AI-Powered Essay Grader',
         description: 'Receive instant feedback on your essays for grammar, style, and clarity.',
