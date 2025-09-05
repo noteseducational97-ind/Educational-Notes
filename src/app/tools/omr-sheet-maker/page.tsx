@@ -84,16 +84,18 @@ export default function OmrSheetMakerPage() {
         const canvasWidth = canvas.width;
         const canvasHeight = canvas.height;
         const ratio = canvasWidth / canvasHeight;
-        const imgHeight = pdfWidth / ratio;
-
+        let imgHeight = pdfWidth / ratio;
+        
+        // If the calculated image height is greater than the page height, it means the content spans multiple pages.
+        // We'll add the image and then add new pages as necessary.
         let heightLeft = imgHeight;
         let position = 0;
 
         pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
         heightLeft -= pdfHeight;
 
-        while (heightLeft >= 0) {
-            position = heightLeft - imgHeight;
+        while (heightLeft > 0) {
+            position = -heightLeft;
             pdf.addPage();
             pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
             heightLeft -= pdfHeight;
