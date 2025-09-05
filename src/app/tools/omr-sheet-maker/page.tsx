@@ -78,7 +78,7 @@ export default function OmrSheetMakerPage() {
         document.body.appendChild(container);
 
         const canvas = await html2canvas(container, {
-            scale: 2, // Higher scale for better quality
+            scale: 3, // Higher scale for better quality
             useCORS: true,
             logging: false,
             backgroundColor: '#ffffff' // Ensure canvas background is white
