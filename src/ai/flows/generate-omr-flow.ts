@@ -37,7 +37,7 @@ const prompt = ai.definePrompt({
     **Design Requirements:**
     *   **Table-Based Layout:** The entire OMR sheet must be a single HTML \`<table>\`.
     *   **Multi-Column Format:** The table must have 5 sets of "Ques. No." and "Option" columns, for a total of 10 \`<th>\` headers in the table head. This is for a landscape layout.
-    *   **Question Distribution:** Distribute the \`{{{questionCount}}}\` questions evenly across the 5 columns. For example, for 100 questions, you will have 20 rows.
+    *   **Question Distribution:** Distribute the \`{{{questionCount}}}\` questions evenly across the 5 columns. You must calculate the number of rows required. For example, for 100 questions, you need 20 rows. For 101 questions, you need 21 rows. For each row, you must generate all 5 question number cells and their corresponding 5 option cells.
     *   **Styling:** Use inline CSS for all styling. The table should have a \`1px solid #ccc\` border on all cells (\`th\`, \`td\`). Text should be centered.
     *   **Bubbles:** Options should be rendered as circular bubbles with the letter/number inside.
 
@@ -57,6 +57,7 @@ const prompt = ai.definePrompt({
         *   Each \`<tr>\` will contain 10 \`<td>\`s (5 for question numbers, 5 for options).
         *   Question Number Cell: Center the number vertically and horizontally.
         *   Options Cell: Use a flex container (\`display: flex; justify-content: center; align-items: center; gap: 5px;\`) to hold the bubbles.
+        *   You must generate a \`<td>\` for every question number and option set in the row, even if it exceeds the total question count (leave the cell empty in that case).
     6.  **Answer Bubbles (\`<span>\`):**
         *   Each bubble should be a \`<span>\` styled to be a perfect circle with a border. The text inside must be perfectly centered.
         *   Example bubble style: \`display: flex; justify-content: center; align-items: center; width: 24px; height: 24px; border: 1px solid #999; border-radius: 50%; font-size: 10pt;\`.
@@ -93,7 +94,7 @@ const prompt = ai.definePrompt({
     </tr>
     \`\`\`
 
-    Return the complete, self-contained HTML document as a single string in the 'htmlContent' field. Do not add any markdown, comments, or explanations outside of the HTML code.
+    Return the complete, self-contained HTML document with the entire table body fully generated for all questions. Do not add any markdown, comments, or explanations outside of the HTML code.
   `,
 });
 
