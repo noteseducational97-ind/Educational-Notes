@@ -20,18 +20,6 @@ const features = [
         href: '/downloads',
     },
     {
-        icon: <FileText className="h-6 w-6 text-primary" />,
-        title: 'AI-Powered Test Maker',
-        description: 'Generate personalized practice tests from our resources to sharpen your knowledge and exam readiness.',
-        href: '/ask',
-    },
-    {
-        icon: <Lightbulb className="h-6 w-6 text-primary" />,
-        title: 'Instant Educational AI Assistant',
-        description: 'Have a doubt? Ask our AI assistant for instant clarification on any topic, anytime.',
-        href: '/ask',
-    },
-    {
         icon: <BookCheck className="h-6 w-6 text-primary" />,
         title: 'Previous Year Questions',
         description: 'Access a vast library of past exam papers (PYQs) to understand patterns and practice effectively.',
@@ -75,7 +63,7 @@ export default function Home() {
                         Your Success, Our Mission
                     </h1>
                     <p className="max-w-xl text-lg text-foreground/80">
-                        High-quality study materials, AI-powered tools, and expert-curated content—all completely free. Achieve academic excellence with us.
+                        High-quality study materials, expert-curated content—all completely free. Achieve academic excellence with us.
                     </p>
                     <div className="flex flex-col gap-2 min-[400px]:flex-row">
                        {!user && (
@@ -83,6 +71,9 @@ export default function Home() {
                                 <Link href="/signup">Get Started <ArrowRight /></Link>
                             </Button>
                         )}
+                         <Button size="lg" variant="secondary" asChild>
+                            <Link href="/downloads">Explore Resources</Link>
+                        </Button>
                     </div>
                 </div>
                  <div className="flex justify-center">
@@ -104,10 +95,10 @@ export default function Home() {
             <div className="flex flex-col items-center justify-center space-y-4 text-center mb-12">
               <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-balance">What We Offer</h2>
               <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed text-balance">
-                From comprehensive notes to AI-powered tools, find everything you need to excel in your studies.
+                From comprehensive notes to practice tools, find everything you need to excel in your studies.
               </p>
             </div>
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-2">
               {features.map((feature) => (
                 <Card 
                   key={feature.title}
@@ -129,36 +120,6 @@ export default function Home() {
               ))}
             </div>
           </div>
-        </section>
-
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-secondary/30">
-            <div className="container px-4 md:px-6">
-                <div className="grid md:grid-cols-2 gap-12 items-center">
-                     <div className="flex justify-center">
-                        <Image
-                            src="https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-                            width="500"
-                            height="500"
-                            alt="AI concept image"
-                            data-ai-hint="robot technology"
-                            className="rounded-full aspect-square object-cover shadow-2xl"
-                        />
-                    </div>
-                    <div>
-                        <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm font-semibold text-primary mb-4">Artificial Intelligence</div>
-                        <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl text-balance">Meet Your Own Personalize Educational Ai Assistant</h2>
-                        <p className="mt-4 max-w-[600px] text-muted-foreground md:text-xl/relaxed text-balance">
-                           Our AI assistant is here to break down complex topics, answer your toughest questions, and even generate practice tests from any resource. It's like having a personal tutor available 24/7.
-                        </p>
-                        <Button asChild size="lg" className="mt-6">
-                            <Link href="/ask">
-                                <Lightbulb className="mr-2 h-5 w-5" />
-                                Try the Assistant
-                            </Link>
-                        </Button>
-                    </div>
-                </div>
-            </div>
         </section>
         
         <section className="w-full py-12 md:py-24 lg:py-32 bg-primary/10">
@@ -194,5 +155,3 @@ export default function Home() {
     </div>
   );
 }
-
-    

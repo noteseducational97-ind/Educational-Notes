@@ -24,7 +24,6 @@ const navLinks = [
   { href: '/', label: 'Home', icon: Home },
   { href: '/downloads', label: 'Downloads', icon: Download },
   { href: '/save', label: 'Watchlist', icon: Bookmark },
-  { href: '/ask', label: 'AI', icon: Lightbulb },
   { href: '/about', label: 'About', icon: Info },
 ];
 

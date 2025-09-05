@@ -15,7 +15,6 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Download, HelpCircle, LogIn, ExternalLink } from 'lucide-react';
-import TestMakerButton from './TestMakerButton';
 import { useAuth } from '@/hooks/use-auth';
 import type { Resource } from '@/types';
 import Link from 'next/link';
@@ -59,7 +58,6 @@ export default function ResourceActions({ resource }: ResourceActionsProps) {
             </Button>
             )}
         </div>
-        {user && <TestMakerButton resource={resource} disabled={isLinkDisabled} />}
       </div>
 
       <AlertDialog open={showLoginDialog} onOpenChange={setShowLoginDialog}>
