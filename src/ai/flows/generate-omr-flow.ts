@@ -9,7 +9,7 @@
  */
 
 import { ai } from '@/ai/genkit';
-import { z } from 'genkit';
+import { z } from 'zod';
 
 const GenerateOmrInputSchema = z.object({
   title: z.string().describe('The main title of the OMR sheet.'),
@@ -31,37 +31,37 @@ const prompt = ai.definePrompt({
   input: { schema: GenerateOmrInputSchema },
   output: { schema: GenerateOmrOutputSchema },
   prompt: `
-    You are an expert HTML and CSS developer tasked with generating a printable OMR (Optical Mark Recognition) answer sheet.
+    You are an expert HTML and CSS developer tasked with generating a printable OMR (Optical Mark Recognition) answer sheet that looks exactly like the user's reference image.
     The user will provide specifications, and you must generate a single, self-contained HTML file with inline CSS that is optimized for printing on A4 paper.
 
     **Instructions:**
-    1.  **HTML Structure:** Create a well-structured HTML document. Use a main container to hold all the content.
-    2.  **Header:** The sheet must have a header containing the '{{{title}}}' and, if provided, the '{{{subtitle}}}'.
-    3.  **Answer Grid:** Generate a grid for '{{{questionCount}}}' questions.
-    4.  **Answer Options:** For each question, create '{{{optionsPerQuestion}}}' options.
-    5.  **Option Labels:**
+    1.  **HTML Structure:** Create a well-structured HTML document. Use a main container for the content, including the title and subtitle.
+    2.  **Header:** The sheet must have a header containing the '{{{title}}}' and, if provided, the '{{{subtitle}}}'. Center them.
+    3.  **OMR Table:** The main content should be an HTML \`<table>\`. It must have two columns with headers "Q.No" and "Options".
+    4.  **Question Numbering:** For each of the '{{{questionCount}}}' questions, the question number in the "Q.No" column must be padded with leading zeros to three digits (e.g., 001, 002, 003, ...).
+    5.  **Answer Options:** In the "Options" column, generate '{{{optionsPerQuestion}}}' options for each question.
         *   If '{{{optionStyle}}}' is 'alphabetic', label the options with uppercase letters (A, B, C, ...).
         *   If '{{{optionStyle}}}' is 'numeric', label them with numbers (1, 2, 3, ...).
     6.  **Styling (Inline CSS):**
-        *   Use a professional, clean, and print-friendly design.
-        *   The layout should be in columns to fit the page efficiently. A 4 or 5-column layout is typical.
-        *   Each answer option should be represented by a circular bubble (empty circle).
-        *   Ensure proper spacing and alignment for all elements.
-        *   The HTML should include a <style> tag in the <head> with all necessary CSS. Do not use external stylesheets.
-        *   The font should be a standard sans-serif font like Arial.
-        *   Make the bubbles using border-radius. They should be distinct and easy to fill in.
+        *   Use a clean, professional, and print-friendly design that mirrors the provided image.
+        *   The table should have clean, solid borders.
+        *   The question number ("Q.No") and option labels ("Options") headers should be bold.
+        *   Each option should be a letter/number inside an empty circle (bubble).
+        *   Ensure all content within the table cells is centered vertically and horizontally.
+        *   Use a standard sans-serif font like Arial.
+        *   The layout should be in multiple columns on the page to be space-efficient. Use CSS columns for the main container holding the tables. A 3 or 4 column layout is ideal.
     7.  **Output:** Return the complete HTML document as a single string in the 'htmlContent' field. Do not include any explanations, just the raw HTML code.
 
-    **Example for one question item (if alphabetic):**
-    <div class="answer-row">
-        <div class="q-number">1.</div>
-        <div class="options">
-            <div class="option-item"><span class="option-label">A</span><div class="bubble"></div></div>
-            <div class="option-item"><span class="option-label">B</span><div class="bubble"></div></div>
-            <div class="option-item"><span class="option-label">C</span><div class="bubble"></div></div>
-            <div class="option-item"><span class="option-label">D</span><div class="bubble"></div></div>
-        </div>
-    </div>
+    **Example for one table row (if alphabetic with 4 options):**
+    <tr>
+        <td class="q-no">001</td>
+        <td class="options">
+            <div class="option-item"><span>A</span></div>
+            <div class="option-item"><span>B</span></div>
+            <div class="option-item"><span>C</span></div>
+            <div class="option-item"><span>D</span></div>
+        </td>
+    </tr>
   `,
 });
 
