@@ -4,31 +4,108 @@
 import Header from '@/components/layout/Header';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { BrainCircuit, Calculator, ArrowRight, ScanLine, FileText } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { 
+    BrainCircuit, 
+    Calculator, 
+    ArrowRight, 
+    ScanLine, 
+    FileText, 
+    GraduationCap, 
+    CalendarClock, 
+    Quote, 
+    PenLine, 
+    FunctionSquare,
+    Voicemail,
+    Share2,
+    Copy,
+    Sparkles
+} from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
-const availableTools = [
+type Tool = {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+  href?: string;
+  isComingSoon?: boolean;
+};
+
+const allTools: Tool[] = [
     {
         icon: <ScanLine className="h-8 w-8 text-primary" />,
         title: 'OMR Sheet Maker',
+        description: 'Generate and print custom OMR sheets for exam practice.',
         href: '#',
+    },
+    {
+        icon: <Calculator className="h-8 w-8 text-primary" />,
+        title: 'Percentage Calculator',
+        description: 'Quickly calculate percentages for marks, attendance, or other needs.',
+        href: '#',
+    },
+    {
+        icon: <Copy className="h-8 w-8 text-primary" />,
+        title: 'Flashcard Maker',
+        description: 'Create and study with digital flashcards for any subject.',
+        href: '#',
+    },
+    {
+        icon: <Sparkles className="h-8 w-8 text-muted-foreground" />,
+        title: 'AI Problem Solver',
+        description: 'Get step-by-step solutions and explanations for complex problems.',
+        isComingSoon: true,
+    },
+    {
+        icon: <FileText className="h-8 w-8 text-muted-foreground" />,
+        title: 'AI Test Maker',
+        description: 'Generate practice tests and quizzes from your study material.',
+        isComingSoon: true,
+    },
+    {
+        icon: <GraduationCap className="h-8 w-8 text-muted-foreground" />,
+        title: 'AI-Powered Essay Grader',
+        description: 'Receive instant feedback on your essays for grammar, style, and clarity.',
+        isComingSoon: true,
+    },
+    {
+        icon: <CalendarClock className="h-8 w-8 text-muted-foreground" />,
+        title: 'Study Planner',
+        description: 'Organize your study schedule and track your progress towards goals.',
+        isComingSoon: true,
+    },
+    {
+        icon: <Quote className="h-8 w-8 text-muted-foreground" />,
+        title: 'Citation Generator',
+        description: 'Easily create citations in MLA, APA, and other formats.',
+        isComingSoon: true,
+    },
+    {
+        icon: <PenLine className="h-8 w-8 text-muted-foreground" />,
+        title: 'Handwriting to Text',
+        description: 'Convert your handwritten notes into editable digital text.',
+        isComingSoon: true,
+    },
+    {
+        icon: <FunctionSquare className="h-8 w-8 text-muted-foreground" />,
+        title: 'Formula Sheet Generator',
+        description: 'Create personalized formula sheets for quick reference during study.',
+        isComingSoon: true,
+    },
+    {
+        icon: <Voicemail className="h-8 w-8 text-muted-foreground" />,
+        title: 'AI Voice Tutor',
+        description: 'Practice pronunciation and have spoken conversations with an AI tutor.',
+        isComingSoon: true,
+    },
+    {
+        icon: <Share2 className="h-8 w-8 text-muted-foreground" />,
+        title: 'Concept Map Generator',
+        description: 'Visualize complex topics by automatically generating concept maps.',
+        isComingSoon: true,
     }
-]
-
-const comingSoonTools = [
-  {
-    icon: <BrainCircuit className="h-6 w-6 text-muted-foreground" />,
-    title: 'AI Problem Solver',
-  },
-  {
-    icon: <FileText className="h-6 w-6 text-muted-foreground" />,
-    title: 'AI Test Maker',
-  },
-  {
-    icon: <Calculator className="h-6 w-6 text-muted-foreground" />,
-    title: 'GPA & Percentage Calculator',
-  },
 ];
+
 
 export default function ToolsPage() {
   const router = useRouter();
@@ -38,49 +115,40 @@ export default function ToolsPage() {
       <Header />
       <main className="flex-1">
         <div className="container mx-auto px-4 py-8">
-            <div className="mb-8 text-center">
-                <h1 className="text-4xl font-bold text-foreground tracking-tight">Our Tools</h1>
-                <p className="mt-2 text-muted-foreground max-w-2xl mx-auto">
-                    A suite of tools designed to help you study smarter and achieve your academic goals.
+            <div className="mb-12 text-center">
+                <h1 className="text-4xl font-bold text-foreground tracking-tight sm:text-5xl">Our Tools</h1>
+                <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
+                    A suite of powerful tools designed to help you study smarter and achieve your academic goals.
                 </p>
             </div>
           
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-                <div className="grid grid-cols-1 gap-8">
-                    {availableTools.map((tool) => (
-                        <Card 
-                            key={tool.title}
-                            className="group flex flex-col h-full transition-all duration-300 hover:shadow-lg"
-                        >
-                            <CardContent className="p-6 flex flex-col gap-4">
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-4">
-                                        {tool.icon}
-                                        <CardTitle className="text-xl font-semibold">{tool.title}</CardTitle>
-                                    </div>
-                                </div>
-                                <Button>
-                                    Launch Tool <ArrowRight className="ml-2 h-4 w-4" />
-                                </Button>
-                            </CardContent>
-                        </Card>
-                    ))}
-                </div>
-
-                 <Card className="group flex flex-col h-full bg-secondary/50">
-                    <CardHeader>
-                        <CardTitle className="text-lg font-semibold">Coming Soon</CardTitle>
-                        <CardDescription>We're working on bringing you more exciting tools.</CardDescription>
-                    </CardHeader>
-                    <CardContent className="flex flex-col gap-4">
-                       {comingSoonTools.map(tool => (
-                            <div key={tool.title} className="flex items-center gap-3 text-muted-foreground">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {allTools.map((tool) => (
+                    <Card 
+                        key={tool.title}
+                        className="group flex flex-col h-full transition-all duration-300 hover:shadow-xl hover:border-primary/50"
+                    >
+                        <CardHeader>
+                            <div className="flex justify-between items-start">
                                 {tool.icon}
-                                <span className="font-medium">{tool.title}</span>
+                                {tool.isComingSoon && <Badge variant="outline">Coming Soon</Badge>}
                             </div>
-                       ))}
-                    </CardContent>
-                </Card>
+                        </CardHeader>
+                        <CardContent className="flex-grow">
+                            <CardTitle className="text-xl font-semibold">{tool.title}</CardTitle>
+                            <CardDescription className="mt-2">{tool.description}</CardDescription>
+                        </CardContent>
+                        <CardFooter>
+                            <Button 
+                                onClick={() => tool.href && router.push(tool.href)} 
+                                disabled={!!tool.isComingSoon || !tool.href}
+                                className="w-full"
+                            >
+                                Launch Tool <ArrowRight className="ml-2 h-4 w-4" />
+                            </Button>
+                        </CardFooter>
+                    </Card>
+                ))}
             </div>
         </div>
       </main>
