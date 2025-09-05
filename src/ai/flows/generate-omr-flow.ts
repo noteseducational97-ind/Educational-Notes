@@ -36,7 +36,7 @@ const prompt = ai.definePrompt({
 
     **Design Requirements:**
     *   **Table-Based Layout:** The entire OMR sheet must be a single HTML \`<table>\`.
-    *   **Multi-Column Format:** The table must have 5 sets of "Ques. No." and "Option" columns, for a total of 10 \`<th>\` headers in the table head. This is for a landscape layout.
+    *   **Multi-Column Format:** The table must have 4 sets of "Ques. No." and "Option" columns, for a total of 8 \`<th>\` headers in the table head. This is for a landscape layout.
     *   **Styling:** Use inline CSS for all styling. The table should have a \`1px solid #ccc\` border on all cells (\`th\`, \`td\`). Text should be centered.
     *   **Bubbles:** Options should be rendered as circular bubbles with the letter/number inside.
 
@@ -48,8 +48,8 @@ const prompt = ai.definePrompt({
     3.  **Table (\`<table>\`):**
         *   Set \`width: 100%; border-collapse: collapse;\`.
     4.  **Table Header (\`<thead>\`):**
-        *   Create one \`<tr>\` with 10 \`<th>\` elements.
-        *   Repeat "Ques. No." and "Option" 5 times.
+        *   Create one \`<tr>\` with 8 \`<th>\` elements.
+        *   Repeat "Ques. No." and "Option" 4 times.
         *   Style headers with \`border: 1px solid #ccc; padding: 8px; text-align: center; background-color: #f2f2f2;\`.
     5.  **Table Body (\`<tbody>\`):**
         *   The table body is pre-generated and provided below. You must insert it directly into the \`<tbody>\` tag.
@@ -67,7 +67,7 @@ const generateOmrFlow = ai.defineFlow(
   },
   async (input) => {
     const { questionCount, optionsPerQuestion, optionStyle } = input;
-    const columns = 5;
+    const columns = 4;
     const rows = Math.ceil(questionCount / columns);
 
     const getOptionLabel = (index: number) => {
