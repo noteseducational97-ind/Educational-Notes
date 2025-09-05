@@ -54,9 +54,6 @@ export default function ToolsPage() {
                                 </span>
                             </div>
                         </CardHeader>
-                        <CardContent className="flex-grow">
-                             {/* Content can go here if needed in the future */}
-                        </CardContent>
                         <CardContent>
                              <Button disabled>
                                 Launch Tool <ArrowRight className="ml-2 h-4 w-4" />
