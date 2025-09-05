@@ -11,14 +11,12 @@ const tools = [
   {
     icon: <BrainCircuit className="h-8 w-8 text-primary" />,
     title: 'AI Problem Solver',
-    description: 'Get step-by-step solutions and explanations for complex problems across various subjects.',
     href: '#',
     status: 'Coming Soon'
   },
   {
     icon: <Calculator className="h-8 w-8 text-primary" />,
     title: 'GPA & Percentage Calculator',
-    description: 'Quickly calculate your GPA or percentage to track your academic performance.',
     href: '#',
     status: 'Coming Soon'
   },
@@ -55,7 +53,6 @@ export default function ToolsPage() {
                         </CardHeader>
                         <CardContent className="flex-grow space-y-2">
                             <CardTitle className="text-xl font-semibold">{tool.title}</CardTitle>
-                            <CardDescription>{tool.description}</CardDescription>
                         </CardContent>
                         <CardContent>
                              <Button disabled>
