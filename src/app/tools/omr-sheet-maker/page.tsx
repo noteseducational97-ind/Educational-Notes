@@ -61,7 +61,7 @@ export default function OmrSheetMakerPage() {
         }
 
         const pdf = new jsPDF({
-            orientation: 'p',
+            orientation: 'l', // Set to landscape
             unit: 'mm',
             format: values.pageSize.toLowerCase()
         });
@@ -73,7 +73,7 @@ export default function OmrSheetMakerPage() {
         container.style.left = '-9999px'; // Position off-screen
         container.style.top = '0';
         container.style.zIndex = '1000'; // Ensure it's on top layer for rendering
-        container.style.width = values.pageSize === 'A4' ? '210mm' : '216mm';
+        container.style.width = values.pageSize === 'A4' ? '297mm' : '279mm'; // Landscape width
         container.style.backgroundColor = 'white'; // Explicitly set background
         document.body.appendChild(container);
 
