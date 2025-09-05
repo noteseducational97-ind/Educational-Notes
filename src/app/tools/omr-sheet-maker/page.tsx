@@ -117,15 +117,9 @@ export default function OmrSheetMakerPage() {
       <main className="flex-1 py-8">
         <div className="container mx-auto max-w-2xl">
               <Card>
-                <CardHeader>
-                  <CardTitle className="text-2xl font-bold">OMR Sheet Maker</CardTitle>
-                  <CardDescription>
-                    Create and download a custom OMR answer sheet for your practice tests.
-                  </CardDescription>
-                </CardHeader>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)}>
-                        <CardContent className="space-y-6">
+                        <CardContent className="space-y-6 pt-6">
                           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                             <FormField
                               control={form.control}
