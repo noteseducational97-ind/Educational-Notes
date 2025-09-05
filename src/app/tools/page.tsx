@@ -45,12 +45,6 @@ const allTools: Tool[] = [
         href: '#',
     },
     {
-        icon: <Sparkles className="h-8 w-8 text-muted-foreground" />,
-        title: 'AI Problem Solver',
-        description: 'Get step-by-step solutions and explanations for complex problems.',
-        isComingSoon: true,
-    },
-    {
         icon: <FileText className="h-8 w-8 text-muted-foreground" />,
         title: 'AI Test Maker',
         description: 'Generate practice tests and quizzes from your study material.',
