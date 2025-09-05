@@ -46,24 +46,26 @@ export default function ToolsPage() {
             </div>
           
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-                {availableTools.map((tool) => (
-                    <Card 
-                        key={tool.title}
-                        className="group flex flex-col h-full transition-all duration-300 hover:shadow-lg"
-                    >
-                        <CardContent className="p-6 flex flex-col gap-4">
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-4">
-                                    {tool.icon}
-                                    <CardTitle className="text-xl font-semibold">{tool.title}</CardTitle>
+                <div className="grid grid-cols-1 gap-8">
+                    {availableTools.map((tool) => (
+                        <Card 
+                            key={tool.title}
+                            className="group flex flex-col h-full transition-all duration-300 hover:shadow-lg"
+                        >
+                            <CardContent className="p-6 flex flex-col gap-4">
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-4">
+                                        {tool.icon}
+                                        <CardTitle className="text-xl font-semibold">{tool.title}</CardTitle>
+                                    </div>
                                 </div>
-                            </div>
-                             <Button>
-                                Launch Tool <ArrowRight className="ml-2 h-4 w-4" />
-                            </Button>
-                        </CardContent>
-                    </Card>
-                ))}
+                                <Button>
+                                    Launch Tool <ArrowRight className="ml-2 h-4 w-4" />
+                                </Button>
+                            </CardContent>
+                        </Card>
+                    ))}
+                </div>
 
                  <Card className="group flex flex-col h-full bg-secondary/50">
                     <CardHeader>
