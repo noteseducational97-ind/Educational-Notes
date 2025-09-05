@@ -77,12 +77,14 @@ export default function OmrSheetMakerPage() {
         container.style.padding = '0';
         container.style.margin = '0';
         container.style.visibility = 'hidden';
+        container.style.backgroundColor = 'white'; // Ensure background is white for rendering
         document.body.appendChild(container);
 
         const canvas = await html2canvas(container, {
             scale: 2, // Higher scale for better quality
             useCORS: true,
-            logging: false
+            logging: false,
+            backgroundColor: '#ffffff' // Explicitly set background color for canvas
         });
         document.body.removeChild(container);
         

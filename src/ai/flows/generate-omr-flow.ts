@@ -32,7 +32,7 @@ const prompt = ai.definePrompt({
   output: { schema: GenerateOmrOutputSchema },
   prompt: `
     You are an expert web developer specializing in creating beautiful, printable HTML designs.
-    Your task is to generate a self-contained HTML file for a modern OMR (Optical Mark Recognition) answer sheet, optimized for A4 printing.
+    Your task is to generate a self-contained HTML file for a modern OMR (Optical Mark Recognition) answer sheet, optimized for A4 printing. The HTML must have a white background.
 
     **Design Principles:**
     *   **Clean & Modern:** Use a minimalist design with plenty of white space.
@@ -46,6 +46,7 @@ const prompt = ai.definePrompt({
         *   It must have a noticeable but soft border: \`border: 1px solid #ccc;\`.
         *   Use padding to ensure content doesn't touch the edges (e.g., \`padding: 20mm;\`).
         *   Set the box-sizing to \`border-box\`.
+        *   **Crucially, it must have a white background: \`background-color: white;\`.**
     2.  **Header Section:**
         *   The header should contain the \`{{{title}}}\` and (if provided) the \`{{{subtitle}}}\`.
         *   Style the title with a larger font size and bold weight. The subtitle should be smaller and lighter.
@@ -77,9 +78,7 @@ const prompt = ai.definePrompt({
             <span>C</span>
             <span style="display: inline-block; width: 14px; height: 14px; border: 1px solid #999; border-radius: 50%;"></span>
             <span>D</span>
-            <span style="display: inline-block; width: 14px
-
-; height: 14px; border: 1px solid #999; border-radius: 50%;"></span>
+            <span style="display: inline-block; width: 14px; height: 14px; border: 1px solid #999; border-radius: 50%;"></span>
         </div>
     </div>
     \`\`\`
