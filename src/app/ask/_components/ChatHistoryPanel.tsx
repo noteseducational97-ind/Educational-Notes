@@ -85,16 +85,14 @@ export default function ChatHistoryPanel({
     onClose();
   }
 
-  if (!isOpen) return null;
-
   return (
-    <div className="h-full w-[300px] bg-background border-r flex flex-col">
+    <div className={cn(
+        "fixed inset-y-0 left-0 z-50 w-[300px] bg-background border-r flex flex-col transition-transform duration-300 ease-in-out",
+        isOpen ? 'translate-x-0' : '-translate-x-full'
+    )}>
         <div className="flex items-center justify-between border-b p-4">
             <h2 className="text-lg font-semibold">History</h2>
             <div className="flex items-center gap-2">
-                 <Button variant="ghost" size="icon" onClick={handleNewChat}>
-                    <PlusCircle className="h-4 w-4" />
-                </Button>
                 <Button variant="ghost" size="icon" onClick={onClose}>
                     <X className="h-4 w-4" />
                 </Button>
