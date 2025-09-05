@@ -30,8 +30,7 @@ import { MultiSelect } from '@/components/ui/multi-select';
 
 const criteria = ['Class 12', 'Class 11', 'Class 10', 'MHT-CET'];
 const contentCategories = [
-    'Notes', 'Text Book', 'Textual Answer', 'Important Point', 
-    'PYQ', 'Syllabus', 'Test', 'Other Study Material'
+    'Notes', 'Previous Year Questions', 'Syllabus', 'Text Book', 'Textual Answer', 'Important Point', 'Test', 'Other Study Material'
 ];
 
 const scienceSubjects = ['Physics', 'Chemistry', 'Mathematics', 'Biology'];
@@ -90,8 +89,12 @@ export default function DownloadsPage() {
     if (selectedCriteria.includes('Class 10')) {
       class10Subjects.forEach(s => subjects.add(s));
     }
-    if (selectedCriteria.includes('Class 11') || selectedCriteria.includes('Class 12') || selectedCriteria.includes('MHT-CET')) {
+    if (selectedCriteria.some(c => ['Class 11', 'Class 12', 'MHT-CET'].includes(c))) {
       scienceSubjects.forEach(s => subjects.add(s));
+    }
+    
+    if(subjects.size === 0) { // If no class is selected, show all
+        return [...scienceSubjects, ...class10Subjects];
     }
     return Array.from(subjects);
   }, [selectedCriteria]);
