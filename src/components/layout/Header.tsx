@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Home, Download, Bookmark, Menu, LogIn, UserPlus, LayoutDashboard, Loader2, Wrench, Info } from 'lucide-react';
+import { Home, Download, Bookmark, Menu, LogIn, UserPlus, LayoutDashboard, Loader2, Wrench, Info, ClipboardEdit } from 'lucide-react';
 import UserNav from './UserNav';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/use-auth';
@@ -23,6 +23,7 @@ const navLinks = [
   { href: '/downloads', label: 'Downloads', icon: Download },
   { href: '/save', label: 'Watchlist', icon: Bookmark },
   { href: '/#tools', label: 'Tools', icon: Wrench },
+  { href: '/admission', label: 'Admission Form', icon: ClipboardEdit },
   { href: '/about', label: 'About', icon: Info },
 ];
 
