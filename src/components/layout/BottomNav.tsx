@@ -12,7 +12,7 @@ const navLinks = [
   { href: '/downloads', label: 'Downloads', icon: Download },
   { href: '/save', label: 'Watchlist', icon: Bookmark },
   { href: '/#tools', label: 'Tools', icon: Wrench },
-  { href: '/#about', label: 'About', icon: Info },
+  { href: '/about', label: 'About', icon: Info },
 ];
 
 export default function BottomNav() {
