@@ -2,25 +2,14 @@
 'use client';
 
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { auth } from '@/lib/firebase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { Loader2, KeyRound, User, LogIn, Shield, ArrowLeft } from 'lucide-react';
-import { EducationalNotesLogo } from '@/components/icons/EducationalNotesLogo';
-
-const formSchema = z.object({
-  username: z.string().min(1, { message: 'Please enter a username.' }),
-  password: z.string().min(1, { message: 'Password is required.' }),
-});
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Loader2, Shield, ArrowLeft } from 'lucide-react';
 
 const adminUsers: { [key: string]: string } = {
     'admin': 'noteseducational97@gmail.com',
@@ -50,18 +39,9 @@ const GoogleIcon = () => (
 
 
 export default function AdminLoginPage() {
-  const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      username: '',
-      password: '',
-    },
-  });
 
   const checkAdminAndRedirect = (email: string | null) => {
     if (!email || !Object.values(adminUsers).includes(email)) {
@@ -71,43 +51,13 @@ export default function AdminLoginPage() {
           title: 'Unauthorized',
           description: 'This account is not authorized for admin access.',
       });
-      setLoading(false);
       setGoogleLoading(false);
       return false;
     }
     router.push('/admin');
     return true;
   }
-
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    setLoading(true);
-    const emailToLogin = adminUsers[values.username.toLowerCase()];
-    
-    if (!emailToLogin) {
-      toast({
-          variant: 'destructive',
-          title: 'Login Failed',
-          description: 'Please check your username and try again.',
-      });
-      setLoading(false);
-      return;
-    }
-
-    try {
-      if (checkAdminAndRedirect(emailToLogin)) {
-        await signInWithEmailAndPassword(auth, emailToLogin, values.password);
-      }
-    } catch (error: any) {
-      toast({
-        variant: 'destructive',
-        title: 'Login Failed',
-        description: 'Please check your password and try again.',
-      });
-    } finally {
-      setLoading(false);
-    }
-  }
-
+  
   async function handleGoogleSignIn() {
     setGoogleLoading(true);
     try {
@@ -121,8 +71,7 @@ export default function AdminLoginPage() {
         title: 'Google Sign-In Failed',
         description: error.message,
       });
-    } finally {
-      setGoogleLoading(false);
+       setGoogleLoading(false);
     }
   }
 
@@ -145,57 +94,9 @@ export default function AdminLoginPage() {
               </Link>
           </div>
           <CardTitle className="text-2xl font-bold tracking-tight">Admin Access</CardTitle>
-          <CardDescription className="text-muted-foreground">Please sign in to access the dashboard</CardDescription>
+          <CardDescription className="text-muted-foreground">Please sign in with Google to access the dashboard</CardDescription>
         </CardHeader>
         <CardContent>
-           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <FormField
-                control={form.control}
-                name="username"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Admin Username</FormLabel>
-                    <FormControl>
-                      <div className="relative">
-                        <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <Input placeholder="Admin" {...field} className="pl-10" />
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Password</FormLabel>
-                    <FormControl>
-                      <div className="relative">
-                        <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <Input type="password" placeholder="••••••••" {...field} className="pl-10" />
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? <Loader2 className="animate-spin" /> : <LogIn />}
-                Sign In
-              </Button>
-            </form>
-          </Form>
-           <div className="relative my-4">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t border-border" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-card px-2 text-muted-foreground">Or continue with</span>
-            </div>
-          </div>
           <Button variant="outline" className="w-full" onClick={handleGoogleSignIn} disabled={googleLoading}>
             {googleLoading ? <Loader2 className="animate-spin" /> : <GoogleIcon />}
             Sign in with Google
