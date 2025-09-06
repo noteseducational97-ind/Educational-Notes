@@ -13,7 +13,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Loader2, KeyRound, Mail, LogIn } from 'lucide-react';
+import { Loader2, KeyRound, Mail, LogIn, Shield } from 'lucide-react';
 import Link from 'next/link';
 
 const formSchema = z.object({
@@ -139,10 +139,18 @@ export default function LoginForm() {
           <span className="bg-card px-2 text-muted-foreground">Or continue with</span>
         </div>
       </div>
-      <Button variant="outline" className="w-full" onClick={handleGoogleSignIn} disabled={googleLoading}>
-        {googleLoading ? <Loader2 className="animate-spin" /> : <GoogleIcon />}
-        Sign in with Google
-      </Button>
+      <div className="flex flex-col sm:flex-row gap-2">
+        <Button variant="outline" className="w-full" onClick={handleGoogleSignIn} disabled={googleLoading}>
+            {googleLoading ? <Loader2 className="animate-spin" /> : <GoogleIcon />}
+            Sign in with Google
+        </Button>
+        <Button variant="secondary" className="w-full sm:w-auto" asChild>
+            <Link href="/admin">
+                <Shield />
+                Admin
+            </Link>
+        </Button>
+      </div>
     </div>
   );
 }
