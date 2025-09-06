@@ -14,7 +14,6 @@ import { updateResourceAction } from '@/app/admin/actions';
 import { getResourceById } from '@/lib/firebase/resources';
 import type { Resource } from '@/types';
 
-import Header from '@/components/layout/Header';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
@@ -151,7 +150,6 @@ export default function EditResourceAdminPage() {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <Header />
       <main className="flex-1">
         <div className="container mx-auto px-4 py-8">
           <Form {...form}>
