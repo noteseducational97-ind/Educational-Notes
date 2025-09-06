@@ -126,7 +126,6 @@ export default function Home() {
                 <Card 
                   key={feature.title}
                   className="group flex flex-col h-full cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl hover:border-primary/50 bg-background/50 border-border"
-                  onClick={() => router.push(feature.href)}
                 >
                   <CardHeader>
                     <div className="flex items-center gap-4">
