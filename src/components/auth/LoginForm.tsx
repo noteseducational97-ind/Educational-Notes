@@ -144,12 +144,6 @@ export default function LoginForm() {
             {googleLoading ? <Loader2 className="animate-spin" /> : <GoogleIcon />}
             Sign in with Google
         </Button>
-        <Button variant="secondary" className="w-full sm:w-auto" asChild>
-            <Link href="/admin">
-                <Shield />
-                Admin
-            </Link>
-        </Button>
       </div>
     </div>
   );
