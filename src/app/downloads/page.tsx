@@ -241,32 +241,25 @@ export default function DownloadsPage() {
                     const disabled = isLinkDisabled(resource);
                     return (
                     <Card key={resource.id} className="flex flex-col hover:border-primary/50 transition-all duration-300 overflow-hidden bg-secondary/30 border-border/50 shadow-md hover:shadow-primary/20">
-                        
-                        <CardHeader className="flex-grow">
-                        <CardTitle className="text-xl">
-                            <Link
-                            href={`/resources/${resource.id}`}
-                            className={cn("group inline-flex items-center gap-2 hover:text-primary transition-colors", disabled && "pointer-events-none text-muted-foreground")}
-                            >
-                            <BookOpen className="h-5 w-5 text-primary/80" />
-                            {resource.title}
-                            {!disabled && <ArrowUpRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />}
-                            </Link>
-                        </CardTitle>
-                        <CardDescription asChild>
-                            <div className="flex flex-wrap gap-2 pt-2">
-                            <div className='flex flex-wrap gap-1'>
+                        <CardHeader>
+                            <CardTitle className="text-xl">
+                                <Link
+                                href={`/resources/${resource.id}`}
+                                className={cn("group inline-flex items-center gap-2 hover:text-primary transition-colors", disabled && "pointer-events-none text-muted-foreground")}
+                                >
+                                <BookOpen className="h-5 w-5 text-primary/80" />
+                                {resource.title}
+                                {!disabled && <ArrowUpRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />}
+                                </Link>
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="flex-grow">
+                            <div className='flex flex-wrap gap-2'>
                                 {resource.category.map(c => <Badge key={c} variant="secondary">{c}</Badge>)}
-                            </div>
-                            <div className='flex flex-wrap gap-1'>
                                 {resource.stream.map(s => <Badge key={s} variant="outline">{s}</Badge>)}
-                            </div>
-                            <div className='flex flex-wrap gap-1 mt-1'>
                                 {resource.subject.map(s => <Badge key={s} variant="default">{s}</Badge>)}
                             </div>
-                            </div>
-                        </CardDescription>
-                        </CardHeader>
+                        </CardContent>
                         <CardFooter className="flex items-center justify-between mt-auto border-t pt-4">
                         <Button variant={isSaved ? "secondary" : "outline"} size="sm" onClick={() => handleToggleWatchlist(resource)} disabled={saving === resource.id}>
                             {isSaved ? <BookmarkCheck className="h-4 w-4 mr-1" /> : <Bookmark className="h-4 w-4 mr-1" />}

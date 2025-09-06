@@ -259,14 +259,8 @@ export default function AdminDownloadsPage() {
                         <div className="flex flex-wrap gap-2">
                             {resource.visibility === 'private' && <Badge variant="destructive"><Lock className="h-3 w-3 mr-1" />Private</Badge>}
                             {resource.isComingSoon && <Badge variant="outline"><Clock className="h-3 w-3 mr-1" />Coming Soon</Badge>}
-                        </div>
-                        <div className='flex flex-wrap gap-1'>
                             {resource.category.map(c => <Badge key={c} variant="secondary">{c}</Badge>)}
-                        </div>
-                        <div className='flex flex-wrap gap-1'>
                             {resource.stream.map(s => <Badge key={s} variant="outline">{s}</Badge>)}
-                        </div>
-                        <div className='flex flex-wrap gap-1 mt-1'>
                             {resource.subject.map(s => <Badge key={s} variant="default">{s}</Badge>)}
                         </div>
                     </CardContent>
