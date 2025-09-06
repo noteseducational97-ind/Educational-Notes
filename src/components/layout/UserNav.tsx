@@ -16,7 +16,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
-import { LogOut, User as UserIcon } from 'lucide-react';
+import { LogOut, User as UserIcon, LayoutDashboard } from 'lucide-react';
 import Link from 'next/link';
 
 export default function UserNav() {
@@ -74,6 +74,14 @@ export default function UserNav() {
             <span>Profile</span>
           </Link>
         </DropdownMenuItem>
+         {isAdmin && (
+          <DropdownMenuItem className="cursor-pointer" asChild>
+            <Link href="/admin">
+              <LayoutDashboard className="mr-2 h-4 w-4" />
+              <span>Admin Dashboard</span>
+            </Link>
+          </DropdownMenuItem>
+        )}
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
           <LogOut className="mr-2 h-4 w-4" />

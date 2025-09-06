@@ -26,7 +26,7 @@ export default function AdminDashboardPage() {
   useEffect(() => {
     if (!authLoading) {
       if (!user || !isAdmin) {
-        router.push('/');
+        router.push('/admin/login');
       }
     }
   }, [user, isAdmin, authLoading, router]);
@@ -43,7 +43,7 @@ export default function AdminDashboardPage() {
     fetchStats();
   }, [isAdmin]);
 
-  if (authLoading || !isAdmin) {
+  if (authLoading || !user || !isAdmin) {
     return <LoadingSpinner />;
   }
 
