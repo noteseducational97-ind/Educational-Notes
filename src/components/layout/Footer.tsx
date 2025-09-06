@@ -18,6 +18,9 @@ export default function Footer() {
           <Link href="/privacy" className="text-muted-foreground transition-colors hover:text-primary">
             Privacy
           </Link>
+          <a href="mailto:noteseducational97@gmail.com" className="text-muted-foreground transition-colors hover:text-primary">
+            Contact
+          </a>
         </div>
       </div>
     </footer>

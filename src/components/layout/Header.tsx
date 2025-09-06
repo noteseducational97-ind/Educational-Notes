@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Home, Download, Bookmark, Info, Shield, Menu, PlusCircle, LogIn, UserPlus, BookCopy, UserCog, LayoutDashboard, Users, Loader2, Lightbulb, Wrench } from 'lucide-react';
+import { Home, Download, Bookmark, Menu, LogIn, UserPlus, LayoutDashboard, Loader2, Wrench } from 'lucide-react';
 import UserNav from './UserNav';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/use-auth';
@@ -12,26 +12,21 @@ import {
   SheetContent,
   SheetTrigger,
   SheetClose,
-  SheetTitle,
   SheetHeader,
 } from '@/components/ui/sheet';
 import { Button } from '../ui/button';
 import React from 'react';
 import { EducationalNotesLogo } from '../icons/EducationalNotesLogo';
-import LoadingSpinner from '../shared/LoadingSpinner';
 
 const navLinks = [
   { href: '/', label: 'Home', icon: Home },
   { href: '/downloads', label: 'Downloads', icon: Download },
   { href: '/save', label: 'Watchlist', icon: Bookmark },
-  { href: '/tools', label: 'Tools', icon: Wrench },
-  { href: '/about', label: 'About', icon: Info },
 ];
 
 
 export default function Header() {
   const pathname = usePathname();
-  const router = useRouter();
   const { user, loading, isAdmin } = useAuth();
 
   const NavLink = ({ href, children }: { href: string; children: React.ReactNode }) => (
@@ -121,18 +116,17 @@ export default function Header() {
                 </SheetTrigger>
                 <SheetContent side="left">
                     <SheetHeader>
-                        <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
+                        <SheetClose asChild>
+                            <Link
+                                href="/"
+                                className="mb-4 flex items-center gap-2 text-lg font-semibold"
+                            >
+                                <EducationalNotesLogo className="h-6 w-6 text-primary" />
+                                <span>Educational Notes</span>
+                            </Link>
+                        </SheetClose>
                     </SheetHeader>
                   <nav className="grid gap-6 text-lg font-medium">
-                    <SheetClose asChild>
-                      <Link
-                        href="/"
-                        className="mb-4 flex items-center gap-2 text-lg font-semibold"
-                      >
-                        <EducationalNotesLogo className="h-6 w-6 text-primary" />
-                        <span>Educational Notes</span>
-                      </Link>
-                    </SheetClose>
                      {navLinks.map(({ href, label, icon: Icon }) => (
                        <MobileNavLink key={label} href={href}>
                         <Icon className="h-5 w-5" />
@@ -140,23 +134,13 @@ export default function Header() {
                        </MobileNavLink>
                     ))}
                     {isAdmin && (
-                      <>
                         <MobileNavLink href="/admin">
                             <LayoutDashboard className="h-5 w-5" />
                             Admin
                         </MobileNavLink>
-                        <MobileNavLink href="/admin/users">
-                            <Users className="h-5 w-5" />
-                            Manage Users
-                        </MobileNavLink>
-                        <MobileNavLink href="/admin/uploaded-resources">
-                          <BookCopy className="h-5 w-5" />
-                          Manage Resources
-                        </MobileNavLink>
-                      </>
                     )}
                     {!user && (
-                       <>
+                       <div className="border-t pt-6 mt-4 space-y-4">
                         <MobileNavLink href="/login">
                           <LogIn className="h-5 w-5" />
                           Sign In
@@ -165,7 +149,7 @@ export default function Header() {
                           <UserPlus className="h-5 w-5" />
                           Sign Up
                         </MobileNavLink>
-                      </>
+                      </div>
                     )}
                   </nav>
                 </SheetContent>

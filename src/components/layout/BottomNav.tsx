@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Download, Bookmark, Lightbulb, Info, Wrench } from 'lucide-react';
+import { Home, Download, Bookmark } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/use-auth';
 
@@ -11,22 +11,19 @@ const navLinks = [
   { href: '/', label: 'Home', icon: Home },
   { href: '/downloads', label: 'Downloads', icon: Download },
   { href: '/save', label: 'Watchlist', icon: Bookmark },
-  { href: '/tools', label: 'Tools', icon: Wrench },
-  { href: '/about', label: 'About', icon: Info },
 ];
 
 export default function BottomNav() {
   const pathname = usePathname();
   const { user, loading } = useAuth();
   
-  // Hide on auth pages or admin pages for mobile
   if (pathname.startsWith('/login') || pathname.startsWith('/signup') || pathname.startsWith('/forgot-password') || pathname.startsWith('/admin')) {
     return null;
   }
 
   return (
     <div className="fixed bottom-0 left-0 z-50 w-full h-16 bg-background border-t border-border/40 md:hidden">
-      <div className="grid h-full max-w-lg grid-cols-5 mx-auto font-medium">
+      <div className="grid h-full max-w-lg grid-cols-3 mx-auto font-medium">
         {navLinks.map(({ href, label, icon: Icon }) => {
           const isActive = (pathname === '/' && href === '/') || (pathname.startsWith(href) && href !== '/');
           return (
