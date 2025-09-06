@@ -9,7 +9,7 @@ import { EducationalNotesLogo } from '../icons/EducationalNotesLogo';
 
 const adminNavLinks = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/admin/uploaded-resources', label: 'Manage Resources', icon: BookCopy },
+  { href: '/admin/uploaded-resources', label: 'Downloads', icon: Download },
   { href: '/admin/users', label: 'Manage Users', icon: Users },
 ];
 
@@ -18,6 +18,12 @@ export default function AdminSidebar() {
 
   return (
     <aside className="hidden md:flex flex-col w-64 bg-background border-r border-border/40">
+        <div className="flex items-center h-16 border-b px-6">
+            <Link href="/" className="flex items-center gap-2 font-semibold">
+                <EducationalNotesLogo className="h-6 w-6 text-primary" />
+                <span>Educational Notes</span>
+            </Link>
+        </div>
         <div className="flex-1 overflow-y-auto">
             <nav className="p-4 space-y-2">
             {adminNavLinks.map(({ href, label, icon: Icon }) => {
