@@ -37,6 +37,7 @@ export default function Header() {
   const NavLink = ({ href, children }: { href: string; children: React.ReactNode }) => (
     <Link
       href={href}
+      prefetch={true}
       className={cn(
         'transition-colors hover:text-primary font-medium flex items-center gap-1.5',
         pathname === href ? 'text-primary' : 'text-muted-foreground'
@@ -50,6 +51,7 @@ export default function Header() {
      <SheetClose asChild>
       <Link
         href={href}
+        prefetch={true}
         className={cn(
           'flex items-center gap-4 rounded-lg px-3 py-2 text-lg font-medium transition-colors hover:bg-accent hover:text-accent-foreground',
           pathname === href ? 'bg-accent text-accent-foreground' : 'text-muted-foreground'

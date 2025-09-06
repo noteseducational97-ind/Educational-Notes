@@ -11,6 +11,7 @@ import BottomNav from '@/components/layout/BottomNav';
 const inter = Inter({
   subsets: ['latin'],
   variable: '--font-sans',
+  display: 'swap', // improve font loading performance
 });
 
 export const metadata: Metadata = {

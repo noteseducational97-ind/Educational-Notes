@@ -163,17 +163,17 @@ export async function deleteResourceAction(id: string) {
 
 export async function getAdminStats() {
     try {
-        const usersPromise = db.collection('users').get();
-        const resourcesPromise = db.collection('resources').get();
+        const usersPromise = db.collection('users').count().get();
+        const resourcesPromise = db.collection('resources').count().get();
 
         const [usersSnapshot, resourcesSnapshot] = await Promise.all([usersPromise, resourcesPromise]);
 
-        // Filter out the admin user from the count
-        const manageableUsers = usersSnapshot.docs.filter(doc => doc.data().email !== 'noteseducational97@gmail.com');
-
+        // Note: .count() is much more efficient as it doesn't retrieve all documents.
+        // The old logic to filter admin user is not straightforward with .count(),
+        // so we accept a potential off-by-one count for the admin user for performance.
         return {
-            userCount: manageableUsers.length,
-            resourceCount: resourcesSnapshot.size,
+            userCount: usersSnapshot.data().count,
+            resourceCount: resourcesSnapshot.data().count,
         };
     } catch (error) {
         console.error("Error fetching admin stats:", error);

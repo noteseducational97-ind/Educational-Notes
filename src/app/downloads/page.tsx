@@ -53,6 +53,7 @@ export default function DownloadsPage() {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedSubjects, setSelectedSubjects] = useState<string[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [hasFilters, setHasFilters] = useState(false);
 
   const fetchInitialData = useCallback(async () => {
     try {
@@ -103,6 +104,10 @@ export default function DownloadsPage() {
     // When available subjects change, filter out any selected subjects that are no longer available.
     setSelectedSubjects(prev => prev.filter(subject => availableSubjects.includes(subject)));
   }, [availableSubjects]);
+  
+  useEffect(() => {
+    setHasFilters(selectedCriteria.length > 0 || selectedCategories.length > 0 || selectedSubjects.length > 0);
+  }, [selectedCriteria, selectedCategories, selectedSubjects]);
 
   const handleToggleWatchlist = async (resource: Resource) => {
     setSaving(resource.id);
@@ -152,7 +157,9 @@ export default function DownloadsPage() {
   };
   
   const filteredResources = useMemo(() => {
-    setCurrentPage(1); // Reset to first page on filter change
+    if (!hasFilters) {
+      return resources;
+    }
     return resources.filter(resource => {
       const criteriaMatch = selectedCriteria.length === 0 || 
         selectedCriteria.some(crit => 
@@ -163,7 +170,12 @@ export default function DownloadsPage() {
       
       return criteriaMatch && categoryMatch && subjectMatch;
     });
-  }, [resources, selectedCriteria, selectedCategories, selectedSubjects]);
+  }, [resources, selectedCriteria, selectedCategories, selectedSubjects, hasFilters]);
+
+  useEffect(() => {
+    setCurrentPage(1); // Reset to first page on filter change
+  }, [filteredResources]);
+
 
   const paginatedResources = useMemo(() => {
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
