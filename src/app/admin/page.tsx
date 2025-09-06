@@ -50,12 +50,12 @@ export default function AdminDashboardPage() {
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
-      <main className="flex-1 bg-secondary/30">
+      <main className="flex-1 bg-background">
         <div className="container mx-auto px-4 py-8 md:px-6">
           <h1 className="text-3xl font-bold text-foreground mb-6">Admin Dashboard</h1>
           
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-6">
-             <Card>
+             <Card className="bg-secondary/30">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium">Total Users</CardTitle>
                     <Users className="h-4 w-4 text-muted-foreground" />
@@ -65,7 +65,7 @@ export default function AdminDashboardPage() {
                     <p className="text-xs text-muted-foreground">Registered users on the platform</p>
                 </CardContent>
             </Card>
-             <Card>
+             <Card className="bg-secondary/30">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium">Total Resources</CardTitle>
                     <BookCopy className="h-4 w-4 text-muted-foreground" />
@@ -78,7 +78,7 @@ export default function AdminDashboardPage() {
           </div>
 
           <div className="grid gap-6 md:grid-cols-2">
-            <Card>
+            <Card className="bg-secondary/30">
               <CardHeader>
                 <CardTitle>Manage Users</CardTitle>
                 <CardDescription>View, enable, disable, or delete user accounts.</CardDescription>
@@ -91,7 +91,7 @@ export default function AdminDashboardPage() {
                 </Button>
               </CardContent>
             </Card>
-            <Card>
+            <Card className="bg-secondary/30">
               <CardHeader>
                 <CardTitle>Manage Resources</CardTitle>
                 <CardDescription>Add, edit, or remove study materials from the library.</CardDescription>

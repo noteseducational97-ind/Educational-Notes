@@ -13,10 +13,10 @@ export default function Footer() {
         <p className="text-sm text-muted-foreground text-center sm:text-left">&copy; {new Date().getFullYear()} Educational Notes. All rights reserved.</p>
         <div className="flex items-center gap-4 sm:gap-6 text-sm">
           <Link href="/terms" className="text-muted-foreground transition-colors hover:text-primary">
-            Terms of Service
+            Terms
           </Link>
           <Link href="/privacy" className="text-muted-foreground transition-colors hover:text-primary">
-            Privacy Policy
+            Privacy
           </Link>
         </div>
       </div>

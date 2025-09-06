@@ -81,12 +81,12 @@ export default function Header() {
           <div className="ml-auto flex items-center gap-4">
             {loading ? (
               <div className="h-8 w-20 flex items-center justify-center">
-                <Loader2 className="h-6 w-6 animate-spin" />
+                <Loader2 className="h-6 w-6 animate-spin text-primary" />
               </div>
             ) : user ? (
               <>
                 {isAdmin && (
-                   <Button asChild variant="ghost">
+                   <Button asChild variant="ghost" className="hidden md:flex">
                       <Link href="/admin">
                         <LayoutDashboard />
                         Admin
@@ -133,6 +133,12 @@ export default function Header() {
                         <span>Educational Notes</span>
                       </Link>
                     </SheetClose>
+                     {navLinks.map(({ href, label, icon: Icon }) => (
+                       <MobileNavLink key={label} href={href}>
+                        <Icon className="h-5 w-5" />
+                        {label}
+                       </MobileNavLink>
+                    ))}
                     {isAdmin && (
                       <>
                         <MobileNavLink href="/admin">
