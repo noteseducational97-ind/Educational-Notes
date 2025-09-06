@@ -22,6 +22,11 @@ const formSchema = z.object({
   password: z.string().min(1, { message: 'Password is required.' }),
 });
 
+const adminUsers: { [key: string]: string } = {
+    'admin': 'noteseducational97@gmail.com',
+    'shree': 'shreecoachingclasses@gmail.com'
+};
+
 const GoogleIcon = () => (
   <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
     <path
@@ -59,7 +64,7 @@ export default function AdminLoginPage() {
   });
 
   const checkAdminAndRedirect = (email: string | null) => {
-    if (email !== 'noteseducational97@gmail.com') {
+    if (!email || !Object.values(adminUsers).includes(email)) {
       auth.signOut(); // Sign out non-admin user
       toast({
           variant: 'destructive',
@@ -76,9 +81,9 @@ export default function AdminLoginPage() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
-    const adminEmail = 'noteseducational97@gmail.com';
+    const emailToLogin = adminUsers[values.username.toLowerCase()];
     
-    if (values.username.toLowerCase() !== 'admin') {
+    if (!emailToLogin) {
       toast({
           variant: 'destructive',
           title: 'Login Failed',
@@ -89,8 +94,8 @@ export default function AdminLoginPage() {
     }
 
     try {
-      if (checkAdminAndRedirect(adminEmail)) {
-        await signInWithEmailAndPassword(auth, adminEmail, values.password);
+      if (checkAdminAndRedirect(emailToLogin)) {
+        await signInWithEmailAndPassword(auth, emailToLogin, values.password);
       }
     } catch (error: any) {
       toast({

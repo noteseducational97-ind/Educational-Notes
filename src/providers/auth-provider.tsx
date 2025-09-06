@@ -11,23 +11,28 @@ interface AuthContextType {
   user: User | null;
   loading: boolean;
   isAdmin: boolean;
+  isEditor: boolean;
 }
 
-export const AuthContext = createContext<AuthContextType>({ user: null, loading: true, isAdmin: false });
+export const AuthContext = createContext<AuthContextType>({ user: null, loading: true, isAdmin: false, isEditor: false });
 
 const GUEST_WATCHLIST_KEY = 'guest-watchlist';
+const ADMIN_EMAIL = 'noteseducational97@gmail.com';
+const EDITOR_EMAIL = 'shreecoachingclasses@gmail.com';
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isEditor, setIsEditor] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setUser(user);
       if (user) {
-        setIsAdmin(user.email === 'noteseducational97@gmail.com');
+        setIsAdmin(user.email === ADMIN_EMAIL);
+        setIsEditor(user.email === EDITOR_EMAIL);
 
         // Check for and sync guest watchlist
         const guestWatchlistJSON = localStorage.getItem(GUEST_WATCHLIST_KEY);
@@ -56,6 +61,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       } else {
         setIsAdmin(false);
+        setIsEditor(false);
       }
       setLoading(false);
     });
@@ -63,5 +69,5 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return () => unsubscribe();
   }, [toast]);
 
-  return <AuthContext.Provider value={{ user, loading, isAdmin }}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={{ user, loading, isAdmin, isEditor }}>{children}</AuthContext.Provider>;
 };
