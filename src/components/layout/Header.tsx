@@ -80,14 +80,6 @@ export default function Header() {
               </div>
             ) : user ? (
               <>
-                {isAdmin && (
-                   <Button asChild variant="ghost" className="hidden md:flex">
-                      <Link href="/admin">
-                        <LayoutDashboard />
-                        Admin
-                      </Link>
-                  </Button>
-                )}
                 <UserNav />
               </>
             ) : (
@@ -133,12 +125,6 @@ export default function Header() {
                         {label}
                        </MobileNavLink>
                     ))}
-                    {isAdmin && (
-                        <MobileNavLink href="/admin">
-                            <LayoutDashboard className="h-5 w-5" />
-                            Admin
-                        </MobileNavLink>
-                    )}
                     {!user && (
                        <div className="border-t pt-6 mt-4 space-y-4">
                         <MobileNavLink href="/login">
