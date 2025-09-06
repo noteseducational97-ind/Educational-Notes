@@ -12,7 +12,7 @@ const admissionForms = [
         href: '#'
     },
     {
-        title: 'Commerce Stream (XI & XII)',
+        title: 'MHT-CET',
         description: 'Admission for foundational commerce and accountancy courses.',
         status: 'Coming Soon',
         href: '#'
