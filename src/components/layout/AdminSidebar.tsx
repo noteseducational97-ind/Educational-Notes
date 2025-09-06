@@ -9,7 +9,7 @@ import { EducationalNotesLogo } from '../icons/EducationalNotesLogo';
 
 const adminNavLinks = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/admin/uploaded-resources', label: 'Download', icon: Download },
+  { href: '/downloads', label: 'Download', icon: Download },
   { href: '/admin/uploaded-resources', label: 'Manage Resources', icon: BookCopy },
   { href: '/admin/users', label: 'Manage Users', icon: Users },
 ];
