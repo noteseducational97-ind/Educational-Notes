@@ -87,7 +87,7 @@ export default function AdminLoginPage() {
       toast({
           variant: 'destructive',
           title: 'Login Failed',
-          description: 'Invalid username.',
+          description: 'Please check your username and try again.',
       });
       setLoading(false);
       return;
