@@ -125,7 +125,7 @@ export default function Home() {
               {features.map((feature) => (
                 <Card 
                   key={feature.title}
-                  className="group flex flex-col h-full cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl hover:border-primary/50 bg-background/50 border-border"
+                  className="group flex flex-col h-full transition-all duration-300 hover:scale-105 hover:shadow-xl hover:border-primary/50 bg-background/50 border-border"
                 >
                   <CardHeader>
                     <div className="flex items-center gap-4">
@@ -163,44 +163,8 @@ export default function Home() {
             </div>
         </section>
 
-        {/* Mentors Section */}
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-secondary/30">
-            <div className="container px-4 md:px-6">
-                <div className="flex flex-col items-center justify-center space-y-4 text-center mb-12">
-                    <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-balance">Meet Our Mentors</h2>
-                     <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed text-balance">
-                        Sponsored by Passionate Educators
-                    </p>
-                </div>
-                <div className="grid md:grid-cols-2 gap-8">
-                     <Card className="bg-background/50">
-                        <CardHeader>
-                            <CardTitle className="text-2xl">Pravin Khachane (M.Sc., B.Ed.)</CardTitle>
-                             <CardDescription>Physics</CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <p className="text-muted-foreground leading-relaxed">
-                                With over 30 years of teaching experience, Pravin Sir is a visionary in science education. His ability to simplify complex physics concepts has made him a beloved mentor.
-                            </p>
-                        </CardContent>
-                    </Card>
-                    <Card className="bg-background/50">
-                       <CardHeader>
-                            <CardTitle className="text-2xl">Mangesh Shete (M.Sc., B.Ed.)</CardTitle>
-                            <CardDescription>Chemistry</CardDescription>
-                        </CardHeader>
-                       <CardContent>
-                            <p className="text-muted-foreground leading-relaxed">
-                                A master of chemistry, Mangesh Sir has spent three decades nurturing curiosity and confidence. His empathetic approach continues to inspire thousands.
-                            </p>
-                        </CardContent>
-                    </Card>
-                </div>
-            </div>
-        </section>
-
         {/* Tools Section */}
-        <section id="tools" className="w-full py-12 md:py-24 lg:py-32 bg-background">
+        <section id="tools" className="w-full py-12 md:py-24 lg:py-32 bg-secondary/30">
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center mb-12">
               <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-balance">Our Tools</h2>
@@ -212,7 +176,7 @@ export default function Home() {
               {tools.map((tool) => (
                 <Card 
                   key={tool.title}
-                  className="group flex flex-col h-full cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl hover:border-primary/50 bg-secondary/30 border-border"
+                  className="group flex flex-col h-full cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl hover:border-primary/50 bg-background/50 border-border"
                   onClick={() => tool.href && router.push(tool.href)}
                 >
                   <CardHeader>
@@ -235,12 +199,12 @@ export default function Home() {
           </div>
         </section>
 
-        {/* CTA and Contact Section */}
-        <section id="contact" className="w-full py-12 md:py-24 lg:py-32 bg-secondary/30">
+        {/* CTA Section */}
+        <section id="contact" className="w-full py-12 md:py-24 lg:py-32 bg-background">
           <div
             className="container grid items-center justify-center gap-8 px-4 text-center md:px-6"
           >
-            <div className="space-y-4 max-w-2xl mx-auto rounded-lg bg-background/80 backdrop-blur-sm p-8 border">
+            <div className="space-y-4 max-w-2xl mx-auto rounded-lg bg-secondary/30 backdrop-blur-sm p-8 border">
               <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight text-balance">
                 Ready to Start Your Journey?
               </h2>
@@ -264,38 +228,8 @@ export default function Home() {
                   </div>
               )}
             </div>
-
-            <Card className="mt-8 bg-background/50">
-                <CardHeader>
-                <CardTitle className="text-3xl font-bold text-primary">Contact Us</CardTitle>
-                <CardDescription>Have questions or feedback? We'd love to hear from you.</CardDescription>
-                </CardHeader>
-                <CardContent>
-                <div className="flex flex-wrap items-center justify-center gap-4">
-                    <Button asChild variant="outline">
-                    <a href="mailto:noteseducational97@gmail.com">
-                        <Mail className="mr-2 h-4 w-4" />
-                        noteseducational97@gmail.com
-                    </a>
-                    </Button>
-                    <Button asChild variant="outline">
-                    <a href="tel:+919881482416">
-                        <Phone className="mr-2 h-4 w-4" />
-                        Khachane Sir - 9881482416
-                    </a>
-                    </Button>
-                    <Button asChild variant="outline">
-                    <a href="tel:+919405695457">
-                        <Phone className="mr-2 h-4 w-4" />
-                        Shete Sir - 9405695457
-                    </a>
-                    </Button>
-                </div>
-                </CardContent>
-            </Card>
           </div>
         </section>
-
       </main>
     </div>
   );
