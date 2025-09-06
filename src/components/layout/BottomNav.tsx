@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Download, Bookmark } from 'lucide-react';
+import { Home, Download, Bookmark, Wrench, Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/use-auth';
 
@@ -11,6 +11,8 @@ const navLinks = [
   { href: '/', label: 'Home', icon: Home },
   { href: '/downloads', label: 'Downloads', icon: Download },
   { href: '/save', label: 'Watchlist', icon: Bookmark },
+  { href: '/#tools', label: 'Tools', icon: Wrench },
+  { href: '/#about', label: 'About', icon: Info },
 ];
 
 export default function BottomNav() {
@@ -23,9 +25,9 @@ export default function BottomNav() {
 
   return (
     <div className="fixed bottom-0 left-0 z-50 w-full h-16 bg-background border-t border-border/40 md:hidden">
-      <div className="grid h-full max-w-lg grid-cols-3 mx-auto font-medium">
+      <div className="grid h-full max-w-lg grid-cols-5 mx-auto font-medium">
         {navLinks.map(({ href, label, icon: Icon }) => {
-          const isActive = (pathname === '/' && href === '/') || (pathname.startsWith(href) && href !== '/');
+          const isActive = (pathname === '/' && href === '/') || (href !== '/' && !href.includes('#') && pathname.startsWith(href));
           return (
             <Link
               key={label}
@@ -37,7 +39,7 @@ export default function BottomNav() {
               )}
             >
               <Icon className="w-5 h-5 mb-1" />
-              <span className="text-xs">{label}</span>
+              <span className="text-[10px]">{label}</span>
             </Link>
           );
         })}
