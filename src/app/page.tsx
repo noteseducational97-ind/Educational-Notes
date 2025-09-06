@@ -21,7 +21,8 @@ import {
     Phone,
     Calculator,
     Copy,
-    Wrench
+    Wrench,
+    ClipboardEdit
 } from 'lucide-react';
 import { EducationalNotesLogo } from '@/components/icons/EducationalNotesLogo';
 
@@ -65,6 +66,12 @@ const tools = [
         description: 'Create and study with digital flashcards for any subject.',
         href: '#',
     },
+    {
+        icon: <ClipboardEdit className="h-8 w-8 text-primary" />,
+        title: 'Admission Form',
+        description: 'Access and fill out the admission form for our programs.',
+        href: '/admission',
+    }
 ];
 
 export default function Home() {
@@ -172,7 +179,7 @@ export default function Home() {
                 Powerful utilities designed to help you study smarter and achieve your academic goals.
               </p>
             </div>
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-2">
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {tools.map((tool) => (
                 <Card 
                   key={tool.title}
@@ -188,9 +195,9 @@ export default function Home() {
                     <CardDescription>{tool.description}</CardDescription>
                   </CardContent>
                    <CardFooter>
-                      <Button variant="secondary" className="w-full" disabled={!tool.href || tool.href === '#'}>
-                        Launch Tool <ArrowRight className="ml-2 h-4 w-4" />
-                      </Button>
+                        <Button asChild variant="secondary" className="w-full" disabled={!tool.href || tool.href === '#'}>
+                           <Link href={tool.href ?? '#'}>Launch Tool <ArrowRight className="ml-2 h-4 w-4" /></Link>
+                        </Button>
                   </CardFooter>
                 </Card>
               ))}

@@ -23,7 +23,6 @@ const navLinks = [
   { href: '/downloads', label: 'Downloads', icon: Download },
   { href: '/save', label: 'Watchlist', icon: Bookmark },
   { href: '/#tools', label: 'Tools', icon: Wrench },
-  { href: '/admission', label: 'Admission Form', icon: ClipboardEdit },
   { href: '/about', label: 'About', icon: Info },
 ];
 

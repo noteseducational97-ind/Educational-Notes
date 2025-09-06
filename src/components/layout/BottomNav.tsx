@@ -12,7 +12,6 @@ const navLinks = [
   { href: '/downloads', label: 'Downloads', icon: Download },
   { href: '/save', label: 'Watchlist', icon: Bookmark },
   { href: '/#tools', label: 'Tools', icon: Wrench },
-  { href: '/admission', label: 'Admission', icon: ClipboardEdit },
   { href: '/about', label: 'About', icon: Info },
 ];
 
@@ -26,7 +25,7 @@ export default function BottomNav() {
 
   return (
     <div className="fixed bottom-0 left-0 z-50 w-full h-16 bg-background border-t border-border/40 md:hidden">
-      <div className="grid h-full max-w-lg grid-cols-6 mx-auto font-medium">
+      <div className="grid h-full max-w-lg grid-cols-5 mx-auto font-medium">
         {navLinks.map(({ href, label, icon: Icon }) => {
           const isActive = (pathname === '/' && href === '/') || (href !== '/' && !href.includes('#') && pathname.startsWith(href));
           return (
