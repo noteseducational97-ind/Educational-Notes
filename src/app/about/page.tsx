@@ -76,7 +76,7 @@ export default function AboutPage() {
                 From comprehensive notes to practice tools, find everything you need to excel in your studies.
               </p>
             </div>
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-2">
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
               {features.map((feature) => (
                 <Card 
                   key={feature.title}

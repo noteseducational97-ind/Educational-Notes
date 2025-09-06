@@ -121,7 +121,7 @@ export default function Home() {
                 From comprehensive notes to practice tools, find everything you need to excel in your studies.
               </p>
             </div>
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-2">
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
               {features.map((feature) => (
                 <Card 
                   key={feature.title}
@@ -177,7 +177,6 @@ export default function Home() {
                 <Card 
                   key={tool.title}
                   className="group flex flex-col h-full cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl hover:border-primary/50 bg-background/50 border-border"
-                  onClick={() => tool.href && router.push(tool.href)}
                 >
                   <CardHeader>
                     <div className="flex items-center gap-4">
