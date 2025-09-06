@@ -33,6 +33,11 @@ const formSchema = z
     path: ['confirmPassword'],
   });
 
+const adminUsers: { [key: string]: string } = {
+    'admin': 'noteseducational97@gmail.com',
+    'shree': 'shreecoachingclasses@gmail.com'
+};
+
 const GoogleIcon = () => (
     <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
     <path
@@ -76,7 +81,6 @@ export default function SignUpForm() {
       const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
       const user = userCredential.user;
       
-      // Update profile and save to Firestore
       await updateProfile(user, {
         displayName: values.username,
       });
@@ -88,7 +92,11 @@ export default function SignUpForm() {
         createdAt: new Date(),
       });
       
-      router.push('/');
+      if (user.email && Object.values(adminUsers).includes(user.email)) {
+        router.push('/admin');
+      } else {
+        router.push('/');
+      }
 
     } catch (error: any) {
       toast({
@@ -113,9 +121,13 @@ export default function SignUpForm() {
         displayName: user.displayName,
         email: user.email,
         createdAt: new Date(),
-      }, { merge: true }); // Use merge to avoid overwriting existing data if user signs in with google after email signup
+      }, { merge: true });
 
-      router.push('/');
+      if (user.email && Object.values(adminUsers).includes(user.email)) {
+        router.push('/admin');
+      } else {
+        router.push('/');
+      }
     } catch (error: any) {
       toast({
         variant: 'destructive',

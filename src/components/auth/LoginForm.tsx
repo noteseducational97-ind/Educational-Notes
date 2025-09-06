@@ -21,6 +21,11 @@ const formSchema = z.object({
   password: z.string().min(1, { message: 'Password is required.' }),
 });
 
+const adminUsers: { [key: string]: string } = {
+    'admin': 'noteseducational97@gmail.com',
+    'shree': 'shreecoachingclasses@gmail.com'
+};
+
 const GoogleIcon = () => (
   <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
     <path
@@ -59,8 +64,13 @@ export default function LoginForm() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
     try {
-      await signInWithEmailAndPassword(auth, values.email, values.password);
-      router.push('/');
+      const userCredential = await signInWithEmailAndPassword(auth, values.email, values.password);
+      const user = userCredential.user;
+      if (user.email && Object.values(adminUsers).includes(user.email)) {
+        router.push('/admin');
+      } else {
+        router.push('/');
+      }
     } catch (error: any) {
       toast({
         variant: 'destructive',
@@ -76,8 +86,13 @@ export default function LoginForm() {
     setGoogleLoading(true);
     try {
       const provider = new GoogleAuthProvider();
-      await signInWithPopup(auth, provider);
-      router.push('/');
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      if (user.email && Object.values(adminUsers).includes(user.email)) {
+        router.push('/admin');
+      } else {
+        router.push('/');
+      }
     } catch (error: any) {
       toast({
         variant: 'destructive',
