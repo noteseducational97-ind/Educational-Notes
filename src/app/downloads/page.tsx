@@ -28,13 +28,12 @@ import {
 import Pagination from '@/components/shared/Pagination';
 import { MultiSelect } from '@/components/ui/multi-select';
 
-const criteria = ['Class 12', 'Class 11', 'Class 10', 'MHT-CET'];
+const criteria = ['Class 12', 'Class 11', 'MHT-CET'];
 const contentCategories = [
     'Notes', 'Previous Year Questions', 'Syllabus', 'Text Book', 'Textual Answer', 'Important Point', 'Test', 'Other Study Material'
 ];
 
 const scienceSubjects = ['Physics', 'Chemistry', 'Mathematics', 'Biology'];
-const class10Subjects = ['English', 'Math-1', 'Math-2', 'Science-1', 'Science-2'];
 
 const GUEST_WATCHLIST_KEY = 'guest-watchlist';
 const ITEMS_PER_PAGE = 9;
@@ -87,15 +86,12 @@ export default function DownloadsPage() {
 
   const availableSubjects = useMemo(() => {
     const subjects = new Set<string>();
-    if (selectedCriteria.includes('Class 10')) {
-      class10Subjects.forEach(s => subjects.add(s));
-    }
     if (selectedCriteria.some(c => ['Class 11', 'Class 12', 'MHT-CET'].includes(c))) {
       scienceSubjects.forEach(s => subjects.add(s));
     }
     
     if(subjects.size === 0) { // If no class is selected, show all
-        return [...scienceSubjects, ...class10Subjects];
+        return [...scienceSubjects];
     }
     return Array.from(subjects);
   }, [selectedCriteria]);
