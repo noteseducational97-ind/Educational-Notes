@@ -14,11 +14,11 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { Loader2, KeyRound, Mail, LogIn, Shield, ArrowLeft } from 'lucide-react';
+import { Loader2, KeyRound, User, LogIn, Shield, ArrowLeft } from 'lucide-react';
 import { EducationalNotesLogo } from '@/components/icons/EducationalNotesLogo';
 
 const formSchema = z.object({
-  email: z.string().email({ message: 'Please enter a valid email.' }),
+  username: z.string().min(1, { message: 'Please enter a username.' }),
   password: z.string().min(1, { message: 'Password is required.' }),
 });
 
@@ -53,7 +53,7 @@ export default function AdminLoginPage() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: '',
+      username: '',
       password: '',
     },
   });
@@ -66,6 +66,8 @@ export default function AdminLoginPage() {
           title: 'Unauthorized',
           description: 'This account is not authorized for admin access.',
       });
+      setLoading(false);
+      setGoogleLoading(false);
       return false;
     }
     router.push('/admin');
@@ -74,15 +76,27 @@ export default function AdminLoginPage() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
+    const adminEmail = 'noteseducational97@gmail.com';
+    
+    if (values.username.toLowerCase() !== 'admin') {
+      toast({
+          variant: 'destructive',
+          title: 'Login Failed',
+          description: 'Invalid username.',
+      });
+      setLoading(false);
+      return;
+    }
+
     try {
-      if (checkAdminAndRedirect(values.email)) {
-        await signInWithEmailAndPassword(auth, values.email, values.password);
+      if (checkAdminAndRedirect(adminEmail)) {
+        await signInWithEmailAndPassword(auth, adminEmail, values.password);
       }
     } catch (error: any) {
       toast({
         variant: 'destructive',
         title: 'Login Failed',
-        description: error.message,
+        description: 'Please check your password and try again.',
       });
     } finally {
       setLoading(false);
@@ -133,14 +147,14 @@ export default function AdminLoginPage() {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <FormField
                 control={form.control}
-                name="email"
+                name="username"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Admin Email</FormLabel>
+                    <FormLabel>Admin Username</FormLabel>
                     <FormControl>
                       <div className="relative">
-                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <Input placeholder="admin@example.com" {...field} className="pl-10" />
+                        <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input placeholder="Admin" {...field} className="pl-10" />
                       </div>
                     </FormControl>
                     <FormMessage />
