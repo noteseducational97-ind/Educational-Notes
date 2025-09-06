@@ -6,7 +6,7 @@ import { ArrowRight } from 'lucide-react';
 
 const admissionForms = [
     {
-        title: 'Class 11',
+        title: 'Class 11 and 12',
         description: 'Admission for MHT-CET, NEET, and JEE preparation batches.',
         status: 'Coming Soon',
         href: '#'
