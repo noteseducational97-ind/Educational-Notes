@@ -35,7 +35,7 @@ const contentCategories = [
 const scienceSubjects = ['Physics', 'Chemistry', 'Mathematics', 'Biology'];
 
 const GUEST_WATCHLIST_KEY = 'guest-watchlist';
-const ITEMS_PER_PAGE = 9;
+const ITEMS_PER_PAGE = 8;
 
 export default function AdminDownloadsPage() {
   const [resources, setResources] = useState<Resource[]>([]);
@@ -237,7 +237,7 @@ export default function AdminDownloadsPage() {
 
       {paginatedResources.length > 0 ? (
         <>
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {paginatedResources.map((resource: Resource) => {
                 const isSaved = watchlistIds.has(resource.id);
                 const disabled = isLinkDisabled(resource);
