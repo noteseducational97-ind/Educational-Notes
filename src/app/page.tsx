@@ -7,7 +7,6 @@ import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { ShieldCheck, ArrowRight, Download, Bookmark, Users, LogIn, UserPlus, FileText, Lightbulb, BrainCircuit, BookCheck, ClipboardList, BookCopy } from 'lucide-react';
-import Image from 'next/image';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -54,37 +53,25 @@ export default function Home() {
       <main className="flex-1">
         <section className="w-full py-20 md:py-32 lg:py-40 bg-secondary/30">
           <div className="container px-4 md:px-6">
-            <div className="grid md:grid-cols-2 gap-10 items-center">
-                <div className="flex flex-col items-start text-left space-y-6">
-                    <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm font-semibold text-primary">
-                        Your Ultimate Advantage for Exam Success
-                    </div>
-                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-foreground tracking-tighter">
-                        Your Success, Our Mission
-                    </h1>
-                    <p className="max-w-xl text-lg text-foreground/80">
-                        High-quality study materials, expert-curated content—all completely free. Achieve academic excellence with us.
-                    </p>
-                    <div className="flex flex-col gap-2 min-[400px]:flex-row">
-                       {!user && (
-                            <Button size="lg" asChild>
-                                <Link href="/signup">Get Started <ArrowRight /></Link>
-                            </Button>
-                        )}
-                         <Button size="lg" variant="secondary" asChild>
-                            <Link href="/downloads">Explore Resources</Link>
-                        </Button>
-                    </div>
+            <div className="flex flex-col items-center text-center space-y-6">
+                <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm font-semibold text-primary">
+                    Your Ultimate Advantage for Exam Success
                 </div>
-                 <div className="flex justify-center">
-                    <Image
-                        src="https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzdHVkeXxlbnwwfHx8fDE3NTYxMTc3Nzl8MA&ixlib=rb-4.1.0&q=80&w=1080"
-                        width="600"
-                        height="400"
-                        alt="Student studying"
-                        data-ai-hint="student study"
-                        className="mx-auto aspect-video overflow-hidden rounded-xl object-cover shadow-2xl"
-                    />
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-foreground tracking-tighter">
+                    Your Success, Our Mission
+                </h1>
+                <p className="max-w-xl text-lg text-foreground/80">
+                    High-quality study materials, expert-curated content—all completely free. Achieve academic excellence with us.
+                </p>
+                <div className="flex flex-col gap-2 min-[400px]:flex-row">
+                   {!user && (
+                        <Button size="lg" asChild>
+                            <Link href="/signup">Get Started <ArrowRight /></Link>
+                        </Button>
+                    )}
+                     <Button size="lg" variant="secondary" asChild>
+                        <Link href="/downloads">Explore Resources</Link>
+                    </Button>
                 </div>
             </div>
           </div>
