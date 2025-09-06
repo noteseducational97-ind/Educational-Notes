@@ -16,12 +16,6 @@ const admissionForms = [
         description: 'Admission for foundational commerce and accountancy courses.',
         status: 'Coming Soon',
         href: '#'
-    },
-    {
-        title: 'Foundation Courses (IX & X)',
-        description: 'Build a strong base in Science and Mathematics for future competitive exams.',
-        status: 'Coming Soon',
-        href: '#'
     }
 ];
 
