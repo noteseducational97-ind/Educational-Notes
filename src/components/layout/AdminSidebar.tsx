@@ -11,7 +11,6 @@ const adminNavLinks = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/admin/uploaded-resources', label: 'Manage Resources', icon: BookCopy },
   { href: '/admin/users', label: 'Manage Users', icon: Users },
-  { href: '/downloads', label: 'View Downloads', icon: Download },
 ];
 
 export default function AdminSidebar() {
@@ -22,7 +21,7 @@ export default function AdminSidebar() {
         <div className="flex-1 overflow-y-auto">
             <nav className="p-4 space-y-2">
             {adminNavLinks.map(({ href, label, icon: Icon }) => {
-                const isActive = pathname === href;
+                const isActive = pathname === href || (href !== '/admin' && pathname.startsWith(href));
                 return (
                 <Link
                     key={label}

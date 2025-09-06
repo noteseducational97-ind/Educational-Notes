@@ -91,7 +91,7 @@ export default function UploadedResourcesPage() {
             <div className="flex gap-2">
                 <Button asChild>
                     <Link href="/admin/add-resource">
-                        <PlusCircle />
+                        <PlusCircle className="mr-2 h-4 w-4" />
                         Add New Resource
                     </Link>
                 </Button>
@@ -101,7 +101,7 @@ export default function UploadedResourcesPage() {
             <CardHeader>
                 <CardTitle className="flex items-center gap-2"><BookCopy /> All Resources</CardTitle>
                 <CardDescription>
-                `Public` is visible to everyone. `Private` is visible only to logged-in users.
+                A complete list of all study materials in the system. `Public` is visible to everyone. `Private` is visible only to logged-in users.
                 </CardDescription>
             </CardHeader>
             <CardContent>
