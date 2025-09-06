@@ -246,7 +246,7 @@ export default function AdminDownloadsPage() {
                     <CardHeader>
                         <CardTitle className="text-xl">
                             <Link
-                            href={`/resources/${resource.id}`}
+                            href={`/resources/${resource.id}?from=admin`}
                             className={cn("group inline-flex items-center gap-2 hover:text-primary transition-colors", disabled && "pointer-events-none text-muted-foreground")}
                             >
                             <BookOpen className="h-5 w-5 text-primary/80" />
@@ -276,7 +276,7 @@ export default function AdminDownloadsPage() {
                                 disabled={disabled}
                                 asChild
                             >
-                                <Link href={`/resources/${resource.id}`}>
+                                <Link href={`/resources/${resource.id}?from=admin`}>
                                     <ExternalLink className="h-4 w-4" />
                                     View
                                 </Link>

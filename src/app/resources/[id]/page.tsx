@@ -16,12 +16,15 @@ type Props = {
   searchParams: { [key: string]: string | string[] | undefined };
 };
 
-export default async function ResourceDetailPage({ params }: Props) {
+export default async function ResourceDetailPage({ params, searchParams }: Props) {
   const resource = await getResourceById(params.id);
 
   if (!resource) {
     notFound();
   }
+
+  const fromAdmin = searchParams.from === 'admin';
+  const backUrl = fromAdmin ? '/admin/downloads' : '/downloads';
 
   return (
     <div className="flex min-h-screen flex-col bg-secondary/20">
@@ -30,7 +33,7 @@ export default async function ResourceDetailPage({ params }: Props) {
         <div className="container mx-auto max-w-7xl px-4">
             <div className="mb-4">
                 <Button asChild variant="outline">
-                    <Link href="/downloads">
+                    <Link href={backUrl}>
                         <ArrowLeft className="mr-2 h-4 w-4" />
                         Back to Downloads
                     </Link>
