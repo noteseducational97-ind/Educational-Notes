@@ -26,9 +26,9 @@ type Tool = {
 
 const initialTools: Tool[] = [
     {
-        id: 'admission-form',
-        title: 'Admission Form',
-        description: 'Allow users to access and fill out admission forms.',
+        id: 'new-tool',
+        title: 'New Tool',
+        description: 'This is a new tool that can be configured.',
         href: '/admission',
         visibility: 'public',
         isComingSoon: false,
