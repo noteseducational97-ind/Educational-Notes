@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useParams } from 'next/navigation';
@@ -370,22 +371,6 @@ export default function AdmissionFormPage() {
                                             )}
                                         />
                                         
-                                        {paymentMode === 'Online' && (
-                                            <div className="p-4 border rounded-lg bg-secondary/30">
-                                                <h3 className="text-lg font-semibold text-foreground mb-2">UPI Details</h3>
-                                                <p className="text-muted-foreground">Account Holder: <span className="font-mono text-primary">{formDetails.upiName}</span></p>
-                                                <p className="text-muted-foreground">UPI ID: <span className="font-mono text-primary">{formDetails.upiId}</span></p>
-                                                <p className="text-muted-foreground">UPI Number: <span className="font-mono text-primary">{formDetails.upiNumber}</span></p>
-                                                {isAndroid && formDetails.upiLink && (
-                                                    <Button asChild className="mt-4 w-full">
-                                                        <a href={formDetails.upiLink}>
-                                                            <Wallet className="mr-2 h-4 w-4" />
-                                                            Make Payment
-                                                        </a>
-                                                    </Button>
-                                                )}
-                                            </div>
-                                        )}
                                         <div className="grid sm:grid-cols-2 gap-4 text-center">
                                             <div className="bg-secondary/30 p-4 rounded-lg">
                                                 <p className="text-muted-foreground text-sm">Total Fees</p>
@@ -396,6 +381,26 @@ export default function AdmissionFormPage() {
                                                 <p className="text-2xl font-bold">₹{formDetails.advanceFees.toLocaleString()}</p>
                                             </div>
                                         </div>
+                                        {paymentMode === 'Online' && (
+                                            <div className="p-4 border rounded-lg bg-secondary/30 space-y-2">
+                                                <h3 className="text-lg font-semibold text-foreground">UPI Details</h3>
+                                                <p className="text-muted-foreground">Account Holder: <span className="font-mono text-primary">{formDetails.upiName}</span></p>
+                                                <p className="text-muted-foreground">UPI ID: <span className="font-mono text-primary">{formDetails.upiId}</span></p>
+                                                <p className="text-muted-foreground">UPI Number: <span className="font-mono text-primary">{formDetails.upiNumber}</span></p>
+                                                <div>
+                                                  <FormLabel>UPI Link</FormLabel>
+                                                  <Input value={formDetails.upiLink} readOnly className="mt-1 bg-background/50" />
+                                                </div>
+                                                {isAndroid && formDetails.upiLink && (
+                                                    <Button asChild className="mt-4 w-full">
+                                                        <a href={formDetails.upiLink}>
+                                                            <Wallet className="mr-2 h-4 w-4" />
+                                                            Make Payment
+                                                        </a>
+                                                    </Button>
+                                                )}
+                                            </div>
+                                        )}
                                     </div>
                                 </CardContent>
                             </Card>
