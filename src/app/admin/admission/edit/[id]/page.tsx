@@ -88,6 +88,8 @@ export default function EditAdmissionFormPage() {
   const className = form.watch('className');
   const subject = form.watch('subject');
   const isDemoEnabled = form.watch('isDemoEnabled');
+  const upiId = form.watch('upiId');
+  const upiName = form.watch('upiName');
   
   const generateDescription = (className: string, yearFrom: string, subject?: 'Physics' | 'Chemistry') => {
     if (!subject) return '';
@@ -113,6 +115,13 @@ export default function EditAdmissionFormPage() {
         form.setValue('description', newDescription);
     }
   }, [className, yearFrom, subject, form])
+
+  useEffect(() => {
+    if(upiId && upiName) {
+      const generatedUpiLink = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(upiName)}`;
+      form.setValue('upiLink', generatedUpiLink);
+    }
+  }, [upiId, upiName, form]);
   
   useEffect(() => {
     if (!formId) return;
@@ -309,7 +318,7 @@ export default function EditAdmissionFormPage() {
                         <FormField control={form.control} name="upiLink" render={({ field }) => (
                             <FormItem>
                                 <FormLabel>UPI Link</FormLabel>
-                                <FormControl><Input placeholder="upi://pay?pa=..." {...field} /></FormControl>
+                                <FormControl><Input placeholder="upi://pay?pa=..." {...field} disabled /></FormControl>
                                 <FormMessage />
                             </FormItem>
                         )} />
