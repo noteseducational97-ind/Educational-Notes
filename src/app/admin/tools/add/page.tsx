@@ -23,16 +23,9 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useRouter } from 'next/navigation';
+import type { Tool } from '../page';
+import { Textarea } from '@/components/ui/textarea';
 
-
-type Tool = {
-    id: string;
-    title: string;
-    description: string;
-    href: string;
-    visibility: 'public' | 'private';
-    isComingSoon: boolean;
-};
 
 const createSlug = (title: string) => {
     return title.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
@@ -41,14 +34,21 @@ const createSlug = (title: string) => {
 export default function AddToolPage() {
     const { toast } = useToast();
     const router = useRouter();
-    const [tool, setTool] = useState<Omit<Tool, 'id' | 'description' | 'href'>>({
+    const [tool, setTool] = useState<Omit<Tool, 'id' | 'href'>>({
         title: 'Untitled Tool',
+        description: 'A tool for creating and studying with Untitled Tool.',
         visibility: 'private',
         isComingSoon: true,
     });
 
-    const handleUpdate = (field: keyof Omit<Tool, 'id' | 'description' | 'href'>, value: any) => {
-        setTool(currentTool => ({ ...currentTool, [field]: value }));
+    const handleUpdate = (field: keyof Omit<Tool, 'id' | 'href'>, value: any) => {
+        setTool(currentTool => {
+            const updatedTool = { ...currentTool, [field]: value };
+            if (field === 'title') {
+                updatedTool.description = `A tool for creating and studying with ${value}.`;
+            }
+            return updatedTool;
+        });
     };
 
     const handleSave = () => {
@@ -60,7 +60,6 @@ export default function AddToolPage() {
         router.push('/admin/tools');
     }
 
-    const description = `A tool for creating and studying with ${tool.title}.`;
     const href = `/${createSlug(tool.title)}`;
 
     return (
@@ -80,9 +79,9 @@ export default function AddToolPage() {
                         <Label htmlFor="title">Tool Name</Label>
                         <Input id="title" value={tool.title} onChange={(e) => handleUpdate('title', e.target.value)} />
                     </div>
-                    <div>
-                        <Label>Description (Auto-generated)</Label>
-                        <p className="text-sm text-muted-foreground bg-secondary/30 p-2 rounded-md h-10 flex items-center">{description}</p>
+                     <div>
+                        <Label htmlFor="description">Description</Label>
+                        <Textarea id="description" value={tool.description} onChange={(e) => handleUpdate('description', e.target.value)} />
                     </div>
                     <div>
                         <Label>Link (Auto-generated)</Label>
