@@ -49,7 +49,7 @@ export default function AddAdmissionFormPage() {
     defaultValues: {
         title: '',
         yearFrom: currentYear.toString(),
-        yearTo: (currentYear + 1).toString(),
+        yearTo: (currentYear + 2).toString(),
         description: '',
         status: 'Open',
         totalFees: 0,
@@ -59,14 +59,6 @@ export default function AddAdmissionFormPage() {
         upiName: '',
     }
   });
-
-  const yearFrom = form.watch('yearFrom');
-
-  useEffect(() => {
-    if (yearFrom) {
-      form.setValue('yearTo', (parseInt(yearFrom, 10) + 1).toString());
-    }
-  }, [yearFrom, form]);
   
   async function onSubmit(values: FormValues) {
     setIsSubmitting(true);
@@ -139,10 +131,10 @@ export default function AddAdmissionFormPage() {
                         <FormField control={form.control} name="yearTo" render={({ field }) => (
                             <FormItem>
                                 <FormLabel>To Year</FormLabel>
-                                <Select onValueChange={field.onChange} value={field.value} disabled>
+                                <Select onValueChange={field.onChange} value={field.value}>
                                     <FormControl><SelectTrigger><SelectValue placeholder="To" /></SelectTrigger></FormControl>
                                     <SelectContent>
-                                      {yearFrom && <SelectItem value={(parseInt(yearFrom, 10) + 1).toString()}>{(parseInt(yearFrom, 10) + 1).toString()}</SelectItem>}
+                                      {yearOptions.map(year => <SelectItem key={year} value={year}>{year}</SelectItem>)}
                                     </SelectContent>
                                 </Select>
                                 <FormMessage />
