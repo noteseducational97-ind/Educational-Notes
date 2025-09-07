@@ -36,7 +36,6 @@ const FormSchema = z.object({
   upiId: z.string().min(3, 'UPI ID is required.'),
   upiLink: z.string().url('A valid UPI link is required.'),
   upiNumber: z.string().min(10, 'UPI number must be at least 10 digits.'),
-  upiName: z.string().min(3, 'UPI holder name is required.'),
 }).refine(data => parseInt(data.yearTo) > parseInt(data.yearFrom), {
     message: "'To' year must be after 'From' year.",
     path: ['yearTo'],
@@ -71,9 +70,8 @@ export default function AddAdmissionFormPage() {
         totalFees: undefined,
         advanceFees: undefined,
         upiId: '',
-        upiLink: 'upi://pay?pa=&pn=',
+        upiLink: 'upi://pay?pa=',
         upiNumber: '',
-        upiName: '',
     }
   });
 
@@ -82,7 +80,6 @@ export default function AddAdmissionFormPage() {
   const subject = form.watch('subject');
   const isDemoEnabled = form.watch('isDemoEnabled');
   const upiId = form.watch('upiId');
-  const upiName = form.watch('upiName');
   
   const generateDescription = (className: string, yearFrom: string, subject?: 'Physics' | 'Chemistry') => {
     if (!subject) return '';
@@ -110,12 +107,11 @@ export default function AddAdmissionFormPage() {
   }, [className, yearFrom, subject, form])
 
   useEffect(() => {
-    if (upiId && upiName) {
-        const encodedUpiName = (upiName || '').replace(/ /g, '+');
-        const generatedUpiLink = `upi://pay?pa=${upiId || ''}&pn=${encodedUpiName}`;
+    if (upiId) {
+        const generatedUpiLink = `upi://pay?pa=${upiId || ''}&pn=`;
         form.setValue('upiLink', generatedUpiLink, { shouldValidate: true });
     }
-  }, [upiId, upiName, form]);
+  }, [upiId, form]);
   
   async function onSubmit(values: FormValues) {
     setIsSubmitting(true);
@@ -277,10 +273,10 @@ export default function AddAdmissionFormPage() {
                                     <FormMessage />
                                 </FormItem>
                             )} />
-                            <FormField control={form.control} name="upiName" render={({ field }) => (
+                             <FormField control={form.control} name="upiNumber" render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>UPI Holder Name</FormLabel>
-                                    <FormControl><Input placeholder="Account Holder Name" {...field} /></FormControl>
+                                    <FormLabel>UPI Number</FormLabel>
+                                    <FormControl><Input placeholder="9876543210" {...field} /></FormControl>
                                     <FormMessage />
                                 </FormItem>
                             )} />
@@ -289,13 +285,6 @@ export default function AddAdmissionFormPage() {
                             <FormItem>
                                 <FormLabel>UPI Link</FormLabel>
                                 <FormControl><Input placeholder="upi://pay?pa=..." {...field} disabled /></FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )} />
-                         <FormField control={form.control} name="upiNumber" render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>UPI Number</FormLabel>
-                                <FormControl><Input placeholder="9876543210" {...field} /></FormControl>
                                 <FormMessage />
                             </FormItem>
                         )} />
