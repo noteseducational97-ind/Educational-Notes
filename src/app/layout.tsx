@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils';
 import Footer from '@/components/layout/Footer';
 import { Inter } from 'next/font/google';
 import BottomNav from '@/components/layout/BottomNav';
+import { ThemeProvider } from '@/providers/theme-provider';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -25,18 +26,25 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark" style={{ colorScheme: 'dark' }} suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <body className={cn('min-h-screen bg-background font-sans antialiased', inter.variable)}>
-        <AuthProvider>
-          <div className="relative flex min-h-dvh flex-col">
-            <div className="pb-16 md:pb-0 flex-1">
-              {children}
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <AuthProvider>
+            <div className="relative flex min-h-dvh flex-col">
+              <div className="pb-16 md:pb-0 flex-1">
+                {children}
+              </div>
+              <Footer />
+              <BottomNav />
             </div>
-            <Footer />
-            <BottomNav />
-          </div>
-          <Toaster />
-        </AuthProvider>
+            <Toaster />
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

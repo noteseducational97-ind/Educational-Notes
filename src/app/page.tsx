@@ -74,7 +74,7 @@ export default function Home() {
                 <div className="inline-block rounded-full bg-primary/10 px-4 py-2 text-sm font-semibold text-primary border border-primary/20 shadow-sm">
                     Your Ultimate Advantage for Exam Success
                 </div>
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-slate-100 to-slate-400 tracking-tight">
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-primary to-purple-400 tracking-tight">
                     Your Success, Our Mission
                 </h1>
                 <p className="max-w-xl text-lg text-foreground/80">
