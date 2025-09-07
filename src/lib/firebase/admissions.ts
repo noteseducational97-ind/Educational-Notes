@@ -4,6 +4,8 @@
 import { db } from '@/lib/firebase/server';
 import type { AdmissionForm } from '@/types';
 import { revalidatePath } from 'next/cache';
+import { Timestamp } from 'firebase-admin/firestore';
+
 
 const initialForms: Omit<AdmissionForm, 'id'>[] = [
     {
@@ -15,6 +17,7 @@ const initialForms: Omit<AdmissionForm, 'id'>[] = [
         upiName: 'Pravin Khachane',
         upiId: '9881482416@ybl',
         upiNumber: '9881482416',
+        createdAt: new Date().toISOString(),
     },
     {
         title: 'Class 12 Physics',
@@ -25,6 +28,7 @@ const initialForms: Omit<AdmissionForm, 'id'>[] = [
         upiName: 'Pravin Khachane',
         upiId: '9881482416@ybl',
         upiNumber: '9881482416',
+        createdAt: new Date().toISOString(),
     },
     {
         title: 'Class 11 Chemistry',
@@ -35,6 +39,7 @@ const initialForms: Omit<AdmissionForm, 'id'>[] = [
         upiName: 'Mangesh Shete',
         upiId: '9405695457@ybl',
         upiNumber: '9405695457',
+        createdAt: new Date().toISOString(),
     },
     {
         title: 'Class 12 Chemistry',
@@ -45,6 +50,7 @@ const initialForms: Omit<AdmissionForm, 'id'>[] = [
         upiName: 'Mangesh Shete',
         upiId: '9405695457@ybl',
         upiNumber: '9405695457',
+        createdAt: new Date().toISOString(),
     },
     {
         title: 'MHT-CET',
@@ -55,6 +61,7 @@ const initialForms: Omit<AdmissionForm, 'id'>[] = [
         upiName: '',
         upiId: '',
         upiNumber: '',
+        createdAt: new Date().toISOString(),
     }
 ];
 
@@ -78,7 +85,8 @@ export async function seedAdmissionForms() {
     initialForms.forEach(form => {
         const slug = createSlug(form.title);
         const docRef = formsCollection.doc(slug);
-        batch.set(docRef, { ...form, id: slug });
+        const { createdAt, ...restOfForm } = form; // Destructure to handle date separately
+        batch.set(docRef, { ...restOfForm, id: slug, createdAt: new Date(createdAt) }); // Store as Date object
     });
 
     await batch.commit();
@@ -93,7 +101,15 @@ export async function getAdmissionForms(): Promise<AdmissionForm[]> {
     if (snapshot.empty) {
         return [];
     }
-    return snapshot.docs.map(doc => doc.data() as AdmissionForm);
+    return snapshot.docs.map(doc => {
+        const data = doc.data();
+        const createdAt = (data.createdAt as Timestamp)?.toDate().toISOString() || new Date().toISOString();
+        return {
+            ...data,
+            id: doc.id,
+            createdAt,
+        } as AdmissionForm;
+    });
 }
 
 export async function getAdmissionFormById(id: string): Promise<AdmissionForm | null> {
@@ -101,11 +117,23 @@ export async function getAdmissionFormById(id: string): Promise<AdmissionForm | 
     if (!doc.exists) {
         return null;
     }
-    return doc.data() as AdmissionForm;
+    const data = doc.data();
+    if (!data) return null;
+
+    const createdAt = (data.createdAt as Timestamp)?.toDate().toISOString() || new Date().toISOString();
+    
+    return {
+        ...data,
+        id: doc.id,
+        createdAt,
+    } as AdmissionForm;
 }
 
-export async function updateAdmissionForm(id: string, data: Partial<Omit<AdmissionForm, 'id'>>) {
-    await db.collection('admissionForms').doc(id).update(data);
+export async function updateAdmissionForm(id: string, data: Partial<Omit<AdmissionForm, 'id' | 'createdAt'>>) {
+    await db.collection('admissionForms').doc(id).update({
+        ...data,
+        updatedAt: new Date(),
+    });
     revalidatePath(`/admin/admission/edit/${id}`);
     revalidatePath('/admin/admission');
     revalidatePath('/admission');
