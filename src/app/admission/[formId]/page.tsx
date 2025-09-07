@@ -105,12 +105,11 @@ export default function AdmissionFormPage() {
                         </Link>
                     </Button>
                     <div className="text-center mb-8">
-                        <h1 className="text-4xl font-bold tracking-tight text-primary">{formTitle}</h1>
                         {coachingName && (
                             <Badge variant="secondary" className="mt-2 text-lg">{coachingName}</Badge>
                         )}
                         <p className="mt-2 text-lg text-muted-foreground">
-                            Please fill out the form below to apply.
+                            Please fill out the form below to apply for {formTitle}.
                         </p>
                     </div>
 
@@ -242,6 +241,3 @@ export default function AdmissionFormPage() {
         </div>
     );
 }
-
-
-    
