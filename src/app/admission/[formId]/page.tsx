@@ -15,13 +15,13 @@ import { Loader2, User, Mail, Phone, Home, GraduationCap, ArrowRight, ArrowLeft 
 import { useState } from 'react';
 import Link from 'next/link';
 import { Textarea } from '@/components/ui/textarea';
-import { Badge } from '@/components/ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const formSchema = z.object({
   // Personal Info
   fullName: z.string().min(3, 'Full name must be at least 3 characters.'),
   dateOfBirth: z.string().min(1, 'Date of birth is required.'),
-  email: z.string().email('Please enter a valid email.'),
+  gender: z.string().min(1, 'Please select a gender.'),
   studentPhone: z.string().min(10, 'Please enter a valid phone number.'),
   address: z.string().min(10, 'Please enter a valid address.'),
 
@@ -68,7 +68,6 @@ export default function AdmissionFormPage() {
         defaultValues: {
             fullName: '',
             dateOfBirth: '',
-            email: '',
             studentPhone: '',
             address: '',
             fatherName: '',
@@ -135,18 +134,33 @@ export default function AdmissionFormPage() {
                                                 <FormMessage />
                                             </FormItem>
                                         )} />
-                                        <FormField name="studentPhone" render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Student Phone</FormLabel>
-                                                <FormControl><Input placeholder="Enter your phone number" {...field} /></FormControl>
+                                         <FormField
+                                            control={form.control}
+                                            name="gender"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                <FormLabel>Gender</FormLabel>
+                                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                    <FormControl>
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder="Select your gender" />
+                                                    </SelectTrigger>
+                                                    </FormControl>
+                                                    <SelectContent>
+                                                    <SelectItem value="male">Male</SelectItem>
+                                                    <SelectItem value="female">Female</SelectItem>
+                                                    <SelectItem value="other">Other</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
                                                 <FormMessage />
-                                            </FormItem>
-                                        )} />
+                                                </FormItem>
+                                            )}
+                                        />
                                     </div>
-                                    <FormField name="email" render={({ field }) => (
+                                    <FormField name="studentPhone" render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Email Address</FormLabel>
-                                            <FormControl><Input placeholder="Enter your email" {...field} /></FormControl>
+                                            <FormLabel>Student Phone</FormLabel>
+                                            <FormControl><Input placeholder="Enter your phone number" {...field} /></FormControl>
                                             <FormMessage />
                                         </FormItem>
                                     )} />
