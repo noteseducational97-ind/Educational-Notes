@@ -332,7 +332,12 @@ export default function AdmissionFormPage() {
                                     </div>
                                     
                                     {paymentMode === 'Online' && (
-                                        <div className="flex flex-col md:flex-row items-center justify-center gap-8 pt-4">
+                                        <div className="flex flex-col items-center justify-center gap-4 pt-4 text-center">
+                                            <div className="p-4 border rounded-lg bg-secondary/30 w-full max-w-sm">
+                                                <h3 className="text-lg font-semibold text-foreground mb-2">UPI Details</h3>
+                                                <p className="text-muted-foreground">UPI ID: <span className="font-mono text-primary">shreecoachingclasses@okhdfcbank</span></p>
+                                                <p className="text-muted-foreground">UPI Number: <span className="font-mono text-primary">9881482416</span></p>
+                                            </div>
                                         </div>
                                     )}
                                 </CardContent>
