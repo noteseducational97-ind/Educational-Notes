@@ -13,7 +13,7 @@ const admissionForms = [
     },
     {
         title: 'MHT-CET',
-        description: 'Admission for foundational commerce and accountancy courses.',
+        description: 'Admissions Form for MHT-CET Maharashtra',
         status: 'Coming Soon',
         href: '#'
     }
