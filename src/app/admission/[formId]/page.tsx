@@ -23,6 +23,7 @@ const formSchema = z.object({
   gender: z.string().min(1, 'Please select a gender.'),
   studentPhone: z.string().min(10, 'Please enter a valid phone number.'),
   address: z.string().min(3, 'Please enter a valid name.'),
+  category: z.string().min(1, 'Please select a category.'),
 
   // Parent Info
   fatherName: z.string().min(3, "Father's name is required."),
@@ -171,6 +172,31 @@ export default function AdmissionFormPage() {
                                             </FormItem>
                                         )} />
                                     </div>
+                                     <FormField
+                                        control={form.control}
+                                        name="category"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                            <FormLabel>Category</FormLabel>
+                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select your category" />
+                                                </SelectTrigger>
+                                                </FormControl>
+                                                <SelectContent>
+                                                    <SelectItem value="OBC">OBC</SelectItem>
+                                                    <SelectItem value="SC">SC</SelectItem>
+                                                    <SelectItem value="ST">ST</SelectItem>
+                                                    <SelectItem value="VJ">VJ</SelectItem>
+                                                    <SelectItem value="NT">NT</SelectItem>
+                                                    <SelectItem value="Other">Other</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                            <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
                                 </CardContent>
                             </Card>
 
