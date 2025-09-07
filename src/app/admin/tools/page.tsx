@@ -59,9 +59,16 @@ export default function AdminToolsPage() {
     
     const handleUpdate = <K extends keyof Tool>(toolId: string, field: K, value: Tool[K]) => {
         setTools(currentTools =>
-            currentTools.map(tool =>
-                tool.id === toolId ? { ...tool, [field]: value } : tool
-            )
+            currentTools.map(tool => {
+                if (tool.id === toolId) {
+                    const updatedTool = { ...tool, [field]: value };
+                    if (field === 'title' && typeof value === 'string') {
+                        updatedTool.description = `A tool for creating and studying with ${value}.`;
+                    }
+                    return updatedTool;
+                }
+                return tool;
+            })
         );
     }
 
