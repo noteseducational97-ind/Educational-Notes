@@ -18,6 +18,7 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
+import Link from 'next/link';
 
 type Teacher = {
   id: string;
@@ -91,7 +92,11 @@ export default function AdminTeachersPage() {
                             <p className="text-muted-foreground">{teacher.experience}</p>
                         </CardContent>
                         <CardFooter className="flex justify-end gap-2 border-t pt-4">
-                            <Button variant="outline" size="sm" disabled><Edit className="h-4 w-4 mr-2" /> Edit</Button>
+                            <Button variant="outline" size="sm" asChild>
+                                <Link href={`/admin/teachers/edit/${teacher.id}`}>
+                                    <Edit className="h-4 w-4 mr-2" /> Edit
+                                </Link>
+                            </Button>
                              <AlertDialog>
                                 <AlertDialogTrigger asChild>
                                     <Button variant="destructive-outline" size="sm">
