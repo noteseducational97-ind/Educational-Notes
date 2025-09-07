@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
@@ -24,7 +25,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 
-type Tool = {
+export type Tool = {
     id: string;
     title: string;
     description: string;
@@ -33,7 +34,7 @@ type Tool = {
     isComingSoon: boolean;
 };
 
-const initialTools: Tool[] = [
+export const initialTools: Tool[] = [
     {
         id: 'admission-form',
         title: 'Admission Form',

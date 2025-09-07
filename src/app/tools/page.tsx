@@ -1,28 +1,25 @@
-
 'use client';
 
 import Header from '@/components/layout/Header';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { Calculator, Copy, ClipboardEdit, ArrowRight } from 'lucide-react';
+import { Calculator, Copy, ClipboardEdit, ArrowRight, EyeOff, Wrench } from 'lucide-react';
+import { Tool, initialTools } from '../admin/tools/page';
+import { Badge } from '@/components/ui/badge';
 
-const tools = [
-    {
-        icon: <ClipboardEdit className="h-8 w-8 text-primary" />,
-        title: 'Admission Form',
-        description: 'Access and fill out the admission form for our programs.',
-        href: '/admission',
-    },
-    {
-        icon: <Copy className="h-8 w-8 text-primary" />,
-        title: 'Flashcard Maker',
-        description: 'Create and study with digital flashcards for any subject.',
-        href: '#',
-    }
-];
 
 export default function ToolsPage() {
+    const publicTools = initialTools.filter(tool => tool.visibility === 'public');
+    
+    const getToolIcon = (id: string) => {
+        switch(id) {
+            case 'admission-form': return <ClipboardEdit className="h-8 w-8 text-primary" />;
+            case 'flashcard-maker': return <Copy className="h-8 w-8 text-primary" />;
+            default: return <Wrench className="h-8 w-8 text-primary" />;
+        }
+    }
+
     return (
         <div className="flex min-h-screen flex-col bg-background">
             <Header />
@@ -36,24 +33,25 @@ export default function ToolsPage() {
                     </p>
                     </div>
                     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                    {tools.map((tool) => (
+                    {publicTools.map((tool) => (
                         <Card 
                         key={tool.title}
                         className="group flex flex-col h-full cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl hover:border-primary/50 bg-background/50 border-border"
                         >
                         <CardHeader>
                             <div className="flex items-center gap-4">
-                            {tool.icon}
+                            {getToolIcon(tool.id)}
                             <CardTitle className="text-xl font-semibold">{tool.title}</CardTitle>
                             </div>
                         </CardHeader>
                         <CardContent className="flex-grow">
                             <CardDescription>{tool.description}</CardDescription>
+                            {tool.isComingSoon && <Badge variant="outline" className="mt-2">Coming Soon</Badge>}
                         </CardContent>
                         <CardFooter>
-                                <Button asChild variant="secondary" className="w-full" disabled={!tool.href || tool.href === '#'}>
+                            <Button asChild variant="secondary" className="w-full" disabled={tool.isComingSoon || !tool.href || tool.href === '#'}>
                                 <Link href={tool.href ?? '#'}>Launch Tool <ArrowRight className="ml-2 h-4 w-4" /></Link>
-                                </Button>
+                            </Button>
                         </CardFooter>
                         </Card>
                     ))}
