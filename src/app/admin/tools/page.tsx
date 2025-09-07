@@ -28,7 +28,7 @@ const initialTools: Tool[] = [
     {
         id: 'new-tool',
         title: 'New Tool',
-        description: 'This is a new tool that can be configured.',
+        description: 'A tool for creating and studying with New Tool.',
         href: '/admission',
         visibility: 'public',
         isComingSoon: false,
@@ -36,7 +36,7 @@ const initialTools: Tool[] = [
     {
         id: 'flashcard-maker',
         title: 'Flashcard Maker',
-        description: 'A tool for creating and studying with digital flashcards.',
+        description: 'A tool for creating and studying with Flashcard Maker.',
         href: '#',
         visibility: 'private',
         isComingSoon: true,
@@ -105,12 +105,10 @@ export default function AdminToolsPage() {
                                 />
                             </div>
                             <div className="space-y-2">
-                                <Label htmlFor={`desc-${tool.id}`}>Description</Label>
-                                <Textarea 
-                                    id={`desc-${tool.id}`} 
-                                    value={tool.description}
-                                    onChange={(e) => handleUpdate(tool.id, 'description', e.target.value)}
-                                />
+                                <Label>Description (Auto-generated)</Label>
+                                <p className="text-sm text-muted-foreground h-24 p-3 border rounded-md bg-secondary/30">
+                                    {tool.description}
+                                </p>
                             </div>
                             <div className="space-y-2">
                                 <Label>Visibility</Label>
