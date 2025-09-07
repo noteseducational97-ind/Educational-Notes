@@ -7,7 +7,7 @@ import Link from 'next/link';
 
 const admissionForms = [
     {
-        title: 'Class 11',
+        title: 'Class 11 Physics',
         description: 'Admission For Class 11 and 12. Science Student',
         status: 'Open',
         href: '#'
