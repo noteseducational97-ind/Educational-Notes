@@ -99,48 +99,52 @@ export default function AdminAdmissionPage() {
       ) : (
         <div className="grid md:grid-cols-2 gap-8">
             {forms.map((form) => (
-                <Card key={form.id} className="flex flex-col justify-between bg-secondary/30 p-6">
-                    <div>
-                        <CardTitle className="text-2xl">{form.title} <span className="text-base text-muted-foreground">({form.year})</span></CardTitle>
-                        <p className="text-sm text-primary font-semibold mt-1">{form.className}</p>
-                        <CardDescription className="mt-2">{form.description}</CardDescription>
-                    </div>
-                     <div className="flex justify-between items-center mt-6">
-                         <Badge variant="secondary"><Book className="h-3 w-3 mr-1" />{form.subject}</Badge>
-                         <div className="flex gap-2">
-                             <Button variant="secondary" size="sm" asChild>
-                                <Link href={`/admin/admission/applications/${form.id}`}>
-                                    <Users className="h-4 w-4 mr-2" /> View Applications
-                                </Link>
-                            </Button>
-                            <Button variant="outline" size="sm" asChild>
-                                <Link href={`/admin/admission/edit/${form.id}`}>
-                                    <Edit className="h-4 w-4" />
-                                </Link>
-                            </Button>
-                            <AlertDialog>
-                                <AlertDialogTrigger asChild>
-                                    <Button variant="destructive" size="sm" disabled={deletingId === form.id}>
-                                        <Trash2 className="h-4 w-4" />
-                                    </Button>
-                                </AlertDialogTrigger>
-                                <AlertDialogContent>
-                                    <AlertDialogHeader>
-                                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                                    <AlertDialogDescription>
-                                        This action cannot be undone. This will permanently delete the admission form "{form.title}".
-                                    </AlertDialogDescription>
-                                    </AlertDialogHeader>
-                                    <AlertDialogFooter>
-                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                    <AlertDialogAction onClick={() => handleDelete(form.id, form.title)}>
-                                        Yes, delete
-                                    </AlertDialogAction>
-                                    </AlertDialogFooter>
-                                </AlertDialogContent>
-                            </AlertDialog>
-                         </div>
-                    </div>
+                <Card key={form.id} className="flex flex-col">
+                    <CardHeader>
+                        <div className="flex justify-between items-start">
+                            <div>
+                                <CardTitle className="text-2xl">{form.title}</CardTitle>
+                                <CardDescription className="mt-1">{form.className} ({form.year})</CardDescription>
+                            </div>
+                            <Badge variant="secondary"><Book className="h-3 w-3 mr-1" />{form.subject}</Badge>
+                        </div>
+                    </CardHeader>
+                    <CardContent className="flex-grow">
+                        <p className="text-muted-foreground">{form.description}</p>
+                    </CardContent>
+                    <CardFooter className="flex justify-end gap-2 border-t pt-4">
+                        <Button variant="secondary" size="sm" asChild>
+                            <Link href={`/admin/admission/applications/${form.id}`}>
+                                <Users className="h-4 w-4 mr-2" /> View Applications
+                            </Link>
+                        </Button>
+                        <Button variant="outline" size="icon" asChild>
+                            <Link href={`/admin/admission/edit/${form.id}`}>
+                                <Edit className="h-4 w-4" />
+                            </Link>
+                        </Button>
+                        <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                                <Button variant="destructive" size="icon" disabled={deletingId === form.id}>
+                                    <Trash2 className="h-4 w-4" />
+                                </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                                <AlertDialogHeader>
+                                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                    This action cannot be undone. This will permanently delete the admission form "{form.title}".
+                                </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction onClick={() => handleDelete(form.id, form.title)}>
+                                    Yes, delete
+                                </AlertDialogAction>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>
+                    </CardFooter>
                 </Card>
             ))}
         </div>
