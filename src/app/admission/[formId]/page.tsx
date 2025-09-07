@@ -106,7 +106,7 @@ export default function AdmissionFormPage() {
                     </Button>
                     <div className="text-center mb-8">
                         {coachingName && (
-                            <Badge variant="secondary" className="mt-2 text-lg">{coachingName}</Badge>
+                             <h1 className="text-4xl font-bold tracking-tight text-primary">{coachingName}</h1>
                         )}
                         <p className="mt-2 text-lg text-muted-foreground">
                             Please fill out the form below to apply for {formTitle}.
