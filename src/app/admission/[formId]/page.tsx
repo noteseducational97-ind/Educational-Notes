@@ -308,7 +308,7 @@ export default function AdmissionFormPage() {
                                         </div>
                                     </div>
                                     <div className="flex items-end gap-4">
-                                        <div className="max-w-xs">
+                                        <div className="w-full">
                                             <FormField
                                                 control={form.control}
                                                 name="paymentMode"
