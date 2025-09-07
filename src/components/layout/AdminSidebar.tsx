@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -11,6 +12,7 @@ const adminNavLinks = [
   { href: '/admin/downloads', label: 'Download', icon: Download },
   { href: '/admin/uploaded-resources', label: 'Manage Resources', icon: BookCopy },
   { href: '/admin/users', label: 'Manage Users', icon: Users },
+  { href: '/admin/admission', label: 'Admission', icon: FileText },
 ];
 
 export default function AdminSidebar() {
