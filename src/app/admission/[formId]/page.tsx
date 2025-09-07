@@ -15,6 +15,7 @@ import { Loader2, User, Mail, Phone, Home, GraduationCap, ArrowRight, ArrowLeft 
 import { useState } from 'react';
 import Link from 'next/link';
 import { Textarea } from '@/components/ui/textarea';
+import { Badge } from '@/components/ui/badge';
 
 const formSchema = z.object({
   // Personal Info
@@ -54,6 +55,13 @@ export default function AdmissionFormPage() {
 
     const formId = Array.isArray(params.formId) ? params.formId[0] : params.formId;
     const formTitle = formIdToTitle[formId] || 'Admission Form';
+
+    let coachingName = '';
+    if (formId.includes('physics')) {
+        coachingName = 'Shree Coaching Classes';
+    } else if (formId.includes('chemistry')) {
+        coachingName = 'ChemStar Chemistry Classes';
+    }
 
     const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
@@ -98,6 +106,9 @@ export default function AdmissionFormPage() {
                     </Button>
                     <div className="text-center mb-8">
                         <h1 className="text-4xl font-bold tracking-tight text-primary">{formTitle}</h1>
+                        {coachingName && (
+                            <Badge variant="secondary" className="mt-2 text-lg">{coachingName}</Badge>
+                        )}
                         <p className="mt-2 text-lg text-muted-foreground">
                             Please fill out the form below to apply.
                         </p>
