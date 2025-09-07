@@ -351,13 +351,6 @@ export default function AdmissionFormPage() {
                                                     className="rounded-md"
                                                 />
                                             </div>
-                                            <div className="text-left space-y-2 p-4 border rounded-lg bg-secondary/30">
-                                                <h3 className="font-semibold text-lg">Bank Details</h3>
-                                                <p><strong>Account Name:</strong> Shree Coaching Classes</p>
-                                                <p><strong>Account Number:</strong> 1234567890</p>
-                                                <p><strong>IFSC Code:</strong> ABCD0123456</p>
-                                                <p><strong>Bank Name:</strong> Example Bank, Branch Name</p>
-                                            </div>
                                         </div>
                                     )}
                                     {paymentMode === 'Offline' && (
