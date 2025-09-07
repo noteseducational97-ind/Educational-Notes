@@ -250,7 +250,7 @@ export default function AdmissionFormPage() {
                                         />
                                          <FormField name="percentage" render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel>Percentage/Grade (Previous Class)</FormLabel>
+                                                <FormLabel>Class 10 Percentage</FormLabel>
                                                 <FormControl><Input placeholder="e.g., 90%" {...field} /></FormControl>
                                                 <FormMessage />
                                             </FormItem>
