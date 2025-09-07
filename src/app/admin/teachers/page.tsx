@@ -1,7 +1,6 @@
-
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -20,7 +19,7 @@ import {
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 
-type Teacher = {
+export type Teacher = {
   id: string;
   name: string;
   subject: string;
@@ -46,15 +45,34 @@ const initialTeachers: Teacher[] = [
 ];
 
 export default function AdminTeachersPage() {
-    const [teachers, setTeachers] = useState<Teacher[]>(initialTeachers);
+    const [teachers, setTeachers] = useState<Teacher[]>([]);
     const { toast } = useToast();
 
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const storedTeachers = sessionStorage.getItem('managed-teachers');
+            if (storedTeachers) {
+                setTeachers(JSON.parse(storedTeachers));
+            } else {
+                setTeachers(initialTeachers);
+            }
+        }
+    }, []);
+
+    const updateTeachers = (updatedTeachers: Teacher[]) => {
+        setTeachers(updatedTeachers);
+        if (typeof window !== 'undefined') {
+            sessionStorage.setItem('managed-teachers', JSON.stringify(updatedTeachers));
+        }
+    };
+    
     const getInitials = (name: string) => name.split(' ').map(n => n[0]).join('');
 
     const handleDelete = (teacherId: string) => {
         const teacher = teachers.find(t => t.id === teacherId);
         if(teacher) {
-            setTeachers(current => current.filter(t => t.id !== teacherId));
+            const updatedTeachers = teachers.filter(t => t.id !== teacherId);
+            updateTeachers(updatedTeachers);
             toast({
                 title: 'Teacher Removed',
                 description: `"${teacher.name}" has been removed.`,
@@ -70,9 +88,11 @@ export default function AdminTeachersPage() {
                     <h1 className="text-3xl font-bold text-foreground">Teacher Management</h1>
                     <p className="text-muted-foreground">Oversee all educators on the platform.</p>
                 </div>
-                 <Button disabled>
-                    <PlusCircle className="mr-2 h-4 w-4" />
-                    Add New Teacher
+                 <Button asChild>
+                    <Link href="/admin/teachers/add">
+                        <PlusCircle className="mr-2 h-4 w-4" />
+                        Add New Teacher
+                    </Link>
                 </Button>
             </div>
             <div className="grid md:grid-cols-2 gap-8">
