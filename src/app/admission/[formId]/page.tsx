@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useParams } from 'next/navigation';
@@ -142,12 +141,12 @@ export default function AdmissionFormPage() {
                         </p>
                     </div>
 
-                    {formDetails.isDemoEnabled && formDetails.demoDetails && (
+                    {formDetails.isDemoEnabled && formDetails.demoTenureDays && (
                         <Alert className="mb-8 border-primary/30 bg-primary/10">
                             <Info className="h-4 w-4 text-primary" />
                             <AlertTitle className="text-primary">Free Demo Session!</AlertTitle>
                             <AlertDescription className="text-primary/80">
-                                {formDetails.demoDetails}
+                                A {formDetails.demoTenureDays}-day free demo is available for this course.
                             </AlertDescription>
                         </Alert>
                     )}

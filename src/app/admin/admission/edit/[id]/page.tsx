@@ -15,11 +15,10 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, ArrowLeft, Save, CreditCard, DollarSign, Hash } from 'lucide-react';
+import { Loader2, ArrowLeft, Save, CreditCard } from 'lucide-react';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Textarea } from '@/components/ui/textarea';
 
 const currentYear = new Date().getFullYear();
 const yearOptions = Array.from({ length: 5 }, (_, i) => (currentYear + i).toString());
@@ -32,7 +31,7 @@ const FormSchema = z.object({
   description: z.string().min(10, 'Description is required.'),
   status: z.enum(['Open', 'Closed']),
   isDemoEnabled: z.boolean().default(false),
-  demoDetails: z.string().optional(),
+  demoTenureDays: z.coerce.number().optional(),
   totalFees: z.coerce.number().min(0, 'Total fees must be a positive number.'),
   advanceFees: z.coerce.number().min(0, 'Advance fees must be a positive number.'),
   upiId: z.string().min(3, 'UPI ID is required.'),
@@ -43,12 +42,12 @@ const FormSchema = z.object({
     path: ['yearTo'],
 }).refine(data => {
     if (data.isDemoEnabled) {
-        return !!data.demoDetails && data.demoDetails.length > 10;
+        return data.demoTenureDays !== undefined && data.demoTenureDays > 0;
     }
     return true;
 }, {
-    message: "Demo details are required if demo is enabled.",
-    path: ['demoDetails'],
+    message: "Demo tenure (in days) is required if demo is enabled.",
+    path: ['demoTenureDays'],
 });
 
 type FormValues = z.infer<typeof FormSchema>;
@@ -74,7 +73,7 @@ export default function EditAdmissionFormPage() {
         description: '',
         status: 'Open',
         isDemoEnabled: false,
-        demoDetails: '',
+        demoTenureDays: 0,
         totalFees: 0,
         advanceFees: 0,
         upiId: '',
@@ -175,7 +174,7 @@ export default function EditAdmissionFormPage() {
                             </FormItem>
                         )} />
                     </div>
-                    <FormField control={form.control} name="className" render={({ field }) => (
+                     <FormField control={form.control} name="className" render={({ field }) => (
                         <FormItem>
                             <FormLabel>Class Name</FormLabel>
                             <FormControl><Input placeholder="e.g. Class 11 / MHT-CET" {...field} value={field.value || ''} /></FormControl>
@@ -239,12 +238,12 @@ export default function EditAdmissionFormPage() {
                         {isDemoEnabled && (
                             <FormField
                                 control={form.control}
-                                name="demoDetails"
+                                name="demoTenureDays"
                                 render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Demo Session</FormLabel>
+                                    <FormLabel>Demo Session Tenure (in days)</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="e.g., Join us for a free demo on 25th July at 5 PM. Topic: Thermodynamics." {...field} value={field.value || ''}/>
+                                        <Input type="number" placeholder="e.g., 7" {...field} value={field.value || ''} onChange={e => field.onChange(parseInt(e.target.value, 10))}/>
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>

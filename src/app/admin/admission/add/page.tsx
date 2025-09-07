@@ -17,7 +17,6 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Loader2, ArrowLeft, Save, CreditCard } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Textarea } from '@/components/ui/textarea';
 
 const currentYear = new Date().getFullYear();
 const yearOptions = Array.from({ length: 5 }, (_, i) => (currentYear + i).toString());
@@ -30,7 +29,7 @@ const FormSchema = z.object({
   description: z.string().min(10, 'Description is required.'),
   status: z.enum(['Open', 'Closed']),
   isDemoEnabled: z.boolean().default(false),
-  demoDetails: z.string().optional(),
+  demoTenureDays: z.coerce.number().optional(),
   totalFees: z.coerce.number().min(0, 'Total fees must be a positive number.'),
   advanceFees: z.coerce.number().min(0, 'Advance fees must be a positive number.'),
   upiId: z.string().min(3, 'UPI ID is required.'),
@@ -41,12 +40,12 @@ const FormSchema = z.object({
     path: ['yearTo'],
 }).refine(data => {
     if (data.isDemoEnabled) {
-        return !!data.demoDetails && data.demoDetails.length > 10;
+        return data.demoTenureDays !== undefined && data.demoTenureDays > 0;
     }
     return true;
 }, {
-    message: "Demo details are required if demo is enabled.",
-    path: ['demoDetails'],
+    message: "Demo tenure (in days) is required if demo is enabled.",
+    path: ['demoTenureDays'],
 });
 
 type FormValues = z.infer<typeof FormSchema>;
@@ -67,7 +66,7 @@ export default function AddAdmissionFormPage() {
         description: '',
         status: 'Open',
         isDemoEnabled: false,
-        demoDetails: '',
+        demoTenureDays: 0,
         totalFees: 0,
         advanceFees: 0,
         upiId: '',
@@ -141,7 +140,7 @@ export default function AddAdmissionFormPage() {
                             </FormItem>
                         )} />
                     </div>
-                    <FormField control={form.control} name="className" render={({ field }) => (
+                     <FormField control={form.control} name="className" render={({ field }) => (
                         <FormItem>
                             <FormLabel>Class Name</FormLabel>
                             <FormControl><Input placeholder="e.g. Class 11 / MHT-CET" {...field} /></FormControl>
@@ -204,14 +203,14 @@ export default function AddAdmissionFormPage() {
                             )}
                         />
                         {isDemoEnabled && (
-                            <FormField
+                             <FormField
                                 control={form.control}
-                                name="demoDetails"
+                                name="demoTenureDays"
                                 render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Demo Session</FormLabel>
+                                    <FormLabel>Demo Session Tenure (in days)</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="e.g., Join us for a free demo on 25th July at 5 PM. Topic: Thermodynamics." {...field} />
+                                        <Input type="number" placeholder="e.g., 7" {...field} onChange={e => field.onChange(parseInt(e.target.value, 10))}/>
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>

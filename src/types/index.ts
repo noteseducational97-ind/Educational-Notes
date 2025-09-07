@@ -1,4 +1,3 @@
-
 export type Resource = {
   id: string; // The unique document ID from Firestore (slug)
   title: string;
@@ -38,7 +37,7 @@ export type AdmissionForm = {
     description: string;
     status: 'Open' | 'Closed';
     isDemoEnabled: boolean;
-    demoDetails?: string;
+    demoTenureDays?: number;
     totalFees: number;
     advanceFees: number;
     upiId: string;

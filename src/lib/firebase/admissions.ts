@@ -1,4 +1,3 @@
-
 'use server';
 
 import { db } from '@/lib/firebase/server';
@@ -42,7 +41,7 @@ export async function getAdmissionForms(): Promise<AdmissionForm[]> {
             id: doc.id,
             createdAt,
             isDemoEnabled: data.isDemoEnabled || false,
-            demoDetails: data.demoDetails || null,
+            demoTenureDays: data.demoTenureDays || null,
         } as AdmissionForm;
     });
 }
@@ -62,7 +61,7 @@ export async function getAdmissionFormById(id: string): Promise<AdmissionForm | 
         id: doc.id,
         createdAt,
         isDemoEnabled: data.isDemoEnabled || false,
-        demoDetails: data.demoDetails || null,
+        demoTenureDays: data.demoTenureDays || null,
     } as AdmissionForm;
 }
 
