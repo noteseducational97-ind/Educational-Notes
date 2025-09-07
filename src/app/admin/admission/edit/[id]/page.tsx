@@ -20,9 +20,13 @@ import { Loader2, ArrowLeft, Save, CreditCard, DollarSign, Hash } from 'lucide-r
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
+const currentYear = new Date().getFullYear();
+const yearOptions = Array.from({ length: 5 }, (_, i) => (currentYear + i).toString());
+
 const FormSchema = z.object({
   title: z.string().min(3, 'Title is required.'),
-  year: z.string().min(4, 'Year is required.'),
+  yearFrom: z.string().min(4, 'From year is required.'),
+  yearTo: z.string().min(4, 'To year is required.'),
   description: z.string().min(10, 'Description is required.'),
   status: z.enum(['Open', 'Closed']),
   totalFees: z.coerce.number().min(0, 'Total fees must be a positive number.'),
@@ -30,20 +34,12 @@ const FormSchema = z.object({
   upiId: z.string().min(3, 'UPI ID is required.'),
   upiNumber: z.string().min(10, 'UPI number must be at least 10 digits.'),
   upiName: z.string().min(3, 'UPI holder name is required.'),
+}).refine(data => parseInt(data.yearTo) >= parseInt(data.yearFrom), {
+    message: "'To' year cannot be earlier than 'From' year.",
+    path: ['yearTo'],
 });
 
 type FormValues = z.infer<typeof FormSchema>;
-
-const generateYearOptions = () => {
-    const currentYear = new Date().getFullYear();
-    const years = [];
-    for (let i = 0; i < 5; i++) {
-        const startYear = currentYear + i;
-        const endYear = startYear + 1;
-        years.push(`${startYear}-${endYear.toString().slice(-2)}`);
-    }
-    return years;
-};
 
 export default function EditAdmissionFormPage() {
   const router = useRouter();
@@ -53,7 +49,6 @@ export default function EditAdmissionFormPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formDetails, setFormDetails] = useState<AdmissionForm | null>(null);
   const [loading, setLoading] = useState(true);
-  const yearOptions = generateYearOptions();
 
   const formId = Array.isArray(params.id) ? params.id[0] : params.id;
 
@@ -61,7 +56,8 @@ export default function EditAdmissionFormPage() {
     resolver: zodResolver(FormSchema),
     defaultValues: {
         title: '',
-        year: new Date().getFullYear().toString(),
+        yearFrom: currentYear.toString(),
+        yearTo: (currentYear + 1).toString(),
         description: '',
         status: 'Open',
         totalFees: 0,
@@ -79,7 +75,13 @@ export default function EditAdmissionFormPage() {
       .then(data => {
         if (data) {
           setFormDetails(data);
-          form.reset(data);
+          const [yearFrom, yearToSuffix] = data.year.split('-');
+          const yearTo = yearFrom.substring(0, 2) + yearToSuffix;
+          form.reset({
+            ...data,
+            yearFrom,
+            yearTo,
+          });
         } else {
           toast({ variant: 'destructive', title: 'Form not found' });
           router.push('/admin/admission');
@@ -92,7 +94,10 @@ export default function EditAdmissionFormPage() {
     if (!formId) return;
     setIsSubmitting(true);
     try {
-      await updateAdmissionForm(formId, values);
+      const year = `${values.yearFrom}-${values.yearTo.slice(-2)}`;
+      const { yearFrom, yearTo, ...rest } = values;
+
+      await updateAdmissionForm(formId, { ...rest, year });
       toast({
         title: 'Success!',
         description: `Admission form "${values.title}" has been updated.`,
@@ -144,20 +149,32 @@ export default function EditAdmissionFormPage() {
                             </FormItem>
                         )} />
                     </div>
-                     <FormField control={form.control} name="year" render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Year</FormLabel>
-                             <Select onValueChange={field.onChange} value={field.value}>
-                                <FormControl><SelectTrigger><SelectValue placeholder="Select year" /></SelectTrigger></FormControl>
-                                <SelectContent>
-                                    {yearOptions.map(year => (
-                                        <SelectItem key={year} value={year}>{year}</SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                            <FormMessage />
-                        </FormItem>
-                    )} />
+                     <div className="grid md:grid-cols-2 gap-4">
+                        <FormField control={form.control} name="yearFrom" render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>From Year</FormLabel>
+                                <Select onValueChange={field.onChange} value={field.value}>
+                                    <FormControl><SelectTrigger><SelectValue placeholder="From" /></SelectTrigger></FormControl>
+                                    <SelectContent>
+                                        {yearOptions.map(year => <SelectItem key={year} value={year}>{year}</SelectItem>)}
+                                    </SelectContent>
+                                </Select>
+                                <FormMessage />
+                            </FormItem>
+                        )} />
+                        <FormField control={form.control} name="yearTo" render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>To Year</FormLabel>
+                                <Select onValueChange={field.onChange} value={field.value}>
+                                    <FormControl><SelectTrigger><SelectValue placeholder="To" /></SelectTrigger></FormControl>
+                                    <SelectContent>
+                                        {yearOptions.map(year => <SelectItem key={year} value={(parseInt(year) + 1).toString()}>{(parseInt(year) + 1).toString()}</SelectItem>)}
+                                    </SelectContent>
+                                </Select>
+                                <FormMessage />
+                            </FormItem>
+                        )} />
+                     </div>
                      <FormField control={form.control} name="description" render={({ field }) => (
                         <FormItem>
                             <FormLabel>Description</FormLabel>
