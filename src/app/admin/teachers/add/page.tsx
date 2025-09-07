@@ -18,6 +18,13 @@ const createSlug = (name: string) => {
   return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 };
 
+const generateDescription = (name: string, subject: string, experience: string): string => {
+    if (!name || !subject || !experience) return '';
+    const experienceYears = experience.match(/\d+/)?.[0] || 'many';
+    return `With over ${experienceYears} years of teaching experience, ${name} is a visionary in ${subject.toLowerCase()} education. Their ability to simplify complex concepts has made them a beloved mentor.`;
+};
+
+
 export default function AddTeacherPage() {
   const router = useRouter();
   const { toast } = useToast();
@@ -41,18 +48,23 @@ export default function AddTeacherPage() {
     const sinceYear = parseInt(teacher.since, 10);
     const experienceYears = parseInt(teacher.experience, 10);
 
-    if (document.activeElement?.id === 'since' && !isNaN(sinceYear) && sinceYear > 1900 && sinceYear <= currentYear) {
+    const activeElementId = document.activeElement?.id;
+
+    if (activeElementId === 'since' && !isNaN(sinceYear) && sinceYear > 1900 && sinceYear <= currentYear) {
       const calculatedExperience = currentYear - sinceYear;
-      if (teacher.experience !== `${calculatedExperience}+ years`) {
-        setTeacher(prev => ({ ...prev, experience: `${calculatedExperience}+ years` }));
-      }
-    } else if (document.activeElement?.id === 'experience' && !isNaN(experienceYears)) {
+      setTeacher(prev => ({ ...prev, experience: `${calculatedExperience}+ years` }));
+    } else if (activeElementId === 'experience' && !isNaN(experienceYears)) {
       const calculatedSince = currentYear - experienceYears;
-      if (teacher.since !== calculatedSince.toString()) {
-        setTeacher(prev => ({ ...prev, since: calculatedSince.toString() }));
-      }
+      setTeacher(prev => ({ ...prev, since: calculatedSince.toString() }));
     }
   }, [teacher.since, teacher.experience]);
+
+  useEffect(() => {
+      const newDescription = generateDescription(teacher.name, teacher.subject, teacher.experience);
+      if (newDescription) {
+          setTeacher(prev => ({ ...prev, description: newDescription }));
+      }
+  }, [teacher.name, teacher.subject, teacher.experience]);
   
   const handleSave = () => {
     if (!teacher.name || !teacher.education || !teacher.subject || !teacher.experience || !teacher.description || !teacher.since) {

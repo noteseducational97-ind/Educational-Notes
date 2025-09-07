@@ -15,6 +15,13 @@ import { useToast } from '@/hooks/use-toast';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 
 
+const generateDescription = (name: string, subject: string, experience: string): string => {
+    if (!name || !subject || !experience) return '';
+    const experienceYears = experience.match(/\d+/)?.[0] || 'many';
+    return `With over ${experienceYears} years of teaching experience, ${name} is a visionary in ${subject.toLowerCase()} education. Their ability to simplify complex concepts has made them a beloved mentor.`;
+};
+
+
 export default function EditTeacherPage() {
     const params = useParams();
     const router = useRouter();
@@ -58,18 +65,25 @@ export default function EditTeacherPage() {
       const sinceYear = parseInt(teacher.since, 10);
       const experienceYears = parseInt(teacher.experience, 10);
 
-      if (document.activeElement?.id === 'since' && !isNaN(sinceYear) && sinceYear > 1900 && sinceYear <= currentYear) {
+      const activeElementId = document.activeElement?.id;
+
+      if (activeElementId === 'since' && !isNaN(sinceYear) && sinceYear > 1900 && sinceYear <= currentYear) {
           const calculatedExperience = currentYear - sinceYear;
-          if (teacher.experience !== `${calculatedExperience}+ years`) {
-              setTeacher(prev => ({ ...prev!, experience: `${calculatedExperience}+ years` }));
-          }
-      } else if (document.activeElement?.id === 'experience' && !isNaN(experienceYears)) {
+          setTeacher(prev => ({ ...prev!, experience: `${calculatedExperience}+ years` }));
+      } else if (activeElementId === 'experience' && !isNaN(experienceYears)) {
           const calculatedSince = currentYear - experienceYears;
-          if (teacher.since !== calculatedSince.toString()) {
-              setTeacher(prev => ({ ...prev!, since: calculatedSince.toString() }));
-          }
+          setTeacher(prev => ({ ...prev!, since: calculatedSince.toString() }));
       }
-  }, [teacher?.since, teacher?.experience, teacher]);
+    }, [teacher?.since, teacher?.experience]);
+
+    useEffect(() => {
+        if (teacher) {
+            const newDescription = generateDescription(teacher.name, teacher.subject, teacher.experience);
+            if (newDescription) {
+                setTeacher(prev => ({ ...prev!, description: newDescription }));
+            }
+        }
+    }, [teacher?.name, teacher?.subject, teacher?.experience]);
   
     const handleSave = () => {
         if (!teacher) return;
