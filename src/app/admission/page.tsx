@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import Header from '@/components/layout/Header';
 import { Card, CardDescription, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Info } from 'lucide-react';
 import Link from 'next/link';
 import { getAdmissionForms } from '@/lib/firebase/admissions';
 import type { AdmissionForm } from '@/types';
@@ -17,6 +17,7 @@ export default function AdmissionPage() {
 
     useEffect(() => {
         getAdmissionForms()
+            .then(forms => forms.filter(form => form.status === 'Open'))
             .then(setAdmissionForms)
             .finally(() => setLoading(false));
     }, []);
@@ -37,21 +38,32 @@ export default function AdmissionPage() {
                 </p>
             </div>
             
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-                {admissionForms.map((form) => (
-                    <Card key={form.title} className="flex flex-col justify-between bg-secondary/30 p-6">
-                        <div>
-                            <CardTitle className="text-2xl">{form.title}</CardTitle>
-                            <CardDescription className="mt-2">{form.description}</CardDescription>
-                        </div>
-                        <Button asChild className="w-full mt-6" disabled={form.status !== 'Open'}>
-                           <Link href={`/admission/${form.id}`}>
-                             {form.status === 'Closed' ? 'Admissions Closed' : <>Admission Now <ArrowRight className="ml-2 h-4 w-4" /></>}
-                           </Link>
-                        </Button>
-                    </Card>
-                ))}
-            </div>
+            {admissionForms.length > 0 ? (
+                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                    {admissionForms.map((form) => (
+                        <Card key={form.id} className="flex flex-col justify-between bg-secondary/30 p-6">
+                            <div>
+                                <CardTitle className="text-2xl">{form.title}</CardTitle>
+                                <CardDescription className="mt-2">{form.description}</CardDescription>
+                            </div>
+                            <Button asChild className="w-full mt-6" disabled={form.status !== 'Open'}>
+                            <Link href={`/admission/${form.id}`}>
+                                {form.status === 'Closed' ? 'Admissions Closed' : <>Admission Now <ArrowRight className="ml-2 h-4 w-4" /></>}
+                            </Link>
+                            </Button>
+                        </Card>
+                    ))}
+                </div>
+            ) : (
+                <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-muted bg-card/50 p-12 text-center max-w-2xl mx-auto">
+                    <Info className="h-12 w-12 text-muted-foreground mb-4" />
+                    <h2 className="text-2xl font-semibold">No Admissions Currently Open</h2>
+                    <p className="mt-2 text-muted-foreground">
+                        Please check back later for new admission announcements.
+                    </p>
+                </div>
+            )}
+
              <div className="text-center mt-16">
                  <h2 className="text-2xl font-semibold">Have Questions?</h2>
                  <p className="mt-2 text-muted-foreground">

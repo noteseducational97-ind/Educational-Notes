@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Edit, FileText } from 'lucide-react';
+import { Edit, FileText, PlusCircle } from 'lucide-react';
 import Link from 'next/link';
 import { getAdmissionForms, seedAdmissionForms } from '@/lib/firebase/admissions';
 import type { AdmissionForm } from '@/types';
@@ -21,15 +21,7 @@ export default function AdminAdmissionPage() {
     const fetchData = async () => {
       setLoading(true);
       try {
-        let fetchedForms = await getAdmissionForms();
-        if (fetchedForms.length === 0) {
-          await seedAdmissionForms();
-          fetchedForms = await getAdmissionForms();
-          toast({
-            title: 'Database Seeded',
-            description: 'Initial admission forms have been added.',
-          });
-        }
+        const fetchedForms = await getAdmissionForms();
         setForms(fetchedForms);
       } catch (error) {
         toast({
@@ -56,9 +48,22 @@ export default function AdminAdmissionPage() {
           <h1 className="text-3xl font-bold text-foreground">Admission Management</h1>
           <p className="text-muted-foreground">Oversee all active and pending admission forms.</p>
         </div>
+         <Button asChild>
+            <Link href="/admin/admission/add">
+                <PlusCircle className="mr-2 h-4 w-4" />
+                Add New Form
+            </Link>
+        </Button>
       </div>
       {forms.length === 0 ? (
-        <p>No admission forms found.</p>
+        <div className="text-center py-12 border-2 border-dashed rounded-lg">
+          <p className="text-muted-foreground">No admission forms have been created yet.</p>
+          <Button asChild variant="link">
+             <Link href="/admin/admission/add">
+                Create the first one
+            </Link>
+          </Button>
+        </div>
       ) : (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {forms.map((form) => (

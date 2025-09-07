@@ -41,4 +41,5 @@ export type AdmissionForm = {
     upiNumber: string;
     upiName: string;
     createdAt: string; // Should be an ISO string
+    updatedAt?: string;
 };
