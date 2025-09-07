@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { PlusCircle, Trash2, Edit } from 'lucide-react';
+import { PlusCircle, Trash2, Edit, Calendar } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -27,6 +27,7 @@ export type Teacher = {
   education: string;
   subject: string;
   experience: string;
+  since: string;
   description: string;
   avatarUrl?: string;
 };
@@ -38,6 +39,7 @@ const initialTeachers: Teacher[] = [
     education: 'M.Sc., B.Ed.',
     subject: 'Physics',
     experience: '30+ years',
+    since: '1994',
     description: 'With over 30 years of teaching experience, Pravin Sir is a visionary in science education. His ability to simplify complex physics concepts has made him a beloved mentor.',
     avatarUrl: 'https://picsum.photos/id/1005/100/100'
   },
@@ -47,6 +49,7 @@ const initialTeachers: Teacher[] = [
     education: 'M.Sc., B.Ed.',
     subject: 'Chemistry',
     experience: '30+ years',
+    since: '1994',
     description: 'A master of chemistry, Mangesh Sir has spent three decades nurturing curiosity and confidence. His empathetic approach continues to inspire thousands.',
     avatarUrl: 'https://picsum.photos/id/1012/100/100'
   }
@@ -118,6 +121,7 @@ export default function AdminTeachersPage() {
                                 <div className="flex items-center gap-2 mt-1">
                                     <Badge variant="secondary">{teacher.subject}</Badge>
                                     <Badge variant="outline">{teacher.experience}</Badge>
+                                    <Badge variant="outline" className="flex items-center gap-1"><Calendar className="h-3 w-3" /> Since {teacher.since}</Badge>
                                 </div>
                             </div>
                         </CardHeader>

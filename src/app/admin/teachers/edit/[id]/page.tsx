@@ -4,7 +4,7 @@
 import { useParams, useRouter } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Save, User, Book, Briefcase, FileText, GraduationCap, Loader2 } from 'lucide-react';
+import { ArrowLeft, Save, User, Book, Briefcase, FileText, GraduationCap, Loader2, Calendar } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import type { Teacher } from '../page';
@@ -118,6 +118,10 @@ export default function EditTeacherPage() {
                             <Label htmlFor="experience" className="flex items-center gap-2"><Briefcase /> Experience</Label>
                             <Input id="experience" placeholder="e.g., 10+ years" value={teacher.experience || ''} onChange={handleChange} />
                         </div>
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="since" className="flex items-center gap-2"><Calendar /> Since (Year)</Label>
+                        <Input id="since" placeholder="e.g., 2010" value={teacher.since || ''} onChange={handleChange} />
                     </div>
                     <div className="space-y-2">
                         <Label htmlFor="description" className="flex items-center gap-2"><FileText /> Description</Label>

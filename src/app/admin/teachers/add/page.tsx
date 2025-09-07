@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, ArrowLeft, Save, User, Book, Briefcase, FileText, GraduationCap } from 'lucide-react';
+import { Loader2, ArrowLeft, Save, User, Book, Briefcase, FileText, GraduationCap, Calendar } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import type { Teacher } from '../page';
 
@@ -27,6 +27,7 @@ export default function AddTeacherPage() {
     education: '',
     subject: '',
     experience: '',
+    since: '',
     description: '',
   });
 
@@ -36,7 +37,7 @@ export default function AddTeacherPage() {
   };
   
   const handleSave = () => {
-    if (!teacher.name || !teacher.education || !teacher.subject || !teacher.experience || !teacher.description) {
+    if (!teacher.name || !teacher.education || !teacher.subject || !teacher.experience || !teacher.description || !teacher.since) {
         toast({
             variant: 'destructive',
             title: 'Missing Fields',
@@ -102,6 +103,10 @@ export default function AddTeacherPage() {
                         <Label htmlFor="experience" className="flex items-center gap-2"><Briefcase /> Experience</Label>
                         <Input id="experience" placeholder="e.g., 10+ years" value={teacher.experience} onChange={handleChange} />
                     </div>
+                </div>
+                <div className="space-y-2">
+                    <Label htmlFor="since" className="flex items-center gap-2"><Calendar /> Since (Year)</Label>
+                    <Input id="since" placeholder="e.g., 2010" value={teacher.since} onChange={handleChange} />
                 </div>
                 <div className="space-y-2">
                     <Label htmlFor="description" className="flex items-center gap-2"><FileText /> Description</Label>
