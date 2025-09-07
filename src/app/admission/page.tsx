@@ -3,18 +3,19 @@ import Header from '@/components/layout/Header';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
+import Link from 'next/link';
 
 const admissionForms = [
     {
         title: 'Class 11 and 12',
         description: 'Admission For Class 11 and 12. Science Student',
-        status: 'Coming Soon',
+        status: 'Open',
         href: '#'
     },
     {
         title: 'MHT-CET',
         description: 'Admissions Form for MHT-CET Maharashtra',
-        status: 'Coming Soon',
+        status: 'Open',
         href: '#'
     }
 ];
@@ -39,8 +40,10 @@ export default function AdmissionPage() {
                             <h3 className="text-2xl font-semibold leading-none tracking-tight">{form.title}</h3>
                             <p className="text-sm text-muted-foreground mt-2">{form.description}</p>
                         </div>
-                        <Button className="w-full mt-6" disabled={form.status !== 'Open'}>
-                            {form.status === 'Coming Soon' ? 'Coming Soon' : <>Apply Now <ArrowRight className="ml-2 h-4 w-4" /></>}
+                        <Button asChild className="w-full mt-6" disabled={form.status !== 'Open'}>
+                           <Link href={form.href}>
+                             {form.status === 'Coming Soon' ? 'Coming Soon' : <>Apply Now <ArrowRight className="ml-2 h-4 w-4" /></>}
+                           </Link>
                         </Button>
                     </Card>
                 ))}
