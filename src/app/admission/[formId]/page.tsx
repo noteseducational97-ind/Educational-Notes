@@ -40,11 +40,11 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 const formIdToTitle: { [key: string]: string } = {
-    'class-11-physics': 'Class 11 Physics Admission',
-    'class-12-physics': 'Class 12 Physics Admission',
-    'class-11-chemistry': 'Class 11 Chemistry Admission',
-    'class-12-chemistry': 'Class 12 Chemistry Admission',
-    'mht-cet': 'MHT-CET Admission',
+    'class-11-physics': 'Class 11 Physics',
+    'class-12-physics': 'Class 12 Physics',
+    'class-11-chemistry': 'Class 11 Chemistry',
+    'class-12-chemistry': 'Class 12 Chemistry',
+    'mht-cet': 'MHT-CET',
 };
 
 
@@ -243,3 +243,5 @@ export default function AdmissionFormPage() {
     );
 }
 
+
+    
