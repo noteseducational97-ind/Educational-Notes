@@ -26,6 +26,7 @@ const formSchema = z.object({
 
   // Parent Info
   fatherName: z.string().min(3, "Father's name is required."),
+  motherName: z.string().min(3, "Mother's name is required."),
   fatherOccupation: z.string().min(2, "Occupation is required."),
   parentPhone: z.string().min(10, 'Please enter a valid phone number.'),
 
@@ -70,6 +71,7 @@ export default function AdmissionFormPage() {
             studentPhone: '',
             address: '',
             fatherName: '',
+            motherName: '',
             fatherOccupation: '',
             parentPhone: '',
             previousSchool: '',
@@ -182,6 +184,13 @@ export default function AdmissionFormPage() {
                                             <FormItem>
                                                 <FormLabel>Father's Full Name</FormLabel>
                                                 <FormControl><Input placeholder="Enter father's name" {...field} /></FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )} />
+                                        <FormField name="motherName" render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Mother's Full Name</FormLabel>
+                                                <FormControl><Input placeholder="Enter mother's name" {...field} /></FormControl>
                                                 <FormMessage />
                                             </FormItem>
                                         )} />
