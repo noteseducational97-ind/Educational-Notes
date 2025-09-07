@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -18,12 +19,14 @@ import {
 } from '@/components/ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
+import { Badge } from '@/components/ui/badge';
 
 export type Teacher = {
   id: string;
   name: string;
   subject: string;
   experience: string;
+  description: string;
   avatarUrl?: string;
 };
 
@@ -32,14 +35,16 @@ const initialTeachers: Teacher[] = [
     id: 'pravin-khachane',
     name: 'Pravin Khachane (M.Sc., B.Ed.)',
     subject: 'Physics',
-    experience: 'With over 30 years of teaching experience, Pravin Sir is a visionary in science education. His ability to simplify complex physics concepts has made him a beloved mentor.',
+    experience: '30+ years',
+    description: 'With over 30 years of teaching experience, Pravin Sir is a visionary in science education. His ability to simplify complex physics concepts has made him a beloved mentor.',
     avatarUrl: 'https://picsum.photos/id/1005/100/100'
   },
   {
     id: 'mangesh-shete',
     name: 'Mangesh Shete (M.Sc., B.Ed.)',
     subject: 'Chemistry',
-    experience: 'A master of chemistry, Mangesh Sir has spent three decades nurturing curiosity and confidence. His empathetic approach continues to inspire thousands.',
+    experience: '30+ years',
+    description: 'A master of chemistry, Mangesh Sir has spent three decades nurturing curiosity and confidence. His empathetic approach continues to inspire thousands.',
     avatarUrl: 'https://picsum.photos/id/1012/100/100'
   }
 ];
@@ -54,6 +59,7 @@ export default function AdminTeachersPage() {
             if (storedTeachers) {
                 setTeachers(JSON.parse(storedTeachers));
             } else {
+                sessionStorage.setItem('managed-teachers', JSON.stringify(initialTeachers));
                 setTeachers(initialTeachers);
             }
         }
@@ -105,11 +111,14 @@ export default function AdminTeachersPage() {
                             </Avatar>
                             <div>
                                 <CardTitle>{teacher.name}</CardTitle>
-                                <CardDescription>{teacher.subject}</CardDescription>
+                                <div className="flex items-center gap-2 mt-1">
+                                    <Badge variant="secondary">{teacher.subject}</Badge>
+                                    <Badge variant="outline">{teacher.experience}</Badge>
+                                </div>
                             </div>
                         </CardHeader>
                         <CardContent className="flex-grow">
-                            <p className="text-muted-foreground">{teacher.experience}</p>
+                            <p className="text-muted-foreground">{teacher.description}</p>
                         </CardContent>
                         <CardFooter className="flex justify-end gap-2 border-t pt-4">
                             <Button variant="outline" size="sm" asChild>

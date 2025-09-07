@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -9,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, ArrowLeft, Save, User, Book, Briefcase } from 'lucide-react';
+import { Loader2, ArrowLeft, Save, User, Book, Briefcase, FileText } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import type { Teacher } from '../page';
 
@@ -25,6 +26,7 @@ export default function AddTeacherPage() {
     name: '',
     subject: '',
     experience: '',
+    description: '',
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -33,7 +35,7 @@ export default function AddTeacherPage() {
   };
   
   const handleSave = () => {
-    if (!teacher.name || !teacher.subject || !teacher.experience) {
+    if (!teacher.name || !teacher.subject || !teacher.experience || !teacher.description) {
         toast({
             variant: 'destructive',
             title: 'Missing Fields',
@@ -84,13 +86,19 @@ export default function AddTeacherPage() {
                     <Label htmlFor="name" className="flex items-center gap-2"><User /> Name</Label>
                     <Input id="name" placeholder="e.g., Jane Doe (M.Sc., B.Ed.)" value={teacher.name} onChange={handleChange} />
                 </div>
-                <div className="space-y-2">
-                    <Label htmlFor="subject" className="flex items-center gap-2"><Book /> Subject</Label>
-                    <Input id="subject" placeholder="e.g., Biology" value={teacher.subject} onChange={handleChange} />
+                 <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                        <Label htmlFor="subject" className="flex items-center gap-2"><Book /> Subject</Label>
+                        <Input id="subject" placeholder="e.g., Biology" value={teacher.subject} onChange={handleChange} />
+                    </div>
+                     <div className="space-y-2">
+                        <Label htmlFor="experience" className="flex items-center gap-2"><Briefcase /> Experience</Label>
+                        <Input id="experience" placeholder="e.g., 10+ years" value={teacher.experience} onChange={handleChange} />
+                    </div>
                 </div>
                 <div className="space-y-2">
-                    <Label htmlFor="experience" className="flex items-center gap-2"><Briefcase /> Experience / Description</Label>
-                    <Textarea id="experience" placeholder="Describe the teacher's experience and approach..." value={teacher.experience} onChange={handleChange} />
+                    <Label htmlFor="description" className="flex items-center gap-2"><FileText /> Description</Label>
+                    <Textarea id="description" placeholder="Describe the teacher's approach, qualifications, etc..." value={teacher.description} onChange={handleChange} />
                 </div>
             </CardContent>
             <CardFooter className="flex justify-between gap-4 border-t pt-6">
