@@ -18,7 +18,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import Image from 'next/image';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { getAdmissionFormById } from '@/lib/firebase/admissions';
+import { getAdmissionFormById, submitAdmissionApplication } from '@/lib/firebase/admissions';
 import type { AdmissionForm } from '@/types';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -93,16 +93,24 @@ export default function AdmissionFormPage() {
     });
 
     async function onSubmit(values: FormValues) {
+        if (!formId) return;
         setLoading(true);
-        console.log(values);
-        // Here you would typically send the data to your backend
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        setLoading(false);
-        toast({
-            title: 'Application Submitted!',
-            description: 'We have received your application and will contact you shortly.',
-        });
-        form.reset();
+        try {
+            await submitAdmissionApplication(formId, values);
+            toast({
+                title: 'Application Submitted!',
+                description: 'We have received your application and will contact you shortly.',
+            });
+            form.reset();
+        } catch (error: any) {
+             toast({
+                variant: 'destructive',
+                title: 'Submission Failed',
+                description: 'An error occurred while submitting the form. Please try again.',
+            });
+        } finally {
+            setLoading(false);
+        }
     }
     
     const paymentMode = form.watch('paymentMode');
@@ -139,15 +147,7 @@ export default function AdmissionFormPage() {
                             <ArrowLeft className="mr-2 h-4 w-4" /> Back to All Admissions
                         </Link>
                     </Button>
-                    <div className="text-center mb-8">
-                        {coachingName && (
-                             <h1 className="text-4xl font-bold tracking-tight text-primary">{coachingName}</h1>
-                        )}
-                        <p className="mt-2 text-lg text-muted-foreground">
-                            Please fill out the form below to apply for {formDetails.title}.
-                        </p>
-                    </div>
-
+                    
                     {formDetails.isDemoEnabled && formDetails.demoTenureDays && (
                         <Alert className="mb-8 border-primary/30 bg-primary/10">
                             <Info className="h-4 w-4 text-primary" />
@@ -160,9 +160,17 @@ export default function AdmissionFormPage() {
 
                     <FormProvider {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                            <Card>
+                             <Card>
                                 <CardHeader>
-                                    <CardTitle className="flex items-center gap-2"><User /> Personal Information</CardTitle>
+                                    <div className="text-center mb-4">
+                                        {coachingName && (
+                                            <h1 className="text-4xl font-bold tracking-tight text-primary">{coachingName}</h1>
+                                        )}
+                                        <p className="mt-2 text-lg text-muted-foreground">
+                                            Please fill out the form below to apply for {formDetails.title}.
+                                        </p>
+                                    </div>
+                                    <CardTitle className="flex items-center gap-2 pt-4 border-t"><User /> Personal Information</CardTitle>
                                 </CardHeader>
                                 <CardContent className="space-y-4">
                                     <FormField name="fullName" render={({ field }) => (
@@ -329,7 +337,6 @@ export default function AdmissionFormPage() {
                                 </CardContent>
                             </Card>
                             
-                            {formId !== 'mht-cet' && (
                             <Card>
                                 <CardHeader>
                                     <CardTitle className="flex items-center gap-2"><CreditCard /> Payment</CardTitle>
@@ -391,7 +398,6 @@ export default function AdmissionFormPage() {
                                     </div>
                                 </CardContent>
                             </Card>
-                            )}
 
                              <div className="flex justify-end">
                                 <Button type="submit" disabled={loading} size="lg">
