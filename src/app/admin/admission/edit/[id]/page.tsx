@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -272,7 +273,30 @@ export default function EditAdmissionFormPage() {
                     <div className="border-t pt-6 space-y-4">
                         <h3 className="text-lg font-medium flex items-center gap-2"><CreditCard /> Payment Details</h3>
                         <div className="grid md:grid-cols-2 gap-4">
-                             <FormField control={form.control} name="totalFees" render={({ field }) => (
+                             <FormField control={form.control} name="upiId" render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>UPI ID</FormLabel>
+                                    <FormControl><Input placeholder="username@upi" {...field} /></FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )} />
+                            <FormField control={form.control} name="upiName" render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>UPI Holder Name</FormLabel>
+                                    <FormControl><Input placeholder="Account Holder Name" {...field} /></FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )} />
+                        </div>
+                        <FormField control={form.control} name="upiNumber" render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>UPI Number</FormLabel>
+                                <FormControl><Input placeholder="9876543210" {...field} /></FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )} />
+                        <div className="grid md:grid-cols-2 gap-4">
+                            <FormField control={form.control} name="totalFees" render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Total Fees</FormLabel>
                                     <FormControl><Input type="number" placeholder="15000" {...field} value={field.value ?? ''} onChange={e => field.onChange(e.target.value === '' ? undefined : parseInt(e.target.value, 10))} /></FormControl>
@@ -287,29 +311,6 @@ export default function EditAdmissionFormPage() {
                                 </FormItem>
                             )} />
                         </div>
-                        <div className="grid md:grid-cols-2 gap-4">
-                            <FormField control={form.control} name="upiId" render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>UPI ID</FormLabel>
-                                    <FormControl><Input placeholder="username@upi" {...field} /></FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )} />
-                            <FormField control={form.control} name="upiName" render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>UPI Holder Name</FormLabel>
-                                    <FormControl><Input placeholder="Pravin Khachane" {...field} /></FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )} />
-                        </div>
-                        <FormField control={form.control} name="upiNumber" render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>UPI Number</FormLabel>
-                                <FormControl><Input placeholder="9876543210" {...field} /></FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )} />
                     </div>
                 </CardContent>
                 <CardFooter className="flex justify-between gap-4 border-t pt-6">
