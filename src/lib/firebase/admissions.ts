@@ -2,7 +2,7 @@
 'use server';
 
 import { db } from '@/lib/firebase/server';
-import type { AdmissionForm } from '@/types';
+import type { AdmissionForm, AdmissionApplication } from '@/types';
 import { revalidatePath } from 'next/cache';
 import { Timestamp } from 'firebase-admin/firestore';
 
@@ -94,5 +94,28 @@ export async function submitAdmissionApplication(formId: string, applicationData
   await applicationRef.set({
     ...applicationData,
     submittedAt: new Date(),
+    id: applicationRef.id,
   });
+}
+
+export async function getApplicationsForForm(formId: string): Promise<AdmissionApplication[]> {
+    if (!formId) {
+        return [];
+    }
+    const snapshot = await db.collection('admissionForms').doc(formId).collection('applications')
+        .orderBy('submittedAt', 'desc').get();
+    
+    if (snapshot.empty) {
+        return [];
+    }
+    
+    return snapshot.docs.map(doc => {
+        const data = doc.data();
+        const submittedAt = (data.submittedAt as Timestamp)?.toDate().toISOString() || new Date().toISOString();
+        return {
+            ...data,
+            id: doc.id,
+            submittedAt,
+        } as AdmissionApplication;
+    });
 }

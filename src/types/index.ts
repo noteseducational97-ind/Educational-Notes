@@ -46,3 +46,22 @@ export type AdmissionForm = {
     createdAt: string; // Should be an ISO string
     updatedAt?: string;
 };
+
+export type AdmissionApplication = {
+  id: string;
+  fullName: string;
+  dateOfBirth: string;
+  gender: string;
+  studentPhone: string;
+  address: string;
+  category: string;
+  fatherName: string;
+  motherName: string;
+  fatherOccupation: string;
+  parentPhone: string;
+  previousSchool: string;
+  board: string;
+  percentage: string;
+  paymentMode?: string;
+  submittedAt: string; // ISO string
+};

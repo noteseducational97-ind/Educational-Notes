@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Edit, FileText, PlusCircle, Trash2, Book } from 'lucide-react';
+import { Edit, FileText, PlusCircle, Trash2, Book, Users } from 'lucide-react';
 import Link from 'next/link';
 import { getAdmissionForms } from '@/lib/firebase/admissions';
 import type { AdmissionForm } from '@/types';
@@ -108,9 +108,14 @@ export default function AdminAdmissionPage() {
                      <div className="flex justify-between items-center mt-6">
                          <Badge variant="secondary"><Book className="h-3 w-3 mr-1" />{form.subject}</Badge>
                          <div className="flex gap-2">
+                             <Button variant="secondary" size="sm" asChild>
+                                <Link href={`/admin/admission/applications/${form.id}`}>
+                                    <Users className="h-4 w-4 mr-2" /> View Applications
+                                </Link>
+                            </Button>
                             <Button variant="outline" size="sm" asChild>
                                 <Link href={`/admin/admission/edit/${form.id}`}>
-                                    <Edit className="h-4 w-4 mr-2" /> Edit
+                                    <Edit className="h-4 w-4" />
                                 </Link>
                             </Button>
                             <AlertDialog>
