@@ -1,4 +1,3 @@
-
 'use server';
 
 import { db } from '@/lib/firebase/server';
@@ -9,8 +8,8 @@ import { Timestamp } from 'firebase-admin/firestore';
 
 const initialForms: Omit<AdmissionForm, 'id'>[] = [
     {
-        title: 'Class 11 Physics',
-        description: 'Admission for Class 11 Physics. Science Student',
+        title: 'Class 11 & 12 Physics',
+        description: 'Admission for Class 11 & 12 Physics. Science Student',
         status: 'Open',
         totalFees: 15000,
         advanceFees: 5000,
@@ -20,30 +19,8 @@ const initialForms: Omit<AdmissionForm, 'id'>[] = [
         createdAt: new Date().toISOString(),
     },
     {
-        title: 'Class 12 Physics',
-        description: 'Admission for Class 12 Physics. Science Student',
-        status: 'Open',
-        totalFees: 15000,
-        advanceFees: 5000,
-        upiName: 'Pravin Khachane',
-        upiId: '9881482416@ybl',
-        upiNumber: '9881482416',
-        createdAt: new Date().toISOString(),
-    },
-    {
-        title: 'Class 11 Chemistry',
-        description: 'Admission for Class 11 Chemistry. Science Student',
-        status: 'Open',
-        totalFees: 15000,
-        advanceFees: 5000,
-        upiName: 'Mangesh Shete',
-        upiId: '9405695457@ybl',
-        upiNumber: '9405695457',
-        createdAt: new Date().toISOString(),
-    },
-    {
-        title: 'Class 12 Chemistry',
-        description: 'Admission for Class 12 Chemistry. Science Student',
+        title: 'Class 11 & 12 Chemistry',
+        description: 'Admission for Class 11 & 12 Chemistry. Science Student',
         status: 'Open',
         totalFees: 15000,
         advanceFees: 5000,
