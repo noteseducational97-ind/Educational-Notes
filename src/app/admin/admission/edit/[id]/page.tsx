@@ -114,9 +114,11 @@ export default function EditAdmissionFormPage() {
   }, [className, yearFrom, subject, form])
 
   useEffect(() => {
-    const encodedUpiName = (upiName || '').replace(/ /g, '+');
-    const generatedUpiLink = `upi://pay?pa=${upiId || ''}&pn=${encodedUpiName}`;
-    form.setValue('upiLink', generatedUpiLink, { shouldValidate: true });
+    if (upiId && upiName) {
+      const encodedUpiName = (upiName || '').replace(/ /g, '+');
+      const generatedUpiLink = `upi://pay?pa=${upiId || ''}&pn=${encodedUpiName}`;
+      form.setValue('upiLink', generatedUpiLink, { shouldValidate: true });
+    }
   }, [upiId, upiName, form]);
   
   useEffect(() => {
