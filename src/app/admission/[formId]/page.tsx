@@ -10,11 +10,12 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, User, Mail, Phone, Home, GraduationCap, ArrowRight, ArrowLeft } from 'lucide-react';
+import { Loader2, User, Mail, Phone, Home, GraduationCap, ArrowRight, ArrowLeft, CreditCard } from 'lucide-react';
 import { useState } from 'react';
 import Link from 'next/link';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import Image from 'next/image';
 
 const formSchema = z.object({
   // Personal Info
@@ -283,6 +284,36 @@ export default function AdmissionFormPage() {
                                 </CardContent>
                             </Card>
                             
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle className="flex items-center gap-2"><CreditCard /> Payment Interface</CardTitle>
+                                </CardHeader>
+                                <CardContent className="space-y-4 text-center">
+                                    <p className="text-muted-foreground">
+                                        Please complete the payment to finalize your admission. You can scan the QR code or use the bank details below.
+                                    </p>
+                                    <div className="flex flex-col md:flex-row items-center justify-center gap-8">
+                                        <div className="p-4 border rounded-lg bg-secondary/30">
+                                            <Image 
+                                                src="https://picsum.photos/200/200" 
+                                                alt="QR Code for Payment" 
+                                                width={200}
+                                                height={200}
+                                                data-ai-hint="QR code"
+                                                className="rounded-md"
+                                            />
+                                        </div>
+                                        <div className="text-left space-y-2 p-4 border rounded-lg bg-secondary/30">
+                                            <h3 className="font-semibold text-lg">Bank Details</h3>
+                                            <p><strong>Account Name:</strong> Shree Coaching Classes</p>
+                                            <p><strong>Account Number:</strong> 1234567890</p>
+                                            <p><strong>IFSC Code:</strong> ABCD0123456</p>
+                                            <p><strong>Bank Name:</strong> Example Bank, Branch Name</p>
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            </Card>
+
                              <div className="flex justify-end">
                                 <Button type="submit" disabled={loading} size="lg">
                                     {loading ? <Loader2 className="animate-spin" /> : <>Submit Application <ArrowRight className="ml-2"/></>}
