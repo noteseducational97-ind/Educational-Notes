@@ -287,14 +287,14 @@ export default function EditAdmissionFormPage() {
                              <FormField control={form.control} name="upiId" render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>UPI ID</FormLabel>
-                                    <FormControl><Input placeholder="username@upi" {...field} /></FormControl>
+                                    <FormControl><Input placeholder="e.g. username@upi" {...field} /></FormControl>
                                     <FormMessage />
                                 </FormItem>
                             )} />
                              <FormField control={form.control} name="upiNumber" render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>UPI Number</FormLabel>
-                                    <FormControl><Input placeholder="9876543210" {...field} /></FormControl>
+                                    <FormControl><Input placeholder="e.g. 9876543210" {...field} /></FormControl>
                                     <FormMessage />
                                 </FormItem>
                             )} />
