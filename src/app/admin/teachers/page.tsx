@@ -29,7 +29,6 @@ export type Teacher = {
   experience: string;
   since: string;
   description: string;
-  avatarUrl?: string;
 };
 
 const initialTeachers: Teacher[] = [
@@ -41,7 +40,6 @@ const initialTeachers: Teacher[] = [
     experience: '30+ years',
     since: '1994',
     description: 'With over 30 years of teaching experience, Pravin Sir is a visionary in science education. His ability to simplify complex physics concepts has made him a beloved mentor.',
-    avatarUrl: 'https://picsum.photos/id/1005/100/100'
   },
   {
     id: 'mangesh-shete',
@@ -51,7 +49,6 @@ const initialTeachers: Teacher[] = [
     experience: '30+ years',
     since: '1994',
     description: 'A master of chemistry, Mangesh Sir has spent three decades nurturing curiosity and confidence. His empathetic approach continues to inspire thousands.',
-    avatarUrl: 'https://picsum.photos/id/1012/100/100'
   }
 ];
 
@@ -78,8 +75,6 @@ export default function AdminTeachersPage() {
         }
     };
     
-    const getInitials = (name: string) => name.split(' ').map(n => n[0]).join('');
-
     const handleDelete = (teacherId: string) => {
         const teacher = teachers.find(t => t.id === teacherId);
         if(teacher) {
@@ -110,11 +105,7 @@ export default function AdminTeachersPage() {
             <div className="grid md:grid-cols-2 gap-8">
                 {teachers.map(teacher => (
                     <Card key={teacher.id} className="flex flex-col">
-                        <CardHeader className="flex flex-row items-center gap-4">
-                            <Avatar className="h-16 w-16">
-                                <AvatarImage src={teacher.avatarUrl} alt={teacher.name} />
-                                <AvatarFallback>{getInitials(teacher.name)}</AvatarFallback>
-                            </Avatar>
+                        <CardHeader>
                             <div>
                                 <CardTitle>{teacher.name}</CardTitle>
                                 <CardDescription>{teacher.education}</CardDescription>

@@ -54,7 +54,6 @@ export default function AddTeacherPage() {
         const newTeacher: Teacher = {
             id: createSlug(teacher.name),
             ...teacher,
-            avatarUrl: '', // Default to empty string as it's optional
         };
 
         const updatedTeachers = [...storedTeachers, newTeacher];
