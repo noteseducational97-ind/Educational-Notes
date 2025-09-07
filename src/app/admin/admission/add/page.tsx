@@ -209,7 +209,7 @@ export default function AddAdmissionFormPage() {
                                 name="demoDetails"
                                 render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Demo Session Details</FormLabel>
+                                    <FormLabel>Demo Session</FormLabel>
                                     <FormControl>
                                         <Input placeholder="e.g., Join us for a free demo on 25th July at 5 PM. Topic: Thermodynamics." {...field} />
                                     </FormControl>
