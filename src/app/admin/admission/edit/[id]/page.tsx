@@ -24,6 +24,7 @@ const yearOptions = Array.from({ length: 5 }, (_, i) => (currentYear + i).toStri
 
 const FormSchema = z.object({
   title: z.string().min(3, 'Title is required.'),
+  className: z.string().min(1, 'Class name is required.'),
   yearFrom: z.string().min(4, 'From year is required.'),
   yearTo: z.string().min(4, 'To year is required.'),
   description: z.string().min(10, 'Description is required.'),
@@ -55,6 +56,7 @@ export default function EditAdmissionFormPage() {
     resolver: zodResolver(FormSchema),
     defaultValues: {
         title: '',
+        className: '',
         yearFrom: currentYear.toString(),
         yearTo: (currentYear + 2).toString(),
         description: '',
@@ -158,6 +160,13 @@ export default function EditAdmissionFormPage() {
                             </FormItem>
                         )} />
                     </div>
+                    <FormField control={form.control} name="className" render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Class Name</FormLabel>
+                            <FormControl><Input placeholder="e.g. Class 11 / MHT-CET" {...field} value={field.value || ''} /></FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )} />
                      <div className="grid md:grid-cols-2 gap-4">
                         <FormField control={form.control} name="yearFrom" render={({ field }) => (
                             <FormItem>

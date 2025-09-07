@@ -103,6 +103,7 @@ export default function AdminAdmissionPage() {
                 <Card key={form.id} className="flex flex-col justify-between bg-secondary/30 p-6">
                     <div>
                         <CardTitle className="text-2xl">{form.title} <span className="text-base text-muted-foreground">({form.year})</span></CardTitle>
+                        <p className="text-sm text-primary font-semibold mt-1">{form.className}</p>
                         <CardDescription className="mt-2">{form.description}</CardDescription>
                     </div>
                      <div className="flex justify-between items-center mt-6">
