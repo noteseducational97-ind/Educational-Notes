@@ -31,7 +31,7 @@ const formSchema = z.object({
   parentPhone: z.string().min(10, 'Please enter a valid phone number.'),
 
   // Previous Year Data
-  previousSchool: z.string().min(3, 'School name is required.'),
+  previousSchool: z.string().min(3, 'Previous school name is required.'),
   board: z.string().min(2, 'Board is required (e.g., CBSE, State Board).'),
   percentage: z.string().min(1, 'Percentage is required.'),
   achievements: z.string().optional(),
@@ -222,7 +222,7 @@ export default function AdmissionFormPage() {
                                      <div className="grid md:grid-cols-3 gap-4">
                                         <FormField name="previousSchool" render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel>School/College Name (Last Attended)</FormLabel>
+                                                <FormLabel>Previous School Name</FormLabel>
                                                 <FormControl><Input placeholder="Enter school name" {...field} /></FormControl>
                                                 <FormMessage />
                                             </FormItem>
