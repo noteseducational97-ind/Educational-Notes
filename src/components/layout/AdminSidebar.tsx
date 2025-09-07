@@ -1,8 +1,9 @@
+
 'use client';
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Download, Bookmark, Menu, LogIn, UserPlus, LayoutDashboard, Users, BookCopy, FileText } from 'lucide-react';
+import { Home, Download, Bookmark, Menu, LogIn, UserPlus, LayoutDashboard, Users, BookCopy, FileText, Wrench, GraduationCap } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { EducationalNotesLogo } from '../icons/EducationalNotesLogo';
 
@@ -12,6 +13,8 @@ const adminNavLinks = [
   { href: '/admin/uploaded-resources', label: 'Manage Resources', icon: BookCopy },
   { href: '/admin/users', label: 'Manage Users', icon: Users },
   { href: '/admin/admission', label: 'Batches', icon: FileText },
+  { href: '/admin/tools', label: 'Manage Tools', icon: Wrench },
+  { href: '/admin/teachers', label: 'Teachers', icon: GraduationCap },
 ];
 
 export default function AdminSidebar() {
