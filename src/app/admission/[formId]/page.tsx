@@ -157,20 +157,22 @@ export default function AdmissionFormPage() {
                                             )}
                                         />
                                     </div>
-                                    <FormField name="studentPhone" render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Student Phone</FormLabel>
-                                            <FormControl><Input placeholder="Enter your phone number" {...field} /></FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )} />
-                                    <FormField name="address" render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Name Of Village or City</FormLabel>
-                                            <FormControl><Input placeholder="Enter the name of your village or city" {...field} /></FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )} />
+                                    <div className="grid md:grid-cols-2 gap-4">
+                                        <FormField name="studentPhone" render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Student Phone</FormLabel>
+                                                <FormControl><Input placeholder="Enter your phone number" {...field} /></FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )} />
+                                        <FormField name="address" render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Name Of Village or City</FormLabel>
+                                                <FormControl><Input placeholder="Enter the name of your village or city" {...field} /></FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )} />
+                                    </div>
                                 </CardContent>
                             </Card>
 
