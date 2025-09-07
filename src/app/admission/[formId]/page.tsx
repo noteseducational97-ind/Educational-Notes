@@ -22,7 +22,7 @@ const formSchema = z.object({
   dateOfBirth: z.string().min(1, 'Date of birth is required.'),
   gender: z.string().min(1, 'Please select a gender.'),
   studentPhone: z.string().min(10, 'Please enter a valid phone number.'),
-  address: z.string().min(10, 'Please enter a valid address.'),
+  address: z.string().min(3, 'Please enter a valid name.'),
 
   // Parent Info
   fatherName: z.string().min(3, "Father's name is required."),
@@ -164,8 +164,8 @@ export default function AdmissionFormPage() {
                                     )} />
                                     <FormField name="address" render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Residential Address</FormLabel>
-                                            <FormControl><Textarea placeholder="Enter your full address" {...field} /></FormControl>
+                                            <FormLabel>Name Of Village or City</FormLabel>
+                                            <FormControl><Input placeholder="Enter the name of your village or city" {...field} /></FormControl>
                                             <FormMessage />
                                         </FormItem>
                                     )} />
