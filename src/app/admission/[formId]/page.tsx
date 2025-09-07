@@ -32,7 +32,7 @@ const formSchema = z.object({
 
   // Previous Year Data
   previousSchool: z.string().min(3, 'Previous school name is required.'),
-  board: z.string().min(2, 'Board is required (e.g., CBSE, State Board).'),
+  board: z.string().min(1, 'Board is required.'),
   percentage: z.string().min(1, 'Percentage is required.'),
   achievements: z.string().optional(),
 });
@@ -227,13 +227,27 @@ export default function AdmissionFormPage() {
                                                 <FormMessage />
                                             </FormItem>
                                         )} />
-                                        <FormField name="board" render={({ field }) => (
-                                            <FormItem>
+                                        <FormField
+                                            control={form.control}
+                                            name="board"
+                                            render={({ field }) => (
+                                                <FormItem>
                                                 <FormLabel>Board</FormLabel>
-                                                <FormControl><Input placeholder="e.g., CBSE" {...field} /></FormControl>
+                                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                    <FormControl>
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder="Select board" />
+                                                    </SelectTrigger>
+                                                    </FormControl>
+                                                    <SelectContent>
+                                                    <SelectItem value="State Board">State Board</SelectItem>
+                                                    <SelectItem value="CBSE">CBSE</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
                                                 <FormMessage />
-                                            </FormItem>
-                                        )} />
+                                                </FormItem>
+                                            )}
+                                        />
                                          <FormField name="percentage" render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>Percentage/Grade (Previous Class)</FormLabel>
