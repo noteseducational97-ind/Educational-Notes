@@ -329,6 +329,16 @@ export default function AdmissionFormPage() {
                                     <CardTitle className="flex items-center gap-2"><CreditCard /> Payment</CardTitle>
                                 </CardHeader>
                                 <CardContent className="space-y-6">
+                                     <div className="grid sm:grid-cols-2 gap-4 text-center">
+                                        <div className="bg-secondary/30 p-4 rounded-lg">
+                                            <p className="text-muted-foreground text-sm">Total Fees</p>
+                                            <p className="text-2xl font-bold">₹{formDetails.totalFees.toLocaleString()}</p>
+                                        </div>
+                                        <div className="bg-secondary/30 p-4 rounded-lg">
+                                            <p className="text-muted-foreground text-sm">Advance Fees</p>
+                                            <p className="text-2xl font-bold">₹{formDetails.advanceFees.toLocaleString()}</p>
+                                        </div>
+                                    </div>
                                     <div className="space-y-4">
                                         <FormField
                                             control={form.control}
@@ -359,16 +369,6 @@ export default function AdmissionFormPage() {
                                                 <p className="text-muted-foreground">UPI Number: <span className="font-mono text-primary">{formDetails.upiNumber}</span></p>
                                             </div>
                                         )}
-                                    </div>
-                                    <div className="grid sm:grid-cols-2 gap-4 text-center">
-                                        <div className="bg-secondary/30 p-4 rounded-lg">
-                                            <p className="text-muted-foreground text-sm">Total Fees</p>
-                                            <p className="text-2xl font-bold">₹{formDetails.totalFees.toLocaleString()}</p>
-                                        </div>
-                                        <div className="bg-secondary/30 p-4 rounded-lg">
-                                            <p className="text-muted-foreground text-sm">Advance Fees</p>
-                                            <p className="text-2xl font-bold">₹{formDetails.advanceFees.toLocaleString()}</p>
-                                        </div>
                                     </div>
                                 </CardContent>
                             </Card>
