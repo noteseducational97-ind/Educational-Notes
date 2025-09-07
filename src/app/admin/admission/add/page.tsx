@@ -32,17 +32,30 @@ const FormSchema = z.object({
 
 type FormValues = z.infer<typeof FormSchema>;
 
+const generateYearOptions = () => {
+    const currentYear = new Date().getFullYear();
+    const years = [];
+    for (let i = 0; i < 5; i++) {
+        const startYear = currentYear + i;
+        const endYear = startYear + 1;
+        years.push(`${startYear}-${endYear.toString().slice(-2)}`);
+    }
+    return years;
+};
+
 export default function AddAdmissionFormPage() {
   const router = useRouter();
   const { toast } = useToast();
   
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const yearOptions = generateYearOptions();
+
 
   const form = useForm<FormValues>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
         title: '',
-        year: new Date().getFullYear().toString(),
+        year: yearOptions[0],
         description: '',
         status: 'Open',
         totalFees: 0,
@@ -107,7 +120,14 @@ export default function AddAdmissionFormPage() {
                      <FormField control={form.control} name="year" render={({ field }) => (
                         <FormItem>
                             <FormLabel>Year</FormLabel>
-                            <FormControl><Input placeholder="e.g. 2024-25" {...field} /></FormControl>
+                            <Select onValueChange={field.onChange} value={field.value}>
+                                <FormControl><SelectTrigger><SelectValue placeholder="Select year" /></SelectTrigger></FormControl>
+                                <SelectContent>
+                                    {yearOptions.map(year => (
+                                        <SelectItem key={year} value={year}>{year}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
                             <FormMessage />
                         </FormItem>
                     )} />
