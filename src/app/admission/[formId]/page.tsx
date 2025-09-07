@@ -329,38 +329,51 @@ export default function AdmissionFormPage() {
                                     <CardTitle className="flex items-center gap-2"><CreditCard /> Payment</CardTitle>
                                 </CardHeader>
                                 <CardContent className="space-y-6">
-                                     <div className="grid sm:grid-cols-2 gap-4 text-center">
-                                        <div className="bg-secondary/30 p-4 rounded-lg">
-                                            <p className="text-muted-foreground text-sm">Total Fees</p>
-                                            <p className="text-2xl font-bold">₹{formDetails.totalFees.toLocaleString()}</p>
-                                        </div>
-                                        <div className="bg-secondary/30 p-4 rounded-lg">
-                                            <p className="text-muted-foreground text-sm">Advance Fees</p>
-                                            <p className="text-2xl font-bold">₹{formDetails.advanceFees.toLocaleString()}</p>
-                                        </div>
-                                    </div>
                                     <div className="space-y-4">
                                         <FormField
                                             control={form.control}
                                             name="paymentMode"
                                             render={({ field }) => (
-                                                <FormItem>
+                                                <FormItem className="space-y-3">
                                                     <FormLabel>Payment Mode</FormLabel>
-                                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                                        <FormControl>
-                                                        <SelectTrigger>
-                                                            <SelectValue placeholder="Select a payment mode" />
-                                                        </SelectTrigger>
-                                                        </FormControl>
-                                                        <SelectContent>
-                                                        <SelectItem value="Online">Online</SelectItem>
-                                                        <SelectItem value="Offline">Offline</SelectItem>
-                                                        </SelectContent>
-                                                    </Select>
+                                                    <FormControl>
+                                                        <RadioGroup
+                                                        onValueChange={field.onChange}
+                                                        defaultValue={field.value}
+                                                        className="flex flex-col space-y-1"
+                                                        >
+                                                        <FormItem className="flex items-center space-x-3 space-y-0">
+                                                            <FormControl>
+                                                            <RadioGroupItem value="Online" />
+                                                            </FormControl>
+                                                            <FormLabel className="font-normal">
+                                                            Online
+                                                            </FormLabel>
+                                                        </FormItem>
+                                                        <FormItem className="flex items-center space-x-3 space-y-0">
+                                                            <FormControl>
+                                                            <RadioGroupItem value="Offline" />
+                                                            </FormControl>
+                                                            <FormLabel className="font-normal">
+                                                            Offline
+                                                            </FormLabel>
+                                                        </FormItem>
+                                                        </RadioGroup>
+                                                    </FormControl>
                                                     <FormMessage />
                                                 </FormItem>
                                             )}
                                         />
+                                         <div className="grid sm:grid-cols-2 gap-4 text-center">
+                                            <div className="bg-secondary/30 p-4 rounded-lg">
+                                                <p className="text-muted-foreground text-sm">Total Fees</p>
+                                                <p className="text-2xl font-bold">₹{formDetails.totalFees.toLocaleString()}</p>
+                                            </div>
+                                            <div className="bg-secondary/30 p-4 rounded-lg">
+                                                <p className="text-muted-foreground text-sm">Advance Fees</p>
+                                                <p className="text-2xl font-bold">₹{formDetails.advanceFees.toLocaleString()}</p>
+                                            </div>
+                                        </div>
                                         {paymentMode === 'Online' && (
                                             <div className="p-4 border rounded-lg bg-secondary/30">
                                                 <h3 className="text-lg font-semibold text-foreground mb-2">UPI Details</h3>
