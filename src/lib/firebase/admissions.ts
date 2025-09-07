@@ -8,17 +8,7 @@ import { Timestamp } from 'firebase-admin/firestore';
 
 
 const initialForms: Omit<AdmissionForm, 'id'>[] = [
-    {
-        title: 'MHT-CET',
-        description: 'Admissions Form for MHT-CET Maharashtra',
-        status: 'Open',
-        totalFees: 0,
-        advanceFees: 0,
-        upiName: '',
-        upiId: '',
-        upiNumber: '',
-        createdAt: new Date().toISOString(),
-    }
+    // All forms removed as per user request
 ];
 
 const createSlug = (title: string) => {
@@ -34,6 +24,11 @@ export async function seedAdmissionForms() {
 
     if (!snapshot.empty) {
         console.log('Admission forms collection is not empty. Skipping seed.');
+        return;
+    }
+    
+    if (initialForms.length === 0) {
+        console.log('No initial forms to seed.');
         return;
     }
 
