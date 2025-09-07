@@ -15,12 +15,6 @@ const tools = [
         href: '/admission',
     },
     {
-        icon: <Calculator className="h-8 w-8 text-primary" />,
-        title: 'Percentage Calculator',
-        description: 'Quickly calculate percentages for marks, attendance, or other needs.',
-        href: '#',
-    },
-    {
         icon: <Copy className="h-8 w-8 text-primary" />,
         title: 'Flashcard Maker',
         description: 'Create and study with digital flashcards for any subject.',
