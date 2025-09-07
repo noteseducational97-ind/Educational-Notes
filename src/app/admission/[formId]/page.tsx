@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useParams } from 'next/navigation';
@@ -129,7 +128,7 @@ export default function AdmissionFormPage() {
         coachingName = 'Shree Coaching & ChemStar Classes';
     }
     
-    const upiLink = `upi://pay?pa=${formDetails.upiId}&pn=${encodeURIComponent(formDetails.upiName)}&am=${formDetails.advanceFees}&cu=INR`;
+    const upiLink = formDetails.upiLink || `upi://pay?pa=${formDetails.upiId}&pn=${encodeURIComponent(formDetails.upiName)}&am=${formDetails.advanceFees}&cu=INR`;
 
     return (
         <div className="flex min-h-screen flex-col bg-background">
@@ -415,4 +414,3 @@ export default function AdmissionFormPage() {
         </div>
     );
 }
-
