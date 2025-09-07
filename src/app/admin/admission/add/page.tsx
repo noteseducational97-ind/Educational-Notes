@@ -34,7 +34,6 @@ const FormSchema = z.object({
   totalFees: z.coerce.number().min(0, 'Total fees must be a positive number.'),
   advanceFees: z.coerce.number().min(0, 'Advance fees must be a positive number.'),
   upiId: z.string().min(3, 'UPI ID is required.'),
-  upiLink: z.string().url('A valid UPI link is required.'),
   upiNumber: z.string().min(10, 'UPI number must be at least 10 digits.'),
 }).refine(data => parseInt(data.yearTo) > parseInt(data.yearFrom), {
     message: "'To' year must be after 'From' year.",
@@ -70,7 +69,6 @@ export default function AddAdmissionFormPage() {
         totalFees: undefined,
         advanceFees: undefined,
         upiId: '',
-        upiLink: 'upi://pay?pa=',
         upiNumber: '',
     }
   });
@@ -79,7 +77,6 @@ export default function AddAdmissionFormPage() {
   const className = form.watch('className');
   const subject = form.watch('subject');
   const isDemoEnabled = form.watch('isDemoEnabled');
-  const upiId = form.watch('upiId');
   
   const generateDescription = (className: string, yearFrom: string, subject?: 'Physics' | 'Chemistry') => {
     if (!subject) return '';
@@ -105,13 +102,6 @@ export default function AddAdmissionFormPage() {
         form.setValue('description', newDescription);
     }
   }, [className, yearFrom, subject, form])
-
-  useEffect(() => {
-    if (upiId) {
-        const generatedUpiLink = `upi://pay?pa=${upiId || ''}&pn=`;
-        form.setValue('upiLink', generatedUpiLink, { shouldValidate: true });
-    }
-  }, [upiId, form]);
   
   async function onSubmit(values: FormValues) {
     setIsSubmitting(true);
@@ -281,13 +271,6 @@ export default function AddAdmissionFormPage() {
                                 </FormItem>
                             )} />
                         </div>
-                         <FormField control={form.control} name="upiLink" render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>UPI Link</FormLabel>
-                                <FormControl><Input placeholder="upi://pay?pa=..." {...field} disabled /></FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )} />
                     </div>
                 </CardContent>
                 <CardFooter className="flex justify-between gap-4 border-t pt-6">

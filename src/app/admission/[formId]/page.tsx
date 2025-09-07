@@ -386,15 +386,6 @@ export default function AdmissionFormPage() {
                                                 <h3 className="text-lg font-semibold text-foreground">UPI Details</h3>
                                                 <p className="text-muted-foreground">UPI ID: <span className="font-mono text-primary">{formDetails.upiId}</span></p>
                                                 <p className="text-muted-foreground">UPI Number: <span className="font-mono text-primary">{formDetails.upiNumber}</span></p>
-                                                
-                                                {isAndroid && formDetails.upiLink && (
-                                                    <Button asChild className="mt-4 w-full">
-                                                        <a href={formDetails.upiLink}>
-                                                            <Wallet className="mr-2 h-4 w-4" />
-                                                            Make Payment
-                                                        </a>
-                                                    </Button>
-                                                )}
                                             </div>
                                         )}
                                     </div>
