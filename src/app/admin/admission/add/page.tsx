@@ -68,8 +68,6 @@ export default function AddAdmissionFormPage() {
         description: '',
         isDemoEnabled: false,
         demoTenureDays: 0,
-        totalFees: 0,
-        advanceFees: 0,
         upiId: '',
         upiLink: '',
         upiNumber: '',
@@ -239,7 +237,7 @@ export default function AddAdmissionFormPage() {
                                 <FormItem>
                                     <FormLabel>Demo Session Tenure (in days)</FormLabel>
                                     <FormControl>
-                                        <Input type="number" placeholder="e.g., 7" {...field} onChange={e => field.onChange(e.target.value === '' ? 0 : parseInt(e.target.value, 10))}/>
+                                        <Input type="number" placeholder="e.g., 7" {...field} onChange={e => field.onChange(e.target.value === '' ? undefined : parseInt(e.target.value, 10))}/>
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -254,14 +252,14 @@ export default function AddAdmissionFormPage() {
                              <FormField control={form.control} name="totalFees" render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Total Fees</FormLabel>
-                                    <FormControl><Input type="number" placeholder="e.g. 15000" {...field} onChange={e => field.onChange(e.target.value === '' ? 0 : parseInt(e.target.value, 10))} /></FormControl>
+                                    <FormControl><Input type="number" placeholder="e.g. 15000" {...field} onChange={e => field.onChange(e.target.value === '' ? undefined : parseInt(e.target.value, 10))} /></FormControl>
                                     <FormMessage />
                                 </FormItem>
                             )} />
                              <FormField control={form.control} name="advanceFees" render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Advance Fees</FormLabel>
-                                    <FormControl><Input type="number" placeholder="e.g. 5000" {...field} onChange={e => field.onChange(e.target.value === '' ? 0 : parseInt(e.target.value, 10))} /></FormControl>
+                                    <FormControl><Input type="number" placeholder="e.g. 5000" {...field} onChange={e => field.onChange(e.target.value === '' ? undefined : parseInt(e.target.value, 10))} /></FormControl>
                                     <FormMessage />
                                 </FormItem>
                             )} />
