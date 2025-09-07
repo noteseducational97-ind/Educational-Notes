@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useParams } from 'next/navigation';
@@ -286,7 +287,7 @@ export default function AdmissionFormPage() {
                             
                             <Card>
                                 <CardHeader>
-                                    <CardTitle className="flex items-center gap-2"><CreditCard /> Payment Interface</CardTitle>
+                                    <CardTitle className="flex items-center gap-2"><CreditCard /> Payment</CardTitle>
                                 </CardHeader>
                                 <CardContent className="space-y-4 text-center">
                                     <p className="text-muted-foreground">
