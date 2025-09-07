@@ -11,7 +11,7 @@ const navLinks = [
   { href: '/', label: 'Home', icon: Home },
   { href: '/downloads', label: 'Downloads', icon: Download },
   { href: '/save', label: 'Watchlist', icon: Bookmark },
-  { href: '/#tools', label: 'Tools', icon: Wrench },
+  { href: '/tools', label: 'Tools', icon: Wrench },
   { href: '/about', label: 'About', icon: Info },
 ];
 
@@ -24,14 +24,6 @@ export default function BottomNav() {
   }
 
   const isLinkActive = (href: string) => {
-    if (href.includes('#')) {
-      const [basePath] = href.split('#');
-      // A hash link is active if the base path matches the current pathname.
-      // If the base path is empty (e.g., '/#tools'), it should match the root path '/'.
-      return pathname === (basePath || '/');
-    }
-    // For regular links, it's active if it's an exact match,
-    // or if it's a parent route of the current path (but not the root path itself unless it's an exact match).
     return href === '/' ? pathname === '/' : pathname.startsWith(href);
   };
 
