@@ -11,15 +11,16 @@ const initialForms: Omit<AdmissionForm, 'id' | 'createdAt'>[] = [
     // All forms removed as per user request
 ];
 
-const createSlug = (title: string) => {
+const createSlug = (title: string, year: string) => {
+  const yearSuffix = year.replace(/[^0-9]/g, '');
   return title
     .toLowerCase()
     .replace(/ /g, '-')
-    .replace(/[^\w-]+/g, '');
+    .replace(/[^\w-]+/g, '') + `-${yearSuffix}`;
 };
 
 export async function addAdmissionForm(data: Omit<AdmissionForm, 'id' | 'createdAt'>) {
-    const slug = createSlug(data.title);
+    const slug = createSlug(data.title, data.year);
     const docRef = db.collection('admissionForms').doc(slug);
     
     await docRef.set({

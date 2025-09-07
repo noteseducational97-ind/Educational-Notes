@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Edit, FileText, PlusCircle } from 'lucide-react';
 import Link from 'next/link';
-import { getAdmissionForms, seedAdmissionForms } from '@/lib/firebase/admissions';
+import { getAdmissionForms } from '@/lib/firebase/admissions';
 import type { AdmissionForm } from '@/types';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { useToast } from '@/hooks/use-toast';
@@ -69,7 +69,7 @@ export default function AdminAdmissionPage() {
             {forms.map((form) => (
                 <Card key={form.id} className="flex flex-col justify-between bg-secondary/30 p-6">
                     <div>
-                        <CardTitle className="text-2xl">{form.title}</CardTitle>
+                        <CardTitle className="text-2xl">{form.title} <span className="text-base text-muted-foreground">({form.year})</span></CardTitle>
                         <CardDescription className="mt-2">{form.description}</CardDescription>
                     </div>
                      <div className="flex justify-between items-center mt-6">

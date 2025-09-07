@@ -20,6 +20,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 
 const FormSchema = z.object({
   title: z.string().min(3, 'Title is required.'),
+  year: z.string().min(4, 'Year is required.'),
   description: z.string().min(10, 'Description is required.'),
   status: z.enum(['Open', 'Closed']),
   totalFees: z.coerce.number().min(0, 'Total fees must be a positive number.'),
@@ -41,6 +42,7 @@ export default function AddAdmissionFormPage() {
     resolver: zodResolver(FormSchema),
     defaultValues: {
         title: '',
+        year: new Date().getFullYear().toString(),
         description: '',
         status: 'Open',
         totalFees: 0,
@@ -102,6 +104,13 @@ export default function AddAdmissionFormPage() {
                             </FormItem>
                         )} />
                     </div>
+                     <FormField control={form.control} name="year" render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Year</FormLabel>
+                            <FormControl><Input placeholder="e.g. 2024-25" {...field} /></FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )} />
                      <FormField control={form.control} name="description" render={({ field }) => (
                         <FormItem>
                             <FormLabel>Description</FormLabel>
