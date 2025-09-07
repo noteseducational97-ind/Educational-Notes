@@ -268,7 +268,7 @@ export default function EditAdmissionFormPage() {
                                 <FormItem>
                                     <FormLabel>Demo Session Tenure (in days)</FormLabel>
                                     <FormControl>
-                                        <Input type="number" placeholder="e.g., 7" {...field} onChange={e => field.onChange(e.target.value === '' ? undefined : parseInt(e.target.value, 10))}/>
+                                        <Input type="number" placeholder="e.g., 7" {...field} value={field.value ?? ''} onChange={e => field.onChange(e.target.value === '' ? undefined : parseInt(e.target.value, 10))}/>
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -282,14 +282,14 @@ export default function EditAdmissionFormPage() {
                             <FormField control={form.control} name="totalFees" render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Total Fees</FormLabel>
-                                    <FormControl><Input type="number" placeholder="e.g. 15000" {...field} onChange={e => field.onChange(e.target.value === '' ? undefined : parseInt(e.target.value, 10))} /></FormControl>
+                                    <FormControl><Input type="number" placeholder="e.g. 15000" {...field} value={field.value ?? ''} onChange={e => field.onChange(e.target.value === '' ? undefined : parseInt(e.target.value, 10))} /></FormControl>
                                     <FormMessage />
                                 </FormItem>
                             )} />
                              <FormField control={form.control} name="advanceFees" render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Advance Fees</FormLabel>
-                                    <FormControl><Input type="number" placeholder="e.g. 5000" {...field} onChange={e => field.onChange(e.target.value === '' ? undefined : parseInt(e.target.value, 10))} /></FormControl>
+                                    <FormControl><Input type="number" placeholder="e.g. 5000" {...field} value={field.value ?? ''} onChange={e => field.onChange(e.target.value === '' ? undefined : parseInt(e.target.value, 10))} /></FormControl>
                                     <FormMessage />
                                 </FormItem>
                             )} />
