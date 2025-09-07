@@ -7,10 +7,6 @@ import { revalidatePath } from 'next/cache';
 import { Timestamp } from 'firebase-admin/firestore';
 
 
-const initialForms: Omit<AdmissionForm, 'id' | 'createdAt'>[] = [
-    // All forms removed as per user request
-];
-
 const createSlug = (title: string, year: string) => {
   const yearSuffix = year.replace(/[^0-9]/g, '');
   return title
@@ -75,4 +71,13 @@ export async function updateAdmissionForm(id: string, data: Partial<Omit<Admissi
     revalidatePath('/admin/admission');
     revalidatePath('/admission');
     revalidatePath(`/admission/${id}`);
+}
+
+export async function deleteAdmissionForm(id: string) {
+    if (!id) {
+        throw new Error('Form ID is required for deletion.');
+    }
+    await db.collection('admissionForms').doc(id).delete();
+    revalidatePath('/admin/admission');
+    revalidatePath('/admission');
 }

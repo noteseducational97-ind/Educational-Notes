@@ -5,17 +5,31 @@ import { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Edit, FileText, PlusCircle } from 'lucide-react';
+import { Edit, FileText, PlusCircle, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { getAdmissionForms } from '@/lib/firebase/admissions';
 import type { AdmissionForm } from '@/types';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { useToast } from '@/hooks/use-toast';
+import { deleteAdmissionFormAction } from './actions';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+
 
 export default function AdminAdmissionPage() {
   const [forms, setForms] = useState<AdmissionForm[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -36,6 +50,25 @@ export default function AdminAdmissionPage() {
     };
     fetchData();
   }, [toast]);
+
+  const handleDelete = async (id: string, title: string) => {
+    setDeletingId(id);
+    const result = await deleteAdmissionFormAction(id);
+    if (result.success) {
+      setForms(prev => prev.filter(f => f.id !== id));
+      toast({
+        title: 'Batch Deleted',
+        description: `"${title}" has been successfully deleted.`,
+      });
+    } else {
+      toast({
+        variant: 'destructive',
+        title: 'Error Deleting Batch',
+        description: result.error,
+      });
+    }
+    setDeletingId(null);
+  }
 
   if (loading) {
     return <LoadingSpinner />;
@@ -74,11 +107,34 @@ export default function AdminAdmissionPage() {
                     </div>
                      <div className="flex justify-between items-center mt-6">
                          <Badge variant={form.status === 'Open' ? 'secondary' : 'outline'}>{form.status}</Badge>
-                        <Button variant="outline" size="sm" asChild>
-                            <Link href={`/admin/admission/edit/${form.id}`}>
-                                <Edit className="h-4 w-4 mr-2" /> Edit
-                            </Link>
-                        </Button>
+                         <div className="flex gap-2">
+                            <Button variant="outline" size="sm" asChild>
+                                <Link href={`/admin/admission/edit/${form.id}`}>
+                                    <Edit className="h-4 w-4 mr-2" /> Edit
+                                </Link>
+                            </Button>
+                            <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                    <Button variant="destructive" size="sm" disabled={deletingId === form.id}>
+                                        <Trash2 className="h-4 w-4" />
+                                    </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                        This action cannot be undone. This will permanently delete the admission form "{form.title}".
+                                    </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                    <AlertDialogAction onClick={() => handleDelete(form.id, form.title)}>
+                                        Yes, delete
+                                    </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
+                         </div>
                     </div>
                 </Card>
             ))}
