@@ -372,16 +372,6 @@ export default function AdmissionFormPage() {
                                                 </FormItem>
                                             )}
                                         />
-                                        <div className="grid sm:grid-cols-2 gap-4 text-center">
-                                            <div className="bg-secondary/30 p-4 rounded-lg">
-                                                <p className="text-muted-foreground text-sm">Total Fees</p>
-                                                <p className="text-2xl font-bold">₹{formDetails.totalFees.toLocaleString()}</p>
-                                            </div>
-                                            <div className="bg-secondary/30 p-4 rounded-lg">
-                                                <p className="text-muted-foreground text-sm">Advance Fees</p>
-                                                <p className="text-2xl font-bold">₹{formDetails.advanceFees.toLocaleString()}</p>
-                                            </div>
-                                        </div>
                                         {paymentMode === 'Online' && (
                                             <div className="p-4 border rounded-lg bg-secondary/30">
                                                 <h3 className="text-lg font-semibold text-foreground mb-2">UPI Details</h3>
@@ -398,6 +388,16 @@ export default function AdmissionFormPage() {
                                                 )}
                                             </div>
                                         )}
+                                        <div className="grid sm:grid-cols-2 gap-4 text-center">
+                                            <div className="bg-secondary/30 p-4 rounded-lg">
+                                                <p className="text-muted-foreground text-sm">Total Fees</p>
+                                                <p className="text-2xl font-bold">₹{formDetails.totalFees.toLocaleString()}</p>
+                                            </div>
+                                            <div className="bg-secondary/30 p-4 rounded-lg">
+                                                <p className="text-muted-foreground text-sm">Advance Fees</p>
+                                                <p className="text-2xl font-bold">₹{formDetails.advanceFees.toLocaleString()}</p>
+                                            </div>
+                                        </div>
                                     </div>
                                 </CardContent>
                             </Card>
