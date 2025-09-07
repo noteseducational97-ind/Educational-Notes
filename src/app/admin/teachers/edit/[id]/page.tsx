@@ -102,26 +102,26 @@ export default function EditTeacherPage() {
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <Label htmlFor="name" className="flex items-center gap-2"><User /> Name</Label>
-                            <Input id="name" placeholder="e.g., Jane Doe" value={teacher.name} onChange={handleChange} />
+                            <Input id="name" placeholder="e.g., Jane Doe" value={teacher.name || ''} onChange={handleChange} />
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="education" className="flex items-center gap-2"><GraduationCap /> Education</Label>
-                            <Input id="education" placeholder="e.g., M.Sc., B.Ed." value={teacher.education} onChange={handleChange} />
+                            <Input id="education" placeholder="e.g., M.Sc., B.Ed." value={teacher.education || ''} onChange={handleChange} />
                         </div>
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <Label htmlFor="subject" className="flex items-center gap-2"><Book /> Subject</Label>
-                            <Input id="subject" placeholder="e.g., Biology" value={teacher.subject} onChange={handleChange} />
+                            <Input id="subject" placeholder="e.g., Biology" value={teacher.subject || ''} onChange={handleChange} />
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="experience" className="flex items-center gap-2"><Briefcase /> Experience</Label>
-                            <Input id="experience" placeholder="e.g., 10+ years" value={teacher.experience} onChange={handleChange} />
+                            <Input id="experience" placeholder="e.g., 10+ years" value={teacher.experience || ''} onChange={handleChange} />
                         </div>
                     </div>
                     <div className="space-y-2">
                         <Label htmlFor="description" className="flex items-center gap-2"><FileText /> Description</Label>
-                        <Textarea id="description" placeholder="Describe the teacher's approach, qualifications, etc..." value={teacher.description} onChange={handleChange} />
+                        <Textarea id="description" placeholder="Describe the teacher's approach, qualifications, etc..." value={teacher.description || ''} onChange={handleChange} />
                     </div>
                 </CardContent>
                 <CardFooter className="flex justify-between gap-4 border-t pt-6">
