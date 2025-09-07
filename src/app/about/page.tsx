@@ -147,18 +147,6 @@ export default function AboutPage() {
                         noteseducational97@gmail.com
                     </a>
                     </Button>
-                    <Button asChild variant="outline" className="w-full sm:w-auto">
-                    <a href="tel:+919881482416">
-                        <Phone className="mr-2 h-4 w-4" />
-                        Khachane Sir - 9881482416
-                    </a>
-                    </Button>
-                    <Button asChild variant="outline" className="w-full sm:w-auto">
-                    <a href="tel:+919405695457">
-                        <Phone className="mr-2 h-4 w-4" />
-                        Shete Sir - 9405695457
-                    </a>
-                    </Button>
                 </div>
                 </CardContent>
             </Card>
