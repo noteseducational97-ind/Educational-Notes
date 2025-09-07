@@ -1,11 +1,10 @@
-
 'use client';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Wrench, PlusCircle, Edit, Trash2, Eye, EyeOff } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
   AlertDialog,
@@ -49,13 +48,34 @@ export const initialTools: Tool[] = [
 ];
 
 export default function AdminToolsPage() {
-    const [tools, setTools] = useState(initialTools);
+    const [tools, setTools] = useState<Tool[]>([]);
     const { toast } = useToast();
+
+    useEffect(() => {
+        // This check ensures we only set the initial state once on the client-side.
+        // In a real app, this would be where you fetch data from a database.
+        if (typeof window !== 'undefined') {
+            const storedTools = sessionStorage.getItem('managed-tools');
+            if (storedTools) {
+                setTools(JSON.parse(storedTools));
+            } else {
+                setTools(initialTools);
+            }
+        }
+    }, []);
+
+    const updateTools = (updatedTools: Tool[]) => {
+        setTools(updatedTools);
+        if (typeof window !== 'undefined') {
+            sessionStorage.setItem('managed-tools', JSON.stringify(updatedTools));
+        }
+    };
 
     const handleDelete = (toolId: string) => {
         const tool = tools.find(t => t.id === toolId);
         if (tool) {
-            setTools(currentTools => currentTools.filter(t => t.id !== toolId));
+            const updatedTools = tools.filter(t => t.id !== toolId);
+            updateTools(updatedTools);
             toast({
                 title: `"${tool.title}" Deleted`,
                 description: `The tool has been removed.`,
