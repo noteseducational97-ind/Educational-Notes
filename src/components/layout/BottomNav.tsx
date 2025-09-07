@@ -26,10 +26,12 @@ export default function BottomNav() {
   const isLinkActive = (href: string) => {
     if (href.includes('#')) {
       const [basePath] = href.split('#');
-      // Only active if it's the root path, because #tools is on the homepage.
+      // A hash link is active if the base path matches the current pathname.
+      // If the base path is empty (e.g., '/#tools'), it should match the root path '/'.
       return pathname === (basePath || '/');
     }
-    // Exact match or starts with for nested routes, but not for root.
+    // For regular links, it's active if it's an exact match,
+    // or if it's a parent route of the current path (but not the root path itself unless it's an exact match).
     return href === '/' ? pathname === '/' : pathname.startsWith(href);
   };
 
