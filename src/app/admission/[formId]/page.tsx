@@ -53,6 +53,24 @@ const formIdToTitle: { [key: string]: string } = {
     'mht-cet': 'MHT-CET',
 };
 
+const upiDetails: { [key: string]: { id: string; number: string; name: string } } = {
+    physics: {
+        id: 'shreecoachingclasses@okhdfcbank',
+        number: '9881482416',
+        name: 'Shree Coaching Classes'
+    },
+    chemistry: {
+        id: 'shetemangesh@oksbi',
+        number: '9405695457',
+        name: 'ChemStar Chemistry Classes'
+    },
+    default: {
+        id: 'shreecoachingclasses@okhdfcbank',
+        number: '9881482416',
+        name: 'Shree Coaching Classes'
+    }
+};
+
 
 export default function AdmissionFormPage() {
     const params = useParams();
@@ -63,10 +81,17 @@ export default function AdmissionFormPage() {
     const formTitle = formIdToTitle[formId] || 'Admission Form';
 
     let coachingName = '';
+    let currentUpiDetails = upiDetails.default;
+
     if (formId.includes('physics')) {
         coachingName = 'Shree Coaching Classes';
+        currentUpiDetails = upiDetails.physics;
     } else if (formId.includes('chemistry')) {
         coachingName = 'ChemStar Chemistry Classes';
+        currentUpiDetails = upiDetails.chemistry;
+    } else if (formId.includes('mht-cet')) {
+        coachingName = 'Shree Coaching & ChemStar Classes';
+        currentUpiDetails = upiDetails.physics; // Default to physics for MHT-CET
     }
 
     const form = useForm<FormValues>({
@@ -331,13 +356,12 @@ export default function AdmissionFormPage() {
                                         />
                                         {paymentMode === 'Online' && (
                                             <div className="p-4 border rounded-lg bg-secondary/30">
-                                                <h3 className="text-lg font-semibold text-foreground mb-2">UPI Details</h3>
-                                                <p className="text-muted-foreground">UPI ID: <span className="font-mono text-primary">shreecoachingclasses@okhdfcbank</span></p>
-                                                <p className="text-muted-foreground">UPI Number: <span className="font-mono text-primary">9881482416</span></p>
+                                                <h3 className="text-lg font-semibold text-foreground mb-2">UPI Details for {currentUpiDetails.name}</h3>
+                                                <p className="text-muted-foreground">UPI ID: <span className="font-mono text-primary">{currentUpiDetails.id}</span></p>
+                                                <p className="text-muted-foreground">UPI Number: <span className="font-mono text-primary">{currentUpiDetails.number}</span></p>
                                             </div>
                                         )}
                                     </div>
-                                    
                                 </CardContent>
                             </Card>
 
