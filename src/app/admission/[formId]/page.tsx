@@ -201,14 +201,14 @@ export default function AdmissionFormPage() {
                                                 <FormMessage />
                                             </FormItem>
                                         )} />
+                                         <FormField name="parentPhone" render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Parent/Guardian Phone Number</FormLabel>
+                                                <FormControl><Input placeholder="Enter parent's phone number" {...field} /></FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )} />
                                     </div>
-                                     <FormField name="parentPhone" render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Parent/Guardian Phone Number</FormLabel>
-                                            <FormControl><Input placeholder="Enter parent's phone number" {...field} /></FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )} />
                                 </CardContent>
                             </Card>
 
