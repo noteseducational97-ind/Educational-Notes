@@ -41,7 +41,6 @@ export type AdmissionForm = {
     totalFees: number;
     advanceFees: number;
     upiId: string;
-    upiLink?: string;
     upiNumber: string;
     upiName: string;
     createdAt: string; // Should be an ISO string

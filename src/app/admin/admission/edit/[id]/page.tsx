@@ -36,7 +36,6 @@ const FormSchema = z.object({
   totalFees: z.coerce.number().min(0, 'Total fees must be a positive number.'),
   advanceFees: z.coerce.number().min(0, 'Advance fees must be a positive number.'),
   upiId: z.string().min(3, 'UPI ID is required.'),
-  upiLink: z.string().url('Please enter a valid URL.').optional().or(z.literal('')),
   upiNumber: z.string().min(10, 'UPI number must be at least 10 digits.'),
   upiName: z.string().min(3, 'UPI holder name is required.'),
 }).refine(data => parseInt(data.yearTo) > parseInt(data.yearFrom), {
@@ -78,7 +77,6 @@ export default function EditAdmissionFormPage() {
         totalFees: 0,
         advanceFees: 0,
         upiId: '',
-        upiLink: '',
         upiNumber: '',
         upiName: '',
     }
@@ -89,7 +87,8 @@ export default function EditAdmissionFormPage() {
   const subject = form.watch('subject');
   const isDemoEnabled = form.watch('isDemoEnabled');
   
-  const generateDescription = (className: string, yearFrom: string, subject: 'Physics' | 'Chemistry') => {
+  const generateDescription = (className: string, yearFrom: string, subject?: 'Physics' | 'Chemistry') => {
+    if (!subject) return '';
     let teacher = "our expert teacher";
     if (subject === 'Physics') {
         teacher = "Pravin Sir";
@@ -263,7 +262,7 @@ export default function EditAdmissionFormPage() {
                                 <FormItem>
                                     <FormLabel>Demo Session Tenure (in days)</FormLabel>
                                     <FormControl>
-                                        <Input type="number" placeholder="e.g., 7" {...field} value={field.value ?? ''} onChange={e => field.onChange(e.target.value === '' ? undefined : parseInt(e.target.value, 10))}/>
+                                        <Input type="number" placeholder="e.g., 7" {...field} value={field.value ?? 0} onChange={e => field.onChange(e.target.value === '' ? 0 : parseInt(e.target.value, 10))}/>
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -305,13 +304,6 @@ export default function EditAdmissionFormPage() {
                                 </FormItem>
                             )} />
                         </div>
-                        <FormField control={form.control} name="upiLink" render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>UPI Link (Optional)</FormLabel>
-                                <FormControl><Input placeholder="e.g. upi://pay?pa=..." {...field} value={field.value || ''} /></FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )} />
                         <FormField control={form.control} name="upiNumber" render={({ field }) => (
                             <FormItem>
                                 <FormLabel>UPI Number</FormLabel>
