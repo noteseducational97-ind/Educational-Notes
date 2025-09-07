@@ -17,6 +17,7 @@ import Link from 'next/link';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import Image from 'next/image';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 const formSchema = z.object({
   // Personal Info
@@ -37,6 +38,9 @@ const formSchema = z.object({
   previousSchool: z.string().min(3, 'Previous school name is required.'),
   board: z.string().min(1, 'Board is required.'),
   percentage: z.string().min(1, 'Percentage is required.'),
+  
+  // Payment
+  paymentMode: z.string().min(1, 'Please select a payment mode.'),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -79,6 +83,7 @@ export default function AdmissionFormPage() {
             previousSchool: '',
             board: '',
             percentage: '',
+            paymentMode: 'Online',
         },
     });
 
@@ -94,6 +99,8 @@ export default function AdmissionFormPage() {
         });
         form.reset();
     }
+    
+    const paymentMode = form.watch('paymentMode');
 
     return (
         <div className="flex min-h-screen flex-col bg-background">
@@ -289,29 +296,75 @@ export default function AdmissionFormPage() {
                                 <CardHeader>
                                     <CardTitle className="flex items-center gap-2"><CreditCard /> Payment</CardTitle>
                                 </CardHeader>
-                                <CardContent className="space-y-4 text-center">
-                                    <p className="text-muted-foreground">
-                                        Please complete the payment to finalize your admission. You can scan the QR code or use the bank details below.
-                                    </p>
-                                    <div className="flex flex-col md:flex-row items-center justify-center gap-8">
-                                        <div className="p-4 border rounded-lg bg-secondary/30">
-                                            <Image 
-                                                src="https://picsum.photos/200/200" 
-                                                alt="QR Code for Payment" 
-                                                width={200}
-                                                height={200}
-                                                data-ai-hint="QR code"
-                                                className="rounded-md"
-                                            />
+                                <CardContent className="space-y-6">
+                                    <div className="grid sm:grid-cols-2 gap-4 text-center">
+                                        <div className="bg-secondary/30 p-4 rounded-lg">
+                                            <p className="text-muted-foreground text-sm">Total Fees</p>
+                                            <p className="text-2xl font-bold">₹15,000</p>
                                         </div>
-                                        <div className="text-left space-y-2 p-4 border rounded-lg bg-secondary/30">
-                                            <h3 className="font-semibold text-lg">Bank Details</h3>
-                                            <p><strong>Account Name:</strong> Shree Coaching Classes</p>
-                                            <p><strong>Account Number:</strong> 1234567890</p>
-                                            <p><strong>IFSC Code:</strong> ABCD0123456</p>
-                                            <p><strong>Bank Name:</strong> Example Bank, Branch Name</p>
+                                        <div className="bg-secondary/30 p-4 rounded-lg">
+                                            <p className="text-muted-foreground text-sm">Advance Fees</p>
+                                            <p className="text-2xl font-bold">₹5,000</p>
                                         </div>
                                     </div>
+
+                                    <FormField
+                                        control={form.control}
+                                        name="paymentMode"
+                                        render={({ field }) => (
+                                            <FormItem className="space-y-3">
+                                            <FormLabel>Payment Mode</FormLabel>
+                                            <FormControl>
+                                                <RadioGroup
+                                                onValueChange={field.onChange}
+                                                defaultValue={field.value}
+                                                className="flex flex-col sm:flex-row gap-4"
+                                                >
+                                                <FormItem className="flex items-center space-x-2 space-y-0">
+                                                    <FormControl>
+                                                    <RadioGroupItem value="Online" />
+                                                    </FormControl>
+                                                    <FormLabel className="font-normal">Online</FormLabel>
+                                                </FormItem>
+                                                <FormItem className="flex items-center space-x-2 space-y-0">
+                                                    <FormControl>
+                                                    <RadioGroupItem value="Offline" />
+                                                    </FormControl>
+                                                    <FormLabel className="font-normal">Offline</FormLabel>
+                                                </FormItem>
+                                                </RadioGroup>
+                                            </FormControl>
+                                            <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    
+                                    {paymentMode === 'Online' && (
+                                        <div className="flex flex-col md:flex-row items-center justify-center gap-8 pt-4">
+                                            <div className="p-4 border rounded-lg bg-secondary/30">
+                                                <Image 
+                                                    src="https://picsum.photos/200/200" 
+                                                    alt="QR Code for Payment" 
+                                                    width={200}
+                                                    height={200}
+                                                    data-ai-hint="QR code"
+                                                    className="rounded-md"
+                                                />
+                                            </div>
+                                            <div className="text-left space-y-2 p-4 border rounded-lg bg-secondary/30">
+                                                <h3 className="font-semibold text-lg">Bank Details</h3>
+                                                <p><strong>Account Name:</strong> Shree Coaching Classes</p>
+                                                <p><strong>Account Number:</strong> 1234567890</p>
+                                                <p><strong>IFSC Code:</strong> ABCD0123456</p>
+                                                <p><strong>Bank Name:</strong> Example Bank, Branch Name</p>
+                                            </div>
+                                        </div>
+                                    )}
+                                    {paymentMode === 'Offline' && (
+                                        <div className="text-center p-4 bg-secondary/30 rounded-lg">
+                                            <p className="text-muted-foreground">Please visit the class premises to complete the payment in person.</p>
+                                        </div>
+                                    )}
                                 </CardContent>
                             </Card>
 
@@ -327,3 +380,4 @@ export default function AdmissionFormPage() {
         </div>
     );
 }
+
