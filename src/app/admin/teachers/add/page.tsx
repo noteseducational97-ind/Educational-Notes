@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, ArrowLeft, Save, User, Book, Briefcase, Image as ImageIcon } from 'lucide-react';
+import { Loader2, ArrowLeft, Save, User, Book, Briefcase } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import type { Teacher } from '../page';
 
@@ -25,7 +25,6 @@ export default function AddTeacherPage() {
     name: '',
     subject: '',
     experience: '',
-    avatarUrl: ''
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -51,6 +50,7 @@ export default function AddTeacherPage() {
         const newTeacher: Teacher = {
             id: createSlug(teacher.name),
             ...teacher,
+            avatarUrl: '', // Default to empty string as it's optional
         };
 
         const updatedTeachers = [...storedTeachers, newTeacher];
@@ -91,10 +91,6 @@ export default function AddTeacherPage() {
                 <div className="space-y-2">
                     <Label htmlFor="experience" className="flex items-center gap-2"><Briefcase /> Experience / Description</Label>
                     <Textarea id="experience" placeholder="Describe the teacher's experience and approach..." value={teacher.experience} onChange={handleChange} />
-                </div>
-                <div className="space-y-2">
-                    <Label htmlFor="avatarUrl" className="flex items-center gap-2"><ImageIcon /> Avatar URL (Optional)</Label>
-                    <Input id="avatarUrl" placeholder="https://example.com/avatar.png" value={teacher.avatarUrl} onChange={handleChange} />
                 </div>
             </CardContent>
             <CardFooter className="flex justify-between gap-4 border-t pt-6">
