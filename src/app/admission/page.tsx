@@ -34,19 +34,14 @@ export default function AdmissionPage() {
             
             <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
                 {admissionForms.map((form) => (
-                    <Card key={form.title} className="flex flex-col bg-secondary/30">
-                        <CardHeader>
-                            <CardTitle>{form.title}</CardTitle>
-                            <CardDescription>{form.description}</CardDescription>
-                        </CardHeader>
-                        <CardContent className="flex-grow">
-                            {/* Content can be added here if needed */}
-                        </CardContent>
-                        <CardFooter>
-                            <Button className="w-full" disabled={form.status !== 'Open'}>
-                                {form.status === 'Coming Soon' ? 'Coming Soon' : <>Apply Now <ArrowRight className="ml-2 h-4 w-4" /></>}
-                            </Button>
-                        </CardFooter>
+                    <Card key={form.title} className="flex flex-col justify-between bg-secondary/30 p-6">
+                        <div>
+                            <h3 className="text-2xl font-semibold leading-none tracking-tight">{form.title}</h3>
+                            <p className="text-sm text-muted-foreground mt-2">{form.description}</p>
+                        </div>
+                        <Button className="w-full mt-6" disabled={form.status !== 'Open'}>
+                            {form.status === 'Coming Soon' ? 'Coming Soon' : <>Apply Now <ArrowRight className="ml-2 h-4 w-4" /></>}
+                        </Button>
                     </Card>
                 ))}
             </div>
