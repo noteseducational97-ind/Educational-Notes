@@ -1,3 +1,4 @@
+
 'use server';
 
 import { db } from '@/lib/firebase/server';
@@ -97,7 +98,7 @@ export async function getAdmissionFormById(id: string): Promise<AdmissionForm | 
     const data = doc.data();
     if (!data) return null;
 
-    const createdAt = (data.createdAt as Timestamp)?.toDate().toISOString() || new Date().toISOString();
+    const createdAt = (data.createdAt as Timestamp)?.toDate().toISOString() || new 'date'().toISOString();
     
     return {
         ...data,
