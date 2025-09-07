@@ -307,32 +307,30 @@ export default function AdmissionFormPage() {
                                             <p className="text-2xl font-bold">₹5,000</p>
                                         </div>
                                     </div>
-                                    <div className="flex items-end gap-4">
-                                        <div className="w-full">
-                                            <FormField
-                                                control={form.control}
-                                                name="paymentMode"
-                                                render={({ field }) => (
-                                                    <FormItem>
-                                                        <FormLabel>Payment Mode</FormLabel>
-                                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                                            <FormControl>
-                                                            <SelectTrigger>
-                                                                <SelectValue placeholder="Select a payment mode" />
-                                                            </SelectTrigger>
-                                                            </FormControl>
-                                                            <SelectContent>
-                                                            <SelectItem value="Online">Online</SelectItem>
-                                                            <SelectItem value="Offline">Offline</SelectItem>
-                                                            </SelectContent>
-                                                        </Select>
-                                                        <FormMessage />
-                                                    </FormItem>
-                                                )}
-                                            />
-                                        </div>
+                                    <div className="space-y-4">
+                                        <FormField
+                                            control={form.control}
+                                            name="paymentMode"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Payment Mode</FormLabel>
+                                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                        <FormControl>
+                                                        <SelectTrigger>
+                                                            <SelectValue placeholder="Select a payment mode" />
+                                                        </SelectTrigger>
+                                                        </FormControl>
+                                                        <SelectContent>
+                                                        <SelectItem value="Online">Online</SelectItem>
+                                                        <SelectItem value="Offline">Offline</SelectItem>
+                                                        </SelectContent>
+                                                    </Select>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
                                         {paymentMode === 'Online' && (
-                                            <div className="p-4 border rounded-lg bg-secondary/30 w-full max-w-sm">
+                                            <div className="p-4 border rounded-lg bg-secondary/30">
                                                 <h3 className="text-lg font-semibold text-foreground mb-2">UPI Details</h3>
                                                 <p className="text-muted-foreground">UPI ID: <span className="font-mono text-primary">shreecoachingclasses@okhdfcbank</span></p>
                                                 <p className="text-muted-foreground">UPI Number: <span className="font-mono text-primary">9881482416</span></p>
