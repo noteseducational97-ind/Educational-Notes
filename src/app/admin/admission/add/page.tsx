@@ -211,7 +211,7 @@ export default function AddAdmissionFormPage() {
                                 <FormItem>
                                     <FormLabel>Demo Session Details</FormLabel>
                                     <FormControl>
-                                        <Textarea placeholder="e.g., Join us for a free demo on 25th July at 5 PM. Topic: Thermodynamics." {...field} />
+                                        <Input placeholder="e.g., Join us for a free demo on 25th July at 5 PM. Topic: Thermodynamics." {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>

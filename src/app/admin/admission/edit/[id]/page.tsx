@@ -244,7 +244,7 @@ export default function EditAdmissionFormPage() {
                                 <FormItem>
                                     <FormLabel>Demo Session Details</FormLabel>
                                     <FormControl>
-                                        <Textarea placeholder="e.g., Join us for a free demo on 25th July at 5 PM. Topic: Thermodynamics." {...field} value={field.value || ''}/>
+                                        <Input placeholder="e.g., Join us for a free demo on 25th July at 5 PM. Topic: Thermodynamics." {...field} value={field.value || ''}/>
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
