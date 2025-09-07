@@ -3,7 +3,6 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Wrench, PlusCircle, Edit, Trash2, Eye, EyeOff, Save, ArrowLeft } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -35,26 +34,20 @@ type Tool = {
     isComingSoon: boolean;
 };
 
+const createSlug = (title: string) => {
+    return title.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
+}
+
 export default function AddToolPage() {
     const { toast } = useToast();
     const router = useRouter();
-    const [tool, setTool] = useState<Tool>({
-        id: `new-tool-${Date.now()}`,
+    const [tool, setTool] = useState<Omit<Tool, 'id' | 'description' | 'href'>>({
         title: 'Untitled Tool',
-        description: 'A tool for creating and studying with Untitled Tool.',
-        href: '#',
         visibility: 'private',
         isComingSoon: true,
     });
 
-    useEffect(() => {
-        setTool(prev => ({
-            ...prev,
-            description: `A tool for creating and studying with ${prev.title}.`
-        }));
-    }, [tool.title]);
-
-    const handleUpdate = (field: keyof Omit<Tool, 'id' | 'description'>, value: any) => {
+    const handleUpdate = (field: keyof Omit<Tool, 'id' | 'description' | 'href'>, value: any) => {
         setTool(currentTool => ({ ...currentTool, [field]: value }));
     };
 
@@ -66,6 +59,9 @@ export default function AddToolPage() {
         });
         router.push('/admin/tools');
     }
+
+    const description = `A tool for creating and studying with ${tool.title}.`;
+    const href = `/${createSlug(tool.title)}`;
 
     return (
         <>
@@ -86,11 +82,11 @@ export default function AddToolPage() {
                     </div>
                     <div>
                         <Label>Description (Auto-generated)</Label>
-                        <p className="text-sm text-muted-foreground bg-secondary/30 p-2 rounded-md h-10 flex items-center">{tool.description}</p>
+                        <p className="text-sm text-muted-foreground bg-secondary/30 p-2 rounded-md h-10 flex items-center">{description}</p>
                     </div>
                     <div>
-                        <Label htmlFor="href">Link</Label>
-                        <Input id="href" value={tool.href} onChange={(e) => handleUpdate('href', e.target.value)} />
+                        <Label>Link (Auto-generated)</Label>
+                        <p className="text-sm text-muted-foreground bg-secondary/30 p-2 rounded-md h-10 flex items-center font-mono">{href}</p>
                     </div>
                     <div>
                         <Label>Visibility</Label>
