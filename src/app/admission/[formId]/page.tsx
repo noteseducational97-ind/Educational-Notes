@@ -11,7 +11,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, User, Mail, Phone, Home, GraduationCap, ArrowRight, ArrowLeft, CreditCard } from 'lucide-react';
+import { Loader2, User, Mail, Phone, Home, GraduationCap, ArrowRight, ArrowLeft, CreditCard, Info } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Textarea } from '@/components/ui/textarea';
@@ -21,6 +21,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { getAdmissionFormById } from '@/lib/firebase/admissions';
 import type { AdmissionForm } from '@/types';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 
 const formSchema = z.object({
@@ -140,6 +141,16 @@ export default function AdmissionFormPage() {
                             Please fill out the form below to apply for {formDetails.title}.
                         </p>
                     </div>
+
+                    {formDetails.isDemoEnabled && formDetails.demoDetails && (
+                        <Alert className="mb-8 border-primary/30 bg-primary/10">
+                            <Info className="h-4 w-4 text-primary" />
+                            <AlertTitle className="text-primary">Free Demo Session!</AlertTitle>
+                            <AlertDescription className="text-primary/80">
+                                {formDetails.demoDetails}
+                            </AlertDescription>
+                        </Alert>
+                    )}
 
                     <FormProvider {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">

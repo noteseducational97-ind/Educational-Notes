@@ -16,6 +16,8 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Loader2, ArrowLeft, Save, CreditCard } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Textarea } from '@/components/ui/textarea';
 
 const currentYear = new Date().getFullYear();
 const yearOptions = Array.from({ length: 5 }, (_, i) => (currentYear + i).toString());
@@ -27,6 +29,8 @@ const FormSchema = z.object({
   yearTo: z.string().min(4, 'To year is required.'),
   description: z.string().min(10, 'Description is required.'),
   status: z.enum(['Open', 'Closed']),
+  isDemoEnabled: z.boolean().default(false),
+  demoDetails: z.string().optional(),
   totalFees: z.coerce.number().min(0, 'Total fees must be a positive number.'),
   advanceFees: z.coerce.number().min(0, 'Advance fees must be a positive number.'),
   upiId: z.string().min(3, 'UPI ID is required.'),
@@ -35,6 +39,14 @@ const FormSchema = z.object({
 }).refine(data => parseInt(data.yearTo) > parseInt(data.yearFrom), {
     message: "'To' year must be after 'From' year.",
     path: ['yearTo'],
+}).refine(data => {
+    if (data.isDemoEnabled) {
+        return !!data.demoDetails && data.demoDetails.length > 10;
+    }
+    return true;
+}, {
+    message: "Demo details are required if demo is enabled.",
+    path: ['demoDetails'],
 });
 
 type FormValues = z.infer<typeof FormSchema>;
@@ -54,6 +66,8 @@ export default function AddAdmissionFormPage() {
         yearTo: (currentYear + 2).toString(),
         description: '',
         status: 'Open',
+        isDemoEnabled: false,
+        demoDetails: '',
         totalFees: 0,
         advanceFees: 0,
         upiId: '',
@@ -63,6 +77,7 @@ export default function AddAdmissionFormPage() {
   });
 
   const yearFrom = form.watch('yearFrom');
+  const isDemoEnabled = form.watch('isDemoEnabled');
 
   useEffect(() => {
     if (yearFrom) {
@@ -167,6 +182,44 @@ export default function AddAdmissionFormPage() {
                         </FormItem>
                     )} />
 
+                    <div className="border-t pt-6 space-y-4">
+                        <FormField
+                            control={form.control}
+                            name="isDemoEnabled"
+                            render={({ field }) => (
+                                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                                    <FormControl>
+                                        <Checkbox
+                                            checked={field.value}
+                                            onCheckedChange={field.onChange}
+                                        />
+                                    </FormControl>
+                                    <div className="space-y-1 leading-none">
+                                        <FormLabel>
+                                            Enable Demo Session
+                                        </FormLabel>
+                                        <FormMessage />
+                                    </div>
+                                </FormItem>
+                            )}
+                        />
+                        {isDemoEnabled && (
+                            <FormField
+                                control={form.control}
+                                name="demoDetails"
+                                render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Demo Session Details</FormLabel>
+                                    <FormControl>
+                                        <Textarea placeholder="e.g., Join us for a free demo on 25th July at 5 PM. Topic: Thermodynamics." {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                                )}
+                            />
+                        )}
+                    </div>
+                    
                     <div className="border-t pt-6 space-y-4">
                         <h3 className="text-lg font-medium flex items-center gap-2"><CreditCard /> Payment Details</h3>
                         <div className="grid md:grid-cols-2 gap-4">

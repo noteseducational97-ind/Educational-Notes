@@ -37,6 +37,8 @@ export type AdmissionForm = {
     year: string;
     description: string;
     status: 'Open' | 'Closed';
+    isDemoEnabled: boolean;
+    demoDetails?: string;
     totalFees: number;
     advanceFees: number;
     upiId: string;
