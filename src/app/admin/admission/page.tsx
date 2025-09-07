@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -115,7 +116,7 @@ export default function AdminAdmissionPage() {
                     <CardFooter className="flex justify-end gap-2 border-t pt-4">
                         <Button variant="secondary" size="sm" asChild>
                             <Link href={`/admin/admission/applications/${form.id}`}>
-                                <Users className="h-4 w-4 mr-2" /> View Applications
+                                <Users className="h-4 w-4 mr-2" /> view admissions
                             </Link>
                         </Button>
                         <Button variant="outline" size="icon" asChild>
