@@ -139,7 +139,7 @@ export default function AddAdmissionFormPage() {
                     <div className="grid md:grid-cols-2 gap-4">
                         <FormField control={form.control} name="title" render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Title</FormLabel>
+                                <FormLabel>Batch Title</FormLabel>
                                 <FormControl><Input placeholder="e.g. MHT-CET Crash Course" {...field} /></FormControl>
                                 <FormMessage />
                             </FormItem>
