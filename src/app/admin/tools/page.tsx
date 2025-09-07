@@ -3,17 +3,22 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
-import { Wrench, Eye, EyeOff, PlusCircle, Save, Edit, Trash2, Shield, Globe } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Wrench, PlusCircle, Edit, Trash2, Eye, EyeOff } from 'lucide-react';
 import { useState } from 'react';
-import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Checkbox } from '@/components/ui/checkbox';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { cn } from '@/lib/utils';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+import { useToast } from '@/hooks/use-toast';
 
 type Tool = {
     id: string;
@@ -47,30 +52,17 @@ export default function AdminToolsPage() {
     const [tools, setTools] = useState(initialTools);
     const { toast } = useToast();
 
-    const handleSave = (toolId: string) => {
+    const handleDelete = (toolId: string) => {
         const tool = tools.find(t => t.id === toolId);
         if (tool) {
+            setTools(currentTools => currentTools.filter(t => t.id !== toolId));
             toast({
-                title: `"${tool.title}" Saved`,
-                description: `Settings for the tool have been updated.`,
+                title: `"${tool.title}" Deleted`,
+                description: `The tool has been removed.`,
+                variant: 'destructive'
             });
         }
     };
-    
-    const handleUpdate = <K extends keyof Tool>(toolId: string, field: K, value: Tool[K]) => {
-        setTools(currentTools =>
-            currentTools.map(tool => {
-                if (tool.id === toolId) {
-                    const updatedTool = { ...tool, [field]: value };
-                    if (field === 'title' && typeof value === 'string') {
-                        updatedTool.description = `A tool for creating and studying with ${value}.`;
-                    }
-                    return updatedTool;
-                }
-                return tool;
-            })
-        );
-    }
 
     return (
         <>
@@ -86,65 +78,53 @@ export default function AdminToolsPage() {
                     </Link>
                 </Button>
             </div>
-            <div className="space-y-8">
+             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {tools.map((tool) => (
-                    <Card key={tool.id}>
+                    <Card key={tool.id} className="flex flex-col">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
                                 <Wrench /> 
                                 {tool.title}
                             </CardTitle>
+                            <CardDescription>{tool.description}</CardDescription>
                         </CardHeader>
-                        <CardContent className="space-y-6">
-                             <div className="space-y-2">
-                                <Label htmlFor={`title-${tool.id}`}>Tool Name</Label>
-                                <Input 
-                                    id={`title-${tool.id}`} 
-                                    value={tool.title} 
-                                    onChange={(e) => handleUpdate(tool.id, 'title', e.target.value)}
-                                />
+                        <CardContent className="flex-grow space-y-4">
+                            <div className="flex flex-wrap gap-2">
+                                <Badge variant={tool.visibility === 'public' ? 'secondary' : 'outline'}>
+                                    {tool.visibility === 'public' ? <Eye className="mr-1 h-3 w-3" /> : <EyeOff className="mr-1 h-3 w-3" />}
+                                    {tool.visibility === 'public' ? 'Public' : 'Private'}
+                                </Badge>
+                                {tool.isComingSoon && <Badge variant="outline">Coming Soon</Badge>}
                             </div>
-                            <div className="space-y-2">
-                                <Label>Description (Auto-generated)</Label>
-                                <p className="text-sm text-muted-foreground h-24 p-3 border rounded-md bg-secondary/30">
-                                    {tool.description}
-                                </p>
-                            </div>
-                            <div className="space-y-2">
-                                <Label>Visibility</Label>
-                                 <RadioGroup
-                                    value={tool.visibility}
-                                    onValueChange={(value) => handleUpdate(tool.id, 'visibility', value as 'public' | 'private')}
-                                    className="flex items-center gap-4"
-                                >
-                                    <Label className={cn("flex items-center gap-2 cursor-pointer p-2 rounded-md border-2", tool.visibility === 'public' && "border-primary")}>
-                                        <RadioGroupItem value="public" id={`public-${tool.id}`} className="sr-only" />
-                                        <Globe /> Public
-                                    </Label>
-                                    <Label className={cn("flex items-center gap-2 cursor-pointer p-2 rounded-md border-2", tool.visibility === 'private' && "border-primary")}>
-                                        <RadioGroupItem value="private" id={`private-${tool.id}`} className="sr-only" />
-                                        <Shield /> Private
-                                    </Label>
-                                </RadioGroup>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <Checkbox 
-                                    id={`coming-soon-${tool.id}`} 
-                                    checked={tool.isComingSoon}
-                                    onCheckedChange={(checked) => handleUpdate(tool.id, 'isComingSoon', !!checked)}
-                                />
-                                <Label htmlFor={`coming-soon-${tool.id}`} className="cursor-pointer">
-                                    Mark as "Coming Soon"
-                                </Label>
+                            <div>
+                                <p className="text-sm text-muted-foreground">Link: <span className="font-mono text-xs">{tool.href}</span></p>
                             </div>
                         </CardContent>
                          <CardFooter className="flex justify-end gap-2 border-t pt-4">
-                            <Button variant="destructive-outline">
-                                <Trash2 /> Delete
+                            <Button variant="outline" size="sm">
+                                <Edit className="h-4 w-4 mr-2" /> Edit
                             </Button>
-                            <Button onClick={() => handleSave(tool.id)}>
-                                <Save /> Save Changes
-                            </Button>
+                             <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                    <Button variant="destructive-outline" size="sm">
+                                        <Trash2 className="h-4 w-4" />
+                                    </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                        This action cannot be undone. This will permanently delete the tool "{tool.title}".
+                                    </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                    <AlertDialogAction onClick={() => handleDelete(tool.id)}>
+                                        Yes, delete
+                                    </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
                         </CardFooter>
                     </Card>
                 ))}
