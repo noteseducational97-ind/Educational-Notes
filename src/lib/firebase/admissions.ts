@@ -9,28 +9,6 @@ import { Timestamp } from 'firebase-admin/firestore';
 
 const initialForms: Omit<AdmissionForm, 'id'>[] = [
     {
-        title: 'Class 11 & 12 Physics',
-        description: 'Admission for Class 11 & 12 Physics. Science Student',
-        status: 'Open',
-        totalFees: 15000,
-        advanceFees: 5000,
-        upiName: 'Pravin Khachane',
-        upiId: '9881482416@ybl',
-        upiNumber: '9881482416',
-        createdAt: new Date().toISOString(),
-    },
-    {
-        title: 'Class 11 & 12 Chemistry',
-        description: 'Admission for Class 11 & 12 Chemistry. Science Student',
-        status: 'Open',
-        totalFees: 15000,
-        advanceFees: 5000,
-        upiName: 'Mangesh Shete',
-        upiId: '9405695457@ybl',
-        upiNumber: '9405695457',
-        createdAt: new Date().toISOString(),
-    },
-    {
         title: 'MHT-CET',
         description: 'Admissions Form for MHT-CET Maharashtra',
         status: 'Open',
@@ -98,7 +76,7 @@ export async function getAdmissionFormById(id: string): Promise<AdmissionForm | 
     const data = doc.data();
     if (!data) return null;
 
-    const createdAt = (data.createdAt as Timestamp)?.toDate().toISOString() || new 'date'().toISOString();
+    const createdAt = (data.createdAt as Timestamp)?.toDate().toISOString() || new Date().toISOString();
     
     return {
         ...data,
