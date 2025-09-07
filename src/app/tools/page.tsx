@@ -9,6 +9,12 @@ import { Calculator, Copy, ClipboardEdit, ArrowRight } from 'lucide-react';
 
 const tools = [
     {
+        icon: <ClipboardEdit className="h-8 w-8 text-primary" />,
+        title: 'Admission Form',
+        description: 'Access and fill out the admission form for our programs.',
+        href: '/admission',
+    },
+    {
         icon: <Calculator className="h-8 w-8 text-primary" />,
         title: 'Percentage Calculator',
         description: 'Quickly calculate percentages for marks, attendance, or other needs.',
@@ -19,12 +25,6 @@ const tools = [
         title: 'Flashcard Maker',
         description: 'Create and study with digital flashcards for any subject.',
         href: '#',
-    },
-    {
-        icon: <ClipboardEdit className="h-8 w-8 text-primary" />,
-        title: 'Admission Form',
-        description: 'Access and fill out the admission form for our programs.',
-        href: '/admission',
     }
 ];
 
