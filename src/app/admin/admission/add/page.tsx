@@ -22,10 +22,17 @@ import { Textarea } from '@/components/ui/textarea';
 const currentYear = new Date().getFullYear();
 const yearOptions = Array.from({ length: 5 }, (_, i) => (currentYear + i).toString());
 
+const monthOptions = [
+    'January', 'February', 'March', 'April', 'May', 'June', 
+    'July', 'August', 'September', 'October', 'November', 'December'
+];
+
+
 const FormSchema = z.object({
   title: z.string().min(3, 'Title is required.'),
   className: z.string().min(1, 'Class name is required.'),
   subject: z.enum(['Physics', 'Chemistry']),
+  startMonth: z.string().min(1, 'Start month is required.'),
   yearFrom: z.string().min(4, 'From year is required.'),
   yearTo: z.string().min(4, 'To year is required.'),
   description: z.string().min(10, 'Description is required.'),
@@ -165,7 +172,19 @@ export default function AddAdmissionFormPage() {
                             <FormMessage />
                         </FormItem>
                     )} />
-                     <div className="grid md:grid-cols-2 gap-4">
+                     <div className="grid md:grid-cols-3 gap-4">
+                        <FormField control={form.control} name="startMonth" render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Start Month</FormLabel>
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <FormControl><SelectTrigger><SelectValue placeholder="Month" /></SelectTrigger></FormControl>
+                                    <SelectContent>
+                                        {monthOptions.map(month => <SelectItem key={month} value={month}>{month}</SelectItem>)}
+                                    </SelectContent>
+                                </Select>
+                                <FormMessage />
+                            </FormItem>
+                        )} />
                         <FormField control={form.control} name="yearFrom" render={({ field }) => (
                             <FormItem>
                                 <FormLabel>From Year</FormLabel>

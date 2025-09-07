@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Header from '@/components/layout/Header';
 import { Card, CardDescription, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Info } from 'lucide-react';
+import { ArrowRight, Info, Calendar } from 'lucide-react';
 import Link from 'next/link';
 import { getAdmissionForms } from '@/lib/firebase/admissions';
 import type { AdmissionForm } from '@/types';
@@ -43,6 +43,10 @@ export default function AdmissionPage() {
                             <div>
                                 <CardTitle className="text-2xl">{form.title}</CardTitle>
                                 <CardDescription className="mt-2">{form.description}</CardDescription>
+                                <div className="mt-4 flex items-center text-sm text-muted-foreground">
+                                    <Calendar className="h-4 w-4 mr-2" />
+                                    <span>Starts: {form.startMonth} {form.year}</span>
+                                </div>
                             </div>
                             <Button asChild className="w-full mt-6">
                             <Link href={`/admission/${form.id}`}>

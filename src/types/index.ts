@@ -35,6 +35,7 @@ export type AdmissionForm = {
     className: string;
     subject: 'Physics' | 'Chemistry';
     year: string;
+    startMonth: string;
     description: string;
     isDemoEnabled: boolean;
     demoTenureDays?: number;
