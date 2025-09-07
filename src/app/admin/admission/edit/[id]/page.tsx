@@ -273,6 +273,22 @@ export default function EditAdmissionFormPage() {
                     <div className="border-t pt-6 space-y-4">
                         <h3 className="text-lg font-medium flex items-center gap-2"><CreditCard /> Payment Details</h3>
                         <div className="grid md:grid-cols-2 gap-4">
+                            <FormField control={form.control} name="totalFees" render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Total Fees</FormLabel>
+                                    <FormControl><Input type="number" placeholder="15000" {...field} value={field.value ?? 0} onChange={e => field.onChange(e.target.value === '' ? 0 : parseInt(e.target.value, 10))} /></FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )} />
+                             <FormField control={form.control} name="advanceFees" render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Advance Fees</FormLabel>
+                                    <FormControl><Input type="number" placeholder="5000" {...field} value={field.value ?? 0} onChange={e => field.onChange(e.target.value === '' ? 0 : parseInt(e.target.value, 10))} /></FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )} />
+                        </div>
+                        <div className="grid md:grid-cols-2 gap-4">
                              <FormField control={form.control} name="upiId" render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>UPI ID</FormLabel>
@@ -295,22 +311,6 @@ export default function EditAdmissionFormPage() {
                                 <FormMessage />
                             </FormItem>
                         )} />
-                        <div className="grid md:grid-cols-2 gap-4">
-                            <FormField control={form.control} name="totalFees" render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Total Fees</FormLabel>
-                                    <FormControl><Input type="number" placeholder="15000" {...field} value={field.value ?? ''} onChange={e => field.onChange(e.target.value === '' ? undefined : parseInt(e.target.value, 10))} /></FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )} />
-                             <FormField control={form.control} name="advanceFees" render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Advance Fees</FormLabel>
-                                    <FormControl><Input type="number" placeholder="5000" {...field} value={field.value ?? ''} onChange={e => field.onChange(e.target.value === '' ? undefined : parseInt(e.target.value, 10))} /></FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )} />
-                        </div>
                     </div>
                 </CardContent>
                 <CardFooter className="flex justify-between gap-4 border-t pt-6">
