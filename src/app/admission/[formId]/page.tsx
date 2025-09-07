@@ -127,8 +127,6 @@ export default function AdmissionFormPage() {
     } else if (formDetails.title.toLowerCase().includes('mht-cet')) {
         coachingName = 'Shree Coaching & ChemStar Classes';
     }
-    
-    const upiLink = `upi://pay?pa=${formDetails.upiId}&pn=${encodeURIComponent(formDetails.upiName)}&am=${formDetails.advanceFees}&cu=INR`;
 
     return (
         <div className="flex min-h-screen flex-col bg-background">
@@ -387,9 +385,9 @@ export default function AdmissionFormPage() {
                                                 <p className="text-muted-foreground">Account Holder: <span className="font-mono text-primary">{formDetails.upiName}</span></p>
                                                 <p className="text-muted-foreground">UPI ID: <span className="font-mono text-primary">{formDetails.upiId}</span></p>
                                                 <p className="text-muted-foreground">UPI Number: <span className="font-mono text-primary">{formDetails.upiNumber}</span></p>
-                                                {isAndroid && (
+                                                {isAndroid && formDetails.upiLink && (
                                                     <Button asChild className="mt-4 w-full">
-                                                        <a href={upiLink}>
+                                                        <a href={formDetails.upiLink}>
                                                             <Wallet className="mr-2 h-4 w-4" />
                                                             Make Payment
                                                         </a>

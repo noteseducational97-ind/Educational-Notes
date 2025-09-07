@@ -34,6 +34,7 @@ const FormSchema = z.object({
   totalFees: z.coerce.number().min(0, 'Total fees must be a positive number.'),
   advanceFees: z.coerce.number().min(0, 'Advance fees must be a positive number.'),
   upiId: z.string().min(3, 'UPI ID is required.'),
+  upiLink: z.string().url('A valid UPI link is required.'),
   upiNumber: z.string().min(10, 'UPI number must be at least 10 digits.'),
   upiName: z.string().min(3, 'UPI holder name is required.'),
 }).refine(data => parseInt(data.yearTo) > parseInt(data.yearFrom), {
@@ -70,6 +71,7 @@ export default function AddAdmissionFormPage() {
         totalFees: 0,
         advanceFees: 0,
         upiId: '',
+        upiLink: '',
         upiNumber: '',
         upiName: '',
     }
@@ -273,6 +275,13 @@ export default function AddAdmissionFormPage() {
                                 </FormItem>
                             )} />
                         </div>
+                         <FormField control={form.control} name="upiLink" render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>UPI Link</FormLabel>
+                                <FormControl><Input placeholder="upi://pay?pa=..." {...field} /></FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )} />
                          <FormField control={form.control} name="upiNumber" render={({ field }) => (
                             <FormItem>
                                 <FormLabel>UPI Number</FormLabel>
