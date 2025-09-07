@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
@@ -35,6 +35,26 @@ export default function AddTeacherPage() {
     const { id, value } = e.target;
     setTeacher(prev => ({ ...prev, [id]: value }));
   };
+
+  useEffect(() => {
+    if (teacher.since) {
+      const sinceYear = parseInt(teacher.since, 10);
+      if (!isNaN(sinceYear) && sinceYear > 1900 && sinceYear <= new Date().getFullYear()) {
+        const experience = new Date().getFullYear() - sinceYear;
+        setTeacher(prev => ({ ...prev, experience: `${experience}+ years` }));
+      }
+    }
+  }, [teacher.since]);
+
+  useEffect(() => {
+    if (teacher.experience) {
+      const experienceYears = parseInt(teacher.experience, 10);
+      if (!isNaN(experienceYears)) {
+        const sinceYear = new Date().getFullYear() - experienceYears;
+        setTeacher(prev => ({ ...prev, since: sinceYear.toString() }));
+      }
+    }
+  }, [teacher.experience]);
   
   const handleSave = () => {
     if (!teacher.name || !teacher.education || !teacher.subject || !teacher.experience || !teacher.description || !teacher.since) {
@@ -93,19 +113,21 @@ export default function AddTeacherPage() {
                         <Input id="education" placeholder="e.g., M.Sc., B.Ed." value={teacher.education} onChange={handleChange} />
                     </div>
                 </div>
-                 <div className="grid grid-cols-2 gap-4">
+                 <div className="grid grid-cols-1 gap-4">
                     <div className="space-y-2">
                         <Label htmlFor="subject" className="flex items-center gap-2"><Book /> Subject</Label>
                         <Input id="subject" placeholder="e.g., Biology" value={teacher.subject} onChange={handleChange} />
                     </div>
-                     <div className="space-y-2">
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                        <Label htmlFor="since" className="flex items-center gap-2"><Calendar /> Since (Year)</Label>
+                        <Input id="since" placeholder="e.g., 2010" value={teacher.since} onChange={handleChange} />
+                    </div>
+                    <div className="space-y-2">
                         <Label htmlFor="experience" className="flex items-center gap-2"><Briefcase /> Experience</Label>
                         <Input id="experience" placeholder="e.g., 10+ years" value={teacher.experience} onChange={handleChange} />
                     </div>
-                </div>
-                <div className="space-y-2">
-                    <Label htmlFor="since" className="flex items-center gap-2"><Calendar /> Since (Year)</Label>
-                    <Input id="since" placeholder="e.g., 2010" value={teacher.since} onChange={handleChange} />
                 </div>
                 <div className="space-y-2">
                     <Label htmlFor="description" className="flex items-center gap-2"><FileText /> Description</Label>
