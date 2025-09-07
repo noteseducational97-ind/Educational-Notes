@@ -40,7 +40,7 @@ const formSchema = z.object({
   percentage: z.string().min(1, 'Percentage is required.'),
   
   // Payment
-  paymentMode: z.string().min(1, 'Please select a payment mode.'),
+  paymentMode: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -317,6 +317,7 @@ export default function AdmissionFormPage() {
                                 </CardContent>
                             </Card>
                             
+                            {formId !== 'mht-cet' && (
                             <Card>
                                 <CardHeader>
                                     <CardTitle className="flex items-center gap-2"><CreditCard /> Payment</CardTitle>
@@ -364,6 +365,7 @@ export default function AdmissionFormPage() {
                                     </div>
                                 </CardContent>
                             </Card>
+                            )}
 
                              <div className="flex justify-end">
                                 <Button type="submit" disabled={loading} size="lg">
@@ -377,3 +379,5 @@ export default function AdmissionFormPage() {
         </div>
     );
 }
+
+    
