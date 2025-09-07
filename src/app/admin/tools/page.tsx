@@ -5,9 +5,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import { Wrench, Eye, EyeOff } from 'lucide-react';
+import { Wrench, Eye, EyeOff, PlusCircle } from 'lucide-react';
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
+import Link from 'next/link';
 
 const initialTools = [
     {
@@ -52,6 +53,12 @@ export default function AdminToolsPage() {
                     <h1 className="text-3xl font-bold text-foreground">Tool Management</h1>
                     <p className="text-muted-foreground">Enable or disable tools available to users.</p>
                 </div>
+                <Button asChild>
+                    <Link href="#">
+                        <PlusCircle className="mr-2 h-4 w-4" />
+                        Add New Tool
+                    </Link>
+                </Button>
             </div>
             <Card>
                 <CardHeader>
