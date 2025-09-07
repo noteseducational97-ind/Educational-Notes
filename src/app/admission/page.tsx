@@ -42,7 +42,7 @@ export default function AdmissionPage() {
                         </div>
                         <Button asChild className="w-full mt-6" disabled={form.status !== 'Open'}>
                            <Link href={form.href}>
-                             {form.status === 'Coming Soon' ? 'Coming Soon' : <>Apply Now <ArrowRight className="ml-2 h-4 w-4" /></>}
+                             {form.status === 'Coming Soon' ? 'Coming Soon' : <>Admission Now <ArrowRight className="ml-2 h-4 w-4" /></>}
                            </Link>
                         </Button>
                     </Card>
