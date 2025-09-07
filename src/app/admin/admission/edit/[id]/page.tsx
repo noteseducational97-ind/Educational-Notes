@@ -67,6 +67,15 @@ export default function EditAdmissionFormPage() {
     }
   });
 
+  const yearFrom = form.watch('yearFrom');
+
+  useEffect(() => {
+    if (yearFrom) {
+        const toYearValue = (parseInt(yearFrom, 10) + 2).toString();
+        form.setValue('yearTo', toYearValue, { shouldValidate: true });
+    }
+  }, [yearFrom, form]);
+
   
   useEffect(() => {
     if (!formId) return;

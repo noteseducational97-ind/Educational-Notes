@@ -59,6 +59,15 @@ export default function AddAdmissionFormPage() {
         upiName: '',
     }
   });
+
+  const yearFrom = form.watch('yearFrom');
+
+  useEffect(() => {
+    if (yearFrom) {
+      const toYearValue = (parseInt(yearFrom, 10) + 2).toString();
+      form.setValue('yearTo', toYearValue);
+    }
+  }, [yearFrom, form]);
   
   async function onSubmit(values: FormValues) {
     setIsSubmitting(true);
