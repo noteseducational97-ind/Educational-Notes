@@ -386,10 +386,7 @@ export default function AdmissionFormPage() {
                                                 <h3 className="text-lg font-semibold text-foreground">UPI Details</h3>
                                                 <p className="text-muted-foreground">UPI ID: <span className="font-mono text-primary">{formDetails.upiId}</span></p>
                                                 <p className="text-muted-foreground">UPI Number: <span className="font-mono text-primary">{formDetails.upiNumber}</span></p>
-                                                <div>
-                                                  <FormLabel>UPI Link</FormLabel>
-                                                  <Input value={formDetails.upiLink} readOnly className="mt-1 bg-background/50" />
-                                                </div>
+                                                
                                                 {isAndroid && formDetails.upiLink && (
                                                     <Button asChild className="mt-4 w-full">
                                                         <a href={formDetails.upiLink}>
