@@ -1,4 +1,3 @@
-
 'use client';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
@@ -52,6 +51,23 @@ export default function AdminToolsPage() {
     const [tools, setTools] = useState(initialTools);
     const { toast } = useToast();
 
+    const handleAddNewTool = () => {
+        const newToolId = `new-tool-${Date.now()}`;
+        const newTool: Tool = {
+            id: newToolId,
+            title: 'Untitled Tool',
+            description: 'A tool for creating and studying with Untitled Tool.',
+            href: '#',
+            visibility: 'private',
+            isComingSoon: true,
+        };
+        setTools(currentTools => [...currentTools, newTool]);
+        toast({
+            title: 'New Tool Added',
+            description: 'A new tool has been added to the list. Configure it below.'
+        });
+    };
+
     const handleDelete = (toolId: string) => {
         const tool = tools.find(t => t.id === toolId);
         if (tool) {
@@ -71,11 +87,9 @@ export default function AdminToolsPage() {
                     <h1 className="text-3xl font-bold text-foreground">Tool Management</h1>
                     <p className="text-muted-foreground">Configure the tools available to users on the platform.</p>
                 </div>
-                 <Button asChild>
-                    <Link href="#">
-                        <PlusCircle className="mr-2 h-4 w-4" />
-                        Add New Tool
-                    </Link>
+                 <Button onClick={handleAddNewTool}>
+                    <PlusCircle className="mr-2 h-4 w-4" />
+                    Add New Tool
                 </Button>
             </div>
              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
