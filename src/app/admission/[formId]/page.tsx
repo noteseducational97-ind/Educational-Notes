@@ -312,29 +312,20 @@ export default function AdmissionFormPage() {
                                         control={form.control}
                                         name="paymentMode"
                                         render={({ field }) => (
-                                            <FormItem className="space-y-3">
-                                            <FormLabel>Payment Mode</FormLabel>
-                                            <FormControl>
-                                                <RadioGroup
-                                                onValueChange={field.onChange}
-                                                defaultValue={field.value}
-                                                className="flex flex-col sm:flex-row gap-4"
-                                                >
-                                                <FormItem className="flex items-center space-x-2 space-y-0">
+                                            <FormItem>
+                                                <FormLabel>Payment Mode</FormLabel>
+                                                <Select onValueChange={field.onChange} defaultValue={field.value}>
                                                     <FormControl>
-                                                    <RadioGroupItem value="Online" />
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder="Select a payment mode" />
+                                                    </SelectTrigger>
                                                     </FormControl>
-                                                    <FormLabel className="font-normal">Online</FormLabel>
-                                                </FormItem>
-                                                <FormItem className="flex items-center space-x-2 space-y-0">
-                                                    <FormControl>
-                                                    <RadioGroupItem value="Offline" />
-                                                    </FormControl>
-                                                    <FormLabel className="font-normal">Offline</FormLabel>
-                                                </FormItem>
-                                                </RadioGroup>
-                                            </FormControl>
-                                            <FormMessage />
+                                                    <SelectContent>
+                                                    <SelectItem value="Online">Online</SelectItem>
+                                                    <SelectItem value="Offline">Offline</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                                <FormMessage />
                                             </FormItem>
                                         )}
                                     />
