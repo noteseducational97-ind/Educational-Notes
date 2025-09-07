@@ -24,6 +24,7 @@ import { Badge } from '@/components/ui/badge';
 export type Teacher = {
   id: string;
   name: string;
+  education: string;
   subject: string;
   experience: string;
   description: string;
@@ -33,7 +34,8 @@ export type Teacher = {
 const initialTeachers: Teacher[] = [
   {
     id: 'pravin-khachane',
-    name: 'Pravin Khachane (M.Sc., B.Ed.)',
+    name: 'Pravin Khachane',
+    education: 'M.Sc., B.Ed.',
     subject: 'Physics',
     experience: '30+ years',
     description: 'With over 30 years of teaching experience, Pravin Sir is a visionary in science education. His ability to simplify complex physics concepts has made him a beloved mentor.',
@@ -41,7 +43,8 @@ const initialTeachers: Teacher[] = [
   },
   {
     id: 'mangesh-shete',
-    name: 'Mangesh Shete (M.Sc., B.Ed.)',
+    name: 'Mangesh Shete',
+    education: 'M.Sc., B.Ed.',
     subject: 'Chemistry',
     experience: '30+ years',
     description: 'A master of chemistry, Mangesh Sir has spent three decades nurturing curiosity and confidence. His empathetic approach continues to inspire thousands.',
@@ -111,6 +114,7 @@ export default function AdminTeachersPage() {
                             </Avatar>
                             <div>
                                 <CardTitle>{teacher.name}</CardTitle>
+                                <CardDescription>{teacher.education}</CardDescription>
                                 <div className="flex items-center gap-2 mt-1">
                                     <Badge variant="secondary">{teacher.subject}</Badge>
                                     <Badge variant="outline">{teacher.experience}</Badge>

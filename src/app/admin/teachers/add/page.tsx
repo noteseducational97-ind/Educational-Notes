@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, ArrowLeft, Save, User, Book, Briefcase, FileText } from 'lucide-react';
+import { Loader2, ArrowLeft, Save, User, Book, Briefcase, FileText, GraduationCap } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import type { Teacher } from '../page';
 
@@ -24,6 +24,7 @@ export default function AddTeacherPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [teacher, setTeacher] = useState({
     name: '',
+    education: '',
     subject: '',
     experience: '',
     description: '',
@@ -35,7 +36,7 @@ export default function AddTeacherPage() {
   };
   
   const handleSave = () => {
-    if (!teacher.name || !teacher.subject || !teacher.experience || !teacher.description) {
+    if (!teacher.name || !teacher.education || !teacher.subject || !teacher.experience || !teacher.description) {
         toast({
             variant: 'destructive',
             title: 'Missing Fields',
@@ -82,9 +83,15 @@ export default function AddTeacherPage() {
               <CardDescription>Fill in the details below to add a new educator.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-                <div className="space-y-2">
-                    <Label htmlFor="name" className="flex items-center gap-2"><User /> Name</Label>
-                    <Input id="name" placeholder="e.g., Jane Doe (M.Sc., B.Ed.)" value={teacher.name} onChange={handleChange} />
+                <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                        <Label htmlFor="name" className="flex items-center gap-2"><User /> Name</Label>
+                        <Input id="name" placeholder="e.g., Jane Doe" value={teacher.name} onChange={handleChange} />
+                    </div>
+                     <div className="space-y-2">
+                        <Label htmlFor="education" className="flex items-center gap-2"><GraduationCap /> Education</Label>
+                        <Input id="education" placeholder="e.g., M.Sc., B.Ed." value={teacher.education} onChange={handleChange} />
+                    </div>
                 </div>
                  <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
