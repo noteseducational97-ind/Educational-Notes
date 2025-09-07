@@ -1,44 +1,30 @@
 
+'use client';
+
+import { useEffect, useState } from 'react';
 import Header from '@/components/layout/Header';
 import { Card, CardDescription, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
-
-const admissionForms = [
-    {
-        title: 'Class 11 Physics',
-        description: 'Admission for Class 11 Physics. Science Student',
-        status: 'Open',
-        href: '/admission/class-11-physics'
-    },
-    {
-        title: 'Class 12 Physics',
-        description: 'Admission for Class 12 Physics. Science Student',
-        status: 'Open',
-        href: '/admission/class-12-physics'
-    },
-    {
-        title: 'Class 11 Chemistry',
-        description: 'Admission for Class 11 Chemistry. Science Student',
-        status: 'Open',
-        href: '/admission/class-11-chemistry'
-    },
-    {
-        title: 'Class 12 Chemistry',
-        description: 'Admission for Class 12 Chemistry. Science Student',
-        status: 'Open',
-        href: '/admission/class-12-chemistry'
-    },
-    {
-        title: 'MHT-CET',
-        description: 'Admissions Form for MHT-CET Maharashtra',
-        status: 'Open',
-        href: '/admission/mht-cet'
-    }
-];
+import { getAdmissionForms } from '@/lib/firebase/admissions';
+import type { AdmissionForm } from '@/types';
+import LoadingSpinner from '@/components/shared/LoadingSpinner';
 
 export default function AdmissionPage() {
+    const [admissionForms, setAdmissionForms] = useState<AdmissionForm[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        getAdmissionForms()
+            .then(setAdmissionForms)
+            .finally(() => setLoading(false));
+    }, []);
+
+    if (loading) {
+        return <LoadingSpinner />;
+    }
+
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
@@ -59,8 +45,8 @@ export default function AdmissionPage() {
                             <CardDescription className="mt-2">{form.description}</CardDescription>
                         </div>
                         <Button asChild className="w-full mt-6" disabled={form.status !== 'Open'}>
-                           <Link href={form.href}>
-                             {form.status === 'Coming Soon' ? 'Coming Soon' : <>Admission Now <ArrowRight className="ml-2 h-4 w-4" /></>}
+                           <Link href={`/admission/${form.id}`}>
+                             {form.status === 'Closed' ? 'Admissions Closed' : <>Admission Now <ArrowRight className="ml-2 h-4 w-4" /></>}
                            </Link>
                         </Button>
                     </Card>

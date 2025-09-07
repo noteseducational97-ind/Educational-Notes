@@ -29,3 +29,15 @@ export type Chat = {
     title: string;
     updatedAt: string;
 }
+
+export type AdmissionForm = {
+    id: string;
+    title: string;
+    description: string;
+    status: 'Open' | 'Closed';
+    totalFees: number;
+    advanceFees: number;
+    upiId: string;
+    upiNumber: string;
+    upiName: string;
+};

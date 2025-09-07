@@ -12,12 +12,16 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, User, Mail, Phone, Home, GraduationCap, ArrowRight, ArrowLeft, CreditCard } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import Image from 'next/image';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { getAdmissionFormById } from '@/lib/firebase/admissions';
+import type { AdmissionForm } from '@/types';
+import LoadingSpinner from '@/components/shared/LoadingSpinner';
+
 
 const formSchema = z.object({
   // Personal Info
@@ -45,54 +49,23 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-const formIdToTitle: { [key: string]: string } = {
-    'class-11-physics': 'Class 11 Physics',
-    'class-12-physics': 'Class 12 Physics',
-    'class-11-chemistry': 'Class 11 Chemistry',
-    'class-12-chemistry': 'Class 12 Chemistry',
-    'mht-cet': 'MHT-CET',
-};
-
-const upiDetails: { [key: string]: { id: string; number: string; name: string } } = {
-    physics: {
-        id: '9881482416@ybl',
-        number: '9881482416',
-        name: 'Pravin Khachane'
-    },
-    chemistry: {
-        id: '9405695457@ybl',
-        number: '9405695457',
-        name: 'Mangesh Shete'
-    },
-    default: {
-        id: '9881482416@ybl',
-        number: '9881482416',
-        name: 'Pravin Khachane'
-    }
-};
-
 
 export default function AdmissionFormPage() {
     const params = useParams();
     const { toast } = useToast();
     const [loading, setLoading] = useState(false);
+    const [pageLoading, setPageLoading] = useState(true);
+    const [formDetails, setFormDetails] = useState<AdmissionForm | null>(null);
 
     const formId = Array.isArray(params.formId) ? params.formId[0] : params.formId;
-    const formTitle = formIdToTitle[formId] || 'Admission Form';
 
-    let coachingName = '';
-    let currentUpiDetails = upiDetails.default;
-
-    if (formId.includes('physics')) {
-        coachingName = 'Shree Coaching Classes';
-        currentUpiDetails = upiDetails.physics;
-    } else if (formId.includes('chemistry')) {
-        coachingName = 'ChemStar Chemistry Classes';
-        currentUpiDetails = upiDetails.chemistry;
-    } else if (formId.includes('mht-cet')) {
-        coachingName = 'Shree Coaching & ChemStar Classes';
-        currentUpiDetails = upiDetails.physics; // Default to physics for MHT-CET
-    }
+    useEffect(() => {
+        if (!formId) return;
+        setPageLoading(true);
+        getAdmissionFormById(formId)
+            .then(setFormDetails)
+            .finally(() => setPageLoading(false));
+    }, [formId]);
 
     const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
@@ -127,6 +100,28 @@ export default function AdmissionFormPage() {
     
     const paymentMode = form.watch('paymentMode');
 
+    if(pageLoading) {
+        return <LoadingSpinner />
+    }
+    
+    if(!formDetails) {
+        return (
+            <div className="flex min-h-screen flex-col bg-background items-center justify-center">
+                 <h1 className="text-2xl font-bold">Admission Form Not Found</h1>
+                 <Button asChild variant="link"><Link href="/admission">Go Back</Link></Button>
+            </div>
+        )
+    }
+    
+    let coachingName = '';
+    if (formDetails.id.includes('physics')) {
+        coachingName = 'Shree Coaching Classes';
+    } else if (formDetails.id.includes('chemistry')) {
+        coachingName = 'ChemStar Chemistry Classes';
+    } else if (formDetails.id.includes('mht-cet')) {
+        coachingName = 'Shree Coaching & ChemStar Classes';
+    }
+
     return (
         <div className="flex min-h-screen flex-col bg-background">
             <Header />
@@ -142,7 +137,7 @@ export default function AdmissionFormPage() {
                              <h1 className="text-4xl font-bold tracking-tight text-primary">{coachingName}</h1>
                         )}
                         <p className="mt-2 text-lg text-muted-foreground">
-                            Please fill out the form below to apply for {formTitle}.
+                            Please fill out the form below to apply for {formDetails.title}.
                         </p>
                     </div>
 
@@ -347,20 +342,20 @@ export default function AdmissionFormPage() {
                                         />
                                         {paymentMode === 'Online' && (
                                             <div className="p-4 border rounded-lg bg-secondary/30">
-                                                <h3 className="text-lg font-semibold text-foreground mb-2">UPI Details for {currentUpiDetails.name}</h3>
-                                                <p className="text-muted-foreground">UPI ID: <span className="font-mono text-primary">{currentUpiDetails.id}</span></p>
-                                                <p className="text-muted-foreground">UPI Number: <span className="font-mono text-primary">{currentUpiDetails.number}</span></p>
+                                                <h3 className="text-lg font-semibold text-foreground mb-2">UPI Details for {formDetails.upiName}</h3>
+                                                <p className="text-muted-foreground">UPI ID: <span className="font-mono text-primary">{formDetails.upiId}</span></p>
+                                                <p className="text-muted-foreground">UPI Number: <span className="font-mono text-primary">{formDetails.upiNumber}</span></p>
                                             </div>
                                         )}
                                     </div>
                                     <div className="grid sm:grid-cols-2 gap-4 text-center">
                                         <div className="bg-secondary/30 p-4 rounded-lg">
                                             <p className="text-muted-foreground text-sm">Total Fees</p>
-                                            <p className="text-2xl font-bold">₹15,000</p>
+                                            <p className="text-2xl font-bold">₹{formDetails.totalFees.toLocaleString()}</p>
                                         </div>
                                         <div className="bg-secondary/30 p-4 rounded-lg">
                                             <p className="text-muted-foreground text-sm">Advance Fees</p>
-                                            <p className="text-2xl font-bold">₹5,000</p>
+                                            <p className="text-2xl font-bold">₹{formDetails.advanceFees.toLocaleString()}</p>
                                         </div>
                                     </div>
                                 </CardContent>
@@ -379,5 +374,3 @@ export default function AdmissionFormPage() {
         </div>
     );
 }
-
-    
