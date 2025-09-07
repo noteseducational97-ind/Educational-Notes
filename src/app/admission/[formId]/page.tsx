@@ -335,11 +335,6 @@ export default function AdmissionFormPage() {
                                         <div className="flex flex-col md:flex-row items-center justify-center gap-8 pt-4">
                                         </div>
                                     )}
-                                    {paymentMode === 'Offline' && (
-                                        <div className="text-center p-4 bg-secondary/30 rounded-lg">
-                                            <p className="text-muted-foreground">Please visit the class premises to complete the payment in person.</p>
-                                        </div>
-                                    )}
                                 </CardContent>
                             </Card>
 
