@@ -34,7 +34,6 @@ const formSchema = z.object({
   previousSchool: z.string().min(3, 'Previous school name is required.'),
   board: z.string().min(1, 'Board is required.'),
   percentage: z.string().min(1, 'Percentage is required.'),
-  achievements: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -77,7 +76,6 @@ export default function AdmissionFormPage() {
             previousSchool: '',
             board: '',
             percentage: '',
-            achievements: '',
         },
     });
 
@@ -256,13 +254,6 @@ export default function AdmissionFormPage() {
                                             </FormItem>
                                         )} />
                                     </div>
-                                    <FormField name="achievements" render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Achievements (Optional)</FormLabel>
-                                            <FormControl><Textarea placeholder="Any notable academic or extracurricular achievements" {...field} /></FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )} />
                                 </CardContent>
                             </Card>
                             
