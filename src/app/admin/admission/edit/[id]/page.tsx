@@ -117,10 +117,8 @@ export default function EditAdmissionFormPage() {
   }, [className, yearFrom, subject, form])
 
   useEffect(() => {
-    if(upiId && upiName) {
-      const generatedUpiLink = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(upiName)}`;
-      form.setValue('upiLink', generatedUpiLink);
-    }
+    const generatedUpiLink = `upi://pay?pa=${upiId || ''}&pn=${encodeURIComponent(upiName || '')}`;
+    form.setValue('upiLink', generatedUpiLink, { shouldValidate: true });
   }, [upiId, upiName, form]);
   
   useEffect(() => {
