@@ -11,7 +11,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, User, Mail, Phone, Home, GraduationCap, ArrowRight, ArrowLeft, CreditCard, Info } from 'lucide-react';
+import { Loader2, User, Mail, Phone, Home, GraduationCap, ArrowRight, ArrowLeft, CreditCard, Info, Wallet } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Textarea } from '@/components/ui/textarea';
@@ -57,6 +57,7 @@ export default function AdmissionFormPage() {
     const [loading, setLoading] = useState(false);
     const [pageLoading, setPageLoading] = useState(true);
     const [formDetails, setFormDetails] = useState<AdmissionForm | null>(null);
+    const [isAndroid, setIsAndroid] = useState(false);
 
     const formId = Array.isArray(params.formId) ? params.formId[0] : params.formId;
 
@@ -67,6 +68,11 @@ export default function AdmissionFormPage() {
             .then(setFormDetails)
             .finally(() => setPageLoading(false));
     }, [formId]);
+
+    useEffect(() => {
+        // This check runs only on the client-side
+        setIsAndroid(/android/i.test(navigator.userAgent));
+    }, []);
 
     const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
@@ -122,6 +128,8 @@ export default function AdmissionFormPage() {
     } else if (formDetails.title.toLowerCase().includes('mht-cet')) {
         coachingName = 'Shree Coaching & ChemStar Classes';
     }
+    
+    const upiLink = `upi://pay?pa=${formDetails.upiId}&pn=${encodeURIComponent(formDetails.upiName)}&am=${formDetails.advanceFees}&cu=INR`;
 
     return (
         <div className="flex min-h-screen flex-col bg-background">
@@ -364,14 +372,6 @@ export default function AdmissionFormPage() {
                                                 </FormItem>
                                             )}
                                         />
-                                        {paymentMode === 'Online' && (
-                                            <div className="p-4 border rounded-lg bg-secondary/30">
-                                                <h3 className="text-lg font-semibold text-foreground mb-2">UPI Details</h3>
-                                                <p className="text-muted-foreground">Account Holder: <span className="font-mono text-primary">{formDetails.upiName}</span></p>
-                                                <p className="text-muted-foreground">UPI ID: <span className="font-mono text-primary">{formDetails.upiId}</span></p>
-                                                <p className="text-muted-foreground">UPI Number: <span className="font-mono text-primary">{formDetails.upiNumber}</span></p>
-                                            </div>
-                                        )}
                                         <div className="grid sm:grid-cols-2 gap-4 text-center">
                                             <div className="bg-secondary/30 p-4 rounded-lg">
                                                 <p className="text-muted-foreground text-sm">Total Fees</p>
@@ -382,6 +382,22 @@ export default function AdmissionFormPage() {
                                                 <p className="text-2xl font-bold">₹{formDetails.advanceFees.toLocaleString()}</p>
                                             </div>
                                         </div>
+                                        {paymentMode === 'Online' && (
+                                            <div className="p-4 border rounded-lg bg-secondary/30">
+                                                <h3 className="text-lg font-semibold text-foreground mb-2">UPI Details</h3>
+                                                <p className="text-muted-foreground">Account Holder: <span className="font-mono text-primary">{formDetails.upiName}</span></p>
+                                                <p className="text-muted-foreground">UPI ID: <span className="font-mono text-primary">{formDetails.upiId}</span></p>
+                                                <p className="text-muted-foreground">UPI Number: <span className="font-mono text-primary">{formDetails.upiNumber}</span></p>
+                                                {isAndroid && (
+                                                    <Button asChild className="mt-4 w-full">
+                                                        <a href={upiLink}>
+                                                            <Wallet className="mr-2 h-4 w-4" />
+                                                            Make Payment
+                                                        </a>
+                                                    </Button>
+                                                )}
+                                            </div>
+                                        )}
                                     </div>
                                 </CardContent>
                             </Card>
@@ -399,3 +415,4 @@ export default function AdmissionFormPage() {
         </div>
     );
 }
+
