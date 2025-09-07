@@ -1,7 +1,6 @@
-
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -32,8 +31,8 @@ const FormSchema = z.object({
   upiId: z.string().min(3, 'UPI ID is required.'),
   upiNumber: z.string().min(10, 'UPI number must be at least 10 digits.'),
   upiName: z.string().min(3, 'UPI holder name is required.'),
-}).refine(data => parseInt(data.yearTo) >= parseInt(data.yearFrom), {
-    message: "'To' year cannot be earlier than 'From' year.",
+}).refine(data => parseInt(data.yearTo) > parseInt(data.yearFrom), {
+    message: "'To' year must be after 'From' year.",
     path: ['yearTo'],
 });
 
@@ -60,6 +59,14 @@ export default function AddAdmissionFormPage() {
         upiName: '',
     }
   });
+
+  const yearFrom = form.watch('yearFrom');
+
+  useEffect(() => {
+    if (yearFrom) {
+      form.setValue('yearTo', (parseInt(yearFrom, 10) + 1).toString());
+    }
+  }, [yearFrom, form]);
   
   async function onSubmit(values: FormValues) {
     setIsSubmitting(true);
@@ -132,10 +139,10 @@ export default function AddAdmissionFormPage() {
                         <FormField control={form.control} name="yearTo" render={({ field }) => (
                             <FormItem>
                                 <FormLabel>To Year</FormLabel>
-                                <Select onValueChange={field.onChange} value={field.value}>
+                                <Select onValueChange={field.onChange} value={field.value} disabled>
                                     <FormControl><SelectTrigger><SelectValue placeholder="To" /></SelectTrigger></FormControl>
                                     <SelectContent>
-                                        {yearOptions.map(year => <SelectItem key={year} value={(parseInt(year) + 1).toString()}>{(parseInt(year) + 1).toString()}</SelectItem>)}
+                                      {yearFrom && <SelectItem value={(parseInt(yearFrom, 10) + 1).toString()}>{(parseInt(yearFrom, 10) + 1).toString()}</SelectItem>}
                                     </SelectContent>
                                 </Select>
                                 <FormMessage />

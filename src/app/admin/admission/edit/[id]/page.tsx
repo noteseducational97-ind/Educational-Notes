@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -34,8 +33,8 @@ const FormSchema = z.object({
   upiId: z.string().min(3, 'UPI ID is required.'),
   upiNumber: z.string().min(10, 'UPI number must be at least 10 digits.'),
   upiName: z.string().min(3, 'UPI holder name is required.'),
-}).refine(data => parseInt(data.yearTo) >= parseInt(data.yearFrom), {
-    message: "'To' year cannot be earlier than 'From' year.",
+}).refine(data => parseInt(data.yearTo) > parseInt(data.yearFrom), {
+    message: "'To' year must be after 'From' year.",
     path: ['yearTo'],
 });
 
@@ -67,6 +66,14 @@ export default function EditAdmissionFormPage() {
         upiName: '',
     }
   });
+
+  const yearFrom = form.watch('yearFrom');
+
+  useEffect(() => {
+    if (yearFrom) {
+      form.setValue('yearTo', (parseInt(yearFrom, 10) + 1).toString());
+    }
+  }, [yearFrom, form]);
   
   useEffect(() => {
     if (!formId) return;
@@ -75,12 +82,12 @@ export default function EditAdmissionFormPage() {
       .then(data => {
         if (data) {
           setFormDetails(data);
-          const [yearFrom, yearToSuffix] = data.year.split('-');
-          const yearTo = yearFrom.substring(0, 2) + yearToSuffix;
+          const [yearFromValue, yearToSuffix] = data.year.split('-');
+          const yearToValue = yearFromValue.substring(0, 2) + yearToSuffix;
           form.reset({
             ...data,
-            yearFrom,
-            yearTo,
+            yearFrom: yearFromValue,
+            yearTo: yearToValue,
           });
         } else {
           toast({ variant: 'destructive', title: 'Form not found' });
@@ -165,10 +172,10 @@ export default function EditAdmissionFormPage() {
                         <FormField control={form.control} name="yearTo" render={({ field }) => (
                             <FormItem>
                                 <FormLabel>To Year</FormLabel>
-                                <Select onValueChange={field.onChange} value={field.value}>
+                                <Select onValueChange={field.onChange} value={field.value} disabled>
                                     <FormControl><SelectTrigger><SelectValue placeholder="To" /></SelectTrigger></FormControl>
                                     <SelectContent>
-                                        {yearOptions.map(year => <SelectItem key={year} value={(parseInt(year) + 1).toString()}>{(parseInt(year) + 1).toString()}</SelectItem>)}
+                                      {yearFrom && <SelectItem value={(parseInt(yearFrom, 10) + 1).toString()}>{(parseInt(yearFrom, 10) + 1).toString()}</SelectItem>}
                                     </SelectContent>
                                 </Select>
                                 <FormMessage />
