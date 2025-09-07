@@ -37,24 +37,22 @@ export default function AddTeacherPage() {
   };
 
   useEffect(() => {
-    if (teacher.since) {
-      const sinceYear = parseInt(teacher.since, 10);
-      if (!isNaN(sinceYear) && sinceYear > 1900 && sinceYear <= new Date().getFullYear()) {
-        const experience = new Date().getFullYear() - sinceYear;
-        setTeacher(prev => ({ ...prev, experience: `${experience}+ years` }));
-      }
-    }
-  }, [teacher.since]);
+    const currentYear = new Date().getFullYear();
+    const sinceYear = parseInt(teacher.since, 10);
+    const experienceYears = parseInt(teacher.experience, 10);
 
-  useEffect(() => {
-    if (teacher.experience) {
-      const experienceYears = parseInt(teacher.experience, 10);
-      if (!isNaN(experienceYears)) {
-        const sinceYear = new Date().getFullYear() - experienceYears;
-        setTeacher(prev => ({ ...prev, since: sinceYear.toString() }));
+    if (document.activeElement?.id === 'since' && !isNaN(sinceYear) && sinceYear > 1900 && sinceYear <= currentYear) {
+      const calculatedExperience = currentYear - sinceYear;
+      if (teacher.experience !== `${calculatedExperience}+ years`) {
+        setTeacher(prev => ({ ...prev, experience: `${calculatedExperience}+ years` }));
+      }
+    } else if (document.activeElement?.id === 'experience' && !isNaN(experienceYears)) {
+      const calculatedSince = currentYear - experienceYears;
+      if (teacher.since !== calculatedSince.toString()) {
+        setTeacher(prev => ({ ...prev, since: calculatedSince.toString() }));
       }
     }
-  }, [teacher.experience]);
+  }, [teacher.since, teacher.experience]);
   
   const handleSave = () => {
     if (!teacher.name || !teacher.education || !teacher.subject || !teacher.experience || !teacher.description || !teacher.since) {
