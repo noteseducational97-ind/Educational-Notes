@@ -17,6 +17,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Loader2, ArrowLeft, Save, CreditCard } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Textarea } from '@/components/ui/textarea';
 
 const currentYear = new Date().getFullYear();
 const yearOptions = Array.from({ length: 5 }, (_, i) => (currentYear + i).toString());
@@ -76,14 +77,33 @@ export default function AddAdmissionFormPage() {
   });
 
   const yearFrom = form.watch('yearFrom');
+  const className = form.watch('className');
+  const title = form.watch('title');
   const isDemoEnabled = form.watch('isDemoEnabled');
-
+  
+  const generateDescription = (className: string, yearFrom: string, title: string) => {
+    let teacher = "our expert teacher";
+    if(title.toLowerCase().includes('physics')) {
+        teacher = "Pravin Sir";
+    } else if (title.toLowerCase().includes('chemistry')) {
+        teacher = "Mangesh Sir";
+    }
+    return `Admission for ${className} (${yearFrom}) with ${teacher}. Join us to excel in your studies.`;
+  };
+  
   useEffect(() => {
     if (yearFrom) {
       const toYearValue = (parseInt(yearFrom, 10) + 2).toString();
       form.setValue('yearTo', toYearValue);
     }
   }, [yearFrom, form]);
+
+  useEffect(() => {
+    if(className && yearFrom && title) {
+        const newDescription = generateDescription(className, yearFrom, title);
+        form.setValue('description', newDescription);
+    }
+  }, [className, yearFrom, title, form])
   
   async function onSubmit(values: FormValues) {
     setIsSubmitting(true);
@@ -176,7 +196,7 @@ export default function AddAdmissionFormPage() {
                      <FormField control={form.control} name="description" render={({ field }) => (
                         <FormItem>
                             <FormLabel>Description</FormLabel>
-                            <FormControl><Input placeholder="A brief description of the admission batch" {...field} /></FormControl>
+                            <FormControl><Textarea placeholder="A brief description of the admission batch" {...field} disabled /></FormControl>
                             <FormMessage />
                         </FormItem>
                     )} />

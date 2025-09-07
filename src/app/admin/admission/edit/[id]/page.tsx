@@ -19,6 +19,7 @@ import { Loader2, ArrowLeft, Save, CreditCard } from 'lucide-react';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Textarea } from '@/components/ui/textarea';
 
 const currentYear = new Date().getFullYear();
 const yearOptions = Array.from({ length: 5 }, (_, i) => (currentYear + i).toString());
@@ -83,7 +84,19 @@ export default function EditAdmissionFormPage() {
   });
 
   const yearFrom = form.watch('yearFrom');
+  const className = form.watch('className');
+  const title = form.watch('title');
   const isDemoEnabled = form.watch('isDemoEnabled');
+  
+  const generateDescription = (className: string, yearFrom: string, title: string) => {
+    let teacher = "our expert teacher";
+    if(title.toLowerCase().includes('physics')) {
+        teacher = "Pravin Sir";
+    } else if (title.toLowerCase().includes('chemistry')) {
+        teacher = "Mangesh Sir";
+    }
+    return `Admission for ${className} (${yearFrom}) with ${teacher}. Join us to excel in your studies.`;
+  };
 
   useEffect(() => {
     if (yearFrom) {
@@ -92,6 +105,12 @@ export default function EditAdmissionFormPage() {
     }
   }, [yearFrom, form]);
 
+  useEffect(() => {
+    if(className && yearFrom && title) {
+        const newDescription = generateDescription(className, yearFrom, title);
+        form.setValue('description', newDescription);
+    }
+  }, [className, yearFrom, title, form])
   
   useEffect(() => {
     if (!formId) return;
@@ -210,7 +229,7 @@ export default function EditAdmissionFormPage() {
                      <FormField control={form.control} name="description" render={({ field }) => (
                         <FormItem>
                             <FormLabel>Description</FormLabel>
-                            <FormControl><Input placeholder="Admission for Class 11 Physics..." {...field} /></FormControl>
+                            <FormControl><Textarea placeholder="Admission for Class 11 Physics..." {...field} disabled /></FormControl>
                             <FormMessage />
                         </FormItem>
                     )} />
