@@ -8,7 +8,25 @@ import Link from 'next/link';
 const admissionForms = [
     {
         title: 'Class 11 Physics',
-        description: 'Admission For Class 11 and 12. Science Student',
+        description: 'Admission for Class 11 Physics. Science Student',
+        status: 'Open',
+        href: '#'
+    },
+    {
+        title: 'Class 12 Physics',
+        description: 'Admission for Class 12 Physics. Science Student',
+        status: 'Open',
+        href: '#'
+    },
+    {
+        title: 'Class 11 Chemistry',
+        description: 'Admission for Class 11 Chemistry. Science Student',
+        status: 'Open',
+        href: '#'
+    },
+    {
+        title: 'Class 12 Chemistry',
+        description: 'Admission for Class 12 Chemistry. Science Student',
         status: 'Open',
         href: '#'
     },
@@ -33,7 +51,7 @@ export default function AdmissionPage() {
                 </p>
             </div>
             
-            <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
                 {admissionForms.map((form) => (
                     <Card key={form.title} className="flex flex-col justify-between bg-secondary/30 p-6">
                         <div>
