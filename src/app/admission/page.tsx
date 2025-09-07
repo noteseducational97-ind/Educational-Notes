@@ -1,6 +1,6 @@
 
 import Header from '@/components/layout/Header';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
+import { Card, CardDescription, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
@@ -10,31 +10,31 @@ const admissionForms = [
         title: 'Class 11 Physics',
         description: 'Admission for Class 11 Physics. Science Student',
         status: 'Open',
-        href: '#'
+        href: '/admission/class-11-physics'
     },
     {
         title: 'Class 12 Physics',
         description: 'Admission for Class 12 Physics. Science Student',
         status: 'Open',
-        href: '#'
+        href: '/admission/class-12-physics'
     },
     {
         title: 'Class 11 Chemistry',
         description: 'Admission for Class 11 Chemistry. Science Student',
         status: 'Open',
-        href: '#'
+        href: '/admission/class-11-chemistry'
     },
     {
         title: 'Class 12 Chemistry',
         description: 'Admission for Class 12 Chemistry. Science Student',
         status: 'Open',
-        href: '#'
+        href: '/admission/class-12-chemistry'
     },
     {
         title: 'MHT-CET',
         description: 'Admissions Form for MHT-CET Maharashtra',
         status: 'Open',
-        href: '#'
+        href: '/admission/mht-cet'
     }
 ];
 
@@ -55,8 +55,8 @@ export default function AdmissionPage() {
                 {admissionForms.map((form) => (
                     <Card key={form.title} className="flex flex-col justify-between bg-secondary/30 p-6">
                         <div>
-                            <h3 className="text-2xl font-semibold leading-none tracking-tight">{form.title}</h3>
-                            <p className="text-sm text-muted-foreground mt-2">{form.description}</p>
+                            <CardTitle className="text-2xl">{form.title}</CardTitle>
+                            <CardDescription className="mt-2">{form.description}</CardDescription>
                         </div>
                         <Button asChild className="w-full mt-6" disabled={form.status !== 'Open'}>
                            <Link href={form.href}>
