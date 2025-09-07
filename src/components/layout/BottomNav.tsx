@@ -23,11 +23,20 @@ export default function BottomNav() {
     return null;
   }
 
+  const isLinkActive = (href: string) => {
+    if (href.includes('#')) {
+      const [basePath] = href.split('#');
+      // Only active if it's the root path, because #tools is on the homepage.
+      return pathname === (basePath || '/');
+    }
+    // Exact match or starts with for nested routes, but not for root.
+    return href === '/' ? pathname === '/' : pathname.startsWith(href);
+  };
+
   return (
     <div className="fixed bottom-0 left-0 z-50 w-full h-16 bg-background border-t border-border/40 md:hidden">
       <div className="grid h-full max-w-lg grid-cols-5 mx-auto font-medium">
         {navLinks.map(({ href, label, icon: Icon }) => {
-          const isActive = (pathname === '/' && href === '/') || (href !== '/' && !href.includes('#') && pathname.startsWith(href));
           return (
             <Link
               key={label}
@@ -35,7 +44,7 @@ export default function BottomNav() {
               prefetch={true}
               className={cn(
                 'inline-flex flex-col items-center justify-center px-5 hover:bg-muted group',
-                isActive ? 'text-primary' : 'text-muted-foreground'
+                isLinkActive(href) ? 'text-primary' : 'text-muted-foreground'
               )}
             >
               <Icon className="w-5 h-5 mb-1" />
