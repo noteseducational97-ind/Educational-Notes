@@ -341,14 +341,6 @@ export default function AdmissionFormPage() {
                                     
                                     {paymentMode === 'Online' && (
                                         <div className="flex flex-col md:flex-row items-center justify-center gap-8 pt-4">
-                                            <Image 
-                                                src="https://picsum.photos/200/200" 
-                                                alt="QR Code for Payment" 
-                                                width={200}
-                                                height={200}
-                                                data-ai-hint="QR code"
-                                                className="rounded-md"
-                                            />
                                         </div>
                                     )}
                                     {paymentMode === 'Offline' && (
