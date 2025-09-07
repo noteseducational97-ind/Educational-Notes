@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -17,7 +16,6 @@ export default function AdmissionPage() {
 
     useEffect(() => {
         getAdmissionForms()
-            .then(forms => forms.filter(form => form.status === 'Open'))
             .then(setAdmissionForms)
             .finally(() => setLoading(false));
     }, []);
@@ -46,9 +44,9 @@ export default function AdmissionPage() {
                                 <CardTitle className="text-2xl">{form.title}</CardTitle>
                                 <CardDescription className="mt-2">{form.description}</CardDescription>
                             </div>
-                            <Button asChild className="w-full mt-6" disabled={form.status !== 'Open'}>
+                            <Button asChild className="w-full mt-6">
                             <Link href={`/admission/${form.id}`}>
-                                {form.status === 'Closed' ? 'Admissions Closed' : <>Admission Now <ArrowRight className="ml-2 h-4 w-4" /></>}
+                                Admission Now <ArrowRight className="ml-2 h-4 w-4" />
                             </Link>
                             </Button>
                         </Card>

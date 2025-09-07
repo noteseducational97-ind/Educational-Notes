@@ -27,10 +27,10 @@ const yearOptions = Array.from({ length: 5 }, (_, i) => (currentYear + i).toStri
 const FormSchema = z.object({
   title: z.string().min(3, 'Title is required.'),
   className: z.string().min(1, 'Class name is required.'),
+  subject: z.enum(['Physics', 'Chemistry']),
   yearFrom: z.string().min(4, 'From year is required.'),
   yearTo: z.string().min(4, 'To year is required.'),
   description: z.string().min(10, 'Description is required.'),
-  status: z.enum(['Open', 'Closed']),
   isDemoEnabled: z.boolean().default(false),
   demoTenureDays: z.coerce.number().optional(),
   totalFees: z.coerce.number().min(0, 'Total fees must be a positive number.'),
@@ -72,7 +72,6 @@ export default function EditAdmissionFormPage() {
         yearFrom: currentYear.toString(),
         yearTo: (currentYear + 2).toString(),
         description: '',
-        status: 'Open',
         isDemoEnabled: false,
         demoTenureDays: 0,
         totalFees: 0,
@@ -85,14 +84,14 @@ export default function EditAdmissionFormPage() {
 
   const yearFrom = form.watch('yearFrom');
   const className = form.watch('className');
-  const title = form.watch('title');
+  const subject = form.watch('subject');
   const isDemoEnabled = form.watch('isDemoEnabled');
   
-  const generateDescription = (className: string, yearFrom: string, title: string) => {
+  const generateDescription = (className: string, yearFrom: string, subject: 'Physics' | 'Chemistry') => {
     let teacher = "our expert teacher";
-    if(title.toLowerCase().includes('physics')) {
+    if (subject === 'Physics') {
         teacher = "Pravin Sir";
-    } else if (title.toLowerCase().includes('chemistry')) {
+    } else if (subject === 'Chemistry') {
         teacher = "Mangesh Sir";
     }
     return `Admission for ${className} (${yearFrom}) with ${teacher}. Join us to excel in your studies.`;
@@ -106,11 +105,11 @@ export default function EditAdmissionFormPage() {
   }, [yearFrom, form]);
 
   useEffect(() => {
-    if(className && yearFrom && title) {
-        const newDescription = generateDescription(className, yearFrom, title);
+    if(className && yearFrom && subject) {
+        const newDescription = generateDescription(className, yearFrom, subject);
         form.setValue('description', newDescription);
     }
-  }, [className, yearFrom, title, form])
+  }, [className, yearFrom, subject, form])
   
   useEffect(() => {
     if (!formId) return;
@@ -179,14 +178,14 @@ export default function EditAdmissionFormPage() {
                                 <FormMessage />
                             </FormItem>
                         )} />
-                        <FormField control={form.control} name="status" render={({ field }) => (
+                        <FormField control={form.control} name="subject" render={({ field }) => (
                              <FormItem>
-                                <FormLabel>Status</FormLabel>
+                                <FormLabel>Subject</FormLabel>
                                 <Select onValueChange={field.onChange} value={field.value}>
-                                    <FormControl><SelectTrigger><SelectValue placeholder="Select status" /></SelectTrigger></FormControl>
+                                    <FormControl><SelectTrigger><SelectValue placeholder="Select subject" /></SelectTrigger></FormControl>
                                     <SelectContent>
-                                        <SelectItem value="Open">Open</SelectItem>
-                                        <SelectItem value="Closed">Closed</SelectItem>
+                                        <SelectItem value="Physics">Physics</SelectItem>
+                                        <SelectItem value="Chemistry">Chemistry</SelectItem>
                                     </SelectContent>
                                 </Select>
                                 <FormMessage />
@@ -262,7 +261,7 @@ export default function EditAdmissionFormPage() {
                                 <FormItem>
                                     <FormLabel>Demo Session Tenure (in days)</FormLabel>
                                     <FormControl>
-                                        <Input type="number" placeholder="e.g., 7" {...field} value={field.value ?? ''} onChange={e => field.onChange(e.target.value === '' ? '' : parseInt(e.target.value, 10))}/>
+                                        <Input type="number" placeholder="e.g., 7" {...field} value={field.value ?? ''} onChange={e => field.onChange(e.target.value === '' ? undefined : parseInt(e.target.value, 10))}/>
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -276,14 +275,14 @@ export default function EditAdmissionFormPage() {
                              <FormField control={form.control} name="totalFees" render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Total Fees</FormLabel>
-                                    <FormControl><Input type="number" placeholder="15000" {...field} value={field.value ?? ''} onChange={e => field.onChange(e.target.value === '' ? '' : parseInt(e.target.value, 10))} /></FormControl>
+                                    <FormControl><Input type="number" placeholder="15000" {...field} value={field.value ?? ''} onChange={e => field.onChange(e.target.value === '' ? undefined : parseInt(e.target.value, 10))} /></FormControl>
                                     <FormMessage />
                                 </FormItem>
                             )} />
                              <FormField control={form.control} name="advanceFees" render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Advance Fees</FormLabel>
-                                    <FormControl><Input type="number" placeholder="5000" {...field} value={field.value ?? ''} onChange={e => field.onChange(e.target.value === '' ? '' : parseInt(e.target.value, 10))} /></FormControl>
+                                    <FormControl><Input type="number" placeholder="5000" {...field} value={field.value ?? ''} onChange={e => field.onChange(e.target.value === '' ? undefined : parseInt(e.target.value, 10))} /></FormControl>
                                     <FormMessage />
                                 </FormItem>
                             )} />

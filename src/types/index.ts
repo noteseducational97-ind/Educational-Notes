@@ -33,9 +33,9 @@ export type AdmissionForm = {
     id: string;
     title: string;
     className: string;
+    subject: 'Physics' | 'Chemistry';
     year: string;
     description: string;
-    status: 'Open' | 'Closed';
     isDemoEnabled: boolean;
     demoTenureDays?: number;
     totalFees: number;

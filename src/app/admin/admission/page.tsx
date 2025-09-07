@@ -1,11 +1,10 @@
-
 'use client';
 
 import { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Edit, FileText, PlusCircle, Trash2 } from 'lucide-react';
+import { Edit, FileText, PlusCircle, Trash2, Book } from 'lucide-react';
 import Link from 'next/link';
 import { getAdmissionForms } from '@/lib/firebase/admissions';
 import type { AdmissionForm } from '@/types';
@@ -107,7 +106,7 @@ export default function AdminAdmissionPage() {
                         <CardDescription className="mt-2">{form.description}</CardDescription>
                     </div>
                      <div className="flex justify-between items-center mt-6">
-                         <Badge variant={form.status === 'Open' ? 'secondary' : 'outline'}>{form.status}</Badge>
+                         <Badge variant="secondary"><Book className="h-3 w-3 mr-1" />{form.subject}</Badge>
                          <div className="flex gap-2">
                             <Button variant="outline" size="sm" asChild>
                                 <Link href={`/admin/admission/edit/${form.id}`}>
