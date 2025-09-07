@@ -55,19 +55,19 @@ const formIdToTitle: { [key: string]: string } = {
 
 const upiDetails: { [key: string]: { id: string; number: string; name: string } } = {
     physics: {
-        id: 'shreecoachingclasses@okhdfcbank',
+        id: '9881482416@ybl',
         number: '9881482416',
-        name: 'Shree Coaching Classes'
+        name: 'Pravin Khachane'
     },
     chemistry: {
-        id: 'shetemangesh@oksbi',
+        id: '9405695457@ybl',
         number: '9405695457',
-        name: 'ChemStar Chemistry Classes'
+        name: 'Mangesh Shete'
     },
     default: {
-        id: 'shreecoachingclasses@okhdfcbank',
+        id: '9881482416@ybl',
         number: '9881482416',
-        name: 'Shree Coaching Classes'
+        name: 'Pravin Khachane'
     }
 };
 
@@ -322,16 +322,6 @@ export default function AdmissionFormPage() {
                                     <CardTitle className="flex items-center gap-2"><CreditCard /> Payment</CardTitle>
                                 </CardHeader>
                                 <CardContent className="space-y-6">
-                                    <div className="grid sm:grid-cols-2 gap-4 text-center">
-                                        <div className="bg-secondary/30 p-4 rounded-lg">
-                                            <p className="text-muted-foreground text-sm">Total Fees</p>
-                                            <p className="text-2xl font-bold">₹15,000</p>
-                                        </div>
-                                        <div className="bg-secondary/30 p-4 rounded-lg">
-                                            <p className="text-muted-foreground text-sm">Advance Fees</p>
-                                            <p className="text-2xl font-bold">₹5,000</p>
-                                        </div>
-                                    </div>
                                     <div className="space-y-4">
                                         <FormField
                                             control={form.control}
@@ -361,6 +351,16 @@ export default function AdmissionFormPage() {
                                                 <p className="text-muted-foreground">UPI Number: <span className="font-mono text-primary">{currentUpiDetails.number}</span></p>
                                             </div>
                                         )}
+                                    </div>
+                                    <div className="grid sm:grid-cols-2 gap-4 text-center">
+                                        <div className="bg-secondary/30 p-4 rounded-lg">
+                                            <p className="text-muted-foreground text-sm">Total Fees</p>
+                                            <p className="text-2xl font-bold">₹15,000</p>
+                                        </div>
+                                        <div className="bg-secondary/30 p-4 rounded-lg">
+                                            <p className="text-muted-foreground text-sm">Advance Fees</p>
+                                            <p className="text-2xl font-bold">₹5,000</p>
+                                        </div>
                                     </div>
                                 </CardContent>
                             </Card>
