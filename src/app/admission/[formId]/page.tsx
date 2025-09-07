@@ -307,28 +307,29 @@ export default function AdmissionFormPage() {
                                             <p className="text-2xl font-bold">₹5,000</p>
                                         </div>
                                     </div>
-
-                                    <FormField
-                                        control={form.control}
-                                        name="paymentMode"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Payment Mode</FormLabel>
-                                                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                                    <FormControl>
-                                                    <SelectTrigger>
-                                                        <SelectValue placeholder="Select a payment mode" />
-                                                    </SelectTrigger>
-                                                    </FormControl>
-                                                    <SelectContent>
-                                                    <SelectItem value="Online">Online</SelectItem>
-                                                    <SelectItem value="Offline">Offline</SelectItem>
-                                                    </SelectContent>
-                                                </Select>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
+                                    <div className="max-w-xs">
+                                        <FormField
+                                            control={form.control}
+                                            name="paymentMode"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Payment Mode</FormLabel>
+                                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                        <FormControl>
+                                                        <SelectTrigger>
+                                                            <SelectValue placeholder="Select a payment mode" />
+                                                        </SelectTrigger>
+                                                        </FormControl>
+                                                        <SelectContent>
+                                                        <SelectItem value="Online">Online</SelectItem>
+                                                        <SelectItem value="Offline">Offline</SelectItem>
+                                                        </SelectContent>
+                                                    </Select>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                    </div>
                                     
                                     {paymentMode === 'Online' && (
                                         <div className="flex flex-col md:flex-row items-center justify-center gap-8 pt-4">
