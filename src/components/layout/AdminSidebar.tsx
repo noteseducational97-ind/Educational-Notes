@@ -2,10 +2,14 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { Home, Download, Bookmark, Menu, LogIn, UserPlus, LayoutDashboard, Users, BookCopy, FileText, Wrench, GraduationCap } from 'lucide-react';
+import { usePathname, useRouter } from 'next/navigation';
+import { Home, Download, Bookmark, Menu, LogIn, UserPlus, LayoutDashboard, Users, BookCopy, FileText, Wrench, GraduationCap, ArrowLeft, LogOut } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { EducationalNotesLogo } from '../icons/EducationalNotesLogo';
+import { Button } from '../ui/button';
+import { useToast } from '@/hooks/use-toast';
+import { signOut } from 'firebase/auth';
+import { auth } from '@/lib/firebase/client';
 
 const adminNavLinks = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
@@ -19,6 +23,21 @@ const adminNavLinks = [
 
 export default function AdminSidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+  const { toast } = useToast();
+
+  const handleSignOut = async () => {
+    try {
+      await signOut(auth);
+      router.push('/');
+    } catch (error: any) {
+      toast({
+        variant: 'destructive',
+        title: 'Sign Out Failed',
+        description: error.message,
+      });
+    }
+  };
 
   return (
     <aside className="hidden md:flex flex-col w-64 bg-background border-r border-border/40">
@@ -28,8 +47,8 @@ export default function AdminSidebar() {
                 <span>Educational Notes</span>
             </Link>
         </div>
-        <div className="flex-1 overflow-y-auto">
-            <nav className="p-4 space-y-2">
+        <div className="flex-1 overflow-y-auto py-4">
+            <nav className="px-4 space-y-2">
             {adminNavLinks.map(({ href, label, icon: Icon }) => {
                 const isActive = pathname === href || (href !== '/admin' && href !== '/downloads' && pathname.startsWith(href));
                 return (
@@ -48,6 +67,18 @@ export default function AdminSidebar() {
                 );
             })}
             </nav>
+        </div>
+        <div className='p-4 border-t space-y-2'>
+             <Button variant="outline" className="w-full" asChild>
+                <Link href="/">
+                    <ArrowLeft />
+                    Back to Home
+                </Link>
+            </Button>
+            <Button variant="destructive-outline" className="w-full" onClick={handleSignOut}>
+                <LogOut />
+                Log Out
+            </Button>
         </div>
     </aside>
   );
