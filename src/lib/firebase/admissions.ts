@@ -1,3 +1,4 @@
+
 'use server';
 
 import { db } from '@/lib/firebase/server';
@@ -83,4 +84,15 @@ export async function deleteAdmissionForm(id: string) {
     await db.collection('admissionForms').doc(id).delete();
     revalidatePath('/admin/admission');
     revalidatePath('/admission');
+}
+
+export async function submitAdmissionApplication(formId: string, applicationData: any) {
+  if (!formId) {
+    throw new Error('Form ID is required.');
+  }
+  const applicationRef = db.collection('admissionForms').doc(formId).collection('applications').doc();
+  await applicationRef.set({
+    ...applicationData,
+    submittedAt: new Date(),
+  });
 }

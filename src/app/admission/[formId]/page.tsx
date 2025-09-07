@@ -160,7 +160,7 @@ export default function AdmissionFormPage() {
 
                     <FormProvider {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                             <Card>
+                            <Card>
                                 <CardHeader>
                                     <div className="text-center mb-4">
                                         {coachingName && (
