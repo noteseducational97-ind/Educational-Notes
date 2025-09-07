@@ -75,7 +75,7 @@ export default function EditAdmissionFormPage() {
         description: '',
         isDemoEnabled: false,
         upiId: '',
-        upiLink: '',
+        upiLink: 'upi://pay?pa=&pn=',
         upiNumber: '',
         upiName: '',
     }

@@ -67,9 +67,11 @@ export default function AddAdmissionFormPage() {
         yearTo: (currentYear + 2).toString(),
         description: '',
         isDemoEnabled: false,
-        demoTenureDays: 0,
+        demoTenureDays: undefined,
+        totalFees: undefined,
+        advanceFees: undefined,
         upiId: '',
-        upiLink: '',
+        upiLink: 'upi://pay?pa=&pn=',
         upiNumber: '',
         upiName: '',
     }
