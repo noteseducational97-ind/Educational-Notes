@@ -187,17 +187,17 @@ export default function AdmissionFormPage() {
                                                 <FormMessage />
                                             </FormItem>
                                         )} />
-                                        <FormField name="motherName" render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Mother's Full Name</FormLabel>
-                                                <FormControl><Input placeholder="Enter mother's name" {...field} /></FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )} />
                                         <FormField name="fatherOccupation" render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>Father's Occupation</FormLabel>
                                                 <FormControl><Input placeholder="Enter father's occupation" {...field} /></FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )} />
+                                        <FormField name="motherName" render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Mother's Full Name</FormLabel>
+                                                <FormControl><Input placeholder="Enter mother's name" {...field} /></FormControl>
                                                 <FormMessage />
                                             </FormItem>
                                         )} />
