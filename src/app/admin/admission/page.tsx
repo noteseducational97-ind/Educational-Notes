@@ -1,11 +1,11 @@
 
 'use client';
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Edit, FileText } from 'lucide-react';
+import { Edit, FileText, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 
 const admissionForms = [
@@ -50,46 +50,24 @@ export default function AdminAdmissionPage() {
           <p className="text-muted-foreground">Oversee all active and pending admission forms.</p>
         </div>
       </div>
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2"><FileText /> Admission Forms</CardTitle>
-          <CardDescription>
-            A list of all admission forms available on the public website.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-            <div className="w-full overflow-x-auto">
-                <Table>
-                <TableHeader>
-                    <TableRow>
-                    <TableHead>Form Title</TableHead>
-                    <TableHead>Description</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
-                    {admissionForms.map((form) => (
-                    <TableRow key={form.id}>
-                        <TableCell className="font-medium">{form.title}</TableCell>
-                        <TableCell>{form.description}</TableCell>
-                        <TableCell>
-                        <Badge variant={form.status === 'Open' ? 'secondary' : 'outline'}>{form.status}</Badge>
-                        </TableCell>
-                        <TableCell className="text-right">
-                        <Button variant="outline" size="sm" asChild disabled>
-                            <Link href={`/admin/admission/edit/${form.id}`}>
-                            <Edit className="h-4 w-4" />
-                            </Link>
-                        </Button>
-                        </TableCell>
-                    </TableRow>
-                    ))}
-                </TableBody>
-                </Table>
-            </div>
-        </CardContent>
-      </Card>
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {admissionForms.map((form) => (
+            <Card key={form.id} className="flex flex-col justify-between bg-secondary/30 p-6">
+                <div>
+                    <CardTitle className="text-2xl">{form.title}</CardTitle>
+                    <CardDescription className="mt-2">{form.description}</CardDescription>
+                </div>
+                 <div className="flex justify-between items-center mt-6">
+                     <Badge variant={form.status === 'Open' ? 'secondary' : 'outline'}>{form.status}</Badge>
+                    <Button variant="outline" size="sm" asChild disabled>
+                        <Link href={`/admin/admission/edit/${form.id}`}>
+                            <Edit className="h-4 w-4 mr-2" /> Edit
+                        </Link>
+                    </Button>
+                </div>
+            </Card>
+        ))}
+      </div>
     </>
   );
 }
