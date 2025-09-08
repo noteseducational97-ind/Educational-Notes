@@ -27,7 +27,6 @@ const adminNavLinks = [
   { href: '/admin/admission', label: 'Batches', icon: FileText },
   { href: '/admin/tools', label: 'Manage Tools', icon: Wrench },
   { href: '/admin/teachers', label: 'Teachers', icon: GraduationCap },
-  { href: '/admin/tools/test-generator', label: 'Test Generator', icon: FileQuestion },
 ];
 
 const NavLink = ({ href, children, isActive }: { href: string; children: React.ReactNode, isActive: boolean }) => (
@@ -80,14 +79,6 @@ const NavContent = ({ isMobile = false }: { isMobile?: boolean }) => {
 
   return (
     <>
-      {!isMobile && (
-        <div className="flex h-16 items-center border-b px-6">
-            <Link href="/" className="flex items-center gap-2 font-semibold">
-                <EducationalNotesLogo className="h-6 w-6 text-primary" />
-                <span>Educational Notes</span>
-            </Link>
-        </div>
-      )}
       <div className="flex-1 overflow-y-auto py-4">
           <nav className={cn("px-4 space-y-2", isMobile && "grid")}>
           {adminNavLinks.map(({ href, label, icon: Icon }) => {
@@ -123,6 +114,12 @@ export default function AdminSidebar() {
     <>
       {/* Desktop Sidebar */}
       <aside className="hidden md:flex flex-col w-64 bg-background border-r border-border/40">
+        <div className="flex h-16 items-center border-b px-6">
+            <Link href="/" className="flex items-center gap-2 font-semibold">
+                <EducationalNotesLogo className="h-6 w-6 text-primary" />
+                <span>Educational Notes</span>
+            </Link>
+        </div>
         <NavContent />
       </aside>
     </>
