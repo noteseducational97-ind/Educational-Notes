@@ -25,6 +25,7 @@ import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { MultiSelect } from '@/components/ui/multi-select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { motion } from 'framer-motion';
 
 const FormSchema = z.object({
   title: z.string().min(3, 'Title must be at least 3 characters.'),
@@ -32,6 +33,7 @@ const FormSchema = z.object({
   stream: z.array(z.string()).nonempty({ message: 'Select at least one stream.' }),
   category: z.array(z.string()).nonempty({ message: 'Select at least one category.' }),
   subject: z.array(z.string()).nonempty({ message: 'Select at least one subject.' }),
+  imageUrl: z.string().url('Please enter a valid image URL.'),
   pdfUrl: z.string().optional(),
   viewPdfUrl: z.string().url('A valid view URL for the PDF is required.'),
   isComingSoon: z.boolean().default(false),
@@ -73,6 +75,7 @@ export default function EditResourceAdminPage() {
     defaultValues: {
       title: '',
       content: '',
+      imageUrl: '',
       pdfUrl: '',
       viewPdfUrl: '',
       stream: [],
@@ -189,176 +192,187 @@ export default function EditResourceAdminPage() {
         <div className="container mx-auto px-4 py-8">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
-              <Card className="w-full max-w-4xl mx-auto shadow-lg">
-                <CardHeader>
-                  <CardTitle className="text-3xl font-bold">Edit Resource</CardTitle>
-                  <CardDescription>Update the details for "{resource?.title}".</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  <FormField
-                    control={form.control}
-                    name="title"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Title</FormLabel>
-                        <FormControl>
-                          <Input placeholder="e.g., Chapter 1: Electric Charges and Fields" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="content"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Full Content / Details</FormLabel>
-                        <FormControl>
-                          <Textarea placeholder="Detailed explanation or content of the resource." rows={6} {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <Button type="button" variant="outline" size="sm" onClick={handleGenerateContent} disabled={isGenerating}>
-                        {isGenerating ? <Loader2 className="animate-spin" /> : <Sparkles />}
-                        Generate with AI
-                  </Button>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+                <Card className="w-full max-w-4xl mx-auto shadow-lg">
+                  <CardHeader>
+                    <CardTitle className="text-3xl font-bold">Edit Resource</CardTitle>
+                    <CardDescription>Update the details for "{resource?.title}".</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
                     <FormField
                       control={form.control}
-                      name="stream"
+                      name="title"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Stream(s) / Class</FormLabel>
-                           <MultiSelect
-                                options={allStreams.map(s => ({ value: s, label: s }))}
-                                onValueChange={field.onChange}
-                                defaultValue={field.value}
-                                placeholder="Select streams or classes..."
-                            />
+                          <FormLabel>Title</FormLabel>
+                          <FormControl>
+                            <Input placeholder="e.g., Chapter 1: Electric Charges and Fields" {...field} />
+                          </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
                     <FormField
-                        control={form.control}
-                        name="subject"
-                        render={({ field }) => (
-                          <FormItem>
-                              <FormLabel>Subject(s)</FormLabel>
-                              <MultiSelect
-                                  options={allSubjects.map(s => ({ value: s, label: s }))}
-                                  onValueChange={field.onChange}
-                                  defaultValue={field.value}
-                                  placeholder="Select subjects..."
-                              />
-                              <FormMessage />
-                          </FormItem>
-                        )}
-                    />
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <FormField
                       control={form.control}
-                      name="category"
+                      name="content"
                       render={({ field }) => (
                         <FormItem>
-                              <FormLabel>Category(s)</FormLabel>
-                              <MultiSelect
-                                  options={categories.map(c => ({ value: c, label: c }))}
-                                  onValueChange={field.onChange}
-                                  defaultValue={field.value}
-                                  placeholder="Select categories..."
-                              />
-                              <FormMessage />
-                          </FormItem>
+                          <FormLabel>Full Content / Details</FormLabel>
+                          <FormControl>
+                            <Textarea placeholder="Detailed explanation or content of the resource." rows={6} {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
                       )}
                     />
-                  </div>
-                  <div className='space-y-4'>
-                    <FormField
+                    <Button type="button" variant="outline" size="sm" onClick={handleGenerateContent} disabled={isGenerating}>
+                          {isGenerating ? <Loader2 className="animate-spin" /> : <Sparkles />}
+                          Generate with AI
+                    </Button>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <FormField
                         control={form.control}
-                        name="visibility"
+                        name="stream"
                         render={({ field }) => (
-                          <FormItem className="space-y-3">
-                            <FormLabel>Visibility</FormLabel>
-                            <FormControl>
-                              <RadioGroup
-                                onValueChange={field.onChange}
-                                value={field.value}
-                                className="flex flex-col sm:flex-row gap-4"
-                              >
-                                <FormItem className="flex items-center space-x-2 space-y-0">
-                                  <FormControl>
-                                    <RadioGroupItem value="public" />
-                                  </FormControl>
-                                  <FormLabel className="font-normal flex items-center gap-2"><Users/> Public (Visible to all users)</FormLabel>
-                                </FormItem>
-                                 <FormItem className="flex items-center space-x-2 space-y-0">
-                                  <FormControl>
-                                    <RadioGroupItem value="private" />
-                                  </FormControl>
-                                  <FormLabel className="font-normal flex items-center gap-2"><Lock/> Private (Logged-in users only)</FormLabel>
-                                </FormItem>
-                              </RadioGroup>
-                            </FormControl>
+                          <FormItem>
+                            <FormLabel>Stream(s) / Class</FormLabel>
+                            <MultiSelect
+                                  options={allStreams.map(s => ({ value: s, label: s }))}
+                                  onValueChange={field.onChange}
+                                  defaultValue={field.value}
+                                  placeholder="Select streams or classes..."
+                              />
                             <FormMessage />
                           </FormItem>
                         )}
                       />
-                    <FormField
-                      control={form.control}
-                      name="isComingSoon"
-                      render={({ field }) => (
-                          <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                              <FormControl>
-                                  <Checkbox
-                                      checked={field.value}
-                                      onCheckedChange={field.onChange}
-                                  />
-                              </FormControl>
-                              <div className="space-y-1 leading-none">
-                                  <FormLabel>
-                                      Mark as "Coming Soon"
-                                  </FormLabel>
-                                  <FormMessage />
-                              </div>
-                          </FormItem>
-                      )}
+                      <FormField
+                          control={form.control}
+                          name="subject"
+                          render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Subject(s)</FormLabel>
+                                <MultiSelect
+                                    options={allSubjects.map(s => ({ value: s, label: s }))}
+                                    onValueChange={field.onChange}
+                                    defaultValue={field.value}
+                                    placeholder="Select subjects..."
+                                />
+                                <FormMessage />
+                            </FormItem>
+                          )}
                       />
-                  </div>
-                  
-                  <FormField control={form.control} name="viewPdfUrl" render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>PDF View URL</FormLabel>
-                        <FormControl><Input placeholder="https://example.com/view.pdf" {...field} value={field.value ?? ''} /></FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  
-                  <FormField control={form.control} name="pdfUrl" render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>PDF URL (for Download)</FormLabel>
-                        <FormControl><Input placeholder="https://example.com/download.pdf" {...field} value={field.value ?? ''} disabled={isComingSoon} /></FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </CardContent>
-                <CardFooter className="flex justify-between gap-4 border-t pt-6">
-                    <Button type="button" variant="outline" asChild>
-                        <Link href="/admin/uploaded-resources"><ArrowLeft /> Back</Link>
-                    </Button>
-                    <Button type="submit" disabled={isSubmitting}>
-                        {isSubmitting ? <Loader2 className="animate-spin" /> : <Save />}
-                        Save Changes
-                    </Button>
-                </CardFooter>
-              </Card>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <FormField
+                        control={form.control}
+                        name="category"
+                        render={({ field }) => (
+                          <FormItem>
+                                <FormLabel>Category(s)</FormLabel>
+                                <MultiSelect
+                                    options={categories.map(c => ({ value: c, label: c }))}
+                                    onValueChange={field.onChange}
+                                    defaultValue={field.value}
+                                    placeholder="Select categories..."
+                                />
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                      />
+                    </div>
+                    <div className='space-y-4'>
+                      <FormField
+                          control={form.control}
+                          name="visibility"
+                          render={({ field }) => (
+                            <FormItem className="space-y-3">
+                              <FormLabel>Visibility</FormLabel>
+                              <FormControl>
+                                <RadioGroup
+                                  onValueChange={field.onChange}
+                                  value={field.value}
+                                  className="flex flex-col sm:flex-row gap-4"
+                                >
+                                  <FormItem className="flex items-center space-x-2 space-y-0">
+                                    <FormControl>
+                                      <RadioGroupItem value="public" />
+                                    </FormControl>
+                                    <FormLabel className="font-normal flex items-center gap-2"><Users/> Public (Visible to all users)</FormLabel>
+                                  </FormItem>
+                                  <FormItem className="flex items-center space-x-2 space-y-0">
+                                    <FormControl>
+                                      <RadioGroupItem value="private" />
+                                    </FormControl>
+                                    <FormLabel className="font-normal flex items-center gap-2"><Lock/> Private (Logged-in users only)</FormLabel>
+                                  </FormItem>
+                                </RadioGroup>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      <FormField
+                        control={form.control}
+                        name="isComingSoon"
+                        render={({ field }) => (
+                            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                                <FormControl>
+                                    <Checkbox
+                                        checked={field.value}
+                                        onCheckedChange={field.onChange}
+                                    />
+                                </FormControl>
+                                <div className="space-y-1 leading-none">
+                                    <FormLabel>
+                                        Mark as "Coming Soon"
+                                    </FormLabel>
+                                    <FormMessage />
+                                </div>
+                            </FormItem>
+                        )}
+                        />
+                    </div>
+                    
+                    <FormField control={form.control} name="imageUrl" render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Image URL</FormLabel>
+                          <FormControl><Input placeholder="https://picsum.photos/600/400" {...field} /></FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField control={form.control} name="viewPdfUrl" render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>PDF View URL</FormLabel>
+                          <FormControl><Input placeholder="https://example.com/view.pdf" {...field} value={field.value ?? ''} /></FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField control={form.control} name="pdfUrl" render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>PDF URL (for Download)</FormLabel>
+                          <FormControl><Input placeholder="https://example.com/download.pdf" {...field} value={field.value ?? ''} disabled={isComingSoon} /></FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </CardContent>
+                  <CardFooter className="flex justify-between gap-4 border-t pt-6">
+                      <Button type="button" variant="outline" asChild>
+                          <Link href="/admin/uploaded-resources"><ArrowLeft /> Back</Link>
+                      </Button>
+                      <Button type="submit" disabled={isSubmitting}>
+                          {isSubmitting ? <Loader2 className="animate-spin" /> : <Save />}
+                          Save Changes
+                      </Button>
+                  </CardFooter>
+                </Card>
+              </motion.div>
             </form>
           </Form>
         </div>

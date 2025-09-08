@@ -174,6 +174,15 @@ export default function SavePage() {
                       <Card 
                         className="flex flex-col hover:border-primary/50 transition-colors duration-300 overflow-hidden"
                       >
+                         <div className="relative aspect-video bg-muted">
+                            <Image
+                                src={resource.imageUrl}
+                                alt={resource.title}
+                                fill
+                                className="object-cover"
+                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                            />
+                        </div>
                       <CardHeader className="flex-grow">
                           <CardTitle className="text-xl">
                           <Link

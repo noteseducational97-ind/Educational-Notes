@@ -12,6 +12,7 @@ const FormSchema = z.object({
   category: z.array(z.string()).nonempty({ message: 'Select at least one category.' }),
   subject: z.array(z.string()).nonempty({ message: 'Select at least one subject.' }),
   stream: z.array(z.string()).nonempty({ message: 'Select at least one stream.' }),
+  imageUrl: z.string().url('Please enter a valid image URL.'),
   pdfUrl: z.string().optional(),
   viewPdfUrl: z.string().url('A valid view URL for the PDF is required.'),
   isComingSoon: z.boolean().default(false),
@@ -50,7 +51,6 @@ export async function addResourceAction(data: AddResourceInput) {
   }
   
   const { ...restOfData } = validatedFields.data;
-  const finalImageUrl = 'https://placehold.co/600x400.png';
 
   const slug = createSlug(validatedFields.data.title);
   const resourceRef = db.collection('resources').doc(slug);
@@ -66,7 +66,6 @@ export async function addResourceAction(data: AddResourceInput) {
 
     await resourceRef.set({
       ...restOfData,
-      imageUrl: finalImageUrl,
       id: slug,
       createdAt: new Date(),
     });
@@ -97,14 +96,12 @@ export async function updateResourceAction(id: string, data: AddResourceInput) {
   }
   
   const { ...restOfData } = validatedFields.data;
-  const finalImageUrl = 'https://placehold.co/600x400.png';
 
   const resourceRef = db.collection('resources').doc(id);
 
   try {
     await resourceRef.update({
       ...restOfData,
-      imageUrl: finalImageUrl,
     });
 
     revalidatePath('/admin/uploaded-resources');

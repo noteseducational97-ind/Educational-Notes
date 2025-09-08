@@ -259,7 +259,7 @@ export default function DownloadsPage() {
           ) : paginatedResources.length > 0 ? (
             <>
                 <motion.div 
-                  className="grid grid-cols-1 md:grid-cols-2 gap-8"
+                  className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
                   variants={containerVariants}
                   initial="hidden"
                   whileInView="visible"
@@ -273,6 +273,15 @@ export default function DownloadsPage() {
                         <Card 
                           className="flex flex-col hover:border-primary/50 transition-all duration-300 overflow-hidden bg-secondary/30 border-border/50 shadow-md hover:shadow-primary/20"
                         >
+                            <div className="relative aspect-video bg-muted/50">
+                                <Image
+                                    src={resource.imageUrl}
+                                    alt={resource.title}
+                                    fill
+                                    className="object-cover"
+                                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
+                                />
+                            </div>
                             <CardHeader>
                                 <CardTitle className="text-xl">
                                     <Link
