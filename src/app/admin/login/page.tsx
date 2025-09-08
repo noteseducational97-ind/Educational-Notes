@@ -78,14 +78,6 @@ export default function AdminLoginPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-secondary/30 p-4">
-       <div className="absolute top-4 left-4">
-            <Button asChild variant="outline">
-                <Link href="/">
-                    <ArrowLeft className="mr-2 h-4 w-4" />
-                    Back to Home
-                </Link>
-            </Button>
-        </div>
       <Card className="w-full max-w-md shadow-2xl bg-card text-card-foreground">
         <CardHeader className="text-center">
            <div className="flex justify-center mb-4">
