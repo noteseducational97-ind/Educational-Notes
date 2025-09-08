@@ -27,8 +27,10 @@ export default function ProfilePage() {
       <Header />
       <main className="flex-1">
         <div className="container mx-auto px-4 py-8 md:px-6">
-            <h1 className="mb-6 text-3xl font-bold text-foreground">My Profile</h1>
-            <ProfileCard />
+            <h1 className="mb-6 text-3xl font-bold text-foreground animate-fade-in-up">My Profile</h1>
+            <div className="animate-fade-in-up [animation-delay:150ms]">
+                <ProfileCard />
+            </div>
         </div>
       </main>
     </div>

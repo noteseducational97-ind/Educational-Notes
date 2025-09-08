@@ -150,7 +150,7 @@ export default function AddResourceAdminPage() {
     <>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <Card className="w-full max-w-4xl mx-auto shadow-lg">
+          <Card className="w-full max-w-4xl mx-auto shadow-lg animate-fade-in-up">
             <CardHeader>
               <CardTitle className="text-3xl font-bold">Add New Resource</CardTitle>
               <CardDescription>Fill in the details below to add new study material.</CardDescription>

@@ -51,7 +51,7 @@ export default function AdminDashboardPage() {
         <h1 className="text-3xl font-bold text-foreground mb-6">Admin Dashboard</h1>
         
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-6">
-            <Card>
+            <Card className="animate-fade-in-up">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">Total Users</CardTitle>
                   <Users className="h-4 w-4 text-muted-foreground" />
@@ -61,7 +61,7 @@ export default function AdminDashboardPage() {
                   <p className="text-xs text-muted-foreground">Registered users on the platform</p>
               </CardContent>
           </Card>
-            <Card>
+            <Card className="animate-fade-in-up" style={{animationDelay: '150ms', opacity: 0, animationFillMode: 'forwards'}}>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">Total Resources</CardTitle>
                   <BookCopy className="h-4 w-4 text-muted-foreground" />
@@ -74,7 +74,7 @@ export default function AdminDashboardPage() {
         </div>
 
         <div className="grid gap-6 md:grid-cols-2">
-          <Card>
+          <Card className="animate-fade-in-up" style={{animationDelay: '300ms', opacity: 0, animationFillMode: 'forwards'}}>
             <CardHeader>
               <CardTitle>Manage Users</CardTitle>
               <CardDescription>View, enable, disable, or delete user accounts.</CardDescription>
@@ -87,7 +87,7 @@ export default function AdminDashboardPage() {
               </Button>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="animate-fade-in-up" style={{animationDelay: '450ms', opacity: 0, animationFillMode: 'forwards'}}>
             <CardHeader>
               <CardTitle>Manage Resources</CardTitle>
               <CardDescription>Add, edit, or remove study materials from the library.</CardDescription>

@@ -77,8 +77,11 @@ export default function AdminToolsPage() {
         }
     };
     
-    const ToolCard = ({ tool }: { tool: Tool }) => (
-        <Card className="flex flex-col">
+    const ToolCard = ({ tool, index }: { tool: Tool, index: number }) => (
+        <Card 
+            className="flex flex-col animate-fade-in-up"
+            style={{animationDelay: `${index * 150}ms`, opacity: 0, animationFillMode: 'forwards'}}
+        >
             <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                     <Wrench /> 
@@ -145,8 +148,8 @@ export default function AdminToolsPage() {
                 </Button>
             </div>
              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {tools.map((tool) => (
-                    <ToolCard key={tool.id} tool={tool} />
+                {tools.map((tool, i) => (
+                    <ToolCard key={tool.id} tool={tool} index={i} />
                 ))}
             </div>
         </>

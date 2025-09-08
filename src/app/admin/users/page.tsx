@@ -125,7 +125,7 @@ export default function AdminUsersPage() {
           </div>
       </div>
 
-      <Card>
+      <Card className="animate-fade-in-up">
         <CardHeader>
           <CardTitle className="flex items-center gap-2"><Users /> Registered Users</CardTitle>
         </CardHeader>

@@ -29,7 +29,7 @@ export default function LoginPage() {
     <div className="flex min-h-screen flex-col bg-secondary/30">
       <Header />
       <main className="flex flex-1 items-center justify-center p-4">
-        <Card className="w-full max-w-md shadow-2xl bg-card text-card-foreground">
+        <Card className="w-full max-w-md shadow-2xl bg-card text-card-foreground animate-fade-in-up">
           <CardHeader className="text-center">
              <div className="flex justify-center mb-4">
                 <Link href="/" className="flex items-center space-x-2 text-foreground">

@@ -97,7 +97,7 @@ export default function UploadedResourcesPage() {
                 </Button>
             </div>
         </div>
-        <Card>
+        <Card className="animate-fade-in-up">
             <CardHeader>
                 <CardTitle className="flex items-center gap-2"><BookCopy /> All Resources</CardTitle>
                 <CardDescription>

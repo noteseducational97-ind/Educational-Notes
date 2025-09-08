@@ -43,7 +43,7 @@ export default async function ResourceDetailPage({ params, searchParams }: Props
                 </Button>
             </div>
             
-            <div className="bg-primary/10 p-6 md:p-8 rounded-lg mb-8">
+            <div className="bg-primary/10 p-6 md:p-8 rounded-lg mb-8 animate-fade-in-up">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
                     <CalendarIcon className="h-4 w-4" />
                     <span>Uploaded on {format(new Date(resource.createdAt), 'MMMM dd, yyyy')}</span>
@@ -55,11 +55,11 @@ export default async function ResourceDetailPage({ params, searchParams }: Props
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 lg:gap-8 space-y-8 lg:space-y-0">
-              <div className="lg:col-span-2">
+              <div className="lg:col-span-2 animate-fade-in-up [animation-delay:150ms]">
                 <ResourcePreviewer title={resource.title} url={resource.viewPdfUrl} />
               </div>
 
-              <div className="lg:col-span-1">
+              <div className="lg:col-span-1 animate-fade-in-up [animation-delay:300ms]">
                 <Card className="shadow-xl sticky top-24">
                     <CardHeader>
                         <CardTitle>Details</CardTitle>

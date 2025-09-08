@@ -103,8 +103,12 @@ export default function AdminTeachersPage() {
                 </Button>
             </div>
             <div className="grid md:grid-cols-2 gap-8">
-                {teachers.map(teacher => (
-                    <Card key={teacher.id} className="flex flex-col">
+                {teachers.map((teacher, i) => (
+                    <Card 
+                        key={teacher.id} 
+                        className="flex flex-col animate-fade-in-up"
+                        style={{animationDelay: `${i * 150}ms`, opacity: 0, animationFillMode: 'forwards'}}
+                    >
                         <CardHeader>
                             <div>
                                 <CardTitle>{teacher.name}</CardTitle>

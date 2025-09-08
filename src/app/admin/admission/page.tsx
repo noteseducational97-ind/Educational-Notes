@@ -89,7 +89,7 @@ export default function AdminAdmissionPage() {
         </Button>
       </div>
       {forms.length === 0 ? (
-        <div className="text-center py-12 border-2 border-dashed rounded-lg">
+        <div className="text-center py-12 border-2 border-dashed rounded-lg animate-fade-in-up">
           <p className="text-muted-foreground">No admission forms have been created yet.</p>
           <Button asChild variant="link">
              <Link href="/admin/admission/add">
@@ -99,8 +99,12 @@ export default function AdminAdmissionPage() {
         </div>
       ) : (
         <div className="grid md:grid-cols-2 gap-8">
-            {forms.map((form) => (
-                <Card key={form.id} className="flex flex-col">
+            {forms.map((form, i) => (
+                <Card 
+                    key={form.id} 
+                    className="flex flex-col animate-fade-in-up"
+                    style={{animationDelay: `${i * 150}ms`, opacity: 0, animationFillMode: 'forwards'}}
+                >
                     <CardHeader>
                         <div className="flex justify-between items-start">
                             <div>

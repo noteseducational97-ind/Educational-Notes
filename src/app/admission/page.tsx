@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -29,7 +30,7 @@ export default function AdmissionPage() {
       <Header />
       <main className="flex-1">
         <div className="container mx-auto px-4 py-12">
-            <div className="text-center mb-12">
+            <div className="text-center mb-12 animate-fade-in-up">
                 <h1 className="text-4xl font-bold tracking-tight text-primary">Admissions Open</h1>
                 <p className="mt-2 text-lg text-muted-foreground">
                     Choose the program you are interested in and proceed with the admission process.
@@ -38,8 +39,12 @@ export default function AdmissionPage() {
             
             {admissionForms.length > 0 ? (
                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-                    {admissionForms.map((form) => (
-                        <Card key={form.id} className="flex flex-col justify-between bg-secondary/30 p-6">
+                    {admissionForms.map((form, i) => (
+                        <Card 
+                            key={form.id} 
+                            className="flex flex-col justify-between bg-secondary/30 p-6 animate-fade-in-up"
+                            style={{animationDelay: `${i * 150}ms`, opacity: 0, animationFillMode: 'forwards'}}
+                        >
                             <div>
                                 <CardTitle className="text-2xl">{form.title}</CardTitle>
                                 <CardDescription className="mt-2">{form.description}</CardDescription>
@@ -57,7 +62,7 @@ export default function AdmissionPage() {
                     ))}
                 </div>
             ) : (
-                <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-muted bg-card/50 p-12 text-center max-w-2xl mx-auto">
+                <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-muted bg-card/50 p-12 text-center max-w-2xl mx-auto animate-fade-in-up">
                     <Info className="h-12 w-12 text-muted-foreground mb-4" />
                     <h2 className="text-2xl font-semibold">No Admissions Currently Open</h2>
                     <p className="mt-2 text-muted-foreground">
@@ -66,7 +71,7 @@ export default function AdmissionPage() {
                 </div>
             )}
 
-             <div className="text-center mt-16">
+             <div className="text-center mt-16 animate-fade-in-up [animation-delay:300ms]">
                  <h2 className="text-2xl font-semibold">Have Questions?</h2>
                  <p className="mt-2 text-muted-foreground">
                      Feel free to contact us for any admission-related inquiries.
