@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
@@ -36,14 +37,6 @@ export const initialTools: Tool[] = [
         href: '/admission',
         visibility: 'public',
         isComingSoon: false,
-    },
-    {
-        id: 'flashcard-maker',
-        title: 'Flashcard Maker',
-        description: 'A tool for creating and studying with Flashcard Maker.',
-        href: '#',
-        visibility: 'private',
-        isComingSoon: true,
     }
 ];
 
