@@ -260,7 +260,7 @@ export default function AdminDownloadsPage() {
       {paginatedResources.length > 0 ? (
         <>
             <motion.div 
-              className="grid grid-cols-1 md:grid-cols-2 gap-8"
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
               variants={containerVariants}
               initial="hidden"
               animate="visible"
@@ -271,7 +271,7 @@ export default function AdminDownloadsPage() {
                 const disabled = isLinkDisabled(resource);
                 return (
                 <motion.div variants={itemVariants} key={resource.id}>
-                  <Card className="flex flex-col hover:border-primary/50 transition-all duration-300 overflow-hidden bg-secondary/30 border-border/50 shadow-md hover:shadow-primary/20">
+                  <Card className="flex flex-col h-full hover:border-primary/50 transition-all duration-300 overflow-hidden bg-secondary/30 border-border/50 shadow-md hover:shadow-primary/20">
                       <div className="relative aspect-video bg-muted/50">
                           <Image
                               src={resource.imageUrl}

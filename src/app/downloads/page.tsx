@@ -259,7 +259,7 @@ export default function DownloadsPage() {
           ) : paginatedResources.length > 0 ? (
             <>
                 <motion.div 
-                  className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
+                  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
                   variants={containerVariants}
                   initial="hidden"
                   whileInView="visible"
@@ -279,7 +279,7 @@ export default function DownloadsPage() {
                                     alt={resource.title}
                                     fill
                                     className="object-cover"
-                                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
+                                    sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
                                 />
                             </div>
                             <CardHeader>
