@@ -1,4 +1,3 @@
-
 'use client';
 
 import Link from 'next/link';
@@ -13,6 +12,8 @@ import { auth } from '@/lib/firebase/client';
 import {
   Sheet,
   SheetContent,
+  SheetHeader,
+  SheetTitle,
   SheetTrigger,
   SheetClose,
 } from '@/components/ui/sheet';
@@ -79,14 +80,16 @@ const NavContent = ({ isMobile = false }: { isMobile?: boolean }) => {
 
   return (
     <>
-      <div className="flex h-16 items-center border-b px-6">
-          <Link href="/" className="flex items-center gap-2 font-semibold">
-              <EducationalNotesLogo className="h-6 w-6 text-primary" />
-              <span>Educational Notes</span>
-          </Link>
-      </div>
+      {!isMobile && (
+        <div className="flex h-16 items-center border-b px-6">
+            <Link href="/" className="flex items-center gap-2 font-semibold">
+                <EducationalNotesLogo className="h-6 w-6 text-primary" />
+                <span>Educational Notes</span>
+            </Link>
+        </div>
+      )}
       <div className="flex-1 overflow-y-auto py-4">
-          <nav className="px-4 space-y-2">
+          <nav className={cn("px-4 space-y-2", isMobile && "grid")}>
           {adminNavLinks.map(({ href, label, icon: Icon }) => {
               const isActive = pathname === href || (href !== '/admin' && href !== '/downloads' && pathname.startsWith(href));
               return (
@@ -136,6 +139,14 @@ export function MobileAdminSidebar() {
         </Button>
       </SheetTrigger>
       <SheetContent side="left" className="flex flex-col p-0 w-64">
+        <SheetHeader className="border-b p-4">
+           <SheetTitle asChild>
+                <Link href="/" className="flex items-center gap-2 font-semibold">
+                    <EducationalNotesLogo className="h-6 w-6 text-primary" />
+                    <span>Educational Notes</span>
+                </Link>
+           </SheetTitle>
+        </SheetHeader>
         <NavContent isMobile={true} />
       </SheetContent>
     </Sheet>
