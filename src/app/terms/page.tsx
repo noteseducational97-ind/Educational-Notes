@@ -1,6 +1,6 @@
-
 'use client';
 import { useEffect, useState } from 'react';
+import Header from '@/components/layout/Header';
 
 export default function TermsPage() {
   const [date, setDate] = useState('');
@@ -11,6 +11,7 @@ export default function TermsPage() {
 
   return (
     <div className="w-full bg-background">
+       <Header />
       <div className="container mx-auto max-w-4xl px-4 py-12 sm:py-16 md:py-20">
         <div className="prose prose-lg dark:prose-invert mx-auto">
             <h1 className="text-4xl font-bold tracking-tight text-primary sm:text-5xl">Terms of Service</h1>
