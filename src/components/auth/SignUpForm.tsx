@@ -12,7 +12,7 @@ import {
   signInWithPopup,
   GoogleAuthProvider,
 } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { auth, db } from '@/lib/firebase/client';
 import { useToast } from '@/hooks/use-toast';
 
@@ -32,11 +32,6 @@ const formSchema = z
     message: "Passwords don't match",
     path: ['confirmPassword'],
   });
-
-const adminUsers: { [key: string]: string } = {
-    'admin': 'noteseducational97@gmail.com',
-    'shree': 'shreecoachingclasses@gmail.com'
-};
 
 const GoogleIcon = () => (
     <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
@@ -77,6 +72,16 @@ export default function SignUpForm() {
     },
   });
 
+  const checkAdminAndRedirect = async (user: any) => {
+    const userDocRef = doc(db, 'users', user.uid);
+    const userDoc = await getDoc(userDocRef);
+    if (userDoc.exists() && userDoc.data().isAdmin) {
+      router.push('/admin');
+    } else {
+      router.push('/');
+    }
+  };
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
     try {
@@ -92,13 +97,10 @@ export default function SignUpForm() {
         displayName: values.username,
         email: values.email,
         createdAt: new Date(),
+        // isAdmin will be set manually in Firestore by a super-admin
       });
       
-      if (user.email && Object.values(adminUsers).includes(user.email)) {
-        router.push('/admin');
-      } else {
-        router.push('/');
-      }
+      await checkAdminAndRedirect(user);
 
     } catch (error: any) {
       toast({
@@ -125,11 +127,7 @@ export default function SignUpForm() {
         createdAt: new Date(),
       }, { merge: true });
 
-      if (user.email && Object.values(adminUsers).includes(user.email)) {
-        router.push('/admin');
-      } else {
-        router.push('/');
-      }
+      await checkAdminAndRedirect(user);
     } catch (error: any) {
       toast({
         variant: 'destructive',

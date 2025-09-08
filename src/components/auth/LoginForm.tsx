@@ -7,7 +7,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useRouter } from 'next/navigation';
 import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
-import { auth } from '@/lib/firebase/client';
+import { auth, db } from '@/lib/firebase/client';
+import { doc, getDoc } from "firebase/firestore";
 import { useToast } from '@/hooks/use-toast';
 
 import { Button } from '@/components/ui/button';
@@ -20,11 +21,6 @@ const formSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email.' }),
   password: z.string().min(1, { message: 'Password is required.' }),
 });
-
-const adminUsers: { [key: string]: string } = {
-    'admin': 'noteseducational97@gmail.com',
-    'shree': 'shreecoachingclasses@gmail.com'
-};
 
 const GoogleIcon = () => (
   <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
@@ -62,16 +58,21 @@ export default function LoginForm() {
     },
   });
 
+  const checkAdminAndRedirect = async (user: any) => {
+    const userDocRef = doc(db, 'users', user.uid);
+    const userDoc = await getDoc(userDocRef);
+    if (userDoc.exists() && userDoc.data().isAdmin) {
+      router.push('/admin');
+    } else {
+      router.push('/');
+    }
+  }
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
     try {
       const userCredential = await signInWithEmailAndPassword(auth, values.email, values.password);
-      const user = userCredential.user;
-      if (user.email && Object.values(adminUsers).includes(user.email)) {
-        router.push('/admin');
-      } else {
-        router.push('/');
-      }
+      await checkAdminAndRedirect(userCredential.user);
     } catch (error: any) {
       toast({
         variant: 'destructive',
@@ -88,12 +89,7 @@ export default function LoginForm() {
     try {
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
-      const user = result.user;
-      if (user.email && Object.values(adminUsers).includes(user.email)) {
-        router.push('/admin');
-      } else {
-        router.push('/');
-      }
+      await checkAdminAndRedirect(result.user);
     } catch (error: any) {
       toast({
         variant: 'destructive',
