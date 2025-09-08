@@ -16,6 +16,7 @@ import {
   SheetTrigger,
   SheetClose,
 } from '@/components/ui/sheet';
+import React from 'react';
 
 const adminNavLinks = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
@@ -28,7 +29,35 @@ const adminNavLinks = [
   { href: '/admin/tools/test-generator', label: 'Test Generator', icon: FileQuestion },
 ];
 
-const NavContent = () => {
+const NavLink = ({ href, children, isActive }: { href: string; children: React.ReactNode, isActive: boolean }) => (
+    <Link
+        href={href}
+        prefetch={true}
+        className={cn(
+            'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary',
+            isActive && 'bg-muted text-primary'
+        )}
+    >
+        {children}
+    </Link>
+);
+
+const MobileNavLink = ({ href, children, isActive }: { href: string; children: React.ReactNode, isActive: boolean }) => (
+    <SheetClose asChild>
+        <Link
+            href={href}
+            prefetch={true}
+            className={cn(
+                'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary',
+                isActive && 'bg-muted text-primary'
+            )}
+        >
+            {children}
+        </Link>
+    </SheetClose>
+);
+
+const NavContent = ({ isMobile = false }: { isMobile?: boolean }) => {
   const pathname = usePathname();
   const router = useRouter();
   const { toast } = useToast();
@@ -46,6 +75,8 @@ const NavContent = () => {
     }
   };
 
+  const LinkComponent = isMobile ? MobileNavLink : NavLink;
+
   return (
     <>
       <div className="flex h-16 items-center border-b px-6">
@@ -59,19 +90,10 @@ const NavContent = () => {
           {adminNavLinks.map(({ href, label, icon: Icon }) => {
               const isActive = pathname === href || (href !== '/admin' && href !== '/downloads' && pathname.startsWith(href));
               return (
-                <SheetClose asChild key={label}>
-                  <Link
-                      href={href}
-                      prefetch={true}
-                      className={cn(
-                      'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary',
-                      isActive && 'bg-muted text-primary'
-                      )}
-                  >
-                      <Icon className="h-4 w-4" />
-                      <span>{label}</span>
-                  </Link>
-                </SheetClose>
+                <LinkComponent href={href} isActive={isActive} key={label}>
+                  <Icon className="h-4 w-4" />
+                  <span>{label}</span>
+                </LinkComponent>
               );
           })}
           </nav>
@@ -114,7 +136,7 @@ export function MobileAdminSidebar() {
         </Button>
       </SheetTrigger>
       <SheetContent side="left" className="flex flex-col p-0 w-64">
-        <NavContent />
+        <NavContent isMobile={true} />
       </SheetContent>
     </Sheet>
   )
