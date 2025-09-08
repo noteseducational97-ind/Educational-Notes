@@ -20,6 +20,7 @@ import {
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
+import { motion } from 'framer-motion';
 
 export type Teacher = {
   id: string;
@@ -51,6 +52,27 @@ const initialTeachers: Teacher[] = [
     description: 'A master of chemistry, Mangesh Sir has spent three decades nurturing curiosity and confidence. His empathetic approach continues to inspire thousands.',
   }
 ];
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { y: 20, opacity: 0 },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: {
+      duration: 0.5,
+    },
+  },
+};
 
 export default function AdminTeachersPage() {
     const [teachers, setTeachers] = useState<Teacher[]>([]);
@@ -102,13 +124,15 @@ export default function AdminTeachersPage() {
                     </Link>
                 </Button>
             </div>
-            <div className="grid md:grid-cols-2 gap-8">
-                {teachers.map((teacher, i) => (
-                    <Card 
-                        key={teacher.id} 
-                        className="flex flex-col animate-fade-in-up"
-                        style={{animationDelay: `${i * 150}ms`, opacity: 0, animationFillMode: 'forwards'}}
-                    >
+            <motion.div 
+              className="grid md:grid-cols-2 gap-8"
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+            >
+                {teachers.map((teacher) => (
+                  <motion.div variants={itemVariants} key={teacher.id}>
+                    <Card className="flex flex-col">
                         <CardHeader>
                             <div>
                                 <CardTitle>{teacher.name}</CardTitle>
@@ -152,8 +176,9 @@ export default function AdminTeachersPage() {
                             </AlertDialog>
                         </CardFooter>
                     </Card>
+                    </motion.div>
                 ))}
-            </div>
+            </motion.div>
         </>
     );
 }

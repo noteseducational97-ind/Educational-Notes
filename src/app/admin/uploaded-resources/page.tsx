@@ -25,6 +25,7 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { cn } from '@/lib/utils';
+import { motion } from 'framer-motion';
 
 export default function UploadedResourcesPage() {
   const { user, loading: authLoading, isAdmin } = useAuth();
@@ -97,105 +98,111 @@ export default function UploadedResourcesPage() {
                 </Button>
             </div>
         </div>
-        <Card className="animate-fade-in-up">
-            <CardHeader>
-                <CardTitle className="flex items-center gap-2"><BookCopy /> All Resources</CardTitle>
-                <CardDescription>
-                A complete list of all study materials in the system. `Public` is visible to everyone. `Private` is visible only to logged-in users.
-                </CardDescription>
-            </CardHeader>
-            <CardContent>
-                {loadingData ? (
-                    <div className="flex justify-center items-center h-96">
-                    <LoadingSpinner className="min-h-0" />
-                </div>
-                ) : resources.length > 0 ? (
-                <div className="w-full overflow-x-auto">
-                    <Table>
-                    <TableHeader>
-                        <TableRow>
-                        <TableHead>Title</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Visibility</TableHead>
-                        <TableHead>Category</TableHead>
-                            <TableHead>Subject</TableHead>
-                        <TableHead>Stream/Class</TableHead>
-                        <TableHead className="text-right">Actions</TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {resources.map((resource) => {
-                        const { icon, text } = getVisibilityProps(resource.visibility);
-                        return (
-                            <TableRow key={resource.id}>
-                                <TableCell className="font-medium">{resource.title}</TableCell>
-                                <TableCell>
-                                {resource.isComingSoon ? (
-                                    <Badge variant="outline"><Clock className="mr-1 h-3 w-3"/>Coming Soon</Badge>
-                                ) : (
-                                    <Badge variant="secondary" className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 border-green-300 dark:border-green-700/50">Published</Badge>
-                                )}
-                                </TableCell>
-                                <TableCell>
-                                <Badge variant={resource.visibility === 'private' ? 'destructive' : 'secondary'} className={cn(resource.visibility === 'public' && 'bg-primary/20 border-primary/50 text-primary-foreground')}>
-                                    {icon}
-                                    {text}
-                                </Badge>
-                                </TableCell>
-                                <TableCell>
-                                <div className="flex flex-wrap gap-1">
-                                    {resource.category.map(c => <Badge key={c} variant="secondary">{c}</Badge>)}
-                                </div>
-                                </TableCell>
-                                <TableCell>
-                                    <div className="flex flex-wrap gap-1">
-                                    {resource.subject.map(s => <Badge key={s} variant="outline">{s}</Badge>)}
-                                    </div>
-                                </TableCell>
-                                <TableCell>
-                                <div className="flex flex-wrap gap-1">
-                                    {resource.stream.map(s => <Badge key={s}>{s}</Badge>)}
-                                </div>
-                                </TableCell>
-                                <TableCell className="flex justify-end gap-2">
-                                <Button variant="outline" size="sm" asChild>
-                                    <Link href={`/admin/edit-resource/${resource.id}`}>
-                                    <Edit className="h-4 w-4" />
-                                    </Link>
-                                </Button>
-                                <AlertDialog>
-                                    <AlertDialogTrigger asChild>
-                                    <Button variant="destructive" size="sm" disabled={deletingId === resource.id}>
-                                        <Trash2 className="h-4 w-4" />
-                                    </Button>
-                                    </AlertDialogTrigger>
-                                    <AlertDialogContent>
-                                    <AlertDialogHeader>
-                                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                                        <AlertDialogDescription>
-                                        This action cannot be undone. This will permanently delete the resource "{resource.title}".
-                                        </AlertDialogDescription>
-                                    </AlertDialogHeader>
-                                    <AlertDialogFooter>
-                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                        <AlertDialogAction onClick={() => handleDelete(resource.id, resource.title)}>
-                                        Yes, delete
-                                        </AlertDialogAction>
-                                    </AlertDialogFooter>
-                                    </AlertDialogContent>
-                                </AlertDialog>
-                                </TableCell>
-                            </TableRow>
-                        )
-                        })}
-                    </TableBody>
-                    </Table>
-                </div>
-                ) : (
-                    <p className="text-center text-muted-foreground py-12">No resources have been uploaded yet.</p>
-                )}
-            </CardContent>
-        </Card>
+        <motion.div
+           initial={{ opacity: 0, y: 20 }}
+           animate={{ opacity: 1, y: 0 }}
+           transition={{ duration: 0.5 }}
+        >
+          <Card>
+              <CardHeader>
+                  <CardTitle className="flex items-center gap-2"><BookCopy /> All Resources</CardTitle>
+                  <CardDescription>
+                  A complete list of all study materials in the system. `Public` is visible to everyone. `Private` is visible only to logged-in users.
+                  </CardDescription>
+              </CardHeader>
+              <CardContent>
+                  {loadingData ? (
+                      <div className="flex justify-center items-center h-96">
+                      <LoadingSpinner className="min-h-0" />
+                  </div>
+                  ) : resources.length > 0 ? (
+                  <div className="w-full overflow-x-auto">
+                      <Table>
+                      <TableHeader>
+                          <TableRow>
+                          <TableHead>Title</TableHead>
+                          <TableHead>Status</TableHead>
+                          <TableHead>Visibility</TableHead>
+                          <TableHead>Category</TableHead>
+                              <TableHead>Subject</TableHead>
+                          <TableHead>Stream/Class</TableHead>
+                          <TableHead className="text-right">Actions</TableHead>
+                          </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                          {resources.map((resource) => {
+                          const { icon, text } = getVisibilityProps(resource.visibility);
+                          return (
+                              <TableRow key={resource.id}>
+                                  <TableCell className="font-medium">{resource.title}</TableCell>
+                                  <TableCell>
+                                  {resource.isComingSoon ? (
+                                      <Badge variant="outline"><Clock className="mr-1 h-3 w-3"/>Coming Soon</Badge>
+                                  ) : (
+                                      <Badge variant="secondary" className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 border-green-300 dark:border-green-700/50">Published</Badge>
+                                  )}
+                                  </TableCell>
+                                  <TableCell>
+                                  <Badge variant={resource.visibility === 'private' ? 'destructive' : 'secondary'} className={cn(resource.visibility === 'public' && 'bg-primary/20 border-primary/50 text-primary-foreground')}>
+                                      {icon}
+                                      {text}
+                                  </Badge>
+                                  </TableCell>
+                                  <TableCell>
+                                  <div className="flex flex-wrap gap-1">
+                                      {resource.category.map(c => <Badge key={c} variant="secondary">{c}</Badge>)}
+                                  </div>
+                                  </TableCell>
+                                  <TableCell>
+                                      <div className="flex flex-wrap gap-1">
+                                      {resource.subject.map(s => <Badge key={s} variant="outline">{s}</Badge>)}
+                                      </div>
+                                  </TableCell>
+                                  <TableCell>
+                                  <div className="flex flex-wrap gap-1">
+                                      {resource.stream.map(s => <Badge key={s}>{s}</Badge>)}
+                                  </div>
+                                  </TableCell>
+                                  <TableCell className="flex justify-end gap-2">
+                                  <Button variant="outline" size="sm" asChild>
+                                      <Link href={`/admin/edit-resource/${resource.id}`}>
+                                      <Edit className="h-4 w-4" />
+                                      </Link>
+                                  </Button>
+                                  <AlertDialog>
+                                      <AlertDialogTrigger asChild>
+                                      <Button variant="destructive" size="sm" disabled={deletingId === resource.id}>
+                                          <Trash2 className="h-4 w-4" />
+                                      </Button>
+                                      </AlertDialogTrigger>
+                                      <AlertDialogContent>
+                                      <AlertDialogHeader>
+                                          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                          <AlertDialogDescription>
+                                          This action cannot be undone. This will permanently delete the resource "{resource.title}".
+                                          </AlertDialogDescription>
+                                      </AlertDialogHeader>
+                                      <AlertDialogFooter>
+                                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                          <AlertDialogAction onClick={() => handleDelete(resource.id, resource.title)}>
+                                          Yes, delete
+                                          </AlertDialogAction>
+                                      </AlertDialogFooter>
+                                      </AlertDialogContent>
+                                  </AlertDialog>
+                                  </TableCell>
+                              </TableRow>
+                          )
+                          })}
+                      </TableBody>
+                      </Table>
+                  </div>
+                  ) : (
+                      <p className="text-center text-muted-foreground py-12">No resources have been uploaded yet.</p>
+                  )}
+              </CardContent>
+          </Card>
+        </motion.div>
     </>
   );
 }

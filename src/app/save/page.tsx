@@ -27,9 +27,31 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import Pagination from '@/components/shared/Pagination';
+import { motion } from 'framer-motion';
 
 const GUEST_WATCHLIST_KEY = 'guest-watchlist';
 const ITEMS_PER_PAGE = 9;
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { y: 20, opacity: 0 },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: {
+      duration: 0.5,
+    },
+  },
+};
 
 export default function SavePage() {
   const { user, loading: authLoading } = useAuth();
@@ -140,84 +162,89 @@ export default function SavePage() {
 
           {paginatedItems.length > 0 ? (
             <>
-                <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                <motion.div 
+                  className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
+                  variants={containerVariants}
+                  initial="hidden"
+                  animate="visible"
+                >
                 {paginatedItems.map((resource, i) => (
-                    <Card 
-                      key={resource.id} 
-                      className="flex flex-col hover:border-primary/50 transition-colors duration-300 overflow-hidden animate-fade-in-up"
-                      style={{ animationDelay: `${i * 100}ms`, opacity: 0, animationFillMode: 'forwards' }}
-                    >
-                    <CardHeader className="flex-grow">
-                        <CardTitle className="text-xl">
-                        <Link
-                            href={`/resources/${resource.id}`}
-                            className="group inline-flex items-center gap-2 hover:text-primary transition-colors"
-                        >
-                            <BookOpen className="h-5 w-5 text-primary/80" />
-                            {resource.title}
-                            {!isLinkDisabled(resource) && <ArrowUpRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />}
-                        </Link>
-                        </CardTitle>
-                        <CardDescription asChild>
-                        <div className="flex flex-wrap gap-2 pt-2">
-                            <div className="flex flex-wrap gap-1">
-                                {resource.category.map(c => <Badge key={c} variant="secondary">{c}</Badge>)}
-                            </div>
-                            {resource.class && <Badge variant="outline">Class {resource.class}</Badge>}
-                            <div className="flex flex-wrap gap-1">
-                                {resource.stream.map(s => <Badge key={s} variant="outline">{s}</Badge>)}
-                            </div>
-                            <div className="flex flex-wrap gap-1 mt-1">
-                            {resource.subject.map(s => <Badge key={s} variant="default">{s}</Badge>)}
-                            </div>
-                        </div>
-                        </CardDescription>
-                    </CardHeader>
-                    <CardFooter className="flex items-center justify-between mt-auto border-t pt-4">
-                        <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleRemoveFromWatchlist(resource.id, resource.title)}
-                            disabled={removing === resource.id}
-                        >
-                            <BookmarkX className="h-4 w-4 mr-1" />
-                            Remove
-                        </Button>
-                        <div className="flex items-center gap-2">
-                            <Button
-                                size="sm"
-                                variant="outline"
-                                disabled={isLinkDisabled(resource)}
-                                asChild
-                            >
-                                <Link href={`/resources/${resource.id}`}>
-                                    <ExternalLink className="h-4 w-4" />
-                                    View
-                                </Link>
-                            </Button>
-                            {user ? (
-                            <Button asChild size="sm" disabled={isLinkDisabled(resource)}>
-                                <Link
-                                href={getDownloadUrl(resource)}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="group inline-flex items-center gap-1"
-                                >
-                                <Download className="h-4 w-4" />
-                                Download
-                                </Link>
-                            </Button>
-                            ) : (
-                            <Button size="sm" disabled={isLinkDisabled(resource)} onClick={handleDownloadClick}>
-                                <Download className="h-4 w-4" />
-                                Download
-                            </Button>
-                            )}
-                        </div>
-                    </CardFooter>
-                    </Card>
+                    <motion.div variants={itemVariants} key={resource.id}>
+                      <Card 
+                        className="flex flex-col hover:border-primary/50 transition-colors duration-300 overflow-hidden"
+                      >
+                      <CardHeader className="flex-grow">
+                          <CardTitle className="text-xl">
+                          <Link
+                              href={`/resources/${resource.id}`}
+                              className="group inline-flex items-center gap-2 hover:text-primary transition-colors"
+                          >
+                              <BookOpen className="h-5 w-5 text-primary/80" />
+                              {resource.title}
+                              {!isLinkDisabled(resource) && <ArrowUpRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />}
+                          </Link>
+                          </CardTitle>
+                          <CardDescription asChild>
+                          <div className="flex flex-wrap gap-2 pt-2">
+                              <div className="flex flex-wrap gap-1">
+                                  {resource.category.map(c => <Badge key={c} variant="secondary">{c}</Badge>)}
+                              </div>
+                              {resource.class && <Badge variant="outline">Class {resource.class}</Badge>}
+                              <div className="flex flex-wrap gap-1">
+                                  {resource.stream.map(s => <Badge key={s} variant="outline">{s}</Badge>)}
+                              </div>
+                              <div className="flex flex-wrap gap-1 mt-1">
+                              {resource.subject.map(s => <Badge key={s} variant="default">{s}</Badge>)}
+                              </div>
+                          </div>
+                          </CardDescription>
+                      </CardHeader>
+                      <CardFooter className="flex items-center justify-between mt-auto border-t pt-4">
+                          <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleRemoveFromWatchlist(resource.id, resource.title)}
+                              disabled={removing === resource.id}
+                          >
+                              <BookmarkX className="h-4 w-4 mr-1" />
+                              Remove
+                          </Button>
+                          <div className="flex items-center gap-2">
+                              <Button
+                                  size="sm"
+                                  variant="outline"
+                                  disabled={isLinkDisabled(resource)}
+                                  asChild
+                              >
+                                  <Link href={`/resources/${resource.id}`}>
+                                      <ExternalLink className="h-4 w-4" />
+                                      View
+                                  </Link>
+                              </Button>
+                              {user ? (
+                              <Button asChild size="sm" disabled={isLinkDisabled(resource)}>
+                                  <Link
+                                  href={getDownloadUrl(resource)}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="group inline-flex items-center gap-1"
+                                  >
+                                  <Download className="h-4 w-4" />
+                                  Download
+                                  </Link>
+                              </Button>
+                              ) : (
+                              <Button size="sm" disabled={isLinkDisabled(resource)} onClick={handleDownloadClick}>
+                                  <Download className="h-4 w-4" />
+                                  Download
+                              </Button>
+                              )}
+                          </div>
+                      </CardFooter>
+                      </Card>
+                    </motion.div>
                 ))}
-                </div>
+                </motion.div>
                 <Pagination
                     currentPage={currentPage}
                     totalPages={totalPages}
