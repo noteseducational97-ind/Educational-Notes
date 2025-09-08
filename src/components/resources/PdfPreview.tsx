@@ -30,9 +30,10 @@ export default function PdfPreview({ url, title }: PdfPreviewProps) {
     // Check if it's a Google Drive link and construct the native embed URL with toolbar hidden
     if (url.includes('drive.google.com')) {
         // From: https://drive.google.com/file/d/FILE_ID/view?usp=sharing
-        // To:   https://drive.google.com/file/d/FILE_ID/preview
+        // To:   https://drive.google.com/file/d/FILE_ID/preview?rm=minimal
         const newUrl = url.replace('/view?usp=sharing', '/preview').replace('/view', '/preview');
-        embedUrl = newUrl;
+        // Add rm=minimal to hide the top bar with the pop-out icon
+        embedUrl = newUrl.includes('?') ? `${newUrl}&rm=minimal` : `${newUrl}?rm=minimal`;
     } else {
         // For other URLs, use Google Docs viewer and hide toolbar
         embedUrl = `https://docs.google.com/gview?url=${encodeURIComponent(url)}&embedded=true&rm=minimal`;
