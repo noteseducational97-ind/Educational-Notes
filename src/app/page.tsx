@@ -88,16 +88,16 @@ export default function Home() {
             <div className="absolute -bottom-8 left-20 w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
           <div className="container px-4 md:px-6 relative">
             <div className="flex flex-col items-center text-center space-y-6">
-                <div className="inline-block rounded-full bg-primary/10 px-4 py-2 text-sm font-semibold text-primary border border-primary/20 shadow-sm">
+                <div className="inline-block rounded-full bg-primary/10 px-4 py-2 text-sm font-semibold text-primary border border-primary/20 shadow-sm animate-fade-in-up">
                     Your Ultimate Advantage for Exam Success
                 </div>
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-primary to-purple-400 tracking-tight">
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-primary to-purple-400 tracking-tight animate-fade-in-up [animation-delay:200ms]">
                     Your Success, Our Mission
                 </h1>
-                <p className="max-w-xl text-lg text-foreground/80">
+                <p className="max-w-xl text-lg text-foreground/80 animate-fade-in-up [animation-delay:400ms]">
                     High-quality study materials, expert-curated content—all completely free. Achieve academic excellence with us.
                 </p>
-                <div className="flex flex-col gap-4 min-[400px]:flex-row">
+                <div className="flex flex-col gap-4 min-[400px]:flex-row animate-fade-in-up [animation-delay:600ms]">
                    {!user ? (
                         <Button size="lg" asChild>
                             <Link href="/signup">Get Started <ArrowRight /></Link>
@@ -121,16 +121,17 @@ export default function Home() {
             <div className="absolute bottom-10 -right-20 w-96 h-96 bg-red-200 rounded-full mix-blend-multiply filter blur-2xl opacity-40 animate-blob animation-delay-3000"></div>
           <div className="container px-4 md:px-6 relative">
             <div className="flex flex-col items-center justify-center space-y-4 text-center mb-12">
-              <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-balance">What We Offer</h2>
-              <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed text-balance">
+              <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-balance animate-fade-in-up">What We Offer</h2>
+              <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed text-balance animate-fade-in-up [animation-delay:200ms]">
                 From comprehensive notes to practice tools, find everything you need to excel in your studies.
               </p>
             </div>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-              {features.map((feature) => (
+              {features.map((feature, i) => (
                 <Card 
                   key={feature.title}
-                  className="group flex flex-col h-full transition-all duration-300 hover:scale-105 hover:shadow-xl hover:border-primary/50 bg-background/50 border-border"
+                  className="group flex flex-col h-full transition-all duration-300 hover:scale-105 hover:shadow-xl hover:border-primary/50 bg-background/50 border-border animate-fade-in-up"
+                  style={{animationDelay: `${i * 150 + 300}ms`}}
                 >
                   <CardHeader>
                     <div className="flex items-center gap-4">
@@ -153,16 +154,17 @@ export default function Home() {
             <div className="absolute -bottom-8 right-20 w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
           <div className="container px-4 md:px-6 relative">
             <div className="flex flex-col items-center justify-center space-y-4 text-center mb-12">
-              <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-balance">Our Tools</h2>
-              <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed text-balance">
+              <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-balance animate-fade-in-up">Our Tools</h2>
+              <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed text-balance animate-fade-in-up [animation-delay:200ms]">
                 Powerful utilities designed to help you study smarter and achieve your academic goals.
               </p>
             </div>
             <div className="mx-auto grid max-w-5xl items-center gap-6 sm:grid-cols-2">
-              {tools.map((tool) => (
+              {tools.map((tool, i) => (
                 <Card 
                   key={tool.title}
-                  className="group flex flex-col h-full transition-all duration-300 hover:scale-105 hover:shadow-xl hover:border-primary/50 bg-background/50 border-border"
+                  className="group flex flex-col h-full transition-all duration-300 hover:scale-105 hover:shadow-xl hover:border-primary/50 bg-background/50 border-border animate-fade-in-up"
+                  style={{animationDelay: `${i * 150 + 300}ms`}}
                 >
                   <CardHeader>
                     <div className="flex items-center gap-4">
@@ -190,13 +192,13 @@ export default function Home() {
           <div className="absolute bottom-10 -right-20 w-96 h-96 bg-yellow-200 rounded-full mix-blend-multiply filter blur-2xl opacity-40 animate-blob animation-delay-3000"></div>
             <div className="container px-4 md:px-6 relative">
                 <div className="flex flex-col items-center justify-center space-y-4 text-center mb-12">
-                    <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-balance">Meet Our Mentors</h2>
-                     <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed text-balance">
+                    <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-balance animate-fade-in-up">Meet Our Mentors</h2>
+                     <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed text-balance animate-fade-in-up [animation-delay:200ms]">
                         Sponsored by Passionate Educators
                     </p>
                 </div>
                 <div className="grid md:grid-cols-2 gap-8">
-                     <Card className="bg-background/50 border-border/50 shadow-lg">
+                     <Card className="bg-background/50 border-border/50 shadow-lg animate-fade-in-up [animation-delay:300ms]">
                         <CardHeader>
                             <CardTitle className="text-2xl">Pravin Khachane (M.Sc., B.Ed.)</CardTitle>
                              <CardDescription>Physics</CardDescription>
@@ -207,7 +209,7 @@ export default function Home() {
                             </p>
                         </CardContent>
                     </Card>
-                    <Card className="bg-background/50 border-border/50 shadow-lg">
+                    <Card className="bg-background/50 border-border/50 shadow-lg animate-fade-in-up [animation-delay:450ms]">
                        <CardHeader>
                             <CardTitle className="text-2xl">Mangesh Shete (M.Sc., B.Ed.)</CardTitle>
                             <CardDescription>Chemistry</CardDescription>
@@ -229,7 +231,7 @@ export default function Home() {
           <div
             className="container grid items-center justify-center gap-8 px-4 text-center md:px-6 relative"
           >
-            <div className="space-y-4 max-w-2xl mx-auto rounded-lg bg-secondary/30 backdrop-blur-sm p-8 border">
+            <div className="space-y-4 max-w-2xl mx-auto rounded-lg bg-secondary/30 backdrop-blur-sm p-8 border animate-fade-in-up">
               <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight text-balance">
                 Ready to Start Your Journey?
               </h2>
