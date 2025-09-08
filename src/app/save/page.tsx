@@ -152,9 +152,9 @@ export default function SavePage() {
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
       <main className="flex-1">
-        <div className="container mx-auto px-4 py-8 max-w-screen-xl">
+        <div className="container mx-auto max-w-screen-xl px-4 py-8">
           <div className="mb-8">
-            <h1 className="text-4xl font-bold text-foreground tracking-tight">My Watchlist</h1>
+            <h1 className="text-4xl font-bold tracking-tight text-foreground">My Watchlist</h1>
             <p className="mt-2 text-muted-foreground">
               Your curated collection of saved resources.
             </p>
@@ -163,16 +163,16 @@ export default function SavePage() {
           {paginatedItems.length > 0 ? (
             <>
                 <motion.div 
-                  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+                  className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
                   variants={containerVariants}
                   initial="hidden"
                   whileInView="visible"
                   viewport={{ once: false, amount: 0.1 }}
                 >
                 {paginatedItems.map((resource, i) => (
-                    <motion.div variants={itemVariants} key={resource.id}>
+                    <motion.div variants={itemVariants} key={resource.id} className="flex">
                       <Card 
-                        className="flex flex-col h-full hover:border-primary/50 transition-colors duration-300 overflow-hidden"
+                        className="flex h-full w-full flex-col overflow-hidden transition-colors duration-300 hover:border-primary/50"
                       >
                          <div className="relative aspect-video bg-muted">
                             <Image
@@ -187,11 +187,11 @@ export default function SavePage() {
                           <CardTitle className="text-xl">
                           <Link
                               href={`/resources/${resource.id}`}
-                              className="group inline-flex items-center gap-2 hover:text-primary transition-colors"
+                              className="group inline-flex items-center gap-2 transition-colors hover:text-primary"
                           >
                               <BookOpen className="h-5 w-5 text-primary/80" />
                               {resource.title}
-                              {!isLinkDisabled(resource) && <ArrowUpRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />}
+                              {!isLinkDisabled(resource) && <ArrowUpRight className="h-4 w-4 opacity-0 transition-opacity group-hover:opacity-100" />}
                           </Link>
                           </CardTitle>
                           <CardDescription asChild>
@@ -203,20 +203,20 @@ export default function SavePage() {
                               <div className="flex flex-wrap gap-1">
                                   {resource.stream.map(s => <Badge key={s} variant="outline">{s}</Badge>)}
                               </div>
-                              <div className="flex flex-wrap gap-1 mt-1">
+                              <div className="mt-1 flex flex-wrap gap-1">
                               {resource.subject.map(s => <Badge key={s} variant="default">{s}</Badge>)}
                               </div>
                           </div>
                           </CardDescription>
                       </CardHeader>
-                      <CardFooter className="flex items-center justify-between mt-auto border-t pt-4">
+                      <CardFooter className="mt-auto flex items-center justify-between border-t pt-4">
                           <Button
                               variant="ghost"
                               size="sm"
                               onClick={() => handleRemoveFromWatchlist(resource.id, resource.title)}
                               disabled={removing === resource.id}
                           >
-                              <BookmarkX className="h-4 w-4 mr-1" />
+                              <BookmarkX className="mr-1 h-4 w-4" />
                               Remove
                           </Button>
                           <div className="flex items-center gap-2">

@@ -224,18 +224,18 @@ export default function AdminDownloadsPage() {
   return (
     <>
       <div className="mb-8">
-        <h1 className="text-4xl font-bold text-foreground tracking-tight">Public Downloads View</h1>
-        <p className="mt-2 text-muted-foreground max-w-2xl">
+        <h1 className="text-4xl font-bold tracking-tight text-foreground">Public Downloads View</h1>
+        <p className="mt-2 max-w-2xl text-muted-foreground">
             This is a preview of the public downloads page. All resources, including private and upcoming ones, are shown here.
         </p>
       </div>
       
-       <Card className="mb-12 bg-secondary/30 border-border/50">
+       <Card className="mb-12 border-border/50 bg-secondary/30">
         <CardHeader>
           <CardTitle>Filter Resources</CardTitle>
           <CardDescription>Narrow down the study materials to find exactly what you need.</CardDescription>
         </CardHeader>
-        <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <CardContent className="grid grid-cols-1 gap-4 md:grid-cols-3">
             <MultiSelect
                 options={criteria.map(c => ({ label: c, value: c }))}
                 onValueChange={setSelectedCriteria}
@@ -260,7 +260,7 @@ export default function AdminDownloadsPage() {
       {paginatedResources.length > 0 ? (
         <>
             <motion.div 
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
+              className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3"
               variants={containerVariants}
               initial="hidden"
               animate="visible"
@@ -270,8 +270,8 @@ export default function AdminDownloadsPage() {
                 const isSaved = watchlistIds.has(resource.id);
                 const disabled = isLinkDisabled(resource);
                 return (
-                <motion.div variants={itemVariants} key={resource.id}>
-                  <Card className="flex flex-col h-full hover:border-primary/50 transition-all duration-300 overflow-hidden bg-secondary/30 border-border/50 shadow-md hover:shadow-primary/20">
+                <motion.div variants={itemVariants} key={resource.id} className="flex">
+                  <Card className="flex h-full w-full flex-col overflow-hidden border-border/50 bg-secondary/30 shadow-md transition-all duration-300 hover:border-primary/50 hover:shadow-primary/20">
                       <div className="relative aspect-video bg-muted/50">
                           <Image
                               src={resource.imageUrl}
@@ -285,26 +285,26 @@ export default function AdminDownloadsPage() {
                           <CardTitle className="text-xl">
                               <Link
                               href={`/resources/${resource.id}?from=admin`}
-                              className={cn("group inline-flex items-center gap-2 hover:text-primary transition-colors", disabled && "pointer-events-none text-muted-foreground")}
+                              className={cn("group inline-flex items-center gap-2 transition-colors hover:text-primary", disabled && "pointer-events-none text-muted-foreground")}
                               >
                               <BookOpen className="h-5 w-5 text-primary/80" />
                               {resource.title}
-                              {!disabled && <ArrowUpRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />}
+                              {!disabled && <ArrowUpRight className="h-4 w-4 opacity-0 transition-opacity group-hover:opacity-100" />}
                               </Link>
                           </CardTitle>
                       </CardHeader>
                       <CardContent className="flex-grow space-y-2">
                           <div className="flex flex-wrap gap-2">
-                              {resource.visibility === 'private' && <Badge variant="destructive"><Lock className="h-3 w-3 mr-1" />Private</Badge>}
-                              {resource.isComingSoon && <Badge variant="outline"><Clock className="h-3 w-3 mr-1" />Coming Soon</Badge>}
+                              {resource.visibility === 'private' && <Badge variant="destructive"><Lock className="mr-1 h-3 w-3" />Private</Badge>}
+                              {resource.isComingSoon && <Badge variant="outline"><Clock className="mr-1 h-3 w-3" />Coming Soon</Badge>}
                               {resource.category.map(c => <Badge key={c} variant="secondary">{c}</Badge>)}
                               {resource.stream.map(s => <Badge key={s} variant="outline">{s}</Badge>)}
                               {resource.subject.map(s => <Badge key={s} variant="default">{s}</Badge>)}
                           </div>
                       </CardContent>
-                      <CardFooter className="flex items-center justify-between mt-auto border-t pt-4">
+                      <CardFooter className="mt-auto flex items-center justify-between border-t pt-4">
                           <Button variant={isSaved ? "secondary" : "outline"} size="sm" onClick={() => handleToggleWatchlist(resource)} disabled={saving === resource.id}>
-                              {isSaved ? <BookmarkCheck className="h-4 w-4 mr-1" /> : <Bookmark className="h-4 w-4 mr-1" />}
+                              {isSaved ? <BookmarkCheck className="mr-1 h-4 w-4" /> : <Bookmark className="mr-1 h-4 w-4" />}
                               {isSaved ? 'Saved' : 'Save'}
                           </Button>
                           <div className="flex items-center gap-2">
