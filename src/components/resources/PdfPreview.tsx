@@ -30,13 +30,13 @@ export default function PdfPreview({ url, title }: PdfPreviewProps) {
     // Check if it's a Google Drive link and construct the native embed URL with toolbar hidden
     if (url.includes('drive.google.com')) {
         // From: https://drive.google.com/file/d/FILE_ID/view?usp=sharing
-        // To:   https://drive.google.com/file/d/FILE_ID/preview?rm=minimal
+        // To:   https://drive.google.com/file/d/FILE_ID/preview
         const newUrl = url.replace('/view?usp=sharing', '/preview').replace('/view', '/preview');
         // Add rm=minimal to hide the top bar with the pop-out icon
-        embedUrl = newUrl.includes('?') ? `${newUrl}&rm=minimal` : `${newUrl}?rm=minimal`;
+        embedUrl = newUrl;
     } else {
-        // For other URLs, use Google Docs viewer and hide toolbar
-        embedUrl = `https://docs.google.com/gview?url=${encodeURIComponent(url)}&embedded=true&rm=minimal`;
+        // For other URLs, use Google Docs viewer
+        embedUrl = `https://docs.google.com/gview?url=${encodeURIComponent(url)}&embedded=true`;
     }
 
 
@@ -60,9 +60,13 @@ export default function PdfPreview({ url, title }: PdfPreviewProps) {
                     style={{ border: 'none' }}
                     // Allow fullscreen for better viewing experience
                     allow="fullscreen"
+                    // Add the rm=minimal parameter to the sandbox attribute for Google Drive links
+                    sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+                    allowFullScreen
                 >
                 </iframe>
             </CardContent>
        </Card>
     );
 }
+
