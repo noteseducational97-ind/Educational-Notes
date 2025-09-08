@@ -128,7 +128,8 @@ export default function AdminTeachersPage() {
               className="grid md:grid-cols-2 gap-8"
               variants={containerVariants}
               initial="hidden"
-              animate="visible"
+              whileInView="visible"
+              viewport={{ once: false, amount: 0.1 }}
             >
                 {teachers.map((teacher) => (
                   <motion.div variants={itemVariants} key={teacher.id}>

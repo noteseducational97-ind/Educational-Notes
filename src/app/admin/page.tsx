@@ -76,7 +76,8 @@ export default function AdminDashboardPage() {
             className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-6"
             variants={containerVariants}
             initial="hidden"
-            animate="visible"
+            whileInView="visible"
+            viewport={{ once: false, amount: 0.2 }}
         >
             <motion.div variants={itemVariants}>
               <Card>
@@ -108,7 +109,8 @@ export default function AdminDashboardPage() {
             className="grid gap-6 md:grid-cols-2"
             variants={containerVariants}
             initial="hidden"
-            animate="visible"
+            whileInView="visible"
+            viewport={{ once: false, amount: 0.2 }}
         >
           <motion.div variants={itemVariants}>
             <Card>

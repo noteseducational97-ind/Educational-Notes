@@ -99,8 +99,10 @@ export default function UploadedResourcesPage() {
             </div>
         </div>
         <motion.div
-           initial={{ opacity: 0, y: 20 }}
-           animate={{ opacity: 1, y: 0 }}
+           initial="hidden"
+           whileInView="visible"
+           viewport={{ once: false, amount: 0.1 }}
+           variants={{ visible: { opacity: 1, y: 0 }, hidden: { opacity: 0, y: 20 } }}
            transition={{ duration: 0.5 }}
         >
           <Card>

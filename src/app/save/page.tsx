@@ -166,7 +166,8 @@ export default function SavePage() {
                   className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
                   variants={containerVariants}
                   initial="hidden"
-                  animate="visible"
+                  whileInView="visible"
+                  viewport={{ once: false, amount: 0.1 }}
                 >
                 {paginatedItems.map((resource, i) => (
                     <motion.div variants={itemVariants} key={resource.id}>

@@ -262,7 +262,8 @@ export default function DownloadsPage() {
                   className="grid grid-cols-1 md:grid-cols-2 gap-8"
                   variants={containerVariants}
                   initial="hidden"
-                  animate="visible"
+                  whileInView="visible"
+                  viewport={{ once: false, amount: 0.1 }}
                 >
                 {paginatedResources.map((resource: Resource, i: number) => {
                     const isSaved = watchlistIds.has(resource.id);

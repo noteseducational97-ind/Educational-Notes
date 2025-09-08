@@ -149,7 +149,7 @@ export default function Home() {
             className="w-full py-12 md:py-24 lg:py-32 bg-secondary/30 relative overflow-hidden"
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
+            viewport={{ once: false, amount: 0.2 }}
             variants={containerVariants}
         >
             <div className="absolute top-10 -left-20 w-96 h-96 bg-blue-200 rounded-full mix-blend-multiply filter blur-2xl opacity-40 animate-blob animation-delay-1000"></div>
@@ -187,7 +187,7 @@ export default function Home() {
             className="w-full py-12 md:py-24 lg:py-32 relative overflow-hidden"
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
+            viewport={{ once: false, amount: 0.2 }}
             variants={containerVariants}
         >
             <div className="absolute top-0 -left-4 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
@@ -230,7 +230,7 @@ export default function Home() {
             className="w-full py-12 md:py-24 lg:py-32 bg-secondary/30 relative overflow-hidden"
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
+            viewport={{ once: false, amount: 0.2 }}
             variants={containerVariants}
         >
           <div className="absolute top-10 -left-20 w-96 h-96 bg-purple-200 rounded-full mix-blend-multiply filter blur-2xl opacity-40 animate-blob animation-delay-1000"></div>
@@ -279,7 +279,7 @@ export default function Home() {
             className="w-full py-12 md:py-24 lg:py-32 bg-background relative overflow-hidden"
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, amount: 0.3 }}
+            viewport={{ once: false, amount: 0.3 }}
             variants={containerVariants}
         >
           <div className="absolute top-0 -left-4 w-72 h-72 bg-blue-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
