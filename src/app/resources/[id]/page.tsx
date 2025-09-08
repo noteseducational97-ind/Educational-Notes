@@ -100,8 +100,3 @@ export default async function ResourceDetailPage({ params, searchParams }: Props
     </div>
   );
 }
-
-// This helps Next.js to not statically generate pages for every resource at build time
-export async function generateStaticParams() {
-    return [];
-}
