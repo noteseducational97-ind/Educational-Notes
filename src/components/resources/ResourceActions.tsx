@@ -14,16 +14,17 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { Download, HelpCircle, LogIn, ExternalLink } from 'lucide-react';
+import { Download, HelpCircle, LogIn, ExternalLink, FileQuestion } from 'lucide-react';
 import { useAuth } from '@/hooks/use-auth';
 import type { Resource } from '@/types';
 import Link from 'next/link';
 
 type ResourceActionsProps = {
   resource: Resource;
+  isTestable: boolean;
 };
 
-export default function ResourceActions({ resource }: ResourceActionsProps) {
+export default function ResourceActions({ resource, isTestable }: ResourceActionsProps) {
   const { user } = useAuth();
   const router = useRouter();
   const [showLoginDialog, setShowLoginDialog] = useState(false);
@@ -42,7 +43,7 @@ export default function ResourceActions({ resource }: ResourceActionsProps) {
 
   return (
     <>
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 w-full">
         <div className="grid grid-cols-1 sm:grid-cols-1 gap-2">
             {user ? (
             <Button asChild disabled={isLinkDisabled} className="w-full">
@@ -56,6 +57,17 @@ export default function ResourceActions({ resource }: ResourceActionsProps) {
                 <Download className="mr-2 h-4 w-4" />
                 Download PDF
             </Button>
+            )}
+             {isTestable && (
+              <Button asChild variant="outline" className="w-full">
+                <Link href={{
+                  pathname: '/tools/test-generator',
+                  query: { content: resource.content }
+                }}>
+                  <FileQuestion className="mr-2 h-4 w-4" />
+                  Generate Test
+                </Link>
+              </Button>
             )}
         </div>
       </div>

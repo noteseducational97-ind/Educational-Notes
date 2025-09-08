@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Home, Download, Bookmark, Menu, LogIn, UserPlus, LayoutDashboard, Users, BookCopy, FileText, Wrench, GraduationCap, ArrowLeft, LogOut } from 'lucide-react';
+import { Home, Download, Bookmark, Menu, LogIn, UserPlus, LayoutDashboard, Users, BookCopy, FileText, Wrench, GraduationCap, ArrowLeft, LogOut, FileQuestion } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { EducationalNotesLogo } from '../icons/EducationalNotesLogo';
 import { Button } from '../ui/button';
@@ -19,6 +19,7 @@ const adminNavLinks = [
   { href: '/admin/admission', label: 'Batches', icon: FileText },
   { href: '/admin/tools', label: 'Manage Tools', icon: Wrench },
   { href: '/admin/teachers', label: 'Teachers', icon: GraduationCap },
+  { href: '/admin/tools/test-generator', label: 'Test Generator', icon: FileQuestion },
 ];
 
 export default function AdminSidebar() {

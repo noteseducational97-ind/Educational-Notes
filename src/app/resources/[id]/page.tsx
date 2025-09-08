@@ -26,6 +26,9 @@ export default async function ResourceDetailPage({ params, searchParams }: Props
   const fromAdmin = searchParams.from === 'admin';
   const backUrl = fromAdmin ? '/admin/downloads' : '/downloads';
 
+  const testableCategories = ["Notes", "Textual Answer", "Important Point"];
+  const isTestable = resource.category.some(c => testableCategories.includes(c));
+
   return (
     <div className="flex min-h-screen flex-col bg-secondary/20">
       <Header />
@@ -87,7 +90,7 @@ export default async function ResourceDetailPage({ params, searchParams }: Props
                     </CardContent>
                     <CardFooter className="flex flex-col items-start gap-4 border-t pt-4">
                         <h3 className="text-lg font-semibold">Actions</h3>
-                        <ResourceActions resource={resource} />
+                        <ResourceActions resource={resource} isTestable={isTestable}/>
                     </CardFooter>
                 </Card>
               </div>
