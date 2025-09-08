@@ -236,11 +236,15 @@ export default function DownloadsPage() {
           ) : paginatedResources.length > 0 ? (
             <>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {paginatedResources.map((resource: Resource) => {
+                {paginatedResources.map((resource: Resource, i: number) => {
                     const isSaved = watchlistIds.has(resource.id);
                     const disabled = isLinkDisabled(resource);
                     return (
-                    <Card key={resource.id} className="flex flex-col hover:border-primary/50 transition-all duration-300 overflow-hidden bg-secondary/30 border-border/50 shadow-md hover:shadow-primary/20">
+                    <Card 
+                      key={resource.id} 
+                      className="flex flex-col hover:border-primary/50 transition-all duration-300 overflow-hidden bg-secondary/30 border-border/50 shadow-md hover:shadow-primary/20 animate-fade-in-up"
+                      style={{ animationDelay: `${i * 100}ms`, opacity: 0, animationFillMode: 'forwards' }}
+                    >
                         <CardHeader>
                             <CardTitle className="text-xl">
                                 <Link

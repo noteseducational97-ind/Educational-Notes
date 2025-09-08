@@ -141,8 +141,12 @@ export default function SavePage() {
           {paginatedItems.length > 0 ? (
             <>
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {paginatedItems.map((resource) => (
-                    <Card key={resource.id} className="flex flex-col hover:border-primary/50 transition-colors duration-300 overflow-hidden">
+                {paginatedItems.map((resource, i) => (
+                    <Card 
+                      key={resource.id} 
+                      className="flex flex-col hover:border-primary/50 transition-colors duration-300 overflow-hidden animate-fade-in-up"
+                      style={{ animationDelay: `${i * 100}ms`, opacity: 0, animationFillMode: 'forwards' }}
+                    >
                     <CardHeader className="flex-grow">
                         <CardTitle className="text-xl">
                         <Link
