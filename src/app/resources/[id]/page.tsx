@@ -10,6 +10,7 @@ import Link from 'next/link';
 import { format } from 'date-fns';
 import ResourcePreviewer from '@/components/resources/ResourcePreviewer';
 import ResourceActions from '@/components/resources/ResourceActions';
+import { motion } from 'framer-motion';
 
 type Props = {
   params: { id: string };
@@ -23,7 +24,7 @@ export default async function ResourceDetailPage({ params, searchParams }: Props
     notFound();
   }
 
-  const fromAdmin = searchParams.from === 'admin';
+  const fromAdmin = searchParams?.from === 'admin';
   const backUrl = fromAdmin ? '/admin/downloads' : '/downloads';
 
   const testableCategories = ["Notes", "Textual Answer", "Important Point"];
@@ -33,7 +34,13 @@ export default async function ResourceDetailPage({ params, searchParams }: Props
     <div className="flex min-h-screen flex-col bg-secondary/20">
       <Header />
       <main className="flex-1 py-8">
-        <div className="container mx-auto max-w-7xl px-4">
+        <motion.div 
+          className="container mx-auto max-w-7xl px-4"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          viewport={{ once: false }}
+        >
             <div className="mb-4">
                 <Button asChild variant="outline">
                     <Link href={backUrl}>
@@ -95,7 +102,7 @@ export default async function ResourceDetailPage({ params, searchParams }: Props
                 </Card>
               </div>
             </div>
-        </div>
+        </motion.div>
       </main>
     </div>
   );
