@@ -116,8 +116,10 @@ export default function Home() {
         </section>
 
         {/* Features Section */}
-        <section id="features" className="w-full py-12 md:py-24 lg:py-32 bg-secondary/30">
-          <div className="container px-4 md:px-6">
+        <section id="features" className="w-full py-12 md:py-24 lg:py-32 bg-secondary/30 relative overflow-hidden">
+            <div className="absolute top-10 -left-20 w-96 h-96 bg-blue-200 rounded-full mix-blend-multiply filter blur-2xl opacity-40 animate-blob animation-delay-1000"></div>
+            <div className="absolute bottom-10 -right-20 w-96 h-96 bg-red-200 rounded-full mix-blend-multiply filter blur-2xl opacity-40 animate-blob animation-delay-3000"></div>
+          <div className="container px-4 md:px-6 relative">
             <div className="flex flex-col items-center justify-center space-y-4 text-center mb-12">
               <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-balance">What We Offer</h2>
               <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed text-balance">
@@ -146,8 +148,10 @@ export default function Home() {
         </section>
 
         {/* Our Tools Section */}
-        <section id="tools" className="w-full py-12 md:py-24 lg:py-32">
-          <div className="container px-4 md:px-6">
+        <section id="tools" className="w-full py-12 md:py-24 lg:py-32 relative overflow-hidden">
+            <div className="absolute top-0 -left-4 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
+            <div className="absolute -bottom-8 right-20 w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
+          <div className="container px-4 md:px-6 relative">
             <div className="flex flex-col items-center justify-center space-y-4 text-center mb-12">
               <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-balance">Our Tools</h2>
               <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed text-balance">
@@ -181,8 +185,10 @@ export default function Home() {
         </section>
 
         {/* Mentors Section */}
-        <section id="mentors" className="w-full py-12 md:py-24 lg:py-32 bg-secondary/30">
-            <div className="container px-4 md:px-6">
+        <section id="mentors" className="w-full py-12 md:py-24 lg:py-32 bg-secondary/30 relative overflow-hidden">
+          <div className="absolute top-10 -left-20 w-96 h-96 bg-purple-200 rounded-full mix-blend-multiply filter blur-2xl opacity-40 animate-blob animation-delay-1000"></div>
+          <div className="absolute bottom-10 -right-20 w-96 h-96 bg-yellow-200 rounded-full mix-blend-multiply filter blur-2xl opacity-40 animate-blob animation-delay-3000"></div>
+            <div className="container px-4 md:px-6 relative">
                 <div className="flex flex-col items-center justify-center space-y-4 text-center mb-12">
                     <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-balance">Meet Our Mentors</h2>
                      <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed text-balance">
@@ -217,9 +223,11 @@ export default function Home() {
         </section>
         
         {/* CTA Section */}
-        <section id="contact" className="w-full py-12 md:py-24 lg:py-32 bg-background">
+        <section id="contact" className="w-full py-12 md:py-24 lg:py-32 bg-background relative overflow-hidden">
+          <div className="absolute top-0 -left-4 w-72 h-72 bg-blue-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
+          <div className="absolute -bottom-8 right-20 w-72 h-72 bg-green-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
           <div
-            className="container grid items-center justify-center gap-8 px-4 text-center md:px-6"
+            className="container grid items-center justify-center gap-8 px-4 text-center md:px-6 relative"
           >
             <div className="space-y-4 max-w-2xl mx-auto rounded-lg bg-secondary/30 backdrop-blur-sm p-8 border">
               <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight text-balance">
@@ -251,5 +259,3 @@ export default function Home() {
     </div>
   );
 }
-
-    
