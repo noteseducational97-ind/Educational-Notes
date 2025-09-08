@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -11,6 +12,7 @@ import Link from 'next/link';
 import { useToast } from '@/hooks/use-toast';
 import { updateResourceAction } from '@/app/admin/actions';
 import { getResourceById } from '@/lib/firebase/resources';
+import { generateContent } from '@/ai/flows/content-generator-flow';
 import type { Resource } from '@/types';
 
 import { Button } from '@/components/ui/button';
@@ -18,7 +20,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, ArrowLeft, Save, Lock, Users } from 'lucide-react';
+import { Loader2, ArrowLeft, Save, Lock, Users, Sparkles } from 'lucide-react';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { MultiSelect } from '@/components/ui/multi-select';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -60,6 +62,7 @@ export default function EditResourceAdminPage() {
   const { toast } = useToast();
   
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
   const [resource, setResource] = useState<Resource | null>(null);
   const [loadingResource, setLoadingResource] = useState(true);
 
@@ -111,6 +114,40 @@ export default function EditResourceAdminPage() {
     };
     fetchResource();
   }, [resourceId, form, router, toast]);
+
+  const handleGenerateContent = async () => {
+    const title = form.getValues('title');
+    if (!title) {
+        toast({
+            variant: 'destructive',
+            title: 'Title is required',
+            description: 'Please enter a title before generating content.',
+        });
+        return;
+    }
+
+    setIsGenerating(true);
+    try {
+        const result = await generateContent({ title });
+        if (result.content) {
+            form.setValue('content', result.content, { shouldValidate: true });
+            toast({
+                title: 'Content Generated!',
+                description: 'The description has been filled in for you.',
+            });
+        } else {
+            throw new Error("Received empty content from AI.");
+        }
+    } catch (error) {
+        toast({
+            variant: 'destructive',
+            title: 'Generation Failed',
+            description: 'Could not generate content. Please try again.',
+        });
+    } finally {
+        setIsGenerating(false);
+    }
+  };
 
 
   async function onSubmit(values: z.infer<typeof FormSchema>) {
@@ -184,6 +221,10 @@ export default function EditResourceAdminPage() {
                       </FormItem>
                     )}
                   />
+                  <Button type="button" variant="outline" size="sm" onClick={handleGenerateContent} disabled={isGenerating}>
+                        {isGenerating ? <Loader2 className="animate-spin" /> : <Sparkles />}
+                        Generate with AI
+                  </Button>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <FormField
