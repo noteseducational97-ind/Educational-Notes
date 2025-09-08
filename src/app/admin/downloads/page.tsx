@@ -1,4 +1,3 @@
-
 'use client';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
@@ -27,12 +26,12 @@ import {
 import Pagination from '@/components/shared/Pagination';
 import { MultiSelect } from '@/components/ui/multi-select';
 
-const criteria = ['Class 11 & 12', 'MHT-CET'];
+const criteria = ['Class 11', 'Class 12', 'MHT-CET'];
 const contentCategories = [
     'Notes', 'Previous Year Questions', 'Syllabus', 'Text Book', 'Textual Answer', 'Important Point', 'Test', 'Other Study Material'
 ];
 
-const scienceSubjects = ['Physics', 'Chemistry', 'Mathematics', 'Biology'];
+const scienceSubjects = ['Physics', 'Chemistry', 'Math-1', 'Math-2', 'Biology'];
 
 const GUEST_WATCHLIST_KEY = 'guest-watchlist';
 const ITEMS_PER_PAGE = 8;
@@ -91,7 +90,7 @@ export default function AdminDownloadsPage() {
 
   const availableSubjects = useMemo(() => {
     const subjects = new Set<string>();
-    if (selectedCriteria.some(c => ['Class 11 & 12', 'MHT-CET'].includes(c))) {
+    if (selectedCriteria.some(c => ['Class 11', 'Class 12', 'MHT-CET'].includes(c))) {
       scienceSubjects.forEach(s => subjects.add(s));
     }
     
@@ -315,3 +314,5 @@ export default function AdminDownloadsPage() {
     </>
   );
 }
+
+    

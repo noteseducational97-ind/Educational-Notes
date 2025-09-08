@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -48,10 +47,9 @@ const FormSchema = z.object({
 });
 
 
-const allStreams = ['MHT-CET', 'Class 11 & 12'];
+const allStreams = ['MHT-CET', 'Class 11', 'Class 12'];
 const allSubjects = [
-    'Physics', 'Chemistry', 'Mathematics', 'Biology',
-    'English', 'Math-1', 'Math-2', 'Science-1', 'Science-2',
+    'Physics', 'Chemistry', 'Math-1', 'Math-2', 'Biology'
 ];
 const categories = ['Notes', 'Previous Year Questions', 'Syllabus', 'Text Book', 'Textual Answer', 'Important Point', 'Test', 'Other Study Material'];
 
@@ -281,3 +279,5 @@ export default function AddResourceAdminPage() {
     </>
   );
 }
+
+    
