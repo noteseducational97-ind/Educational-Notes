@@ -13,7 +13,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Loader2, KeyRound, Mail, LogIn, Shield } from 'lucide-react';
+import { Loader2, KeyRound, Mail, LogIn, Shield, Eye, EyeOff } from 'lucide-react';
 import Link from 'next/link';
 
 const formSchema = z.object({
@@ -50,6 +50,7 @@ const GoogleIcon = () => (
 export default function LoginForm() {
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
 
@@ -133,7 +134,16 @@ export default function LoginForm() {
                 <FormControl>
                   <div className="relative">
                     <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input type="password" placeholder="••••••••" {...field} className="pl-10" />
+                    <Input type={showPassword ? 'text' : 'password'} placeholder="••••••••" {...field} className="pl-10 pr-10" />
+                    <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="absolute right-1 top-1/2 -translate-y-1/2 h-auto p-1 text-muted-foreground"
+                        onClick={() => setShowPassword((prev) => !prev)}
+                        >
+                        {showPassword ? <EyeOff /> : <Eye />}
+                    </Button>
                   </div>
                 </FormControl>
                 <FormMessage />
