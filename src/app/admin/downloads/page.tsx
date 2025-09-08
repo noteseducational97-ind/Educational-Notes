@@ -28,7 +28,7 @@ import { MultiSelect } from '@/components/ui/multi-select';
 
 const criteria = ['Class 11', 'Class 12', 'MHT-CET'];
 const contentCategories = [
-    'Notes', 'Previous Year Questions', 'Syllabus', 'Text Book', 'Textual Answer', 'Important Point', 'Test', 'Other Study Material'
+    'Notes', 'Previous Year Questions', 'Syllabus', 'Text Book', 'Textual Answer', 'Important Point', 'Other Study Material'
 ];
 
 const scienceSubjects = ['Physics', 'Chemistry', 'Math-1', 'Math-2', 'Biology'];
@@ -314,5 +314,3 @@ export default function AdminDownloadsPage() {
     </>
   );
 }
-
-    

@@ -51,7 +51,7 @@ const allStreams = ['MHT-CET', 'Class 11', 'Class 12'];
 const allSubjects = [
     'Physics', 'Chemistry', 'Math-1', 'Math-2', 'Biology'
 ];
-const categories = ['Notes', 'Previous Year Questions', 'Syllabus', 'Text Book', 'Textual Answer', 'Important Point', 'Test', 'Other Study Material'];
+const categories = ['Notes', 'Previous Year Questions', 'Syllabus', 'Text Book', 'Textual Answer', 'Important Point', 'Other Study Material'];
 
 export default function AddResourceAdminPage() {
   const { user, isAdmin, loading: authLoading } = useAuth();
@@ -279,5 +279,3 @@ export default function AddResourceAdminPage() {
     </>
   );
 }
-
-    
