@@ -4,6 +4,7 @@
 import { z } from 'zod';
 import { db } from '@/lib/firebase/server';
 import { revalidatePath } from 'next/cache';
+import { adminAuth } from '@/lib/firebase/admin';
 
 const FormSchema = z.object({
   title: z.string().min(3, 'Title must be at least 3 characters.'),
@@ -163,16 +164,13 @@ export async function deleteResourceAction(id: string) {
 
 export async function getAdminStats() {
     try {
-        const usersPromise = db.collection('users').count().get();
+        const usersPromise = adminAuth.listUsers();
         const resourcesPromise = db.collection('resources').count().get();
 
-        const [usersSnapshot, resourcesSnapshot] = await Promise.all([usersPromise, resourcesPromise]);
+        const [usersResult, resourcesSnapshot] = await Promise.all([usersPromise, resourcesPromise]);
 
-        // Note: .count() is much more efficient as it doesn't retrieve all documents.
-        // The old logic to filter admin user is not straightforward with .count(),
-        // so we accept a potential off-by-one count for the admin user for performance.
         return {
-            userCount: usersSnapshot.data().count,
+            userCount: usersResult.users.length,
             resourceCount: resourcesSnapshot.data().count,
         };
     } catch (error) {

@@ -34,7 +34,7 @@ if (!getApps().length) {
   app = getApp();
 }
 
-const adminAuth = getAuth(app);
+export const adminAuth = getAuth(app);
 
 export const listAllUsers = async () => {
   try {
