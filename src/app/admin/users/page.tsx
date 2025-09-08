@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/use-auth';
-import { listAllUsers, updateUserDisabledStatus, deleteUser as deleteUserAction } from '@/lib/firebase/admin';
+import { listAllUsers, updateUserDisabledStatus, deleteUser as deleteUserAction } from './actions';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
