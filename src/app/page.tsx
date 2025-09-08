@@ -22,7 +22,8 @@ import {
     Calculator,
     Copy,
     Wrench,
-    ClipboardEdit
+    ClipboardEdit,
+    FileQuestion
 } from 'lucide-react';
 import { EducationalNotesLogo } from '@/components/icons/EducationalNotesLogo';
 
@@ -53,6 +54,21 @@ const features = [
     }
 ];
 
+const tools = [
+    {
+        icon: <FileQuestion className="h-8 w-8 text-primary" />,
+        title: 'AI Test Generator',
+        description: 'Automatically create practice tests from any of our study notes to challenge yourself.',
+        href: '/downloads', // The tool is accessible from the resource page
+    },
+     {
+        icon: <ClipboardEdit className="h-8 w-8 text-primary" />,
+        title: 'Admission Forms',
+        description: 'Apply for our specialized coaching batches for various competitive exams directly through our platform.',
+        href: '/admission',
+    }
+];
+
 export default function Home() {
   const { user, loading } = useAuth();
   const router = useRouter();
@@ -67,8 +83,9 @@ export default function Home() {
       <main className="flex-1">
         {/* Hero Section */}
         <section className="w-full py-20 md:py-32 lg:py-40 relative overflow-hidden">
-          <div className="absolute inset-0 bg-grid-slate-900/[0.04] bg-[bottom_1px_center] dark:bg-grid-slate-400/[0.05] dark:bg-bottom dark:border-b dark:border-slate-100/5 [mask-image:linear-gradient(to_bottom,transparent,black)]"></div>
-          <div className="absolute inset-0 bg-gradient-to-b from-background to-transparent via-transparent"></div>
+             <div className="absolute top-0 -left-4 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
+            <div className="absolute top-0 -right-4 w-72 h-72 bg-yellow-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
+            <div className="absolute -bottom-8 left-20 w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
           <div className="container px-4 md:px-6 relative">
             <div className="flex flex-col items-center text-center space-y-6">
                 <div className="inline-block rounded-full bg-primary/10 px-4 py-2 text-sm font-semibold text-primary border border-primary/20 shadow-sm">
@@ -127,28 +144,78 @@ export default function Home() {
             </div>
           </div>
         </section>
-        
-        {/* Mission Section */}
-        <section id="about" className="w-full py-12 md:py-24 lg:py-32 bg-background">
-            <div className="container px-4 md:px-6">
-                <div className="flex flex-col items-center justify-center space-y-4 text-center mb-12">
-                    <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-balance">Our Mission</h2>
-                </div>
-                <Card className="bg-secondary/30">
-                    <CardContent className="p-6">
-                        <div className="space-y-4 text-muted-foreground text-lg text-center">
-                            <p className="leading-relaxed">
-                                At Educational Notes, our vision is to empower every student with high-quality, emotionally supportive learning resources that foster academic success and personal growth.
-                            </p>
-                            <p className="leading-relaxed">
-                                We proudly serve students preparing for competitive exams like NEET, JEE, MHT-CET, and those seeking to build a strong foundation in their academic subjects. Our platform is built on the principles of accessibility, affordability, and trust, ensuring that every learner—regardless of background—can thrive.
-                            </p>
-                        </div>
-                    </CardContent>
-                </Card>
+
+        {/* Our Tools Section */}
+        <section id="tools" className="w-full py-12 md:py-24 lg:py-32">
+          <div className="container px-4 md:px-6">
+            <div className="flex flex-col items-center justify-center space-y-4 text-center mb-12">
+              <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-balance">Our Tools</h2>
+              <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed text-balance">
+                Powerful utilities designed to help you study smarter and achieve your academic goals.
+              </p>
             </div>
+            <div className="mx-auto grid max-w-5xl items-center gap-6 sm:grid-cols-2">
+              {tools.map((tool) => (
+                <Card 
+                  key={tool.title}
+                  className="group flex flex-col h-full transition-all duration-300 hover:scale-105 hover:shadow-xl hover:border-primary/50 bg-background/50 border-border"
+                >
+                  <CardHeader>
+                    <div className="flex items-center gap-4">
+                      {tool.icon}
+                      <CardTitle className="text-xl font-semibold">{tool.title}</CardTitle>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="flex-grow">
+                    <CardDescription>{tool.description}</CardDescription>
+                  </CardContent>
+                   <CardFooter>
+                     <Button asChild variant="secondary" className="w-full">
+                        <Link href={tool.href}>Learn More <ArrowRight /></Link>
+                    </Button>
+                  </CardFooter>
+                </Card>
+              ))}
+            </div>
+          </div>
         </section>
 
+        {/* Mentors Section */}
+        <section id="mentors" className="w-full py-12 md:py-24 lg:py-32 bg-secondary/30">
+            <div className="container px-4 md:px-6">
+                <div className="flex flex-col items-center justify-center space-y-4 text-center mb-12">
+                    <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-balance">Meet Our Mentors</h2>
+                     <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed text-balance">
+                        Sponsored by Passionate Educators
+                    </p>
+                </div>
+                <div className="grid md:grid-cols-2 gap-8">
+                     <Card className="bg-background/50 border-border/50 shadow-lg">
+                        <CardHeader>
+                            <CardTitle className="text-2xl">Pravin Khachane (M.Sc., B.Ed.)</CardTitle>
+                             <CardDescription>Physics</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <p className="text-muted-foreground leading-relaxed">
+                                With over 30 years of teaching experience, Pravin Sir is a visionary in science education. His ability to simplify complex physics concepts has made him a beloved mentor.
+                            </p>
+                        </CardContent>
+                    </Card>
+                    <Card className="bg-background/50 border-border/50 shadow-lg">
+                       <CardHeader>
+                            <CardTitle className="text-2xl">Mangesh Shete (M.Sc., B.Ed.)</CardTitle>
+                            <CardDescription>Chemistry</CardDescription>
+                        </CardHeader>
+                       <CardContent>
+                            <p className="text-muted-foreground leading-relaxed">
+                                A master of chemistry, Mangesh Sir has spent three decades nurturing curiosity and confidence. His empathetic approach continues to inspire thousands.
+                            </p>
+                        </CardContent>
+                    </Card>
+                </div>
+            </div>
+        </section>
+        
         {/* CTA Section */}
         <section id="contact" className="w-full py-12 md:py-24 lg:py-32 bg-background">
           <div
@@ -184,3 +251,5 @@ export default function Home() {
     </div>
   );
 }
+
+    
