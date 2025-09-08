@@ -36,7 +36,7 @@ export default function RootLayout({
         >
           <AuthProvider>
             <div className="relative flex min-h-dvh flex-col">
-              <div className="pb-16 md:pb-0 flex-1">
+              <div className="flex-1 pb-16 md:pb-0">
                 {children}
               </div>
               <Footer />

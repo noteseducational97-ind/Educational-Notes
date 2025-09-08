@@ -271,7 +271,7 @@ export default function DownloadsPage() {
                     return (
                       <motion.div key={resource.id} variants={itemVariants}>
                         <Card 
-                          className="flex flex-col hover:border-primary/50 transition-all duration-300 overflow-hidden bg-secondary/30 border-border/50 shadow-md hover:shadow-primary/20"
+                          className="flex flex-col h-full hover:border-primary/50 transition-all duration-300 overflow-hidden bg-secondary/30 border-border/50 shadow-md hover:shadow-primary/20"
                         >
                             <div className="relative aspect-video bg-muted/50">
                                 <Image

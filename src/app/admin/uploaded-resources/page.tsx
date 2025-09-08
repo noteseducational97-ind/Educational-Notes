@@ -84,16 +84,16 @@ export default function UploadedResourcesPage() {
 
   return (
     <>
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
             <div className="flex flex-col">
                 <h1 className="text-3xl font-bold text-foreground">Resource Management</h1>
                 <p className="text-muted-foreground">Manage all your published study materials.</p>
             </div>
-            <div className="flex gap-2">
-                <Button asChild>
+            <div className="flex gap-2 w-full sm:w-auto">
+                <Button asChild className="flex-1 sm:flex-none">
                     <Link href="/admin/add-resource">
                         <PlusCircle className="mr-2 h-4 w-4" />
-                        Add New Resource
+                        Add New
                     </Link>
                 </Button>
             </div>
@@ -166,14 +166,14 @@ export default function UploadedResourcesPage() {
                                   </div>
                                   </TableCell>
                                   <TableCell className="flex justify-end gap-2">
-                                  <Button variant="outline" size="sm" asChild>
+                                  <Button variant="outline" size="icon" asChild>
                                       <Link href={`/admin/edit-resource/${resource.id}`}>
-                                      <Edit className="h-4 w-4" />
+                                        <Edit className="h-4 w-4" />
                                       </Link>
                                   </Button>
                                   <AlertDialog>
                                       <AlertDialogTrigger asChild>
-                                      <Button variant="destructive" size="sm" disabled={deletingId === resource.id}>
+                                      <Button variant="destructive" size="icon" disabled={deletingId === resource.id}>
                                           <Trash2 className="h-4 w-4" />
                                       </Button>
                                       </AlertDialogTrigger>

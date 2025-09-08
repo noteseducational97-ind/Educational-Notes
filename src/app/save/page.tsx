@@ -172,7 +172,7 @@ export default function SavePage() {
                 {paginatedItems.map((resource, i) => (
                     <motion.div variants={itemVariants} key={resource.id}>
                       <Card 
-                        className="flex flex-col hover:border-primary/50 transition-colors duration-300 overflow-hidden"
+                        className="flex flex-col h-full hover:border-primary/50 transition-colors duration-300 overflow-hidden"
                       >
                          <div className="relative aspect-video bg-muted">
                             <Image

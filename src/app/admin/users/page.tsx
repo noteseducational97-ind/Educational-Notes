@@ -139,7 +139,6 @@ export default function AdminUsersPage() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Sr. No.</TableHead>
                     <TableHead>User</TableHead>
                     <TableHead>Creation Date</TableHead>
                     <TableHead>Status</TableHead>
@@ -147,16 +146,18 @@ export default function AdminUsersPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {users.map((u, index) => (
+                  {users.map((u) => (
                     <TableRow key={u.uid}>
-                      <TableCell>{index + 1}</TableCell>
                       <TableCell>
                         <div className="flex items-center gap-3">
                           <Avatar>
                             <AvatarImage src={u.photoURL ?? ''} alt={u.displayName ?? 'User'} />
                             <AvatarFallback>{getInitials(u.displayName)}</AvatarFallback>
                           </Avatar>
-                          <span className="font-medium">{u.displayName || 'N/A'}</span>
+                          <div>
+                            <p className="font-medium">{u.displayName || 'N/A'}</p>
+                            <p className="text-xs text-muted-foreground">{u.email}</p>
+                          </div>
                         </div>
                       </TableCell>
                       <TableCell>{u.creationTime}</TableCell>
@@ -170,7 +171,7 @@ export default function AdminUsersPage() {
                           <AlertDialogTrigger asChild>
                             <Button variant="outline" size="sm" disabled={isProcessing === u.uid}>
                               <Edit className="h-4 w-4 mr-2" />
-                              Edit Status
+                              Status
                             </Button>
                           </AlertDialogTrigger>
                           <AlertDialogContent>
@@ -183,7 +184,7 @@ export default function AdminUsersPage() {
                             <AlertDialogFooter>
                               <AlertDialogCancel>Cancel</AlertDialogCancel>
                               <AlertDialogAction onClick={() => handleToggleDisable(u.uid, u.disabled)}>
-                                Yes, {u.disabled ? 'Enable' : 'Disable'} User
+                                Yes, {u.disabled ? 'Enable' : 'Disable'}
                               </AlertDialogAction>
                             </AlertDialogFooter>
                           </AlertDialogContent>

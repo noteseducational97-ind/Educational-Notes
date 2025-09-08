@@ -93,20 +93,20 @@ export default function AdmissionApplicationsPage() {
 
   return (
     <>
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
         <div>
           <h1 className="text-3xl font-bold text-foreground">Applications for {formDetails?.title}</h1>
           <p className="text-muted-foreground">List of all submitted applications for this batch.</p>
         </div>
-        <div className="flex gap-2">
-            <Button onClick={handleExportCSV} disabled={applications.length === 0}>
+        <div className="flex gap-2 w-full sm:w-auto">
+            <Button onClick={handleExportCSV} disabled={applications.length === 0} className="flex-1 sm:flex-none">
                 <Download className="mr-2 h-4 w-4" />
                 Export to CSV
             </Button>
-            <Button asChild variant="outline">
+            <Button asChild variant="outline" className="flex-1 sm:flex-none">
             <Link href="/admin/admission">
                 <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to Batches
+                Back
             </Link>
             </Button>
         </div>

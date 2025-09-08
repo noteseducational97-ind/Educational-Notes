@@ -35,6 +35,7 @@ export default function SignUpPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
                 className="w-full"
+                viewport={{ once: false }}
             >
             <Card className="w-full max-w-md shadow-2xl bg-card text-card-foreground mx-auto">
             <CardHeader className="text-center">
