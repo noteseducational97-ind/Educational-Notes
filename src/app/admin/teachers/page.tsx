@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { PlusCircle, Trash2, Edit, Calendar } from 'lucide-react';
+import { PlusCircle, Trash2, Edit, Calendar, GraduationCap } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -26,6 +26,7 @@ export type Teacher = {
   id: string;
   name: string;
   education: string;
+  className: string;
   subject: string;
   mobile?: string;
   experience: string;
@@ -38,6 +39,7 @@ const initialTeachers: Teacher[] = [
     id: 'pravin-khachane',
     name: 'Pravin Khachane',
     education: 'M.Sc., B.Ed.',
+    className: 'Class 11, Class 12, MHT-CET',
     subject: 'Physics',
     mobile: '9876543210',
     experience: '30+ years',
@@ -48,6 +50,7 @@ const initialTeachers: Teacher[] = [
     id: 'mangesh-shete',
     name: 'Mangesh Shete',
     education: 'M.Sc., B.Ed.',
+    className: 'Class 11, Class 12, NEET',
     subject: 'Chemistry',
     mobile: '9876543211',
     experience: '30+ years',
@@ -141,8 +144,9 @@ export default function AdminTeachersPage() {
                             <div>
                                 <CardTitle>{teacher.name}</CardTitle>
                                 <CardDescription>{teacher.education}</CardDescription>
-                                <div className="flex items-center gap-2 mt-1">
-                                    <Badge variant="secondary">{teacher.subject}</Badge>
+                                <div className="flex flex-wrap items-center gap-2 mt-2">
+                                    <Badge variant="destructive">{teacher.subject}</Badge>
+                                    <Badge variant="secondary">{teacher.className}</Badge>
                                     <Badge variant="outline">{teacher.experience}</Badge>
                                     <Badge variant="outline" className="flex items-center gap-1"><Calendar className="h-3 w-3" /> Since {teacher.since}</Badge>
                                 </div>

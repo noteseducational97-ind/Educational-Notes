@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, ArrowLeft, Save, User, Book, Briefcase, FileText, GraduationCap, Calendar, Phone } from 'lucide-react';
+import { Loader2, ArrowLeft, Save, User, Book, Briefcase, FileText, GraduationCap, Calendar, Phone, School } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import type { Teacher } from '../page';
 
@@ -32,6 +32,7 @@ export default function AddTeacherPage() {
   const [teacher, setTeacher] = useState<Partial<Teacher>>({
     name: '',
     education: '',
+    className: '',
     subject: '',
     mobile: '',
     experience: '',
@@ -120,6 +121,10 @@ export default function AddTeacherPage() {
                         <Label htmlFor="education" className="flex items-center gap-2"><GraduationCap /> Education</Label>
                         <Input id="education" placeholder="e.g., M.Sc., B.Ed." value={teacher.education} onChange={handleChange} />
                     </div>
+                </div>
+                <div className="space-y-2">
+                    <Label htmlFor="className" className="flex items-center gap-2"><School /> Class Name</Label>
+                    <Input id="className" placeholder="e.g., Class 12 & MHT-CET" value={teacher.className} onChange={handleChange} />
                 </div>
                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
