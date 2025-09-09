@@ -400,6 +400,9 @@ export default function AdmissionFormPage() {
                                         {paymentMode === 'Online' && (
                                             <div className="p-4 border rounded-lg bg-secondary/30 space-y-2">
                                                 <h3 className="text-lg font-semibold text-foreground">UPI Details</h3>
+                                                {formDetails.paymentApp && (
+                                                     <p className="text-muted-foreground">App: <span className="font-mono text-primary">{formDetails.paymentApp}</span></p>
+                                                )}
                                                 <p className="text-muted-foreground">UPI ID: <span className="font-mono text-primary">{formDetails.upiId}</span></p>
                                                 <p className="text-muted-foreground">UPI Number: <span className="font-mono text-primary">{formDetails.upiNumber}</span></p>
                                             </div>

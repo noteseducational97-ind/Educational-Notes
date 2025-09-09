@@ -43,6 +43,7 @@ export type AdmissionForm = {
     totalFees: number;
     advanceFees: number;
     contactNo?: string;
+    paymentApp?: string;
     upiId: string;
     upiNumber: string;
     createdAt: string; // Should be an ISO string

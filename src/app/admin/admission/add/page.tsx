@@ -17,7 +17,7 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, ArrowLeft, Save, CreditCard, Phone } from 'lucide-react';
+import { Loader2, ArrowLeft, Save, CreditCard, Phone, Wallet } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
@@ -29,6 +29,8 @@ const monthOptions = [
     'January', 'February', 'March', 'April', 'May', 'June', 
     'July', 'August', 'September', 'October', 'November', 'December'
 ];
+
+const paymentAppOptions = ['PhonePe', 'Google Pay', 'Paytm', 'Bhim Upi', 'Payz'];
 
 
 const FormSchema = z.object({
@@ -44,6 +46,7 @@ const FormSchema = z.object({
   totalFees: z.coerce.number().min(0, 'Total fees must be a positive number.'),
   advanceFees: z.coerce.number().min(0, 'Advance fees must be a positive number.'),
   contactNo: z.string().optional(),
+  paymentApp: z.string().optional(),
   upiId: z.string().min(3, 'UPI ID is required.'),
   upiNumber: z.string().min(10, 'UPI number must be at least 10 digits.'),
 }).refine(data => parseInt(data.yearTo) > parseInt(data.yearFrom), {
@@ -93,6 +96,7 @@ export default function AddAdmissionFormPage() {
         totalFees: undefined,
         advanceFees: undefined,
         contactNo: '',
+        paymentApp: '',
         upiId: '',
         upiNumber: '',
     }
@@ -137,6 +141,8 @@ export default function AddAdmissionFormPage() {
             }
             if (matchingTeacher.mobile) {
                 form.setValue('contactNo', matchingTeacher.mobile);
+            } else {
+                form.setValue('contactNo', '');
             }
         }
     }
@@ -200,7 +206,7 @@ export default function AddAdmissionFormPage() {
                      <FormField control={form.control} name="className" render={({ field }) => (
                         <FormItem>
                             <FormLabel>Class Name</FormLabel>
-                            <FormControl><Input placeholder="e.g. Class 11 / MHT-CET" {...field} /></FormControl>
+                            <FormControl><Input placeholder="e.g. Class 11 / MHT-CET" {...field} value={field.value || ''} disabled /></FormControl>
                             <FormMessage />
                         </FormItem>
                     )} />
@@ -309,7 +315,7 @@ export default function AddAdmissionFormPage() {
                         <FormField control={form.control} name="contactNo" render={({ field }) => (
                            <FormItem>
                                <FormLabel className="flex items-center gap-2"><Phone /> Contact No.</FormLabel>
-                               <FormControl><Input placeholder="Contact number will appear here" {...field} disabled /></FormControl>
+                               <FormControl><Input placeholder="Contact number for payment queries" {...field} value={field.value || ''} disabled /></FormControl>
                                <FormMessage />
                            </FormItem>
                        )} />
@@ -329,6 +335,18 @@ export default function AddAdmissionFormPage() {
                                 </FormItem>
                             )} />
                         </div>
+                        <FormField control={form.control} name="paymentApp" render={({ field }) => (
+                            <FormItem>
+                                <FormLabel className="flex items-center gap-2"><Wallet /> Supported Payment App</FormLabel>
+                                <Select onValueChange={field.onChange} value={field.value}>
+                                    <FormControl><SelectTrigger><SelectValue placeholder="Select a payment app" /></SelectTrigger></FormControl>
+                                    <SelectContent>
+                                        {paymentAppOptions.map(app => <SelectItem key={app} value={app}>{app}</SelectItem>)}
+                                    </SelectContent>
+                                </Select>
+                                <FormMessage />
+                            </FormItem>
+                        )} />
                     </div>
                 </CardContent>
                 <CardFooter className="flex justify-between gap-4 border-t pt-6">
