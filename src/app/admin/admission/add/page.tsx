@@ -203,7 +203,7 @@ export default function AddAdmissionFormPage() {
                      <FormField control={form.control} name="className" render={({ field }) => (
                         <FormItem>
                             <FormLabel>Class Name</FormLabel>
-                            <FormControl><Input placeholder="e.g. Class 11 / MHT-CET" {...field} value={field.value || ''} disabled /></FormControl>
+                            <FormControl><Input placeholder="e.g. Class 11 / MHT-CET" {...field} value={field.value || ''} /></FormControl>
                             <FormMessage />
                         </FormItem>
                     )} />
@@ -248,7 +248,7 @@ export default function AddAdmissionFormPage() {
                      <FormField control={form.control} name="description" render={({ field }) => (
                         <FormItem>
                             <FormLabel>Description</FormLabel>
-                            <FormControl><Textarea placeholder="A brief description of the admission batch" {...field} disabled /></FormControl>
+                            <FormControl><Textarea placeholder="A brief description of the admission batch" {...field} /></FormControl>
                             <FormMessage />
                         </FormItem>
                     )} />
@@ -313,7 +313,7 @@ export default function AddAdmissionFormPage() {
                             <FormField control={form.control} name="contactNo" render={({ field }) => (
                                <FormItem>
                                    <FormLabel className="flex items-center gap-2"><Phone /> Contact No.</FormLabel>
-                                   <FormControl><Input placeholder="Contact number for payment queries" {...field} value={field.value ?? ''} disabled /></FormControl>
+                                   <FormControl><Input placeholder="Contact number for payment queries" {...field} value={field.value ?? ''} /></FormControl>
                                    <FormMessage />
                                </FormItem>
                            )} />
