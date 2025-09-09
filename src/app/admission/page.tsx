@@ -10,6 +10,28 @@ import Link from 'next/link';
 import { getAdmissionForms } from '@/lib/firebase/admissions';
 import type { AdmissionForm } from '@/types';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
+import { motion } from 'framer-motion';
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { y: 20, opacity: 0 },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: {
+      duration: 0.5,
+    },
+  },
+};
 
 export default function AdmissionPage() {
     const [admissionForms, setAdmissionForms] = useState<AdmissionForm[]>([]);
@@ -29,49 +51,60 @@ export default function AdmissionPage() {
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
       <main className="flex-1">
-        <div className="container mx-auto px-4 py-12">
-            <div className="text-center mb-12 animate-fade-in-up">
+        <motion.div 
+            className="container mx-auto px-4 py-12"
+            initial="hidden"
+            animate="visible"
+            variants={containerVariants}
+        >
+            <motion.div variants={itemVariants} className="text-center mb-12">
                 <h1 className="text-4xl font-bold tracking-tight text-primary">Admissions Open</h1>
                 <p className="mt-2 text-lg text-muted-foreground">
                     Choose the program you are interested in and proceed with the admission process.
                 </p>
-            </div>
+            </motion.div>
             
             {admissionForms.length > 0 ? (
-                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-                    {admissionForms.map((form, i) => (
-                        <Card 
-                            key={form.id} 
-                            className="flex flex-col justify-between bg-secondary/30 p-6 animate-fade-in-up"
-                            style={{animationDelay: `${i * 150}ms`, opacity: 0, animationFillMode: 'forwards'}}
-                        >
-                            <div>
-                                <CardTitle className="text-2xl">{form.title}</CardTitle>
-                                <CardDescription className="mt-2">{form.description}</CardDescription>
-                                <div className="mt-4 flex items-center text-sm text-muted-foreground">
-                                    <Calendar className="h-4 w-4 mr-2" />
-                                    <span>Starts: {form.startMonth} {form.year}</span>
+                 <motion.div 
+                    variants={containerVariants}
+                    className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto"
+                 >
+                    {admissionForms.map((form) => (
+                        <motion.div variants={itemVariants} key={form.id}>
+                            <Card 
+                                className="flex flex-col justify-between bg-secondary/30 p-6 h-full transition-all hover:border-primary/50 hover:shadow-xl"
+                            >
+                                <div>
+                                    <CardTitle className="text-2xl">{form.title}</CardTitle>
+                                    <CardDescription className="mt-2">{form.description}</CardDescription>
+                                    <div className="mt-4 flex items-center text-sm text-muted-foreground">
+                                        <Calendar className="h-4 w-4 mr-2" />
+                                        <span>Starts: {form.startMonth} {form.year}</span>
+                                    </div>
                                 </div>
-                            </div>
-                            <Button asChild className="w-full mt-6">
-                            <Link href={`/admission/${form.id}`}>
-                                Admission Now <ArrowRight className="ml-2 h-4 w-4" />
-                            </Link>
-                            </Button>
-                        </Card>
+                                <Button asChild className="w-full mt-6">
+                                <Link href={`/admission/${form.id}`}>
+                                    Apply Now <ArrowRight className="ml-2 h-4 w-4" />
+                                </Link>
+                                </Button>
+                            </Card>
+                        </motion.div>
                     ))}
-                </div>
+                </motion.div>
             ) : (
-                <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-muted bg-card/50 p-12 text-center max-w-2xl mx-auto animate-fade-in-up">
+                <motion.div 
+                    variants={itemVariants} 
+                    className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-muted bg-card/50 p-12 text-center max-w-2xl mx-auto"
+                >
                     <Info className="h-12 w-12 text-muted-foreground mb-4" />
                     <h2 className="text-2xl font-semibold">No Admissions Currently Open</h2>
                     <p className="mt-2 text-muted-foreground">
                         Please check back later for new admission announcements.
                     </p>
-                </div>
+                </motion.div>
             )}
 
-             <div className="text-center mt-16 animate-fade-in-up [animation-delay:300ms]">
+             <motion.div variants={itemVariants} className="text-center mt-16">
                  <h2 className="text-2xl font-semibold">Have Questions?</h2>
                  <p className="mt-2 text-muted-foreground">
                      Feel free to contact us for any admission-related inquiries.
@@ -79,8 +112,8 @@ export default function AdmissionPage() {
                  <Button variant="outline" className="mt-4" asChild>
                     <a href="mailto:noteseducational97@gmail.com">Contact Us</a>
                  </Button>
-            </div>
-        </div>
+            </motion.div>
+        </motion.div>
       </main>
     </div>
   );

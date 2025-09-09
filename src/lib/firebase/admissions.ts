@@ -30,21 +30,26 @@ export async function addAdmissionForm(data: Omit<AdmissionForm, 'id' | 'created
 }
 
 export async function getAdmissionForms(): Promise<AdmissionForm[]> {
-    const snapshot = await db.collection('admissionForms').orderBy('createdAt', 'desc').get();
-    if (snapshot.empty) {
+    try {
+        const snapshot = await db.collection('admissionForms').orderBy('createdAt', 'desc').get();
+        if (snapshot.empty) {
+            return [];
+        }
+        return snapshot.docs.map(doc => {
+            const data = doc.data();
+            const createdAt = (data.createdAt as Timestamp)?.toDate().toISOString() || new Date().toISOString();
+            return {
+                ...data,
+                id: doc.id,
+                createdAt,
+                isDemoEnabled: data.isDemoEnabled || false,
+                demoTenureDays: data.demoTenureDays || null,
+            } as AdmissionForm;
+        });
+    } catch (error) {
+        console.error("Failed to fetch admission forms:", error);
         return [];
     }
-    return snapshot.docs.map(doc => {
-        const data = doc.data();
-        const createdAt = (data.createdAt as Timestamp)?.toDate().toISOString() || new Date().toISOString();
-        return {
-            ...data,
-            id: doc.id,
-            createdAt,
-            isDemoEnabled: data.isDemoEnabled || false,
-            demoTenureDays: data.demoTenureDays || null,
-        } as AdmissionForm;
-    });
 }
 
 export async function getAdmissionFormById(id: string): Promise<AdmissionForm | null> {
