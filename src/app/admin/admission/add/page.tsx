@@ -37,7 +37,7 @@ const upiHandles: { [key: string]: string } = {
     'Google Pay': '@okaxis',
     'Paytm': '@paytm',
     'Bhim Upi': '@upi',
-    'Payz': '@payzapp'
+    'Payz': '@pz'
 };
 
 
