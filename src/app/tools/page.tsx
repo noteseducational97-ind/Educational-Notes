@@ -58,28 +58,33 @@ export default function ToolsPage() {
                     </p>
                     </div>
                     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                    {publicTools.map((tool) => (
-                        <Card 
-                        key={tool.title}
-                        className="group flex flex-col h-full cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl hover:border-primary/50 bg-background/50 border-border"
-                        >
-                        <CardHeader>
-                            <div className="flex items-center gap-4">
-                            {getToolIcon(tool.id)}
-                            <CardTitle className="text-xl font-semibold">{tool.title}</CardTitle>
-                            </div>
-                        </CardHeader>
-                        <CardContent className="flex-grow">
-                            <CardDescription>{tool.description}</CardDescription>
-                            {tool.isComingSoon && <Badge variant="outline" className="mt-2">Coming Soon</Badge>}
-                        </CardContent>
-                        <CardFooter>
-                            <Button asChild variant="secondary" className="w-full" disabled={tool.isComingSoon || !tool.href || tool.href === '#'}>
-                                <Link href={tool.href ?? '#'}>Launch Tool <ArrowRight className="ml-2 h-4 w-4" /></Link>
-                            </Button>
-                        </CardFooter>
-                        </Card>
-                    ))}
+                    {publicTools.map((tool) => {
+                        const href = tool.isComingSoon ? '/coming-soon' : tool.href ?? '#';
+                        const isDisabled = !tool.isComingSoon && (!tool.href || tool.href === '#');
+
+                        return (
+                             <Card 
+                                key={tool.title}
+                                className="group flex flex-col h-full transition-all duration-300 hover:scale-105 hover:shadow-xl hover:border-primary/50 bg-background/50 border-border"
+                            >
+                                <CardHeader>
+                                    <div className="flex items-center gap-4">
+                                        {getToolIcon(tool.id)}
+                                        <CardTitle className="text-xl font-semibold">{tool.title}</CardTitle>
+                                    </div>
+                                </CardHeader>
+                                <CardContent className="flex-grow">
+                                    <CardDescription>{tool.description}</CardDescription>
+                                    {tool.isComingSoon && <Badge variant="outline" className="mt-2">Coming Soon</Badge>}
+                                </CardContent>
+                                <CardFooter>
+                                    <Button asChild variant="secondary" className="w-full" disabled={isDisabled}>
+                                        <Link href={href}>Launch Tool <ArrowRight className="ml-2 h-4 w-4" /></Link>
+                                    </Button>
+                                </CardFooter>
+                            </Card>
+                        )
+                    })}
                     </div>
                 </div>
                 </section>
