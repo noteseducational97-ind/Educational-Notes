@@ -136,10 +136,10 @@ export default function AddAdmissionFormPage() {
         const matchingTeacher = teachers.find(t => t.subject.toLowerCase() === subject.toLowerCase());
         if (matchingTeacher) {
             if (matchingTeacher.className) {
-                form.setValue('className', matchingTeacher.className);
+                form.setValue('className', matchingTeacher.className, { shouldValidate: true });
             }
             if (matchingTeacher.mobile) {
-                form.setValue('contactNo', matchingTeacher.mobile);
+                form.setValue('contactNo', matchingTeacher.mobile, { shouldValidate: true });
             }
         }
     }
