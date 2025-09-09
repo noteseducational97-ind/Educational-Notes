@@ -1,3 +1,4 @@
+
 'use client';
 import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
@@ -5,7 +6,7 @@ import { useAuth } from '@/hooks/use-auth';
 import { listAllUsers, updateUserDisabledStatus, deleteUser as deleteUserAction } from '../../actions';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Users, Trash2, Edit, CheckCircle, ArrowLeft } from 'lucide-react';
