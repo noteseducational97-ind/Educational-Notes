@@ -4,7 +4,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Wrench, PlusCircle, Edit, Trash2, Eye, EyeOff } from 'lucide-react';
+import { Wrench, PlusCircle, Edit, Trash2, Eye, EyeOff, FileQuestion, ClipboardEdit } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
@@ -20,6 +20,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
 import { initialTools } from '@/lib/data';
+import { motion } from 'framer-motion';
 
 export type Tool = {
     id: string;
@@ -29,6 +30,28 @@ export type Tool = {
     visibility: 'public' | 'private';
     isComingSoon: boolean;
 };
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { y: 20, opacity: 0 },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: {
+      duration: 0.5,
+    },
+  },
+};
+
 
 export default function AdminToolsPage() {
     const [tools, setTools] = useState<Tool[]>([]);
@@ -67,61 +90,13 @@ export default function AdminToolsPage() {
         }
     };
     
-    const ToolCard = ({ tool, index }: { tool: Tool, index: number }) => (
-        <Card 
-            className="flex flex-col animate-fade-in-up"
-            style={{animationDelay: `${index * 150}ms`, opacity: 0, animationFillMode: 'forwards'}}
-        >
-            <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                    <Wrench /> 
-                    {tool.title}
-                </CardTitle>
-                <CardDescription>{tool.description}</CardDescription>
-            </CardHeader>
-            <CardContent className="flex-grow space-y-4">
-                <div className="flex flex-wrap gap-2">
-                    <Badge variant={tool.visibility === 'public' ? 'secondary' : 'outline'}>
-                        {tool.visibility === 'public' ? <Eye className="mr-1 h-3 w-3" /> : <EyeOff className="mr-1 h-3 w-3" />}
-                        {tool.visibility === 'public' ? 'Public' : 'Private'}
-                    </Badge>
-                    {tool.isComingSoon && <Badge variant="outline">Coming Soon</Badge>}
-                </div>
-                <div>
-                    <p className="text-sm text-muted-foreground">Link: <span className="font-mono text-xs">{tool.href}</span></p>
-                </div>
-            </CardContent>
-                <CardFooter className="flex justify-end gap-2 border-t pt-4">
-                <Button variant="outline" size="sm" asChild>
-                    <Link href={`/admin/tools/edit/${tool.id}`}>
-                        <Edit className="h-4 w-4 mr-2" /> Edit
-                    </Link>
-                </Button>
-                    <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                        <Button variant="destructive-outline" size="sm">
-                            <Trash2 className="h-4 w-4" />
-                        </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                        <AlertDialogHeader>
-                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                            This action cannot be undone. This will permanently delete the tool "{tool.title}".
-                        </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={() => handleDelete(tool.id)}>
-                            Yes, delete
-                        </AlertDialogAction>
-                        </AlertDialogFooter>
-                    </AlertDialogContent>
-                </AlertDialog>
-            </CardFooter>
-        </Card>
-    );
-
+    const getToolIcon = (id: string) => {
+        switch(id) {
+            case 'admission-form': return <ClipboardEdit className="h-6 w-6 text-primary" />;
+            case 'test-generator': return <FileQuestion className="h-6 w-6 text-primary" />;
+            default: return <Wrench className="h-6 w-6 text-primary" />;
+        }
+    }
 
     return (
         <>
@@ -137,11 +112,67 @@ export default function AdminToolsPage() {
                     </Link>
                 </Button>
             </div>
-             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {tools.map((tool, i) => (
-                    <ToolCard key={tool.id} tool={tool} index={i} />
+             <motion.div 
+                className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
+                variants={containerVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: false, amount: 0.1 }}
+             >
+                {tools.map((tool) => (
+                    <motion.div variants={itemVariants} key={tool.id}>
+                        <Card className="flex flex-col h-full">
+                            <CardHeader>
+                                <CardTitle className="flex items-center gap-3">
+                                    {getToolIcon(tool.id)}
+                                    {tool.title}
+                                </CardTitle>
+                                <CardDescription>{tool.description}</CardDescription>
+                            </CardHeader>
+                            <CardContent className="flex-grow space-y-4">
+                                <div className="flex flex-wrap gap-2">
+                                    <Badge variant={tool.visibility === 'public' ? 'secondary' : 'outline'}>
+                                        {tool.visibility === 'public' ? <Eye className="mr-1 h-3 w-3" /> : <EyeOff className="mr-1 h-3 w-3" />}
+                                        {tool.visibility === 'public' ? 'Public' : 'Private'}
+                                    </Badge>
+                                    {tool.isComingSoon && <Badge variant="outline">Coming Soon</Badge>}
+                                </div>
+                                <div>
+                                    <p className="text-sm text-muted-foreground">Link: <span className="font-mono text-xs">{tool.href}</span></p>
+                                </div>
+                            </CardContent>
+                                <CardFooter className="flex justify-end gap-2 border-t pt-4">
+                                <Button variant="outline" size="sm" asChild>
+                                    <Link href={`/admin/tools/edit/${tool.id}`}>
+                                        <Edit className="h-4 w-4 mr-2" /> Edit
+                                    </Link>
+                                </Button>
+                                    <AlertDialog>
+                                    <AlertDialogTrigger asChild>
+                                        <Button variant="destructive-outline" size="icon">
+                                            <Trash2 className="h-4 w-4" />
+                                        </Button>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent>
+                                        <AlertDialogHeader>
+                                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                            This action cannot be undone. This will permanently delete the tool "{tool.title}".
+                                        </AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter>
+                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                        <AlertDialogAction onClick={() => handleDelete(tool.id)}>
+                                            Yes, delete
+                                        </AlertDialogAction>
+                                        </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                </AlertDialog>
+                            </CardFooter>
+                        </Card>
+                    </motion.div>
                 ))}
-            </div>
+            </motion.div>
         </>
     );
 }
