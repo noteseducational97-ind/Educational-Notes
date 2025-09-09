@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, ArrowLeft, Save, User, Book, Briefcase, FileText, GraduationCap, Calendar } from 'lucide-react';
+import { Loader2, ArrowLeft, Save, User, Book, Briefcase, FileText, GraduationCap, Calendar, Phone } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import type { Teacher } from '../page';
 
@@ -29,10 +29,11 @@ export default function AddTeacherPage() {
   const router = useRouter();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [teacher, setTeacher] = useState({
+  const [teacher, setTeacher] = useState<Partial<Teacher>>({
     name: '',
     education: '',
     subject: '',
+    mobile: '',
     experience: '',
     since: '',
     description: '',
@@ -45,24 +46,21 @@ export default function AddTeacherPage() {
 
   useEffect(() => {
     const currentYear = new Date().getFullYear();
-    const sinceYear = parseInt(teacher.since, 10);
-    const experienceYears = parseInt(teacher.experience, 10);
-
-    const activeElementId = document.activeElement?.id;
-
-    if (activeElementId === 'since' && !isNaN(sinceYear) && sinceYear > 1900 && sinceYear <= currentYear) {
-      const calculatedExperience = currentYear - sinceYear;
-      setTeacher(prev => ({ ...prev, experience: `${calculatedExperience}+ years` }));
-    } else if (activeElementId === 'experience' && !isNaN(experienceYears)) {
-      const calculatedSince = currentYear - experienceYears;
-      setTeacher(prev => ({ ...prev, since: calculatedSince.toString() }));
+    if (teacher.since) {
+        const sinceYear = parseInt(teacher.since, 10);
+        if (!isNaN(sinceYear) && sinceYear > 1900 && sinceYear <= currentYear) {
+            const calculatedExperience = currentYear - sinceYear;
+            setTeacher(prev => ({ ...prev, experience: `${calculatedExperience}+ years` }));
+        }
     }
-  }, [teacher.since, teacher.experience]);
-
+  }, [teacher.since]);
+  
   useEffect(() => {
-      const newDescription = generateDescription(teacher.name, teacher.subject, teacher.experience);
-      if (newDescription) {
-          setTeacher(prev => ({ ...prev, description: newDescription }));
+      if (teacher.name && teacher.subject && teacher.experience) {
+        const newDescription = generateDescription(teacher.name, teacher.subject, teacher.experience);
+        if (newDescription) {
+            setTeacher(prev => ({ ...prev, description: newDescription }));
+        }
       }
   }, [teacher.name, teacher.subject, teacher.experience]);
   
@@ -84,7 +82,7 @@ export default function AddTeacherPage() {
         const newTeacher: Teacher = {
             id: createSlug(teacher.name),
             ...teacher,
-        };
+        } as Teacher;
 
         const updatedTeachers = [...storedTeachers, newTeacher];
         sessionStorage.setItem('managed-teachers', JSON.stringify(updatedTeachers));
@@ -123,10 +121,14 @@ export default function AddTeacherPage() {
                         <Input id="education" placeholder="e.g., M.Sc., B.Ed." value={teacher.education} onChange={handleChange} />
                     </div>
                 </div>
-                 <div className="grid grid-cols-1 gap-4">
+                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                         <Label htmlFor="subject" className="flex items-center gap-2"><Book /> Subject</Label>
                         <Input id="subject" placeholder="e.g., Biology" value={teacher.subject} onChange={handleChange} />
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="mobile" className="flex items-center gap-2"><Phone /> Mobile No.</Label>
+                        <Input id="mobile" placeholder="e.g., 9876543210" value={teacher.mobile} onChange={handleChange} />
                     </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
@@ -136,7 +138,7 @@ export default function AddTeacherPage() {
                     </div>
                     <div className="space-y-2">
                         <Label htmlFor="experience" className="flex items-center gap-2"><Briefcase /> Experience</Label>
-                        <Input id="experience" placeholder="e.g., 10+ years" value={teacher.experience} onChange={handleChange} />
+                        <Input id="experience" placeholder="e.g., 10+ years" value={teacher.experience} onChange={handleChange} disabled />
                     </div>
                 </div>
                 <div className="space-y-2">

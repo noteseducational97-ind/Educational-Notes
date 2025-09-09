@@ -27,6 +27,7 @@ export type Teacher = {
   name: string;
   education: string;
   subject: string;
+  mobile?: string;
   experience: string;
   since: string;
   description: string;
@@ -38,6 +39,7 @@ const initialTeachers: Teacher[] = [
     name: 'Pravin Khachane',
     education: 'M.Sc., B.Ed.',
     subject: 'Physics',
+    mobile: '9876543210',
     experience: '30+ years',
     since: '1994',
     description: 'With over 30 years of teaching experience, Pravin Sir is a visionary in science education. His ability to simplify complex physics concepts has made him a beloved mentor.',
@@ -47,6 +49,7 @@ const initialTeachers: Teacher[] = [
     name: 'Mangesh Shete',
     education: 'M.Sc., B.Ed.',
     subject: 'Chemistry',
+    mobile: '9876543211',
     experience: '30+ years',
     since: '1994',
     description: 'A master of chemistry, Mangesh Sir has spent three decades nurturing curiosity and confidence. His empathetic approach continues to inspire thousands.',
