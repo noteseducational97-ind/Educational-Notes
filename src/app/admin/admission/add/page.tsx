@@ -76,8 +76,8 @@ export default function AddAdmissionFormPage() {
         if (storedTeachers) {
             setTeachers(JSON.parse(storedTeachers));
         } else {
-            // Fallback to initial data if sessionStorage is empty
             setTeachers(initialTeachers);
+            sessionStorage.setItem('managed-teachers', JSON.stringify(initialTeachers));
         }
     }
   }, []);
@@ -133,7 +133,7 @@ export default function AddAdmissionFormPage() {
 
   useEffect(() => {
     if (subject && teachers.length > 0) {
-        const matchingTeacher = teachers.find(t => t.subject.toLowerCase() === subject.toLowerCase());
+        const matchingTeacher = teachers.find(t => t.subject.toLowerCase().includes(subject.toLowerCase()));
         if (matchingTeacher) {
             if (matchingTeacher.className) {
                 form.setValue('className', matchingTeacher.className, { shouldValidate: true });
