@@ -103,11 +103,13 @@ export default function AdminDownloadsPage() {
   }, [user, toast]);
 
   useEffect(() => {
-    if (!authLoading && !isAdmin) {
+    if (!authLoading) {
+      if (!isAdmin) {
         toast({ variant: 'destructive', title: 'Unauthorized' });
         router.push('/admin/login');
-    } else {
+      } else {
         fetchInitialData();
+      }
     }
   }, [fetchInitialData, authLoading, isAdmin, router, toast]);
 

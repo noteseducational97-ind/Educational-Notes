@@ -37,7 +37,7 @@ const contentCategories = [
 const scienceSubjects = ['Physics', 'Chemistry', 'Math-1', 'Math-2', 'Biology'];
 
 const GUEST_WATCHLIST_KEY = 'guest-watchlist';
-const ITEMS_PER_PAGE = 8;
+const ITEMS_PER_PAGE = 9;
 
 const containerVariants = {
   hidden: { opacity: 0 },
