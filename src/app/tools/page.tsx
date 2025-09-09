@@ -1,6 +1,7 @@
 
 'use client';
 
+import { useEffect, useState } from 'react';
 import Header from '@/components/layout/Header';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -9,10 +10,27 @@ import { Calculator, Copy, ClipboardEdit, ArrowRight, EyeOff, Wrench, FileQuesti
 import type { Tool } from '../admin/tools/page';
 import { initialTools } from '@/lib/data';
 import { Badge } from '@/components/ui/badge';
+import LoadingSpinner from '@/components/shared/LoadingSpinner';
 
 
 export default function ToolsPage() {
-    const publicTools = initialTools.filter(tool => tool.visibility === 'public');
+    const [tools, setTools] = useState<Tool[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const storedTools = sessionStorage.getItem('managed-tools');
+            if (storedTools) {
+                setTools(JSON.parse(storedTools));
+            } else {
+                // Fallback to initial data if sessionStorage is empty
+                setTools(initialTools);
+            }
+            setLoading(false);
+        }
+    }, []);
+
+    const publicTools = tools.filter(tool => tool.visibility === 'public');
     
     const getToolIcon = (id: string) => {
         switch(id) {
@@ -21,6 +39,10 @@ export default function ToolsPage() {
             case 'test-generator': return <FileQuestion className="h-8 w-8 text-primary" />;
             default: return <Wrench className="h-8 w-8 text-primary" />;
         }
+    }
+    
+    if (loading) {
+        return <LoadingSpinner />;
     }
 
     return (
@@ -65,4 +87,3 @@ export default function ToolsPage() {
         </div>
     );
 }
-
