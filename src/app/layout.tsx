@@ -12,7 +12,7 @@ import { ThemeProvider } from '@/providers/theme-provider';
 const inter = Inter({
   subsets: ['latin'],
   variable: '--font-sans',
-  display: 'swap', // improve font loading performance
+  display: 'swap',
 });
 
 export const metadata: Metadata = {

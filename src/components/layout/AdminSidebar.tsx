@@ -1,8 +1,9 @@
+
 'use client';
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Home, Download, Bookmark, Menu, LogIn, UserPlus, LayoutDashboard, Users, BookCopy, FileText, Wrench, GraduationCap, ArrowLeft, LogOut, FileQuestion } from 'lucide-react';
+import { Home, Download, Bookmark, Menu, LogIn, UserPlus, LayoutDashboard, Users, BookCopy, FileText, Wrench, GraduationCap, ArrowLeft, LogOut } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { EducationalNotesLogo } from '../icons/EducationalNotesLogo';
 import { Button } from '../ui/button';

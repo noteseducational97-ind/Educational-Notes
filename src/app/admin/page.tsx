@@ -22,6 +22,7 @@ const containerVariants = {
     opacity: 1,
     transition: {
       staggerChildren: 0.15,
+      duration: 0.3
     },
   },
 };
@@ -32,7 +33,7 @@ const itemVariants = {
     y: 0,
     opacity: 1,
     transition: {
-      duration: 0.5,
+      duration: 0.3
     },
   },
 };
@@ -76,8 +77,8 @@ export default function AdminDashboardPage() {
             className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-6"
             variants={containerVariants}
             initial="hidden"
-            whileInView="visible"
-            viewport={{ once: false, amount: 0.2 }}
+            animate="visible"
+            viewport={{ once: true, amount: 0.2 }}
         >
             <motion.div variants={itemVariants}>
               <Card>
@@ -109,8 +110,8 @@ export default function AdminDashboardPage() {
             className="grid gap-6 md:grid-cols-2"
             variants={containerVariants}
             initial="hidden"
-            whileInView="visible"
-            viewport={{ once: false, amount: 0.2 }}
+            animate="visible"
+            viewport={{ once: true, amount: 0.2 }}
         >
           <motion.div variants={itemVariants}>
             <Card>

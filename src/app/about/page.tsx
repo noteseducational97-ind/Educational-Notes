@@ -40,6 +40,7 @@ const containerVariants = {
     opacity: 1,
     transition: {
       staggerChildren: 0.2,
+      duration: 0.3
     },
   },
 };
@@ -50,7 +51,7 @@ const itemVariants = {
     y: 0,
     opacity: 1,
     transition: {
-      duration: 0.5,
+      duration: 0.3,
     },
   },
 };
@@ -61,14 +62,11 @@ export default function AboutPage() {
       <Header />
       <main className="flex-1">
         <motion.section 
-          className="w-full py-12 md:py-20 lg:py-24 bg-secondary/30 relative overflow-hidden"
+          className="w-full py-12 md:py-20 lg:py-24 bg-secondary/30"
           initial="hidden"
           animate="visible"
           variants={containerVariants}
         >
-             <div className="absolute top-0 -left-4 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
-            <div className="absolute top-0 -right-4 w-72 h-72 bg-yellow-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
-            <div className="absolute -bottom-8 left-20 w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
           <div className="container px-4 md:px-6 relative">
             <motion.div variants={itemVariants} className="flex flex-col items-center justify-center space-y-4 text-center">
               <h1 className="text-4xl md:text-5xl font-bold tracking-tighter text-primary">About Us</h1>
@@ -84,7 +82,7 @@ export default function AboutPage() {
           className="w-full py-12 md:py-24 lg:py-32"
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: false, amount: 0.3 }}
+          viewport={{ once: true, amount: 0.3 }}
           variants={itemVariants}
         >
             <div className="container px-4 md:px-6">
@@ -108,14 +106,12 @@ export default function AboutPage() {
 
         <motion.section 
           id="features" 
-          className="w-full py-12 md:py-24 lg:py-32 bg-secondary/30 relative overflow-hidden"
+          className="w-full py-12 md:py-24 lg:py-32 bg-secondary/30"
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: false, amount: 0.2 }}
+          viewport={{ once: true, amount: 0.2 }}
           variants={containerVariants}
         >
-             <div className="absolute top-10 -left-20 w-96 h-96 bg-blue-200 rounded-full mix-blend-multiply filter blur-2xl opacity-40 animate-blob animation-delay-1000"></div>
-            <div className="absolute bottom-10 -right-20 w-96 h-96 bg-red-200 rounded-full mix-blend-multiply filter blur-2xl opacity-40 animate-blob animation-delay-3000"></div>
           <div className="container px-4 md:px-6 relative">
             <motion.div variants={itemVariants} className="flex flex-col items-center justify-center space-y-4 text-center mb-12">
               <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-balance">What We Offer</h2>
@@ -150,11 +146,9 @@ export default function AboutPage() {
           className="w-full py-12 md:py-24 lg:py-32"
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: false, amount: 0.2 }}
+          viewport={{ once: true, amount: 0.2 }}
           variants={containerVariants}
         >
-             <div className="absolute top-10 -left-20 w-96 h-96 bg-purple-200 rounded-full mix-blend-multiply filter blur-2xl opacity-40 animate-blob animation-delay-1000"></div>
-            <div className="absolute bottom-10 -right-20 w-96 h-96 bg-yellow-200 rounded-full mix-blend-multiply filter blur-2xl opacity-40 animate-blob animation-delay-3000"></div>
             <div className="container px-4 md:px-6 relative">
                 <motion.div variants={itemVariants} className="flex flex-col items-center justify-center space-y-4 text-center mb-12">
                     <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-balance">Meet Our Mentors</h2>
@@ -198,7 +192,7 @@ export default function AboutPage() {
           className="w-full py-12 md:py-24 lg:py-32 bg-secondary/30"
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: false, amount: 0.3 }}
+          viewport={{ once: true, amount: 0.3 }}
           variants={itemVariants}
         >
           <div className="container px-4 md:px-6">
