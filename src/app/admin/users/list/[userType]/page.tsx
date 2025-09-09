@@ -3,13 +3,13 @@
 import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { useAuth } from '@/hooks/use-auth';
-import { listAllUsers, updateUserDisabledStatus, deleteUser as deleteUserAction } from '../../actions';
+import { listAllUsers, updateUserDisabledStatus, deleteUser as deleteUserAction, updateUserAdminStatus } from '../../actions';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Users, Trash2, Edit, CheckCircle, ArrowLeft, Ban, Check, ShieldAlert } from 'lucide-react';
+import { Users, Trash2, Edit, CheckCircle, ArrowLeft, Ban, Check, ShieldAlert, ShieldCheck } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import {
   AlertDialog,
@@ -146,6 +146,29 @@ export default function UserListPage() {
       setIsProcessing(false);
     }
   }
+  
+  const handleBulkToggleAdmin = async (makeAdmin: boolean) => {
+    setIsProcessing(true);
+    try {
+      await Promise.all(
+        selectedUsers.map(u => updateUserAdminStatus(u.uid, makeAdmin))
+      );
+      toast({
+        title: 'Success',
+        description: `${selectedUsers.length} user(s) have been ${makeAdmin ? 'made admins' : 'removed as admins'}.`,
+      });
+      fetchUsers();
+      setSelectedUsers([]);
+    } catch (error: any) {
+      toast({
+        variant: 'destructive',
+        title: 'Error updating admin status',
+        description: error.message,
+      });
+    } finally {
+      setIsProcessing(false);
+    }
+  };
 
   if (authLoading || !user || !isAdmin || loadingData) {
     return <LoadingSpinner />;
@@ -171,7 +194,16 @@ export default function UserListPage() {
                 </div>
             </div>
             {isAnySelected && (
-                 <div className="flex gap-2 w-full sm:w-auto">
+                 <div className="flex flex-wrap gap-2 w-full sm:w-auto">
+                    {userType === 'regular' ? (
+                       <Button variant="outline" onClick={() => handleBulkToggleAdmin(true)} disabled={isProcessing}>
+                          <ShieldCheck /> Make Admin
+                       </Button>
+                    ) : (
+                        <Button variant="outline" onClick={() => handleBulkToggleAdmin(false)} disabled={isProcessing}>
+                          <ShieldAlert /> Remove Admin
+                       </Button>
+                    )}
                     <Button variant="outline" onClick={() => handleBulkToggleDisable(true)} disabled={isProcessing}>
                        <Ban /> Disable
                     </Button>
