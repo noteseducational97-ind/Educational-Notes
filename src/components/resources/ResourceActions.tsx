@@ -62,7 +62,12 @@ export default function ResourceActions({ resource, isTestable }: ResourceAction
               <Button asChild variant="outline" className="w-full">
                 <Link href={{
                   pathname: '/tools/test-generator',
-                  query: { content: resource.content }
+                  query: { 
+                    content: resource.content,
+                    title: resource.title,
+                    subject: resource.subject.join(', '),
+                    class: resource.class || '',
+                   }
                 }}>
                   <FileQuestion className="mr-2 h-4 w-4" />
                   Generate Test

@@ -12,6 +12,9 @@ import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
 
 const TestGeneratorInputSchema = z.object({
+  title: z.string().describe("The title of the resource or chapter name."),
+  subject: z.string().describe("The subject of the resource."),
+  class: z.string().optional().describe("The class or grade level for the resource."),
   resourceContent: z.string().describe("The content of the educational resource to generate a test from."),
   testType: z.enum(['MCQ', 'Regular']).describe("The type of test to generate."),
   questionCount: z.number().optional().default(5).describe("The number of questions to generate."),
@@ -43,7 +46,7 @@ const mcqPrompt = ai.definePrompt({
   name: 'mcqTestGeneratorPrompt',
   input: { schema: TestGeneratorInputSchema },
   output: { schema: TestGeneratorOutputSchema },
-  prompt: `You are an expert test creator. Based on the following content, generate a multiple-choice question (MCQ) test with exactly {{questionCount}} questions. Each question must have 4 options, and you must indicate the correct answer.
+  prompt: `You are an expert test creator for {{class}}. Based on the following content for the chapter titled "{{title}}" in the subject of {{subject}}, generate a multiple-choice question (MCQ) test with exactly {{questionCount}} questions. Each question must have 4 options, and you must indicate the correct answer.
 
 Resource Content:
 {{{resourceContent}}}
@@ -54,7 +57,7 @@ const regularPrompt = ai.definePrompt({
   name: 'regularTestGeneratorPrompt',
   input: { schema: TestGeneratorInputSchema },
   output: { schema: TestGeneratorOutputSchema },
-  prompt: `You are an expert test creator. Based on the following content, generate a regular question-and-answer test with exactly {{questionCount}} questions. Provide both the question and the correct answer for each.
+  prompt: `You are an expert test creator for {{class}}. Based on the following content for the chapter titled "{{title}}" in the subject of {{subject}}, generate a regular question-and-answer test with exactly {{questionCount}} questions. Provide both the question and the correct answer for each.
 
 Resource Content:
 {{{resourceContent}}}

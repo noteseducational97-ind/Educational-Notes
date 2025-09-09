@@ -16,6 +16,9 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 export default function TestGeneratorClient() {
   const searchParams = useSearchParams();
   const content = searchParams.get('content') || '';
+  const title = searchParams.get('title') || '';
+  const subject = searchParams.get('subject') || '';
+  const classLevel = searchParams.get('class') || '';
   const { toast } = useToast();
 
   const [testType, setTestType] = useState<'MCQ' | 'Regular'>('MCQ');
@@ -38,6 +41,9 @@ export default function TestGeneratorClient() {
         resourceContent: content,
         testType: testType,
         questionCount: 5,
+        title,
+        subject,
+        class: classLevel,
       });
       setTestResult(result);
     } catch (error) {
