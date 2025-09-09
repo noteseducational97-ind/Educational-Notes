@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Wrench, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import Footer from '@/components/layout/Footer';
 
 export default function ComingSoonPage() {
   return (
@@ -44,6 +45,7 @@ export default function ComingSoonPage() {
             </Card>
         </motion.div>
       </main>
+      <Footer />
     </div>
   );
 }

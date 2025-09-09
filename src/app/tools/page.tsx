@@ -60,7 +60,7 @@ export default function ToolsPage() {
                     </div>
                     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                     {publicTools.map((tool) => {
-                        const href = tool.isComingSoon ? '/coming-soon' : tool.href ?? '#';
+                        const href = tool.href ?? '#';
                         const isDisabled = !tool.isComingSoon && (!tool.href || tool.href === '#');
 
                         return (
