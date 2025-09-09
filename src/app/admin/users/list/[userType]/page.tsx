@@ -1,15 +1,14 @@
-
 'use client';
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { useAuth } from '@/hooks/use-auth';
 import { listAllUsers, updateUserDisabledStatus, deleteUser as deleteUserAction } from '../../actions';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Users, Trash2, Edit, ShieldCheck, Calendar, CheckCircle, ArrowLeft } from 'lucide-react';
+import { Users, Trash2, Edit, CheckCircle, ArrowLeft } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import {
   AlertDialog,
@@ -23,10 +22,13 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '@/components/ui/collapsible';
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 
@@ -49,96 +51,6 @@ const getInitials = (name: string | null | undefined) => {
     .join('');
 };
 
-const UserCard = ({ user, isProcessing, onToggleDisable, onDeleteUser }: { user: User, isProcessing: string | null, onToggleDisable: (uid: string, isDisabled: boolean) => void, onDeleteUser: (uid: string) => void }) => {
-    return (
-        <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-            className="w-full"
-        >
-        <Collapsible>
-            <Card>
-                <CollapsibleTrigger asChild>
-                    <div className="p-4 cursor-pointer hover:bg-muted/50 rounded-t-lg">
-                        <div className="flex items-center gap-4">
-                             <Avatar className="h-12 w-12">
-                                <AvatarImage src={user.photoURL ?? ''} alt={user.displayName ?? 'User'} />
-                                <AvatarFallback className="text-xl">{getInitials(user.displayName)}</AvatarFallback>
-                            </Avatar>
-                            <div>
-                                <p className="font-semibold">{user.displayName || 'N/A'}</p>
-                                <p className="text-sm text-muted-foreground">{user.email}</p>
-                            </div>
-                        </div>
-                    </div>
-                </CollapsibleTrigger>
-                <CollapsibleContent>
-                    <CardContent className="pt-4 space-y-2">
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                            <Calendar className="h-4 w-4" />
-                            <span>Created: {user.creationTime}</span>
-                        </div>
-                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                            <CheckCircle className="h-4 w-4" />
-                            <span>Status: </span>
-                             <Badge variant={user.disabled ? 'destructive' : 'secondary'}>
-                                {user.disabled ? 'Disabled' : 'Active'}
-                            </Badge>
-                        </div>
-                    </CardContent>
-                    <CardFooter className="flex justify-end gap-2 border-t pt-4">
-                        <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                                <Button variant="outline" size="sm" disabled={isProcessing === user.uid}>
-                                <Edit className="h-4 w-4 mr-2" />
-                                Status
-                                </Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                                <AlertDialogHeader>
-                                <AlertDialogTitle>Confirm Action</AlertDialogTitle>
-                                <AlertDialogDescription>
-                                    Are you sure you want to {user.disabled ? 'enable' : 'disable'} the user {user.email}?
-                                </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <AlertDialogFooter>
-                                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                <AlertDialogAction onClick={() => onToggleDisable(user.uid, user.disabled)}>
-                                    Yes, {user.disabled ? 'Enable' : 'Disable'}
-                                </AlertDialogAction>
-                                </AlertDialogFooter>
-                            </AlertDialogContent>
-                        </AlertDialog>
-                         <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                                <Button variant="destructive" size="sm" disabled={isProcessing === user.uid || user.isAdmin}>
-                                <Trash2 className="h-4 w-4 mr-2" />
-                                Remove
-                                </Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                                <AlertDialogHeader>
-                                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                                <AlertDialogDescription>
-                                    This action cannot be undone. This will permanently delete the user account for {user.email}.
-                                </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <AlertDialogFooter>
-                                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                <AlertDialogAction onClick={() => onDeleteUser(user.uid)}>
-                                    Yes, delete
-                                </AlertDialogAction>
-                                </AlertDialogFooter>
-                            </AlertDialogContent>
-                        </AlertDialog>
-                    </CardFooter>
-                </CollapsibleContent>
-            </Card>
-        </Collapsible>
-        </motion.div>
-    );
-};
 
 export default function UserListPage() {
   const { user, loading: authLoading, isAdmin } = useAuth();
@@ -237,17 +149,94 @@ export default function UserListPage() {
       </div>
 
        {users.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {users.map(user => 
-                    <UserCard 
-                        key={user.uid} 
-                        user={user} 
-                        isProcessing={isProcessing} 
-                        onToggleDisable={handleToggleDisable} 
-                        onDeleteUser={handleDeleteUser} 
-                    />
-                )}
-            </div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <Card>
+              <CardContent className="p-0">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>User</TableHead>
+                      <TableHead>Created At</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {users.map((u) => (
+                      <TableRow key={u.uid}>
+                        <TableCell>
+                          <div className="flex items-center gap-3">
+                            <Avatar>
+                              <AvatarImage src={u.photoURL ?? ''} alt={u.displayName ?? 'User'} />
+                              <AvatarFallback>{getInitials(u.displayName)}</AvatarFallback>
+                            </Avatar>
+                            <div>
+                              <p className="font-medium">{u.displayName || 'N/A'}</p>
+                              <p className="text-sm text-muted-foreground">{u.email}</p>
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell>{u.creationTime}</TableCell>
+                        <TableCell>
+                          <Badge variant={u.disabled ? 'destructive' : 'secondary'}>
+                            {u.disabled ? 'Disabled' : 'Active'}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-right space-x-2">
+                           <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                  <Button variant="outline" size="icon" disabled={isProcessing === u.uid}>
+                                      <Edit className="h-4 w-4" />
+                                  </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                  <AlertDialogHeader>
+                                      <AlertDialogTitle>Confirm Action</AlertDialogTitle>
+                                      <AlertDialogDescription>
+                                          Are you sure you want to {u.disabled ? 'enable' : 'disable'} the user {u.email}?
+                                      </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <AlertDialogFooter>
+                                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                      <AlertDialogAction onClick={() => handleToggleDisable(u.uid, u.disabled)}>
+                                          Yes, {u.disabled ? 'Enable' : 'Disable'}
+                                      </AlertDialogAction>
+                                  </AlertDialogFooter>
+                              </AlertDialogContent>
+                          </AlertDialog>
+                          <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                  <Button variant="destructive" size="icon" disabled={isProcessing === u.uid || u.isAdmin}>
+                                      <Trash2 className="h-4 w-4" />
+                                  </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                  <AlertDialogHeader>
+                                      <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                      <AlertDialogDescription>
+                                          This action cannot be undone. This will permanently delete the user account for {u.email}.
+                                      </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <AlertDialogFooter>
+                                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                      <AlertDialogAction onClick={() => handleDeleteUser(u.uid)}>
+                                          Yes, delete
+                                      </AlertDialogAction>
+                                  </AlertDialogFooter>
+                              </AlertDialogContent>
+                          </AlertDialog>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          </motion.div>
         ) : (
             <div className="text-center py-12 border-2 border-dashed rounded-lg">
                 <p className="text-muted-foreground">No users in this category.</p>
