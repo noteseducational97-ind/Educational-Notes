@@ -12,7 +12,7 @@ const FormSchema = z.object({
   category: z.array(z.string()).nonempty({ message: 'Select at least one category.' }),
   subject: z.array(z.string()).nonempty({ message: 'Select at least one subject.' }),
   stream: z.array(z.string()).nonempty({ message: 'Select at least one stream.' }),
-  imageUrl: z.string().url('Please enter a valid image URL.'),
+  imageUrl: z.string().min(1, 'Please enter a valid image URL.'),
   pdfUrl: z.string().optional(),
   viewPdfUrl: z.string().url('A valid view URL for the PDF is required.'),
   isComingSoon: z.boolean().default(false),
@@ -39,6 +39,15 @@ const createSlug = (title: string) => {
     .replace(/[^\w-]+/g, '');
 };
 
+const transformGoogleDriveUrl = (url: string): string => {
+    if (url.includes("drive.google.com/file/d/")) {
+        const fileId = url.split('/d/')[1].split('/')[0];
+        return `https://lh3.googleusercontent.com/d/${fileId}`;
+    }
+    return url;
+};
+
+
 export async function addResourceAction(data: AddResourceInput) {
   const validatedFields = FormSchema.safeParse(data);
 
@@ -50,7 +59,8 @@ export async function addResourceAction(data: AddResourceInput) {
     };
   }
   
-  const { ...restOfData } = validatedFields.data;
+  const { imageUrl, ...restOfData } = validatedFields.data;
+  const transformedImageUrl = transformGoogleDriveUrl(imageUrl);
 
   const slug = createSlug(validatedFields.data.title);
   const resourceRef = db.collection('resources').doc(slug);
@@ -66,6 +76,7 @@ export async function addResourceAction(data: AddResourceInput) {
 
     await resourceRef.set({
       ...restOfData,
+      imageUrl: transformedImageUrl,
       id: slug,
       createdAt: new Date(),
     });
@@ -95,13 +106,15 @@ export async function updateResourceAction(id: string, data: AddResourceInput) {
     };
   }
   
-  const { ...restOfData } = validatedFields.data;
+  const { imageUrl, ...restOfData } = validatedFields.data;
+  const transformedImageUrl = transformGoogleDriveUrl(imageUrl);
 
   const resourceRef = db.collection('resources').doc(id);
 
   try {
     await resourceRef.update({
       ...restOfData,
+      imageUrl: transformedImageUrl,
     });
 
     revalidatePath('/admin/uploaded-resources');
