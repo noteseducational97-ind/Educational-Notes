@@ -138,6 +138,9 @@ export default function AddAdmissionFormPage() {
             if (matchingTeacher.className) {
                 form.setValue('className', matchingTeacher.className);
             }
+            if (matchingTeacher.mobile) {
+                form.setValue('contactNo', matchingTeacher.mobile);
+            }
         }
     }
   }, [subject, teachers, form]);
@@ -310,7 +313,7 @@ export default function AddAdmissionFormPage() {
                             <FormField control={form.control} name="contactNo" render={({ field }) => (
                                <FormItem>
                                    <FormLabel className="flex items-center gap-2"><Phone /> Contact No.</FormLabel>
-                                   <FormControl><Input placeholder="Contact number for payment queries" {...field} value={field.value ?? ''} /></FormControl>
+                                   <FormControl><Input placeholder="Contact number for payment queries" {...field} value={field.value ?? ''} disabled /></FormControl>
                                    <FormMessage />
                                </FormItem>
                            )} />
