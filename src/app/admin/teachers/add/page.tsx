@@ -124,7 +124,7 @@ export default function AddTeacherPage() {
                 </div>
                 <div className="space-y-2">
                     <Label htmlFor="className" className="flex items-center gap-2"><School /> Class Name</Label>
-                    <Input id="className" placeholder="e.g., Class 12 & MHT-CET" value={teacher.className} onChange={handleChange} />
+                    <Input id="className" placeholder="e.g., Shree Coaching Classes" value={teacher.className} onChange={handleChange} />
                 </div>
                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
