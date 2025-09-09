@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -337,7 +338,7 @@ export default function EditAdmissionFormPage() {
                         </div>
                          <FormField control={form.control} name="contactNo" render={({ field }) => (
                            <FormItem>
-                               <FormLabel className="flex items-center gap-2"><Phone /> Contact No. (Auto-fetched)</FormLabel>
+                               <FormLabel className="flex items-center gap-2"><Phone /> Contact No.</FormLabel>
                                <FormControl><Input placeholder="Contact number will appear here" {...field} value={field.value || ''} disabled /></FormControl>
                                <FormMessage />
                            </FormItem>
