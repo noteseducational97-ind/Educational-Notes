@@ -2,7 +2,7 @@
 'use client';
 
 import Header from '@/components/layout/Header';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Wrench, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
