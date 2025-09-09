@@ -127,7 +127,7 @@ export default function EditTeacherPage() {
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <Label htmlFor="name" className="flex items-center gap-2"><User /> Name</Label>
-                            <Input id="name" placeholder="e.g., Jane Doe" value={teacher.name || ''} onChange={handleChange} />
+                            <Input id="name" placeholder="e.g., Rahul Patil" value={teacher.name || ''} onChange={handleChange} />
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="education" className="flex items-center gap-2"><GraduationCap /> Education</Label>
