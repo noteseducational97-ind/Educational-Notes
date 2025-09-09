@@ -137,7 +137,7 @@ export default function EditAdmissionFormPage() {
 
   useEffect(() => {
     if (subject && teachers.length > 0) {
-        const matchingTeacher = teachers.find(t => t.subject.toLowerCase().includes(subject.toLowerCase()));
+        const matchingTeacher = teachers.find(t => t.subject === subject);
         if (matchingTeacher) {
             if (matchingTeacher.className) {
                 form.setValue('className', matchingTeacher.className, { shouldValidate: true });
