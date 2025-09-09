@@ -78,14 +78,10 @@ export default function EditAdmissionFormPage() {
   const formId = Array.isArray(params.id) ? params.id[0] : params.id;
 
   useEffect(() => {
+    // In a real app, this would be a fetch call. For this prototype, we use sessionStorage or initial data.
     if (typeof window !== 'undefined') {
         const storedTeachers = sessionStorage.getItem('managed-teachers');
-        if (storedTeachers) {
-            setTeachers(JSON.parse(storedTeachers));
-        } else {
-            setTeachers(initialTeachers);
-            sessionStorage.setItem('managed-teachers', JSON.stringify(initialTeachers));
-        }
+        setTeachers(storedTeachers ? JSON.parse(storedTeachers) : initialTeachers);
     }
   }, []);
 
