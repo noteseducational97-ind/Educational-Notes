@@ -312,13 +312,27 @@ export default function AddAdmissionFormPage() {
                                 </FormItem>
                             )} />
                         </div>
-                        <FormField control={form.control} name="contactNo" render={({ field }) => (
-                           <FormItem>
-                               <FormLabel className="flex items-center gap-2"><Phone /> Contact No.</FormLabel>
-                               <FormControl><Input placeholder="Contact number for payment queries" {...field} value={field.value || ''} disabled /></FormControl>
-                               <FormMessage />
-                           </FormItem>
-                       )} />
+                        <div className="grid md:grid-cols-2 gap-4">
+                            <FormField control={form.control} name="contactNo" render={({ field }) => (
+                               <FormItem>
+                                   <FormLabel className="flex items-center gap-2"><Phone /> Contact No.</FormLabel>
+                                   <FormControl><Input placeholder="Contact number for payment queries" {...field} value={field.value || ''} disabled /></FormControl>
+                                   <FormMessage />
+                               </FormItem>
+                           )} />
+                            <FormField control={form.control} name="paymentApp" render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel className="flex items-center gap-2"><Wallet /> Supported Payment App</FormLabel>
+                                    <Select onValueChange={field.onChange} value={field.value}>
+                                        <FormControl><SelectTrigger><SelectValue placeholder="Select a payment app" /></SelectTrigger></FormControl>
+                                        <SelectContent>
+                                            {paymentAppOptions.map(app => <SelectItem key={app} value={app}>{app}</SelectItem>)}
+                                        </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                </FormItem>
+                            )} />
+                        </div>
                         <div className="grid md:grid-cols-2 gap-4">
                             <FormField control={form.control} name="upiId" render={({ field }) => (
                                 <FormItem>
@@ -335,18 +349,6 @@ export default function AddAdmissionFormPage() {
                                 </FormItem>
                             )} />
                         </div>
-                        <FormField control={form.control} name="paymentApp" render={({ field }) => (
-                            <FormItem>
-                                <FormLabel className="flex items-center gap-2"><Wallet /> Supported Payment App</FormLabel>
-                                <Select onValueChange={field.onChange} value={field.value}>
-                                    <FormControl><SelectTrigger><SelectValue placeholder="Select a payment app" /></SelectTrigger></FormControl>
-                                    <SelectContent>
-                                        {paymentAppOptions.map(app => <SelectItem key={app} value={app}>{app}</SelectItem>)}
-                                    </SelectContent>
-                                </Select>
-                                <FormMessage />
-                            </FormItem>
-                        )} />
                     </div>
                 </CardContent>
                 <CardFooter className="flex justify-between gap-4 border-t pt-6">
