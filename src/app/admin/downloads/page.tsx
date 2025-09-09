@@ -183,9 +183,6 @@ export default function AdminDownloadsPage() {
   };
   
   const filteredResources = useMemo(() => {
-    if (!hasFilters) {
-      return resources;
-    }
     return resources.filter(resource => {
       const criteriaMatch = selectedCriteria.length === 0 || 
         selectedCriteria.some(crit => 
@@ -196,7 +193,7 @@ export default function AdminDownloadsPage() {
       
       return criteriaMatch && categoryMatch && subjectMatch;
     });
-  }, [resources, selectedCriteria, selectedCategories, selectedSubjects, hasFilters]);
+  }, [resources, selectedCriteria, selectedCategories, selectedSubjects]);
 
   useEffect(() => {
     setCurrentPage(1); // Reset to first page on filter change
@@ -263,7 +260,7 @@ export default function AdminDownloadsPage() {
               variants={containerVariants}
               initial="hidden"
               animate="visible"
-              viewport={{ once: false }}
+              viewport={{ once: true }}
             >
             {paginatedResources.map((resource: Resource) => {
                 const isSaved = watchlistIds.has(resource.id);

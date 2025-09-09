@@ -176,9 +176,6 @@ export default function DownloadsPage() {
   };
   
   const filteredResources = useMemo(() => {
-    if (!hasFilters) {
-      return resources;
-    }
     return resources.filter(resource => {
       const criteriaMatch = selectedCriteria.length === 0 || 
         selectedCriteria.some(crit => 
@@ -189,7 +186,7 @@ export default function DownloadsPage() {
       
       return criteriaMatch && categoryMatch && subjectMatch;
     });
-  }, [resources, selectedCriteria, selectedCategories, selectedSubjects, hasFilters]);
+  }, [resources, selectedCriteria, selectedCategories, selectedSubjects]);
 
   useEffect(() => {
     setCurrentPage(1); // Reset to first page on filter change
@@ -263,7 +260,7 @@ export default function DownloadsPage() {
                   variants={containerVariants}
                   initial="hidden"
                   whileInView="visible"
-                  viewport={{ once: false, amount: 0.1 }}
+                  viewport={{ once: true, amount: 0.1 }}
                 >
                 {paginatedResources.map((resource: Resource, i: number) => {
                     const isSaved = watchlistIds.has(resource.id);
