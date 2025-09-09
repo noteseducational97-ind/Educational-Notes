@@ -8,21 +8,32 @@ import { revalidatePath } from 'next/cache';
 export const listAllUsers = async () => {
   try {
     const userRecords = await adminAuth.listUsers();
-    const allUsers = userRecords.users.map((user) => ({
-      uid: user.uid,
-      email: user.email,
-      displayName: user.displayName,
-      photoURL: user.photoURL,
-      emailVerified: user.emailVerified,
-      disabled: user.disabled,
-      creationTime: new Date(user.metadata.creationTime).toLocaleDateString(),
-    }));
+    
+    const userPromises = userRecords.users.map(async (user) => {
+      const userDocRef = db.collection('users').doc(user.uid);
+      const userDoc = await userDocRef.get();
+      const isAdmin = userDoc.exists && userDoc.data()?.isAdmin === true;
+
+      return {
+        uid: user.uid,
+        email: user.email,
+        displayName: user.displayName,
+        photoURL: user.photoURL,
+        emailVerified: user.emailVerified,
+        disabled: user.disabled,
+        creationTime: new Date(user.metadata.creationTime).toLocaleDateString(),
+        isAdmin: isAdmin,
+      };
+    });
+
+    const allUsers = await Promise.all(userPromises);
     return allUsers;
   } catch (error) {
     console.error('Error listing users:', error);
     return [];
   }
 };
+
 
 export async function updateUserDisabledStatus(uid: string, disabled: boolean) {
   try {
