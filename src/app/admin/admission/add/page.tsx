@@ -30,12 +30,11 @@ const monthOptions = [
     'July', 'August', 'September', 'October', 'November', 'December'
 ];
 
-const paymentAppOptions = ['PhonePe', 'Google Pay', 'Paytm', 'Bhim Upi', 'Payz'];
+const paymentAppOptions = ['PhonePe', 'Google Pay', 'Bhim Upi', 'Payz'];
 
 const upiHandles: { [key: string]: string } = {
     'PhonePe': '@ybl',
     'Google Pay': '@okaxis',
-    'Paytm': '@paytm',
     'Bhim Upi': '@upi',
     'Payz': '@pz'
 };
