@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -30,6 +31,14 @@ const monthOptions = [
 ];
 
 const paymentAppOptions = ['PhonePe', 'Google Pay', 'Paytm', 'Bhim Upi', 'Payz'];
+
+const upiHandles: { [key: string]: string } = {
+    'PhonePe': '@ybl',
+    'Google Pay': '@okaxis',
+    'Paytm': '@paytm',
+    'Bhim Upi': '@upi',
+    'Payz': '@payzapp'
+};
 
 
 const FormSchema = z.object({
@@ -101,6 +110,8 @@ export default function AddAdmissionFormPage() {
   const className = form.watch('className');
   const subject = form.watch('subject');
   const isDemoEnabled = form.watch('isDemoEnabled');
+  const contactNo = form.watch('contactNo');
+  const paymentApp = form.watch('paymentApp');
   
   const generateDescription = (className: string, yearFrom: string, subject?: 'Physics' | 'Chemistry') => {
     if (!subject) return '';
@@ -141,6 +152,19 @@ export default function AddAdmissionFormPage() {
     }
   }, [subject, teachers, form]);
   
+  useEffect(() => {
+    if (contactNo) {
+        form.setValue('upiNumber', contactNo, { shouldValidate: true });
+    }
+  }, [contactNo, form]);
+  
+  useEffect(() => {
+    if (contactNo && paymentApp) {
+        const handle = upiHandles[paymentApp] || '';
+        form.setValue('upiId', `${contactNo}${handle}`, { shouldValidate: true });
+    }
+  }, [contactNo, paymentApp, form]);
+
   async function onSubmit(values: FormValues) {
     setIsSubmitting(true);
     try {
