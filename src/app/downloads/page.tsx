@@ -190,7 +190,7 @@ export default function DownloadsPage() {
 
   useEffect(() => {
     setCurrentPage(1); // Reset to first page on filter change
-  }, [filteredResources]);
+  }, [selectedCriteria, selectedCategories, selectedSubjects]);
 
 
   const paginatedResources = useMemo(() => {
@@ -256,11 +256,11 @@ export default function DownloadsPage() {
           ) : paginatedResources.length > 0 ? (
             <>
                 <motion.div 
+                  key={currentPage}
                   className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3"
                   variants={containerVariants}
                   initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: true, amount: 0.1 }}
+                  animate="visible"
                 >
                 {paginatedResources.map((resource: Resource, i: number) => {
                     const isSaved = watchlistIds.has(resource.id);

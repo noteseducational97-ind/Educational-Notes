@@ -163,11 +163,11 @@ export default function SavePage() {
           {paginatedItems.length > 0 ? (
             <>
                 <motion.div 
+                  key={currentPage}
                   className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
                   variants={containerVariants}
                   initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: false, amount: 0.1 }}
+                  animate="visible"
                 >
                 {paginatedItems.map((resource, i) => (
                     <motion.div variants={itemVariants} key={resource.id} className="flex">
