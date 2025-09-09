@@ -6,7 +6,7 @@ import Header from '@/components/layout/Header';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { Calculator, Copy, ClipboardEdit, ArrowRight, EyeOff, Wrench, FileQuestion } from 'lucide-react';
+import { Calculator, Copy, ClipboardEdit, ArrowRight, EyeOff, Wrench, FileQuestion, BrainCircuit } from 'lucide-react';
 import type { Tool } from '../admin/tools/page';
 import { initialTools } from '@/lib/data';
 import { Badge } from '@/components/ui/badge';
@@ -37,6 +37,7 @@ export default function ToolsPage() {
             case 'admission-form': return <ClipboardEdit className="h-8 w-8 text-primary" />;
             case 'flashcard-maker': return <Copy className="h-8 w-8 text-primary" />;
             case 'test-generator': return <FileQuestion className="h-8 w-8 text-primary" />;
+            case 'content-generator': return <BrainCircuit className="h-8 w-8 text-primary" />;
             default: return <Wrench className="h-8 w-8 text-primary" />;
         }
     }

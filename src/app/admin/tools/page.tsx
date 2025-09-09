@@ -4,7 +4,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Wrench, PlusCircle, Edit, Trash2, Eye, EyeOff, FileQuestion, ClipboardEdit } from 'lucide-react';
+import { Wrench, PlusCircle, Edit, Trash2, Eye, EyeOff, FileQuestion, ClipboardEdit, BrainCircuit } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
@@ -21,6 +21,7 @@ import {
 import { useToast } from '@/hooks/use-toast';
 import { initialTools } from '@/lib/data';
 import { motion } from 'framer-motion';
+import LoadingSpinner from '@/components/shared/LoadingSpinner';
 
 export type Tool = {
     id: string;
@@ -55,18 +56,19 @@ const itemVariants = {
 
 export default function AdminToolsPage() {
     const [tools, setTools] = useState<Tool[]>([]);
+    const [loading, setLoading] = useState(true);
     const { toast } = useToast();
 
     useEffect(() => {
-        // This check ensures we only set the initial state once on the client-side.
-        // In a real app, this would be where you fetch data from a database.
         if (typeof window !== 'undefined') {
             const storedTools = sessionStorage.getItem('managed-tools');
             if (storedTools) {
                 setTools(JSON.parse(storedTools));
             } else {
+                sessionStorage.setItem('managed-tools', JSON.stringify(initialTools));
                 setTools(initialTools);
             }
+            setLoading(false);
         }
     }, []);
 
@@ -94,8 +96,13 @@ export default function AdminToolsPage() {
         switch(id) {
             case 'admission-form': return <ClipboardEdit className="h-6 w-6 text-primary" />;
             case 'test-generator': return <FileQuestion className="h-6 w-6 text-primary" />;
+            case 'content-generator': return <BrainCircuit className="h-6 w-6 text-primary" />;
             default: return <Wrench className="h-6 w-6 text-primary" />;
         }
+    }
+
+    if (loading) {
+        return <LoadingSpinner />;
     }
 
     return (

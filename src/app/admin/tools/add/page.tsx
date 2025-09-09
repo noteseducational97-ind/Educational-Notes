@@ -35,8 +35,8 @@ export default function AddToolPage() {
     const { toast } = useToast();
     const router = useRouter();
     const [tool, setTool] = useState<Omit<Tool, 'id' | 'href'>>({
-        title: 'Untitled Tool',
-        description: 'A tool for creating and studying with Untitled Tool.',
+        title: '',
+        description: '',
         visibility: 'private',
         isComingSoon: true,
     });
@@ -44,7 +44,7 @@ export default function AddToolPage() {
     const handleUpdate = (field: keyof Omit<Tool, 'id' | 'href'>, value: any) => {
         setTool(currentTool => {
             const updatedTool = { ...currentTool, [field]: value };
-            if (field === 'title') {
+            if (field === 'title' && value) {
                 updatedTool.description = `A tool for creating and studying with ${value}.`;
             }
             return updatedTool;
@@ -52,7 +52,24 @@ export default function AddToolPage() {
     };
 
     const handleSave = () => {
-        // In a real app, you would save this to a database
+        if (!tool.title) {
+             toast({
+                variant: 'destructive',
+                title: 'Title is required',
+            });
+            return;
+        }
+
+        const id = createSlug(tool.title);
+        const href = `/${id}`;
+
+        const newTool: Tool = { ...tool, id, href };
+
+        const storedToolsJSON = sessionStorage.getItem('managed-tools');
+        const storedTools: Tool[] = storedToolsJSON ? JSON.parse(storedToolsJSON) : [];
+        const updatedTools = [...storedTools, newTool];
+        sessionStorage.setItem('managed-tools', JSON.stringify(updatedTools));
+
         toast({
             title: 'Tool Created',
             description: `"${tool.title}" has been created.`
@@ -60,7 +77,7 @@ export default function AddToolPage() {
         router.push('/admin/tools');
     }
 
-    const href = `/${createSlug(tool.title)}`;
+    const href = tool.title ? `/${createSlug(tool.title)}` : '';
 
     return (
         <>
@@ -77,11 +94,11 @@ export default function AddToolPage() {
                 <CardContent className="space-y-4">
                     <div>
                         <Label htmlFor="title">Tool Name</Label>
-                        <Input id="title" value={tool.title} onChange={(e) => handleUpdate('title', e.target.value)} />
+                        <Input id="title" placeholder="e.g. Flashcard Maker" value={tool.title} onChange={(e) => handleUpdate('title', e.target.value)} />
                     </div>
                      <div>
                         <Label htmlFor="description">Description</Label>
-                        <Textarea id="description" value={tool.description} onChange={(e) => handleUpdate('description', e.target.value)} />
+                        <Textarea id="description" placeholder="A brief summary of the tool..." value={tool.description} onChange={(e) => handleUpdate('description', e.target.value)} />
                     </div>
                     <div>
                         <Label>Link (Auto-generated)</Label>
