@@ -9,6 +9,8 @@ import Link from 'next/link';
 
 import { useToast } from '@/hooks/use-toast';
 import { addAdmissionForm } from '@/lib/firebase/admissions';
+import type { Teacher } from '../../teachers/page';
+import { initialTeachers } from '@/lib/data';
 
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -62,6 +64,19 @@ export default function AddAdmissionFormPage() {
   const { toast } = useToast();
   
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [teachers, setTeachers] = useState<Teacher[]>([]);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+        const storedTeachers = sessionStorage.getItem('managed-teachers');
+        if (storedTeachers) {
+            setTeachers(JSON.parse(storedTeachers));
+        } else {
+            // Fallback to initial data if sessionStorage is empty
+            setTeachers(initialTeachers);
+        }
+    }
+  }, []);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(FormSchema),
@@ -109,6 +124,15 @@ export default function AddAdmissionFormPage() {
         form.setValue('description', newDescription);
     }
   }, [className, yearFrom, subject, form])
+
+  useEffect(() => {
+    if (subject && teachers.length > 0) {
+        const matchingTeacher = teachers.find(t => t.subject.toLowerCase() === subject.toLowerCase());
+        if (matchingTeacher && matchingTeacher.className) {
+            form.setValue('className', matchingTeacher.className);
+        }
+    }
+  }, [subject, teachers, form]);
   
   async function onSubmit(values: FormValues) {
     setIsSubmitting(true);

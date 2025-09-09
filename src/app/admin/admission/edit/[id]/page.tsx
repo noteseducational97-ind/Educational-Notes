@@ -10,6 +10,8 @@ import Link from 'next/link';
 import { useToast } from '@/hooks/use-toast';
 import { getAdmissionFormById, updateAdmissionForm } from '@/lib/firebase/admissions';
 import type { AdmissionForm } from '@/types';
+import type { Teacher } from '../../../teachers/page';
+import { initialTeachers } from '@/lib/data';
 
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -67,8 +69,21 @@ export default function EditAdmissionFormPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formDetails, setFormDetails] = useState<AdmissionForm | null>(null);
   const [loading, setLoading] = useState(true);
+  const [teachers, setTeachers] = useState<Teacher[]>([]);
 
   const formId = Array.isArray(params.id) ? params.id[0] : params.id;
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+        const storedTeachers = sessionStorage.getItem('managed-teachers');
+        if (storedTeachers) {
+            setTeachers(JSON.parse(storedTeachers));
+        } else {
+             // Fallback to initial data if sessionStorage is empty
+            setTeachers(initialTeachers);
+        }
+    }
+  }, []);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(FormSchema),
@@ -113,6 +128,15 @@ export default function EditAdmissionFormPage() {
         form.setValue('description', newDescription);
     }
   }, [className, yearFrom, subject, form])
+
+  useEffect(() => {
+    if (subject && teachers.length > 0) {
+        const matchingTeacher = teachers.find(t => t.subject.toLowerCase() === subject.toLowerCase());
+        if (matchingTeacher && matchingTeacher.className) {
+            form.setValue('className', matchingTeacher.className);
+        }
+    }
+  }, [subject, teachers, form]);
   
   useEffect(() => {
     if (!formId) return;
