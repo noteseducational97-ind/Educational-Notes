@@ -26,6 +26,7 @@ import { useRouter, useParams } from 'next/navigation';
 import type { Tool } from '../page';
 import { Textarea } from '@/components/ui/textarea';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
+import { initialTools } from '@/lib/data';
 
 
 const createSlug = (title: string) => {
@@ -44,20 +45,28 @@ export default function EditToolPage() {
     useEffect(() => {
         if (!toolId || typeof window === 'undefined') return;
 
+        let storedTools: Tool[] = [];
         const storedToolsJSON = sessionStorage.getItem('managed-tools');
+        
         if (storedToolsJSON) {
-            const storedTools: Tool[] = JSON.parse(storedToolsJSON);
-            const foundTool = storedTools.find(t => t.id === toolId);
-            if (foundTool) {
-                setTool(foundTool);
-            } else {
-                toast({
-                    variant: 'destructive',
-                    title: 'Tool not found',
-                });
-                router.push('/admin/tools');
-            }
+            storedTools = JSON.parse(storedToolsJSON);
+        } else {
+            // Fallback if sessionStorage is empty
+            storedTools = initialTools;
+            sessionStorage.setItem('managed-tools', JSON.stringify(initialTools));
         }
+
+        const foundTool = storedTools.find(t => t.id === toolId);
+        if (foundTool) {
+            setTool(foundTool);
+        } else {
+            toast({
+                variant: 'destructive',
+                title: 'Tool not found',
+            });
+            router.push('/admin/tools');
+        }
+        
         setLoading(false);
     }, [toolId, router, toast]);
 
