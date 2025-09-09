@@ -24,7 +24,7 @@ export default async function ResourceDetailPage({ params, searchParams }: Props
     notFound();
   }
 
-  const fromAdmin = searchParams?.from === 'admin';
+  const fromAdmin = searchParams && searchParams.from === 'admin';
   const backUrl = fromAdmin ? '/admin/downloads' : '/downloads';
 
   const testableCategories = ["Notes", "Textual Answer", "Important Point"];
