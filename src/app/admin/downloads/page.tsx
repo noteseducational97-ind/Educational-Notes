@@ -183,13 +183,10 @@ export default function AdminDownloadsPage() {
   };
   
   const filteredResources = useMemo(() => {
-    let resourcesToFilter = resources;
-    // For admin, we show everything initially, then filter.
-    
     if (!hasFilters) {
-      return resourcesToFilter;
+      return resources;
     }
-    return resourcesToFilter.filter(resource => {
+    return resources.filter(resource => {
       const criteriaMatch = selectedCriteria.length === 0 || 
         selectedCriteria.some(crit => 
             resource.stream.some(s => s.toLowerCase().includes(crit.toLowerCase()))
@@ -339,11 +336,13 @@ export default function AdminDownloadsPage() {
                 )
             })}
             </motion.div>
-            <Pagination 
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={setCurrentPage}
-            />
+            {totalPages > 1 && (
+                <Pagination 
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={setCurrentPage}
+                />
+            )}
         </>
       ) : (
         <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-muted bg-card/50 p-12 text-center">

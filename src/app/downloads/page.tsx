@@ -343,11 +343,13 @@ export default function DownloadsPage() {
                     )
                 })}
                 </motion.div>
-                <Pagination 
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    onPageChange={setCurrentPage}
-                />
+                {totalPages > 1 && (
+                    <Pagination 
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        onPageChange={setCurrentPage}
+                    />
+                )}
             </>
           ) : (
             <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-muted bg-card/50 p-12 text-center">
