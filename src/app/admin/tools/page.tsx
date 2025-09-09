@@ -19,6 +19,7 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
+import { initialTools } from '@/lib/data';
 
 export type Tool = {
     id: string;
@@ -28,17 +29,6 @@ export type Tool = {
     visibility: 'public' | 'private';
     isComingSoon: boolean;
 };
-
-export const initialTools: Tool[] = [
-    {
-        id: 'admission-form',
-        title: 'Admission Form',
-        description: 'A tool for creating and studying with Admission Form.',
-        href: '/admission',
-        visibility: 'public',
-        isComingSoon: false,
-    }
-];
 
 export default function AdminToolsPage() {
     const [tools, setTools] = useState<Tool[]>([]);
