@@ -342,6 +342,15 @@ export default function AdmissionFormPage() {
                                     <CardTitle className="flex items-center gap-2"><CreditCard /> Payment</CardTitle>
                                 </CardHeader>
                                 <CardContent className="space-y-6">
+                                     {formDetails.contactNo && (
+                                        <Alert variant="default" className="border-blue-500/50 text-blue-700">
+                                            <Phone className="h-4 w-4 !text-blue-600" />
+                                            <AlertTitle className="!text-blue-800 dark:!text-blue-300">Contact for Inquiry</AlertTitle>
+                                            <AlertDescription className="!text-blue-700 dark:!text-blue-400">
+                                                For any questions about admission, please call: {formDetails.contactNo}
+                                            </AlertDescription>
+                                        </Alert>
+                                    )}
                                     <div className="space-y-4">
                                         <FormField
                                             control={form.control}

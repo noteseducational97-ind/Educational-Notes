@@ -16,7 +16,7 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, ArrowLeft, Save, CreditCard } from 'lucide-react';
+import { Loader2, ArrowLeft, Save, CreditCard, Phone } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
@@ -42,6 +42,7 @@ const FormSchema = z.object({
   demoTenureDays: z.coerce.number().optional(),
   totalFees: z.coerce.number().min(0, 'Total fees must be a positive number.'),
   advanceFees: z.coerce.number().min(0, 'Advance fees must be a positive number.'),
+  contactNo: z.string().optional(),
   upiId: z.string().min(3, 'UPI ID is required.'),
   upiNumber: z.string().min(10, 'UPI number must be at least 10 digits.'),
 }).refine(data => parseInt(data.yearTo) > parseInt(data.yearFrom), {
@@ -90,6 +91,7 @@ export default function AddAdmissionFormPage() {
         demoTenureDays: undefined,
         totalFees: undefined,
         advanceFees: undefined,
+        contactNo: '',
         upiId: '',
         upiNumber: '',
     }
@@ -128,8 +130,13 @@ export default function AddAdmissionFormPage() {
   useEffect(() => {
     if (subject && teachers.length > 0) {
         const matchingTeacher = teachers.find(t => t.subject.toLowerCase() === subject.toLowerCase());
-        if (matchingTeacher && matchingTeacher.className) {
-            form.setValue('className', matchingTeacher.className);
+        if (matchingTeacher) {
+            if (matchingTeacher.className) {
+                form.setValue('className', matchingTeacher.className);
+            }
+            if (matchingTeacher.mobile) {
+                form.setValue('contactNo', matchingTeacher.mobile);
+            }
         }
     }
   }, [subject, teachers, form]);
@@ -298,6 +305,13 @@ export default function AddAdmissionFormPage() {
                                 </FormItem>
                             )} />
                         </div>
+                        <FormField control={form.control} name="contactNo" render={({ field }) => (
+                           <FormItem>
+                               <FormLabel className="flex items-center gap-2"><Phone /> Contact No. (Auto-fetched)</FormLabel>
+                               <FormControl><Input placeholder="Contact number will appear here" {...field} disabled /></FormControl>
+                               <FormMessage />
+                           </FormItem>
+                       )} />
                         <div className="grid md:grid-cols-2 gap-4">
                             <FormField control={form.control} name="upiId" render={({ field }) => (
                                 <FormItem>

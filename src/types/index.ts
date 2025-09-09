@@ -42,6 +42,7 @@ export type AdmissionForm = {
     demoTenureDays?: number;
     totalFees: number;
     advanceFees: number;
+    contactNo?: string;
     upiId: string;
     upiNumber: string;
     createdAt: string; // Should be an ISO string
