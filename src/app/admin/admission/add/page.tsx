@@ -12,12 +12,13 @@ import { useToast } from '@/hooks/use-toast';
 import { addAdmissionForm } from '@/lib/firebase/admissions';
 import type { Teacher } from '@/types';
 import { getTeachers } from '@/lib/firebase/teachers';
+import { generateAdmissionDescription } from '@/ai/flows/admission-description-flow';
 
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, ArrowLeft, Save, CreditCard, Phone, Wallet, User, Book } from 'lucide-react';
+import { Loader2, ArrowLeft, Save, CreditCard, Phone, Wallet, User, Book, Sparkles } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
@@ -48,7 +49,7 @@ const FormSchema = z.object({
   startMonth: z.string().min(1, 'Start month is required.'),
   yearFrom: z.string().min(4, 'From year is required.'),
   yearTo: z.string().min(4, 'To year is required.'),
-  description: z.string().min(300, 'Description must be at least 300 characters.'),
+  description: z.string().min(100, 'Description must be at least 100 characters.'),
   isDemoEnabled: z.boolean().default(false),
   demoTenureDays: z.coerce.number().optional(),
   totalFees: z.coerce.number().min(0, 'Total fees must be a positive number.'),
@@ -77,6 +78,7 @@ export default function AddAdmissionFormPage() {
   const { toast } = useToast();
   
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
   const [teachers, setTeachers] = useState<Teacher[]>([]);
 
   useEffect(() => {
@@ -105,16 +107,10 @@ export default function AddAdmissionFormPage() {
 
   const yearFrom = form.watch('yearFrom');
   const teacherName = form.watch('teacherName');
-  const className = form.watch('className');
   const isDemoEnabled = form.watch('isDemoEnabled');
   const contactNo = form.watch('contactNo');
   const paymentApp = form.watch('paymentApp');
   
-  const generateDescription = (className: string, yearFrom: string, teacherName?: string) => {
-    if (!className || !yearFrom || !teacherName) return '';
-    return `Admission for ${className} (${yearFrom}) with ${teacherName}. Join us to excel in your studies.`;
-  };
-
   useEffect(() => {
     if (teacherName && teachers.length > 0) {
         const selectedTeacher = teachers.find(t => t.name === teacherName);
@@ -133,12 +129,6 @@ export default function AddAdmissionFormPage() {
     }
   }, [yearFrom, form]);
 
-  useEffect(() => {
-    if(className && yearFrom && teacherName) {
-        const newDescription = generateDescription(className, yearFrom, teacherName);
-        form.setValue('description', newDescription);
-    }
-  }, [className, yearFrom, teacherName, form])
 
  useEffect(() => {
     if (contactNo) {
@@ -152,6 +142,46 @@ export default function AddAdmissionFormPage() {
         form.setValue('upiId', `${contactNo}${handle}`, { shouldValidate: true });
     }
   }, [contactNo, paymentApp, form]);
+
+  const handleGenerateDescription = async () => {
+    const { title, teacherName, subject, className, yearFrom, yearTo } = form.getValues();
+    if (!title || !teacherName || !subject || !className || !yearFrom || !yearTo) {
+      toast({
+        variant: 'destructive',
+        title: 'Missing Information',
+        description: 'Please fill out the title, teacher, and year fields before generating a description.',
+      });
+      return;
+    }
+
+    setIsGenerating(true);
+    try {
+      const result = await generateAdmissionDescription({
+        title,
+        teacherName,
+        subject,
+        className,
+        year: `${yearFrom}-${yearTo.slice(-2)}`,
+      });
+      if (result.description) {
+        form.setValue('description', result.description, { shouldValidate: true });
+        toast({
+          title: 'Description Generated!',
+          description: 'The admission form description has been filled in for you.',
+        });
+      } else {
+        throw new Error('Received empty description from AI.');
+      }
+    } catch (error) {
+      toast({
+        variant: 'destructive',
+        title: 'Generation Failed',
+        description: 'Could not generate the description. Please try again.',
+      });
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
   async function onSubmit(values: FormValues) {
     setIsSubmitting(true);
@@ -263,13 +293,17 @@ export default function AddAdmissionFormPage() {
                             </FormItem>
                         )} />
                      </div>
-                     <FormField control={form.control} name="description" render={({ field }) => (
+                    <FormField control={form.control} name="description" render={({ field }) => (
                         <FormItem>
                             <FormLabel>Description</FormLabel>
-                            <FormControl><Textarea placeholder="A brief description of the admission batch" {...field} /></FormControl>
+                            <FormControl><Textarea placeholder="A brief description of the admission batch" {...field} rows={5} /></FormControl>
                             <FormMessage />
                         </FormItem>
                     )} />
+                    <Button type="button" variant="outline" size="sm" onClick={handleGenerateDescription} disabled={isGenerating}>
+                        {isGenerating ? <Loader2 className="animate-spin" /> : <Sparkles />}
+                        Generate with AI
+                    </Button>
 
                     <div className="border-t pt-6 space-y-4">
                         <FormField
