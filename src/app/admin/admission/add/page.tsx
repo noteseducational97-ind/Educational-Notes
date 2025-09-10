@@ -249,7 +249,7 @@ export default function AddAdmissionFormPage() {
                                 <FormMessage />
                             </FormItem>
                         )} />
-                     </div>
+                    </div>
                     
                     <div className="border-t pt-6 space-y-4">
                         <h3 className="text-lg font-medium flex items-center gap-2"><CreditCard /> Payment Details</h3>
