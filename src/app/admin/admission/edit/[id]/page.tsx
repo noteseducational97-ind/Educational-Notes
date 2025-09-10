@@ -404,15 +404,6 @@ export default function EditAdmissionFormPage() {
                         </div>
                     </div>
                 </CardContent>
-                <CardFooter className="flex justify-between gap-4 border-t pt-6">
-                    <Button type="button" variant="outline" asChild>
-                        <Link href="/admin/admission"><ArrowLeft /> Back</Link>
-                    </Button>
-                    <Button type="submit" disabled={isSubmitting}>
-                        {isSubmitting ? <Loader2 className="animate-spin" /> : <Save />}
-                        Save Changes
-                    </Button>
-                </CardFooter>
             </Card>
 
             <Card>
@@ -458,9 +449,20 @@ export default function EditAdmissionFormPage() {
                     )}
                 </CardContent>
             </Card>
+
+             <div className="flex justify-between gap-4 pt-6">
+                <Button type="button" variant="outline" asChild>
+                    <Link href="/admin/admission"><ArrowLeft /> Back</Link>
+                </Button>
+                <Button type="submit" disabled={isSubmitting}>
+                    {isSubmitting ? <Loader2 className="animate-spin" /> : <Save />}
+                    Save Changes
+                </Button>
+            </div>
         </form>
     </Form>
   );
 }
 
+    
     
