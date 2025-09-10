@@ -40,7 +40,7 @@ const itemVariants = {
 export default function AdmissionPage() {
     const { user, loading: authLoading } = useAuth();
     const [admissionForms, setAdmissionForms] = useState<AdmissionForm[]>([]);
-    const [joinedBatches, setJoinedBatches] = useState<{ form: AdmissionForm; application: AdmissionApplication }[]>([]);
+    const [joinedApplicationsMap, setJoinedApplicationsMap] = useState<Map<string, AdmissionApplication>>(new Map());
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -50,8 +50,9 @@ export default function AdmissionPage() {
             setAdmissionForms(forms);
 
             if (user) {
-                const batches = await getApplicationsForUser(user.uid);
-                setJoinedBatches(batches);
+                const joinedBatches = await getApplicationsForUser(user.uid);
+                const appMap = new Map(joinedBatches.map(({ form, application }) => [form.id, application]));
+                setJoinedApplicationsMap(appMap);
             }
             setLoading(false);
         };
@@ -78,39 +79,20 @@ export default function AdmissionPage() {
                     Choose the program you are interested in and proceed with the admission process.
                 </p>
             </motion.div>
-            
-            {user && joinedBatches.length > 0 && (
-                <motion.div variants={itemVariants} className="mb-12">
-                    <h2 className="text-3xl font-bold tracking-tight text-center mb-6">My Joined Batches</h2>
-                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-                        {joinedBatches.map(({ form, application }) => (
-                            <Card key={form.id} className="flex flex-col justify-between bg-secondary/30">
-                                <CardHeader>
-                                    <CardTitle>{form.className}</CardTitle>
-                                    <CardDescription>Applied on: {format(new Date(application.submittedAt), 'PPP')}</CardDescription>
-                                </CardHeader>
-                                <CardContent>
-                                    {/* Description removed as requested */}
-                                </CardContent>
-                                <CardFooter>
-                                    <Button asChild className="w-full">
-                                        <Link href={`/admission/receipt/${form.id}/${application.id}`}>
-                                            View Receipt <ArrowRight className="ml-2 h-4 w-4" />
-                                        </Link>
-                                    </Button>
-                                </CardFooter>
-                            </Card>
-                        ))}
-                    </div>
-                </motion.div>
-            )}
 
             {admissionForms.length > 0 ? (
                  <motion.div 
                     variants={containerVariants}
                     className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto"
                  >
-                    {admissionForms.map((form) => (
+                    {admissionForms.map((form) => {
+                        const application = joinedApplicationsMap.get(form.id);
+                        const hasJoined = !!application;
+                        const buttonText = hasJoined ? 'View Receipt' : 'Apply Now';
+                        const buttonIcon = hasJoined ? <Receipt className="ml-2 h-4 w-4" /> : <ArrowRight className="ml-2 h-4 w-4" />;
+                        const buttonLink = hasJoined ? `/admission/receipt/${form.id}/${application.id}` : `/admission/${form.id}`;
+
+                        return (
                         <motion.div variants={itemVariants} key={form.id}>
                             <Card 
                                 className="flex flex-col justify-between bg-secondary/30 h-full transition-all hover:border-primary/50 hover:shadow-xl overflow-hidden"
@@ -137,14 +119,14 @@ export default function AdmissionPage() {
                                 </CardContent>
                                 <div className="p-6 pt-0">
                                     <Button asChild className="w-full mt-6">
-                                        <Link href={`/admission/${form.id}`}>
-                                            Apply Now <ArrowRight className="ml-2 h-4 w-4" />
+                                        <Link href={buttonLink}>
+                                            {buttonText} {buttonIcon}
                                         </Link>
                                     </Button>
                                 </div>
                             </Card>
                         </motion.div>
-                    ))}
+                    )})}
                 </motion.div>
             ) : (
                 <motion.div 
