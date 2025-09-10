@@ -69,6 +69,10 @@ export type AdmissionApplication = {
   percentage: string;
   paymentMode?: string;
   paymentScreenshot?: string;
+  senderName?: string;
+  paymentAmount?: string;
+  transactionDate?: string;
+  transactionTime?: string;
   submittedAt: string; // ISO string
 };
 

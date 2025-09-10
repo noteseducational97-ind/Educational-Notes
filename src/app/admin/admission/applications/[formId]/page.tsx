@@ -77,7 +77,9 @@ export default function AdmissionApplicationsPage() {
 
     const headers = [
       'Full Name', 'Student Phone', 'Parent Phone', 'Date of Birth', 
-      'Category', 'Previous School', 'Board', 'Percentage', 'Payment Mode', 'Payment Screenshot'
+      'Category', 'Previous School', 'Board', 'Percentage', 
+      'Payment Mode', 'Payment Screenshot', 
+      'Extracted Sender', 'Extracted Amount', 'Extracted Date', 'Extracted Time'
     ];
     
     const csvRows = [
@@ -93,6 +95,10 @@ export default function AdmissionApplicationsPage() {
         `"${app.percentage}"`,
         `"${app.paymentMode}"`,
         `"${app.paymentScreenshot || ''}"`,
+        `"${app.senderName || ''}"`,
+        `"${app.paymentAmount || ''}"`,
+        `"${app.transactionDate || ''}"`,
+        `"${app.transactionTime || ''}"`,
       ].join(','))
     ];
 
@@ -154,11 +160,11 @@ export default function AdmissionApplicationsPage() {
                       <TableHead>Student Phone</TableHead>
                       <TableHead>Parent Phone</TableHead>
                       <TableHead>DOB</TableHead>
-                      <TableHead>Category</TableHead>
-                      <TableHead>Previous School</TableHead>
-                      <TableHead>Board</TableHead>
-                      <TableHead>Percentage</TableHead>
                       <TableHead>Payment Mode</TableHead>
+                      <TableHead>Sender Name</TableHead>
+                      <TableHead>Amount</TableHead>
+                      <TableHead>Date</TableHead>
+                      <TableHead>Time</TableHead>
                       <TableHead>Screenshot</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -169,11 +175,11 @@ export default function AdmissionApplicationsPage() {
                         <TableCell>{app.studentPhone}</TableCell>
                         <TableCell>{app.parentPhone}</TableCell>
                         <TableCell>{app.dateOfBirth}</TableCell>
-                        <TableCell>{app.category}</TableCell>
-                        <TableCell>{app.previousSchool}</TableCell>
-                        <TableCell>{app.board}</TableCell>
-                        <TableCell>{app.percentage}</TableCell>
                         <TableCell>{app.paymentMode}</TableCell>
+                        <TableCell>{app.senderName || '-'}</TableCell>
+                        <TableCell>{app.paymentAmount || '-'}</TableCell>
+                        <TableCell>{app.transactionDate || '-'}</TableCell>
+                        <TableCell>{app.transactionTime || '-'}</TableCell>
                         <TableCell>{app.paymentScreenshot || 'N/A'}</TableCell>
                       </TableRow>
                     ))}

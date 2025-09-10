@@ -11,7 +11,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, User, Mail, Phone, Home, GraduationCap, ArrowRight, ArrowLeft, CreditCard, Info, Wallet, Upload } from 'lucide-react';
+import { Loader2, User, Mail, Phone, Home, GraduationCap, ArrowRight, ArrowLeft, CreditCard, Info, Wallet, Upload, ScanEye } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Textarea } from '@/components/ui/textarea';
@@ -23,6 +23,7 @@ import type { AdmissionForm } from '@/types';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import PasswordPrompt from '@/components/auth/PasswordPrompt';
+import { extractPaymentDetails, PaymentDetailsOutput } from '@/ai/flows/payment-details-flow';
 
 
 const formSchema = z.object({
@@ -48,6 +49,10 @@ const formSchema = z.object({
   // Payment
   paymentMode: z.string().optional(),
   paymentScreenshot: z.any().optional(),
+  senderName: z.string().optional(),
+  paymentAmount: z.string().optional(),
+  transactionDate: z.string().optional(),
+  transactionTime: z.string().optional(),
 }).refine(data => {
     if (data.paymentMode === 'Online') {
         return !!data.paymentScreenshot?.[0];
@@ -70,6 +75,8 @@ export default function AdmissionFormPage() {
     const [formDetails, setFormDetails] = useState<AdmissionForm | null>(null);
     const [isAndroid, setIsAndroid] = useState(false);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [isExtracting, setIsExtracting] = useState(false);
+    const [extractedDetails, setExtractedDetails] = useState<PaymentDetailsOutput | null>(null);
 
     const formId = Array.isArray(params.formId) ? params.formId[0] : params.formId;
 
@@ -116,6 +123,46 @@ export default function AdmissionFormPage() {
         },
     });
 
+    const handleScreenshotChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+
+        // Pass file to RHF
+        const fileList = new DataTransfer();
+        fileList.items.add(file);
+        form.setValue('paymentScreenshot', fileList.files, { shouldValidate: true });
+
+        setIsExtracting(true);
+        setExtractedDetails(null);
+        try {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onloadend = async () => {
+                const base64data = reader.result as string;
+                const result = await extractPaymentDetails({ screenshotDataUri: base64data });
+                setExtractedDetails(result);
+                // Update form values with extracted data
+                form.setValue('senderName', result.senderName);
+                form.setValue('paymentAmount', result.paymentAmount);
+                form.setValue('transactionDate', result.transactionDate);
+                form.setValue('transactionTime', result.transactionTime);
+                 toast({
+                    title: "Details Extracted",
+                    description: "Payment details have been read from the screenshot.",
+                });
+            };
+        } catch (error) {
+            toast({
+                variant: "destructive",
+                title: "Extraction Failed",
+                description: "Could not extract details from the image. Please enter them manually.",
+            });
+        } finally {
+            setIsExtracting(false);
+        }
+    };
+
+
     async function onSubmit(values: FormValues) {
         if (!formId) return;
         setLoading(true);
@@ -129,6 +176,7 @@ export default function AdmissionFormPage() {
                 description: 'We have received your application and will contact you shortly.',
             });
             form.reset();
+            setExtractedDetails(null);
         } catch (error: any) {
              toast({
                 variant: 'destructive',
@@ -428,20 +476,39 @@ export default function AdmissionFormPage() {
                                                      <FormField
                                                         control={form.control}
                                                         name="paymentScreenshot"
-                                                        render={({ field }) => (
+                                                        render={({ field }) => ( // field is not used directly, but RHF needs it
                                                           <FormItem>
                                                             <FormLabel className="flex items-center gap-2"><Upload /> Upload Screenshot of Payment</FormLabel>
                                                             <FormControl>
                                                               <Input 
                                                                 type="file" 
                                                                 accept="image/*"
-                                                                onChange={(e) => field.onChange(e.target.files)}
+                                                                onChange={handleScreenshotChange}
                                                               />
                                                             </FormControl>
                                                             <FormMessage />
                                                           </FormItem>
                                                         )}
                                                       />
+                                                      {isExtracting && (
+                                                        <div className="flex items-center justify-center gap-2 text-muted-foreground">
+                                                            <Loader2 className="animate-spin" />
+                                                            <span>Extracting details...</span>
+                                                        </div>
+                                                      )}
+                                                      {extractedDetails && (
+                                                          <Card className="bg-background">
+                                                              <CardHeader>
+                                                                  <CardTitle className="text-base flex items-center gap-2"><ScanEye/> Extracted Details</CardTitle>
+                                                              </CardHeader>
+                                                              <CardContent className="space-y-2 text-sm">
+                                                                  <p><strong>Sender:</strong> {extractedDetails.senderName || 'Not found'}</p>
+                                                                  <p><strong>Amount:</strong> {extractedDetails.paymentAmount || 'Not found'}</p>
+                                                                  <p><strong>Date:</strong> {extractedDetails.transactionDate || 'Not found'}</p>
+                                                                  <p><strong>Time:</strong> {extractedDetails.transactionTime || 'Not found'}</p>
+                                                              </CardContent>
+                                                          </Card>
+                                                      )}
                                                 </div>
                                             )}
                                         </div>
