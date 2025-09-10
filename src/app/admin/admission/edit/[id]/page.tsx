@@ -49,7 +49,7 @@ const FormSchema = z.object({
   startMonth: z.string().min(1, 'Start month is required.'),
   yearFrom: z.string().min(4, 'From year is required.'),
   yearTo: z.string().min(4, 'To year is required.'),
-  description: z.string().min(10, 'Description is required.'),
+  description: z.string().min(300, 'Description must be at least 300 characters.'),
   isDemoEnabled: z.boolean().default(false),
   demoTenureDays: z.coerce.number().optional(),
   totalFees: z.coerce.number().min(0, 'Total fees must be a positive number.'),
