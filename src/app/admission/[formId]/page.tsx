@@ -25,6 +25,7 @@ import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import PasswordPrompt from '@/components/auth/PasswordPrompt';
 import { extractPaymentDetails, PaymentDetailsOutput } from '@/ai/flows/payment-details-flow';
+import { useAuth } from '@/hooks/use-auth';
 
 
 const formSchema = z.object({
@@ -79,6 +80,7 @@ export default function AdmissionFormPage() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [isExtracting, setIsExtracting] = useState(false);
     const [extractedDetails, setExtractedDetails] = useState<PaymentDetailsOutput | null>(null);
+    const { user } = useAuth();
 
     const formId = Array.isArray(params.formId) ? params.formId[0] : params.formId;
 
@@ -169,10 +171,14 @@ export default function AdmissionFormPage() {
         if (!formId) return;
         setLoading(true);
         try {
+            const applicationPayload: any = { ...values };
+            if (user) {
+                applicationPayload.userId = user.uid;
+            }
             // Note: In a real app, you would handle file uploads to a storage service.
             // For this prototype, we are just passing the data along.
             // The backend would need to be set up to handle the `paymentScreenshot` file.
-            const result = await submitAdmissionApplication(formId, { ...values, paymentScreenshot: values.paymentScreenshot?.[0]?.name || null });
+            const result = await submitAdmissionApplication(formId, { ...applicationPayload, paymentScreenshot: values.paymentScreenshot?.[0]?.name || null });
             toast({
                 title: 'Application Submitted!',
                 description: 'We have received your application. Redirecting to your receipt...',
