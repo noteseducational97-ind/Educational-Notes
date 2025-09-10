@@ -19,14 +19,16 @@ const transformGoogleDriveUrl = (url?: string): string | undefined => {
 
 // A function to upload a file to Firebase Storage (or any other service)
 // and return the public URL. This is a placeholder and needs real implementation.
-async function uploadFileAndGetURL(file: any, path: string): Promise<string> {
+async function uploadFileAndGetURL(file: { name: string }, path: string): Promise<string> {
     // In a real app, you would use Firebase Admin SDK for Storage here
     // For now, we'll just return a placeholder URL based on the file name
     console.log(`Simulating upload for: ${file.name} to path: ${path}`);
     
     // This is NOT a real URL. Replace with actual upload logic.
     // e.g., using bucket.upload() and then bucket.file().getSignedUrl()
-    return `https://storage.googleapis.com/your-bucket-name/${path}/${file.name}`;
+    // Using a valid placeholder service to avoid "Invalid URL" errors.
+    const seed = Math.random().toString(36).substring(7);
+    return `https://picsum.photos/seed/${seed}/400/225`;
 }
 
 
@@ -176,3 +178,36 @@ export async function getApplicationById(formId: string, applicationId: string):
     } as AdmissionApplication;
 }
 
+export async function getApplicationsForUser(userId: string): Promise<{ form: AdmissionForm; application: AdmissionApplication }[]> {
+    const applicationsSnapshot = await db.collectionGroup('applications').where('userId', '==', userId).get();
+    if (applicationsSnapshot.empty) {
+        return [];
+    }
+
+    const results = await Promise.all(applicationsSnapshot.docs.map(async (doc) => {
+        const applicationData = doc.data() as Omit<AdmissionApplication, 'id' | 'submittedAt'>;
+        const submittedAt = (doc.createTime as Timestamp)?.toDate().toISOString() || new Date().toISOString();
+        const application = { ...applicationData, id: doc.id, submittedAt } as AdmissionApplication;
+
+        const formRef = doc.ref.parent.parent;
+        if (!formRef) return null;
+
+        const formDoc = await formRef.get();
+        if (!formDoc.exists) return null;
+
+        const formData = formDoc.data() as Omit<AdmissionForm, 'id' | 'createdAt' | 'updatedAt'>;
+        const formCreatedAt = (formDoc.createTime as Timestamp)?.toDate().toISOString() || new Date().toISOString();
+        const formUpdatedAt = (formDoc.updateTime as Timestamp)?.toDate().toISOString() || undefined;
+
+        const form = { 
+            ...formData, 
+            id: formDoc.id, 
+            createdAt: formCreatedAt, 
+            updatedAt: formUpdatedAt 
+        } as AdmissionForm;
+
+        return { form, application };
+    }));
+
+    return results.filter((result): result is { form: AdmissionForm; application: AdmissionApplication } => result !== null);
+}
