@@ -16,7 +16,7 @@ const transformGoogleDriveUrl = (url?: string): string | undefined => {
     return url;
 };
 
-export async function addAdmissionForm(data: Omit<AdmissionForm, 'id' | 'createdAt'>) {
+export async function addAdmissionForm(data: Omit<AdmissionForm, 'id' | 'createdAt' | 'updatedAt'>) {
     const docRef = db.collection('admissionForms').doc();
     
     const transformedImageUrl = transformGoogleDriveUrl(data.imageUrl);
@@ -41,10 +41,12 @@ export async function getAdmissionForms(): Promise<AdmissionForm[]> {
         return snapshot.docs.map(doc => {
             const data = doc.data();
             const createdAt = (data.createdAt as Timestamp)?.toDate().toISOString() || new Date().toISOString();
+            const updatedAt = (data.updatedAt as Timestamp)?.toDate().toISOString() || undefined;
             return {
                 ...data,
                 id: doc.id,
                 createdAt,
+                updatedAt,
             } as AdmissionForm;
         });
     } catch (error) {
@@ -62,11 +64,13 @@ export async function getAdmissionFormById(id: string): Promise<AdmissionForm | 
     if (!data) return null;
 
     const createdAt = (data.createdAt as Timestamp)?.toDate().toISOString() || new Date().toISOString();
+    const updatedAt = (data.updatedAt as Timestamp)?.toDate().toISOString() || undefined;
     
     return {
         ...data,
         id: doc.id,
         createdAt,
+        updatedAt,
     } as AdmissionForm;
 }
 

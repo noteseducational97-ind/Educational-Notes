@@ -35,7 +35,7 @@ export type AdmissionForm = {
     title: string;
     teacherName: string;
     className: string;
-    subject: 'Physics' | 'Chemistry';
+    subject: string;
     year: string;
     startMonth: string;
     description: string;
