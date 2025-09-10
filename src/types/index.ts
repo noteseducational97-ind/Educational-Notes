@@ -79,4 +79,6 @@ export type Teacher = {
   experience: string;
   since: string;
   description: string;
+  createdAt: string; // Should be an ISO string
+  updatedAt?: string;
 };

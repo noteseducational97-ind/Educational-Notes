@@ -3,13 +3,13 @@
 
 import { db } from '@/lib/firebase/server';
 import type { Teacher } from '@/types';
-import { FieldValue } from 'firebase-admin/firestore';
+import { FieldValue, Timestamp } from 'firebase-admin/firestore';
 
 const createSlug = (name: string) => {
     return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 };
 
-export async function addTeacher(data: Omit<Teacher, 'id'>): Promise<void> {
+export async function addTeacher(data: Omit<Teacher, 'id' | 'createdAt'>): Promise<void> {
     const slug = createSlug(data.name);
     const teacherRef = db.collection('teachers').doc(slug);
     await teacherRef.set({
@@ -24,7 +24,15 @@ export async function getTeachers(): Promise<Teacher[]> {
     if (snapshot.empty) {
         return [];
     }
-    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Teacher));
+    return snapshot.docs.map(doc => {
+        const data = doc.data();
+        return { 
+            id: doc.id, 
+            ...data,
+            createdAt: (data.createdAt as Timestamp)?.toDate().toISOString() || new Date().toISOString(),
+            updatedAt: (data.updatedAt as Timestamp)?.toDate().toISOString() || undefined,
+        } as Teacher
+    });
 }
 
 export async function getTeacherById(id: string): Promise<Teacher | null> {
@@ -32,10 +40,18 @@ export async function getTeacherById(id: string): Promise<Teacher | null> {
     if (!doc.exists) {
         return null;
     }
-    return { id: doc.id, ...doc.data() } as Teacher;
+    const data = doc.data();
+    if (!data) return null;
+
+    return { 
+        id: doc.id, 
+        ...data,
+        createdAt: (data.createdAt as Timestamp)?.toDate().toISOString() || new Date().toISOString(),
+        updatedAt: (data.updatedAt as Timestamp)?.toDate().toISOString() || undefined,
+    } as Teacher;
 }
 
-export async function updateTeacher(id: string, data: Partial<Omit<Teacher, 'id'>>): Promise<void> {
+export async function updateTeacher(id: string, data: Partial<Omit<Teacher, 'id' | 'createdAt'>>): Promise<void> {
     const teacherRef = db.collection('teachers').doc(id);
     await teacherRef.update({
         ...data,
