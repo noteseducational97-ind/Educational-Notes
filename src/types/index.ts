@@ -39,8 +39,6 @@ export type AdmissionForm = {
     year: string;
     startMonth: string;
     description: string;
-    isDemoEnabled: boolean;
-    demoTenureDays?: number;
     isPasswordProtected?: boolean;
     password?: string;
     totalFees: number;

@@ -42,8 +42,6 @@ export async function getAdmissionForms(): Promise<AdmissionForm[]> {
                 ...data,
                 id: doc.id,
                 createdAt,
-                isDemoEnabled: data.isDemoEnabled || false,
-                demoTenureDays: data.demoTenureDays || null,
             } as AdmissionForm;
         });
     } catch (error) {
@@ -66,8 +64,6 @@ export async function getAdmissionFormById(id: string): Promise<AdmissionForm | 
         ...data,
         id: doc.id,
         createdAt,
-        isDemoEnabled: data.isDemoEnabled || false,
-        demoTenureDays: data.demoTenureDays || null,
     } as AdmissionForm;
 }
 

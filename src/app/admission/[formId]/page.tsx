@@ -148,15 +148,6 @@ export default function AdmissionFormPage() {
                         </Link>
                     </Button>
                     
-                    {formDetails.isDemoEnabled && formDetails.demoTenureDays && (
-                        <Alert className="mb-8 border-primary/30 bg-primary/10">
-                            <Info className="h-4 w-4 text-primary" />
-                            <AlertTitle className="text-primary">Free Demo Session!</AlertTitle>
-                            <AlertDescription className="text-primary/80">
-                                A {formDetails.demoTenureDays}-day free demo is available for this course.
-                            </AlertDescription>
-                        </Alert>
-                    )}
 
                     <FormProvider {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">

@@ -51,8 +51,6 @@ const FormSchema = z.object({
   yearFrom: z.string().min(4, 'From year is required.'),
   yearTo: z.string().min(4, 'To year is required.'),
   description: z.string().min(100, 'Description must be at least 100 characters.'),
-  isDemoEnabled: z.boolean().default(false),
-  demoTenureDays: z.coerce.number().optional(),
   totalFees: z.coerce.number().min(0, 'Total fees must be a positive number.'),
   advanceFees: z.coerce.number().min(0, 'Advance fees must be a positive number.'),
   contactNo: z.string().optional(),
@@ -65,14 +63,6 @@ const FormSchema = z.object({
 }).refine(data => parseInt(data.yearTo) > parseInt(data.yearFrom), {
     message: "'To' year must be after 'From' year.",
     path: ['yearTo'],
-}).refine(data => {
-    if (data.isDemoEnabled) {
-        return data.demoTenureDays !== undefined && data.demoTenureDays > 0;
-    }
-    return true;
-}, {
-    message: "Demo tenure (in days) is required if demo is enabled.",
-    path: ['demoTenureDays'],
 }).refine(data => {
     if (data.isPasswordProtected) {
         return data.password && data.password.length >= 6;
@@ -120,7 +110,6 @@ export default function EditAdmissionFormPage() {
         yearFrom: currentYear.toString(),
         yearTo: (currentYear + 2).toString(),
         description: '',
-        isDemoEnabled: false,
         contactNo: '',
         paymentApp: '',
         upiId: '',
@@ -133,7 +122,6 @@ export default function EditAdmissionFormPage() {
 
   const yearFrom = form.watch('yearFrom');
   const teacherName = form.watch('teacherName');
-  const isDemoEnabled = form.watch('isDemoEnabled');
   const contactNo = form.watch('contactNo');
   const paymentApp = form.watch('paymentApp');
   const isPasswordProtected = form.watch('isPasswordProtected');
@@ -358,81 +346,6 @@ export default function EditAdmissionFormPage() {
                         {isGenerating ? <Loader2 className="animate-spin" /> : <Sparkles />}
                         Generate with AI
                     </Button>
-                     <div className="border-t pt-6 space-y-4">
-                        <FormField
-                            control={form.control}
-                            name="isDemoEnabled"
-                            render={({ field }) => (
-                                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                                    <FormControl>
-                                        <Checkbox
-                                            checked={field.value}
-                                            onCheckedChange={field.onChange}
-                                        />
-                                    </FormControl>
-                                    <div className="space-y-1 leading-none">
-                                        <FormLabel>
-                                            Enable Demo Session
-                                        </FormLabel>
-                                        <FormMessage />
-                                    </div>
-                                </FormItem>
-                            )}
-                        />
-                        {isDemoEnabled && (
-                            <FormField
-                                control={form.control}
-                                name="demoTenureDays"
-                                render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Demo Session Tenure (in days)</FormLabel>
-                                    <FormControl>
-                                        <Input type="number" placeholder="e.g., 7" {...field} value={field.value ?? ''} onChange={e => field.onChange(e.target.value === '' ? undefined : parseInt(e.target.value, 10))}/>
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                                )}
-                            />
-                        )}
-                    </div>
-
-                    <div className="border-t pt-6 space-y-4">
-                        <FormField
-                            control={form.control}
-                            name="isPasswordProtected"
-                            render={({ field }) => (
-                                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                                    <FormControl>
-                                        <Checkbox
-                                            checked={field.value}
-                                            onCheckedChange={field.onChange}
-                                        />
-                                    </FormControl>
-                                    <div className="space-y-1 leading-none">
-                                        <FormLabel>Enable Batch Password</FormLabel>
-                                    </div>
-                                </FormItem>
-                            )}
-                        />
-                        {isPasswordProtected && (
-                            <div className="grid md:grid-cols-2 gap-4">
-                                <FormField control={form.control} name="password" render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel className="flex items-center gap-2"><KeyRound/> Password</FormLabel>
-                                        <FormControl><Input type="password" placeholder="Enter password" {...field} value={field.value ?? ''} /></FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )} />
-                                <FormField control={form.control} name="confirmPassword" render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel className="flex items-center gap-2"><KeyRound/> Confirm Password</FormLabel>
-                                        <FormControl><Input type="password" placeholder="Confirm password" {...field} value={field.value ?? ''} /></FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )} />
-                            </div>
-                        )}
-                    </div>
                     
                     <div className="border-t pt-6 space-y-4">
                         <h3 className="text-lg font-medium flex items-center gap-2"><CreditCard /> Payment Details</h3>
@@ -489,6 +402,44 @@ export default function EditAdmissionFormPage() {
                                 </FormItem>
                             )} />
                         </div>
+                    </div>
+
+                    <div className="border-t pt-6 space-y-4">
+                        <FormField
+                            control={form.control}
+                            name="isPasswordProtected"
+                            render={({ field }) => (
+                                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                                    <FormControl>
+                                        <Checkbox
+                                            checked={field.value}
+                                            onCheckedChange={field.onChange}
+                                        />
+                                    </FormControl>
+                                    <div className="space-y-1 leading-none">
+                                        <FormLabel>Enable Batch Password</FormLabel>
+                                    </div>
+                                </FormItem>
+                            )}
+                        />
+                        {isPasswordProtected && (
+                            <div className="grid md:grid-cols-2 gap-4">
+                                <FormField control={form.control} name="password" render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel className="flex items-center gap-2"><KeyRound/> Password</FormLabel>
+                                        <FormControl><Input type="password" placeholder="Enter password" {...field} value={field.value ?? ''} /></FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )} />
+                                <FormField control={form.control} name="confirmPassword" render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel className="flex items-center gap-2"><KeyRound/> Confirm Password</FormLabel>
+                                        <FormControl><Input type="password" placeholder="Confirm password" {...field} value={field.value ?? ''} /></FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )} />
+                            </div>
+                        )}
                     </div>
                 </CardContent>
                 <CardFooter className="flex justify-between gap-4 border-t pt-6">
