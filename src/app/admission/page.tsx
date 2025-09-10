@@ -5,13 +5,14 @@ import { useEffect, useState } from 'react';
 import Header from '@/components/layout/Header';
 import { Card, CardDescription, CardTitle, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Info, Calendar } from 'lucide-react';
+import { ArrowRight, Info, Calendar, Book } from 'lucide-react';
 import Link from 'next/link';
 import { getAdmissionForms } from '@/lib/firebase/admissions';
 import type { AdmissionForm } from '@/types';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import { Badge } from '@/components/ui/badge';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -84,6 +85,12 @@ export default function AdmissionPage() {
                                 </CardHeader>
                                 <CardContent className="p-6 flex-grow">
                                     <CardTitle className="text-2xl">{form.title}</CardTitle>
+                                    <div className="mt-4">
+                                      <Badge variant="secondary" className="flex items-center gap-1 w-fit">
+                                          <Book className="h-3 w-3" />
+                                          {form.subject}
+                                      </Badge>
+                                    </div>
                                     <CardDescription className="mt-2">{form.description}</CardDescription>
                                     <div className="mt-4 flex items-center text-sm text-muted-foreground">
                                         <Calendar className="h-4 w-4 mr-2" />
