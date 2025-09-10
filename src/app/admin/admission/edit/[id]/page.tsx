@@ -271,14 +271,14 @@ export default function EditAdmissionFormPage() {
                         <FormField control={form.control} name="subject" render={({ field }) => (
                              <FormItem>
                                 <FormLabel className="flex items-center gap-2"><Book /> Subject</FormLabel>
-                                <FormControl><Input {...field} value={field.value || ''} disabled /></FormControl>
+                                <FormControl><Input {...field} value={field.value || ''} /></FormControl>
                                 <FormMessage />
                             </FormItem>
                         )} />
                         <FormField control={form.control} name="className" render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Class Name</FormLabel>
-                                <FormControl><Input placeholder="e.g. Class 11 / MHT-CET" {...field} value={field.value || ''} disabled /></FormControl>
+                                <FormControl><Input placeholder="e.g. Class 11 / MHT-CET" {...field} value={field.value || ''} /></FormControl>
                                 <FormMessage />
                             </FormItem>
                         )} />
