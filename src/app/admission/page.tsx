@@ -130,7 +130,6 @@ export default function AdmissionPage() {
                                           {form.subject}
                                       </Badge>
                                     </div>
-                                    <CardDescription className="mt-2">{form.description}</CardDescription>
                                     <div className="mt-4 flex items-center text-sm text-muted-foreground">
                                         <Calendar className="h-4 w-4 mr-2" />
                                         <span>Starts: {form.startMonth} {form.year}</span>
