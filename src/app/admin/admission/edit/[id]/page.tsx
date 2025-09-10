@@ -253,23 +253,7 @@ export default function EditAdmissionFormPage() {
                                 <FormMessage />
                             </FormItem>
                         )} />
-                        <FormField control={form.control} name="teacherName" render={({ field }) => (
-                            <FormItem>
-                                <FormLabel className="flex items-center gap-2"><User /> Teacher</FormLabel>
-                                <Select onValueChange={field.onChange} value={field.value}>
-                                    <FormControl><SelectTrigger><SelectValue placeholder="Select teacher" /></SelectTrigger></FormControl>
-                                    <SelectContent>
-                                        {teachers.map(teacher => (
-                                            <SelectItem key={teacher.id} value={teacher.name}>{teacher.name}</SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                                <FormMessage />
-                            </FormItem>
-                        )} />
-                    </div>
-                    <div className="grid md:grid-cols-2 gap-4">
-                         <FormField control={form.control} name="study" render={({ field }) => (
+                        <FormField control={form.control} name="study" render={({ field }) => (
                             <FormItem>
                                 <FormLabel className="flex items-center gap-2"><BookOpen/> Study / Exam</FormLabel>
                                 <Select onValueChange={field.onChange} value={field.value}>
@@ -283,10 +267,26 @@ export default function EditAdmissionFormPage() {
                                 <FormMessage />
                             </FormItem>
                         )} />
+                    </div>
+                    <div className="grid md:grid-cols-2 gap-4">
                          <FormField control={form.control} name="subject" render={({ field }) => (
                              <FormItem>
                                 <FormLabel className="flex items-center gap-2"><Book /> Subject</FormLabel>
                                 <FormControl><Input {...field} value={field.value || ''} /></FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )} />
+                        <FormField control={form.control} name="teacherName" render={({ field }) => (
+                            <FormItem>
+                                <FormLabel className="flex items-center gap-2"><User /> Teacher</FormLabel>
+                                <Select onValueChange={field.onChange} value={field.value}>
+                                    <FormControl><SelectTrigger><SelectValue placeholder="Select teacher" /></SelectTrigger></FormControl>
+                                    <SelectContent>
+                                        {teachers.map(teacher => (
+                                            <SelectItem key={teacher.id} value={teacher.name}>{teacher.name}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
                                 <FormMessage />
                             </FormItem>
                         )} />
@@ -443,6 +443,8 @@ export default function EditAdmissionFormPage() {
     </Form>
   );
 }
+
+    
 
     
 
