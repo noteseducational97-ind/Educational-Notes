@@ -21,6 +21,7 @@ import { Loader2, ArrowLeft, Save, CreditCard, Phone, Wallet, User, Book, Sparkl
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
+import { motion } from 'framer-motion';
 
 const currentYear = new Date().getFullYear();
 const yearOptions = Array.from({ length: 5 }, (_, i) => (currentYear + i).toString());
@@ -80,6 +81,27 @@ type FormValues = z.infer<typeof FormSchema>;
 const generateDescription = (className: string, teacherName: string, subject: string, year: string) => {
     return `Enroll in the ${className} for ${subject} with ${teacherName} for the academic year ${year}. This batch offers comprehensive coverage of the syllabus, personalized attention, and proven strategies to excel in your exams. Secure your spot now and embark on a rewarding learning journey!`;
 }
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { y: 20, opacity: 0 },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: {
+      duration: 0.5,
+    },
+  },
+};
 
 export default function AddAdmissionFormPage() {
   const router = useRouter();
@@ -171,97 +193,111 @@ export default function AddAdmissionFormPage() {
 
   return (
     <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <Card>
-                <CardHeader>
-                    <CardTitle>Create New Admission Form</CardTitle>
-                    <CardDescription>Fill out the details to create a new admission process.</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                    <FormField control={form.control} name="imageUrl" render={({ field }) => (
-                        <FormItem>
-                            <FormLabel className="flex items-center gap-2"><ImageIcon/> Image URL</FormLabel>
-                            <FormControl><Input placeholder="https://example.com/image.png or a Google Drive link" {...field} value={field.value ?? ''} /></FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )} />
-                    <div className="grid md:grid-cols-2 gap-4">
-                        <FormField control={form.control} name="title" render={({ field }) => (
+        <motion.form 
+          onSubmit={form.handleSubmit(onSubmit)} 
+          className="space-y-6"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+            <motion.div variants={itemVariants}>
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Create New Admission Form</CardTitle>
+                        <CardDescription>Fill out the details to create a new admission process.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                        <FormField control={form.control} name="imageUrl" render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Batch Title</FormLabel>
-                                <FormControl><Input placeholder="e.g. MHT-CET Crash Course" {...field} /></FormControl>
+                                <FormLabel className="flex items-center gap-2"><ImageIcon/> Image URL</FormLabel>
+                                <FormControl><Input placeholder="https://example.com/image.png or a Google Drive link" {...field} value={field.value ?? ''} /></FormControl>
                                 <FormMessage />
                             </FormItem>
                         )} />
-                        <FormField control={form.control} name="teacherName" render={({ field }) => (
-                            <FormItem>
-                                <FormLabel className="flex items-center gap-2"><User /> Teacher</FormLabel>
-                                <Select onValueChange={field.onChange} value={field.value}>
-                                    <FormControl><SelectTrigger><SelectValue placeholder="Select teacher" /></SelectTrigger></FormControl>
-                                    <SelectContent>
-                                        {teachers.map(teacher => (
-                                            <SelectItem key={teacher.id} value={teacher.name}>{teacher.name}</SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                                <FormMessage />
-                            </FormItem>
-                        )} />
-                    </div>
-                     <div className="grid md:grid-cols-2 gap-4">
-                        <FormField control={form.control} name="subject" render={({ field }) => (
-                             <FormItem>
-                                <FormLabel className="flex items-center gap-2"><Book /> Subject</FormLabel>
-                                <FormControl><Input {...field} value={field.value || ''} /></FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )} />
-                        <FormField control={form.control} name="className" render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Class Name</FormLabel>
-                                <FormControl><Input placeholder="e.g. Class 11 / MHT-CET" {...field} value={field.value || ''} /></FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )} />
-                    </div>
-                     <div className="grid md:grid-cols-2 gap-4">
-                        <FormField control={form.control} name="startMonth" render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Start Month</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                    <FormControl><SelectTrigger><SelectValue placeholder="Month" /></SelectTrigger></FormControl>
-                                    <SelectContent>
-                                        {monthOptions.map(month => <SelectItem key={month} value={month}>{month}</SelectItem>)}
-                                    </SelectContent>
-                                </Select>
-                                <FormMessage />
-                            </FormItem>
-                        )} />
-                        <FormField control={form.control} name="yearFrom" render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>From Year</FormLabel>
-                                <Select onValueChange={field.onChange} value={field.value}>
-                                    <FormControl><SelectTrigger><SelectValue placeholder="From" /></SelectTrigger></FormControl>
-                                    <SelectContent>
-                                        {yearOptions.map(year => <SelectItem key={year} value={year}>{year}</SelectItem>)}
-                                    </SelectContent>
-                                </Select>
-                                <FormMessage />
-                            </FormItem>
-                        )} />
-                    </div>
-                    
-                    <div className="border-t pt-6 space-y-4">
-                        <h3 className="text-lg font-medium flex items-center gap-2"><CreditCard /> Payment Details</h3>
                         <div className="grid md:grid-cols-2 gap-4">
-                             <FormField control={form.control} name="totalFees" render={({ field }) => (
+                            <FormField control={form.control} name="title" render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Batch Title</FormLabel>
+                                    <FormControl><Input placeholder="e.g. MHT-CET Crash Course" {...field} /></FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )} />
+                            <FormField control={form.control} name="teacherName" render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel className="flex items-center gap-2"><User /> Teacher</FormLabel>
+                                    <Select onValueChange={field.onChange} value={field.value}>
+                                        <FormControl><SelectTrigger><SelectValue placeholder="Select teacher" /></SelectTrigger></FormControl>
+                                        <SelectContent>
+                                            {teachers.map(teacher => (
+                                                <SelectItem key={teacher.id} value={teacher.name}>{teacher.name}</SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                </FormItem>
+                            )} />
+                        </div>
+                        <div className="grid md:grid-cols-2 gap-4">
+                            <FormField control={form.control} name="subject" render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel className="flex items-center gap-2"><Book /> Subject</FormLabel>
+                                    <FormControl><Input {...field} value={field.value || ''} /></FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )} />
+                            <FormField control={form.control} name="className" render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Class Name</FormLabel>
+                                    <FormControl><Input placeholder="e.g. Class 11 / MHT-CET" {...field} value={field.value || ''} /></FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )} />
+                        </div>
+                        <div className="grid md:grid-cols-2 gap-4">
+                            <FormField control={form.control} name="startMonth" render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Start Month</FormLabel>
+                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                        <FormControl><SelectTrigger><SelectValue placeholder="Month" /></SelectTrigger></FormControl>
+                                        <SelectContent>
+                                            {monthOptions.map(month => <SelectItem key={month} value={month}>{month}</SelectItem>)}
+                                        </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                </FormItem>
+                            )} />
+                            <FormField control={form.control} name="yearFrom" render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>From Year</FormLabel>
+                                    <Select onValueChange={field.onChange} value={field.value}>
+                                        <FormControl><SelectTrigger><SelectValue placeholder="From" /></SelectTrigger></FormControl>
+                                        <SelectContent>
+                                            {yearOptions.map(year => <SelectItem key={year} value={year}>{year}</SelectItem>)}
+                                        </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                </FormItem>
+                            )} />
+                        </div>
+                    </CardContent>
+                </Card>
+            </motion.div>
+
+            <motion.div variants={itemVariants}>
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2"><CreditCard /> Payment Details</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        <div className="grid md:grid-cols-2 gap-4">
+                                <FormField control={form.control} name="totalFees" render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Total Fees</FormLabel>
                                     <FormControl><Input type="number" placeholder="e.g. 15000" {...field} value={field.value ?? ''} onChange={e => field.onChange(e.target.value === '' ? undefined : parseInt(e.target.value, 10))} /></FormControl>
                                     <FormMessage />
                                 </FormItem>
                             )} />
-                             <FormField control={form.control} name="advanceFees" render={({ field }) => (
+                                <FormField control={form.control} name="advanceFees" render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Advance Fees</FormLabel>
                                     <FormControl><Input type="number" placeholder="e.g. 5000" {...field} value={field.value ?? ''} onChange={e => field.onChange(e.target.value === '' ? undefined : parseInt(e.target.value, 10))} /></FormControl>
@@ -271,12 +307,12 @@ export default function AddAdmissionFormPage() {
                         </div>
                         <div className="grid md:grid-cols-2 gap-4">
                             <FormField control={form.control} name="contactNo" render={({ field }) => (
-                               <FormItem>
-                                   <FormLabel className="flex items-center gap-2"><Phone /> Contact No.</FormLabel>
-                                   <FormControl><Input placeholder="Contact number for payment queries" {...field} value={field.value ?? ''} /></FormControl>
-                                   <FormMessage />
-                               </FormItem>
-                           )} />
+                                <FormItem>
+                                    <FormLabel className="flex items-center gap-2"><Phone /> Contact No.</FormLabel>
+                                    <FormControl><Input placeholder="Contact number for payment queries" {...field} value={field.value ?? ''} /></FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )} />
                             <FormField control={form.control} name="paymentApp" render={({ field }) => (
                                 <FormItem>
                                     <FormLabel className="flex items-center gap-2"><Wallet /> Supported Payment App</FormLabel>
@@ -298,7 +334,7 @@ export default function AddAdmissionFormPage() {
                                     <FormMessage />
                                 </FormItem>
                             )} />
-                             <FormField control={form.control} name="upiNumber" render={({ field }) => (
+                                <FormField control={form.control} name="upiNumber" render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>UPI Number</FormLabel>
                                     <FormControl><Input placeholder="e.g. 9876543210" {...field} /></FormControl>
@@ -306,55 +342,57 @@ export default function AddAdmissionFormPage() {
                                 </FormItem>
                             )} />
                         </div>
-                    </div>
-                </CardContent>
-            </Card>
+                    </CardContent>
+                </Card>
+            </motion.div>
 
-            <Card>
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-2"><Shield /> Security</CardTitle>
-                    <CardDescription>Protect this admission form with a password.</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                     <FormField
-                        control={form.control}
-                        name="isPasswordProtected"
-                        render={({ field }) => (
-                            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                                <FormControl>
-                                    <Checkbox
-                                        checked={field.value}
-                                        onCheckedChange={field.onChange}
-                                    />
-                                </FormControl>
-                                <div className="space-y-1 leading-none">
-                                    <FormLabel>Enable Batch Password</FormLabel>
-                                </div>
-                            </FormItem>
+            <motion.div variants={itemVariants}>
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2"><Shield /> Security</CardTitle>
+                        <CardDescription>Protect this admission form with a password.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        <FormField
+                            control={form.control}
+                            name="isPasswordProtected"
+                            render={({ field }) => (
+                                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                                    <FormControl>
+                                        <Checkbox
+                                            checked={field.value}
+                                            onCheckedChange={field.onChange}
+                                        />
+                                    </FormControl>
+                                    <div className="space-y-1 leading-none">
+                                        <FormLabel>Enable Batch Password</FormLabel>
+                                    </div>
+                                </FormItem>
+                            )}
+                        />
+                        {isPasswordProtected && (
+                            <div className="grid md:grid-cols-2 gap-4">
+                                <FormField control={form.control} name="password" render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel className="flex items-center gap-2"><KeyRound/> Password</FormLabel>
+                                        <FormControl><Input type="password" placeholder="Enter password" {...field} value={field.value ?? ''} /></FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )} />
+                                <FormField control={form.control} name="confirmPassword" render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel className="flex items-center gap-2"><KeyRound/> Confirm Password</FormLabel>
+                                        <FormControl><Input type="password" placeholder="Confirm password" {...field} value={field.value ?? ''} /></FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )} />
+                            </div>
                         )}
-                    />
-                    {isPasswordProtected && (
-                        <div className="grid md:grid-cols-2 gap-4">
-                            <FormField control={form.control} name="password" render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel className="flex items-center gap-2"><KeyRound/> Password</FormLabel>
-                                    <FormControl><Input type="password" placeholder="Enter password" {...field} value={field.value ?? ''} /></FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )} />
-                            <FormField control={form.control} name="confirmPassword" render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel className="flex items-center gap-2"><KeyRound/> Confirm Password</FormLabel>
-                                    <FormControl><Input type="password" placeholder="Confirm password" {...field} value={field.value ?? ''} /></FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )} />
-                        </div>
-                    )}
-                </CardContent>
-            </Card>
+                    </CardContent>
+                </Card>
+            </motion.div>
 
-             <div className="flex justify-between gap-4 pt-6">
+             <motion.div variants={itemVariants} className="flex justify-between gap-4 pt-6">
                 <Button type="button" variant="outline" asChild>
                     <Link href="/admin/admission"><ArrowLeft /> Back</Link>
                 </Button>
@@ -362,8 +400,8 @@ export default function AddAdmissionFormPage() {
                     {isSubmitting ? <Loader2 className="animate-spin" /> : <Save />}
                     Create Form
                 </Button>
-            </div>
-        </form>
+            </motion.div>
+        </motion.form>
     </Form>
   );
 }
