@@ -41,6 +41,8 @@ export type AdmissionForm = {
     description: string;
     isDemoEnabled: boolean;
     demoTenureDays?: number;
+    isPasswordProtected?: boolean;
+    password?: string;
     totalFees: number;
     advanceFees: number;
     contactNo?: string;

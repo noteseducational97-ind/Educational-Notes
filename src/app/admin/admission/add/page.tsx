@@ -18,7 +18,7 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, ArrowLeft, Save, CreditCard, Phone, Wallet, User, Book, Sparkles } from 'lucide-react';
+import { Loader2, ArrowLeft, Save, CreditCard, Phone, Wallet, User, Book, Sparkles, KeyRound } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
@@ -58,6 +58,9 @@ const FormSchema = z.object({
   paymentApp: z.string().optional(),
   upiId: z.string().min(3, 'UPI ID is required.'),
   upiNumber: z.string().min(10, 'UPI number must be at least 10 digits.'),
+  isPasswordProtected: z.boolean().default(false),
+  password: z.string().optional(),
+  confirmPassword: z.string().optional(),
 }).refine(data => parseInt(data.yearTo) > parseInt(data.yearFrom), {
     message: "'To' year must be after 'From' year.",
     path: ['yearTo'],
@@ -69,6 +72,22 @@ const FormSchema = z.object({
 }, {
     message: "Demo tenure (in days) is required if demo is enabled.",
     path: ['demoTenureDays'],
+}).refine(data => {
+    if (data.isPasswordProtected) {
+        return data.password && data.password.length >= 6;
+    }
+    return true;
+}, {
+    message: "Password must be at least 6 characters long.",
+    path: ['password'],
+}).refine(data => {
+    if (data.isPasswordProtected) {
+        return data.password === data.confirmPassword;
+    }
+    return true;
+}, {
+    message: "Passwords do not match.",
+    path: ['confirmPassword'],
 });
 
 type FormValues = z.infer<typeof FormSchema>;
@@ -102,6 +121,9 @@ export default function AddAdmissionFormPage() {
         paymentApp: '',
         upiId: '',
         upiNumber: '',
+        isPasswordProtected: false,
+        password: '',
+        confirmPassword: '',
     }
   });
 
@@ -110,6 +132,7 @@ export default function AddAdmissionFormPage() {
   const isDemoEnabled = form.watch('isDemoEnabled');
   const contactNo = form.watch('contactNo');
   const paymentApp = form.watch('paymentApp');
+  const isPasswordProtected = form.watch('isPasswordProtected');
   
   useEffect(() => {
     if (teacherName && teachers.length > 0) {
@@ -187,7 +210,7 @@ export default function AddAdmissionFormPage() {
     setIsSubmitting(true);
     try {
       const year = `${values.yearFrom}-${values.yearTo.slice(-2)}`;
-      const { yearFrom, yearTo, ...rest } = values;
+      const { yearFrom, yearTo, confirmPassword, ...rest } = values;
 
       await addAdmissionForm({ ...rest, year });
 
@@ -343,6 +366,44 @@ export default function AddAdmissionFormPage() {
                         )}
                     </div>
                     
+                    <div className="border-t pt-6 space-y-4">
+                        <FormField
+                            control={form.control}
+                            name="isPasswordProtected"
+                            render={({ field }) => (
+                                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                                    <FormControl>
+                                        <Checkbox
+                                            checked={field.value}
+                                            onCheckedChange={field.onChange}
+                                        />
+                                    </FormControl>
+                                    <div className="space-y-1 leading-none">
+                                        <FormLabel>Enable Batch Password</FormLabel>
+                                    </div>
+                                </FormItem>
+                            )}
+                        />
+                        {isPasswordProtected && (
+                            <div className="grid md:grid-cols-2 gap-4">
+                                <FormField control={form.control} name="password" render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel className="flex items-center gap-2"><KeyRound/> Password</FormLabel>
+                                        <FormControl><Input type="password" placeholder="Enter password" {...field} value={field.value ?? ''} /></FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )} />
+                                <FormField control={form.control} name="confirmPassword" render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel className="flex items-center gap-2"><KeyRound/> Confirm Password</FormLabel>
+                                        <FormControl><Input type="password" placeholder="Confirm password" {...field} value={field.value ?? ''} /></FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )} />
+                            </div>
+                        )}
+                    </div>
+
                     <div className="border-t pt-6 space-y-4">
                         <h3 className="text-lg font-medium flex items-center gap-2"><CreditCard /> Payment Details</h3>
                         <div className="grid md:grid-cols-2 gap-4">
