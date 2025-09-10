@@ -1,4 +1,5 @@
 
+
 'use server';
 
 import { db } from '@/lib/firebase/server';
@@ -96,7 +97,7 @@ export async function deleteAdmissionForm(id: string) {
     revalidatePath('/admission');
 }
 
-export async function submitAdmissionApplication(formId: string, applicationData: any) {
+export async function submitAdmissionApplication(formId: string, applicationData: any): Promise<{formId: string, applicationId: string}> {
   if (!formId) {
     throw new Error('Form ID is required.');
   }
@@ -106,6 +107,7 @@ export async function submitAdmissionApplication(formId: string, applicationData
     submittedAt: new Date(),
     id: applicationRef.id,
   });
+  return { formId, applicationId: applicationRef.id };
 }
 
 export async function getApplicationsForForm(formId: string): Promise<AdmissionApplication[]> {
@@ -129,3 +131,21 @@ export async function getApplicationsForForm(formId: string): Promise<AdmissionA
         } as AdmissionApplication;
     });
 }
+
+export async function getApplicationById(formId: string, applicationId: string): Promise<AdmissionApplication | null> {
+    const doc = await db.collection('admissionForms').doc(formId).collection('applications').doc(applicationId).get();
+    if (!doc.exists) {
+        return null;
+    }
+    const data = doc.data();
+    if (!data) return null;
+
+    const submittedAt = (data.submittedAt as Timestamp)?.toDate().toISOString() || new Date().toISOString();
+    
+    return {
+        ...data,
+        id: doc.id,
+        submittedAt,
+    } as AdmissionApplication;
+}
+

@@ -1,7 +1,8 @@
 
+
 'use client';
 
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -69,6 +70,7 @@ type FormValues = z.infer<typeof formSchema>;
 
 export default function AdmissionFormPage() {
     const params = useParams();
+    const router = useRouter();
     const { toast } = useToast();
     const [loading, setLoading] = useState(false);
     const [pageLoading, setPageLoading] = useState(true);
@@ -170,13 +172,12 @@ export default function AdmissionFormPage() {
             // Note: In a real app, you would handle file uploads to a storage service.
             // For this prototype, we are just passing the data along.
             // The backend would need to be set up to handle the `paymentScreenshot` file.
-            await submitAdmissionApplication(formId, { ...values, paymentScreenshot: values.paymentScreenshot?.[0]?.name || null });
+            const result = await submitAdmissionApplication(formId, { ...values, paymentScreenshot: values.paymentScreenshot?.[0]?.name || null });
             toast({
                 title: 'Application Submitted!',
-                description: 'We have received your application and will contact you shortly.',
+                description: 'We have received your application. Redirecting to your receipt...',
             });
-            form.reset();
-            setExtractedDetails(null);
+            router.push(`/admission/receipt/${result.formId}/${result.applicationId}`);
         } catch (error: any) {
              toast({
                 variant: 'destructive',
@@ -528,3 +529,4 @@ export default function AdmissionFormPage() {
         </div>
     );
 }
+
