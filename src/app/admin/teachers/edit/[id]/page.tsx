@@ -7,13 +7,14 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft, Save, User, Book, Briefcase, FileText, GraduationCap, Loader2, Calendar, Phone, School } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import type { Teacher } from '../page';
+import type { Teacher } from '@/types';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
-
+import { getTeacherById } from '@/lib/firebase/teachers';
+import { updateTeacherAction } from '../../actions';
 
 const generateDescription = (name: string, subject: string, experience: string): string => {
     if (!name || !subject || !experience) return '';
@@ -26,21 +27,18 @@ export default function EditTeacherPage() {
     const params = useParams();
     const router = useRouter();
     const { toast } = useToast();
-    const teacherId = params.id;
+    const teacherId = params.id as string;
 
     const [teacher, setTeacher] = useState<Teacher | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        if (!teacherId || typeof window === 'undefined') return;
+        if (!teacherId) return;
         
-        const storedTeachersJSON = sessionStorage.getItem('managed-teachers');
-        if (storedTeachersJSON) {
-            const storedTeachers: Teacher[] = JSON.parse(storedTeachersJSON);
-            const foundTeacher = storedTeachers.find(t => t.id === teacherId);
-            if(foundTeacher) {
-                setTeacher(foundTeacher);
+        getTeacherById(teacherId).then(fetchedTeacher => {
+            if(fetchedTeacher) {
+                setTeacher(fetchedTeacher);
             } else {
                  toast({
                     variant: 'destructive',
@@ -48,8 +46,8 @@ export default function EditTeacherPage() {
                 });
                 router.push('/admin/teachers');
             }
-        }
-        setLoading(false);
+        }).finally(() => setLoading(false));
+
     }, [teacherId, router, toast]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -77,29 +75,26 @@ export default function EditTeacherPage() {
         }
     }, [teacher?.name, teacher?.subject, teacher?.experience]);
   
-    const handleSave = () => {
+    const handleSave = async () => {
         if (!teacher) return;
         setIsSubmitting(true);
-        try {
-            const storedTeachersJSON = sessionStorage.getItem('managed-teachers');
-            const storedTeachers: Teacher[] = storedTeachersJSON ? JSON.parse(storedTeachersJSON) : [];
-            const updatedTeachers = storedTeachers.map(t => t.id === teacher.id ? teacher : t);
-            sessionStorage.setItem('managed-teachers', JSON.stringify(updatedTeachers));
-
+        const { id, ...teacherData } = teacher;
+        const result = await updateTeacherAction(id, teacherData);
+        
+        if(result.success) {
             toast({
                 title: 'Teacher Updated!',
                 description: `"${teacher.name}" has been updated.`,
             });
             router.push('/admin/teachers');
-        } catch (error) {
+        } else {
              toast({
                 variant: 'destructive',
                 title: 'Error',
-                description: 'Could not update the teacher.',
+                description: result.error || 'Could not update the teacher.',
             });
-        } finally {
-            setIsSubmitting(false);
         }
+        setIsSubmitting(false);
     };
     
     if (loading) {

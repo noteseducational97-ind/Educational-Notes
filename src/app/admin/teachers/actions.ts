@@ -1,21 +1,37 @@
 
 'use server';
 
-// This is a placeholder for server-side actions to manage teachers.
-// In a real application, you would interact with your database here.
-
+import { addTeacher, deleteTeacher, updateTeacher } from '@/lib/firebase/teachers';
+import type { Teacher } from '@/types';
 import { revalidatePath } from 'next/cache';
 
-// Example: Add a new teacher
-export async function addTeacherAction(data: FormData) {
-  // const name = data.get('name');
-  // const subject = data.get('subject');
-  // ... database logic to add teacher
-  revalidatePath('/admin/teachers');
+export async function addTeacherAction(data: Omit<Teacher, 'id'>) {
+    try {
+        await addTeacher(data);
+        revalidatePath('/admin/teachers');
+        return { success: true };
+    } catch (error) {
+        return { success: false, error: 'Failed to add teacher.' };
+    }
 }
 
-// Example: Delete a teacher
-export async function deleteTeacherAction(teacherId: string) {
-  // ... database logic to delete teacher
-  revalidatePath('/admin/teachers');
+export async function updateTeacherAction(id: string, data: Omit<Teacher, 'id'>) {
+    try {
+        await updateTeacher(id, data);
+        revalidatePath('/admin/teachers');
+        revalidatePath(`/admin/teachers/edit/${id}`);
+        return { success: true };
+    } catch (error) {
+        return { success: false, error: 'Failed to update teacher.' };
+    }
+}
+
+export async function deleteTeacherAction(id: string) {
+    try {
+        await deleteTeacher(id);
+        revalidatePath('/admin/teachers');
+        return { success: true };
+    } catch (error) {
+        return { success: false, error: 'Failed to delete teacher.' };
+    }
 }

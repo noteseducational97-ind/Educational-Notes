@@ -10,9 +10,8 @@ import Link from 'next/link';
 
 import { useToast } from '@/hooks/use-toast';
 import { getAdmissionFormById, updateAdmissionForm } from '@/lib/firebase/admissions';
-import type { AdmissionForm } from '@/types';
-import type { Teacher } from '../../../teachers/page';
-import { initialTeachers } from '@/lib/data';
+import type { AdmissionForm, Teacher } from '@/types';
+import { getTeachers } from '@/lib/firebase/teachers';
 
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -86,11 +85,7 @@ export default function EditAdmissionFormPage() {
   const formId = Array.isArray(params.id) ? params.id[0] : params.id;
 
   useEffect(() => {
-    // In a real app, this would be a fetch call. For this prototype, we use sessionStorage or initial data.
-    if (typeof window !== 'undefined') {
-        const storedTeachers = sessionStorage.getItem('managed-teachers');
-        setTeachers(storedTeachers ? JSON.parse(storedTeachers) : initialTeachers);
-    }
+    getTeachers().then(setTeachers);
   }, []);
 
   const form = useForm<FormValues>({

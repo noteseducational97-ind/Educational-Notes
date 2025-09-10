@@ -21,43 +21,11 @@ import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { motion } from 'framer-motion';
+import { getTeachers } from '@/lib/firebase/teachers';
+import type { Teacher } from '@/types';
+import { deleteTeacherAction } from './actions';
+import LoadingSpinner from '@/components/shared/LoadingSpinner';
 
-export type Teacher = {
-  id: string;
-  name: string;
-  education: string;
-  className: string;
-  subject: string;
-  mobile?: string;
-  experience: string;
-  since: string;
-  description: string;
-};
-
-const initialTeachers: Teacher[] = [
-  {
-    id: 'pravin-khachane',
-    name: 'Pravin Khachane',
-    education: 'M.Sc., B.Ed.',
-    className: 'Class 11, Class 12, MHT-CET',
-    subject: 'Physics',
-    mobile: '9876543210',
-    experience: '30+ years',
-    since: '1994',
-    description: 'With over 30 years of teaching experience, Pravin Sir is a visionary in science education. His ability to simplify complex physics concepts has made him a beloved mentor.',
-  },
-  {
-    id: 'mangesh-shete',
-    name: 'Mangesh Shete',
-    education: 'M.Sc., B.Ed.',
-    className: 'Class 11, Class 12, NEET',
-    subject: 'Chemistry',
-    mobile: '9876543211',
-    experience: '30+ years',
-    since: '1994',
-    description: 'A master of chemistry, Mangesh Sir has spent three decades nurturing curiosity and confidence. His empathetic approach continues to inspire thousands.',
-  }
-];
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -82,40 +50,44 @@ const itemVariants = {
 
 export default function AdminTeachersPage() {
     const [teachers, setTeachers] = useState<Teacher[]>([]);
+    const [loading, setLoading] = useState(true);
     const { toast } = useToast();
 
     useEffect(() => {
-        if (typeof window !== 'undefined') {
-            const storedTeachers = sessionStorage.getItem('managed-teachers');
-            if (storedTeachers) {
-                setTeachers(JSON.parse(storedTeachers));
-            } else {
-                sessionStorage.setItem('managed-teachers', JSON.stringify(initialTeachers));
-                setTeachers(initialTeachers);
-            }
-        }
-    }, []);
-
-    const updateTeachers = (updatedTeachers: Teacher[]) => {
-        setTeachers(updatedTeachers);
-        if (typeof window !== 'undefined') {
-            sessionStorage.setItem('managed-teachers', JSON.stringify(updatedTeachers));
-        }
-    };
+        getTeachers()
+          .then(setTeachers)
+          .catch(err => {
+              toast({
+                  variant: 'destructive',
+                  title: 'Error loading teachers',
+                  description: err.message,
+              });
+          })
+          .finally(() => setLoading(false));
+    }, [toast]);
     
-    const handleDelete = (teacherId: string) => {
-        const teacher = teachers.find(t => t.id === teacherId);
-        if(teacher) {
-            const updatedTeachers = teachers.filter(t => t.id !== teacherId);
-            updateTeachers(updatedTeachers);
+    const handleDelete = async (teacherId: string, teacherName: string) => {
+        const result = await deleteTeacherAction(teacherId);
+        if(result.success) {
+            setTeachers(prev => prev.filter(t => t.id !== teacherId));
             toast({
                 title: 'Teacher Removed',
-                description: `"${teacher.name}" has been removed.`,
+                description: `"${teacherName}" has been removed.`,
+                variant: 'destructive',
+            });
+        } else {
+            toast({
+                title: 'Error',
+                description: result.error || 'Could not remove teacher.',
                 variant: 'destructive',
             });
         }
     };
     
+    if (loading) {
+        return <LoadingSpinner />;
+    }
+
     return (
         <>
             <div className="flex justify-between items-center mb-6">
@@ -176,7 +148,7 @@ export default function AdminTeachersPage() {
                                     </AlertDialogHeader>
                                     <AlertDialogFooter>
                                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                    <AlertDialogAction onClick={() => handleDelete(teacher.id)}>
+                                    <AlertDialogAction onClick={() => handleDelete(teacher.id, teacher.name)}>
                                         Yes, remove
                                     </AlertDialogAction>
                                     </AlertDialogFooter>

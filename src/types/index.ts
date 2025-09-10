@@ -68,3 +68,15 @@ export type AdmissionApplication = {
   paymentMode?: string;
   submittedAt: string; // ISO string
 };
+
+export type Teacher = {
+  id: string;
+  name: string;
+  education: string;
+  className: string;
+  subject: string;
+  mobile?: string;
+  experience: string;
+  since: string;
+  description: string;
+};

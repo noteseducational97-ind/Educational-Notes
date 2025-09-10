@@ -10,8 +10,8 @@ import Link from 'next/link';
 
 import { useToast } from '@/hooks/use-toast';
 import { addAdmissionForm } from '@/lib/firebase/admissions';
-import type { Teacher } from '../../teachers/page';
-import { initialTeachers } from '@/lib/data';
+import type { Teacher } from '@/types';
+import { getTeachers } from '@/lib/firebase/teachers';
 
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -79,11 +79,7 @@ export default function AddAdmissionFormPage() {
   const [teachers, setTeachers] = useState<Teacher[]>([]);
 
   useEffect(() => {
-    // In a real app, this would be a fetch call. For this prototype, we use sessionStorage or initial data.
-    if (typeof window !== 'undefined') {
-        const storedTeachers = sessionStorage.getItem('managed-teachers');
-        setTeachers(storedTeachers ? JSON.parse(storedTeachers) : initialTeachers);
-    }
+    getTeachers().then(setTeachers);
   }, []);
 
   const form = useForm<FormValues>({

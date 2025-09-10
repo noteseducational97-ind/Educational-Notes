@@ -12,11 +12,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Loader2, ArrowLeft, Save, User, Book, Briefcase, FileText, GraduationCap, Calendar, Phone, School } from 'lucide-react';
 import { Label } from '@/components/ui/label';
-import type { Teacher } from '../page';
-
-const createSlug = (name: string) => {
-  return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-};
+import type { Teacher } from '@/types';
+import { addTeacherAction } from '../actions';
 
 const generateDescription = (name: string, subject: string, experience: string): string => {
     if (!name || !subject || !experience) return '';
@@ -29,7 +26,7 @@ export default function AddTeacherPage() {
   const router = useRouter();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [teacher, setTeacher] = useState<Partial<Teacher>>({
+  const [teacher, setTeacher] = useState<Partial<Omit<Teacher, 'id'>>>({
     name: '',
     education: '',
     className: '',
@@ -65,7 +62,7 @@ export default function AddTeacherPage() {
       }
   }, [teacher.name, teacher.subject, teacher.experience]);
   
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!teacher.name || !teacher.education || !teacher.subject || !teacher.experience || !teacher.description || !teacher.since) {
         toast({
             variant: 'destructive',
@@ -76,32 +73,22 @@ export default function AddTeacherPage() {
     }
 
     setIsSubmitting(true);
-    try {
-        const storedTeachersJSON = sessionStorage.getItem('managed-teachers');
-        const storedTeachers = storedTeachersJSON ? JSON.parse(storedTeachersJSON) : [];
-        
-        const newTeacher: Teacher = {
-            id: createSlug(teacher.name),
-            ...teacher,
-        } as Teacher;
-
-        const updatedTeachers = [...storedTeachers, newTeacher];
-        sessionStorage.setItem('managed-teachers', JSON.stringify(updatedTeachers));
-
+    const result = await addTeacherAction(teacher as Omit<Teacher, 'id'>);
+    
+    if (result.success) {
         toast({
             title: 'Teacher Added!',
             description: `"${teacher.name}" has been added to the list.`,
         });
         router.push('/admin/teachers');
-    } catch (error) {
+    } else {
         toast({
             variant: 'destructive',
             title: 'Error',
-            description: 'Could not save the new teacher.',
+            description: result.error || 'Could not save the new teacher.',
         });
-    } finally {
-        setIsSubmitting(false);
     }
+    setIsSubmitting(false);
   };
 
   return (
