@@ -32,7 +32,7 @@ const monthOptions = [
 ];
 
 const paymentAppOptions = ['PhonePe', 'Google Pay', 'Bhim Upi', 'Payz'];
-const studyOptions = ['Science (HSC)', 'MHT-CET', 'NEET', 'JEE', 'Commerce (HSC)'];
+const studyOptions = ['HSC', 'MHT-CET'];
 
 
 const upiHandles: { [key: string]: string } = {
