@@ -197,35 +197,48 @@ export async function getApplicationById(formId: string, applicationId: string):
 }
 
 export async function getApplicationsForUser(userId: string): Promise<{ form: AdmissionForm; application: AdmissionApplication }[]> {
-    const applicationsSnapshot = await db.collectionGroup('applications').where('userId', '==', userId).get();
-    if (applicationsSnapshot.empty) {
+    try {
+        const applicationsSnapshot = await db.collectionGroup('applications').where('userId', '==', userId).get();
+        if (applicationsSnapshot.empty) {
+            return [];
+        }
+
+        const results = await Promise.all(applicationsSnapshot.docs.map(async (doc) => {
+            const applicationData = doc.data() as Omit<AdmissionApplication, 'id' | 'submittedAt'>;
+            const submittedAt = (doc.createTime as Timestamp)?.toDate().toISOString() || new Date().toISOString();
+            const application = { ...applicationData, id: doc.id, submittedAt } as AdmissionApplication;
+
+            const formRef = doc.ref.parent.parent;
+            if (!formRef) return null;
+
+            const formDoc = await formRef.get();
+            if (!formDoc.exists) return null;
+
+            const formData = formDoc.data() as Omit<AdmissionForm, 'id' | 'createdAt' | 'updatedAt'>;
+            const formCreatedAt = (formDoc.createTime as Timestamp)?.toDate().toISOString() || new Date().toISOString();
+            const formUpdatedAt = (formDoc.updateTime as Timestamp)?.toDate().toISOString() || undefined;
+
+            const form = { 
+                ...formData, 
+                id: formDoc.id, 
+                createdAt: formCreatedAt, 
+                updatedAt: formUpdatedAt 
+            } as AdmissionForm;
+
+            return { form, application };
+        }));
+
+        return results.filter((result): result is { form: AdmissionForm; application: AdmissionApplication } => result !== null);
+    } catch (error: any) {
+        if (error.code === 'FAILED_PRECONDITION') {
+            console.error(
+                'Firestore query failed. This is likely due to a missing index. ' +
+                'Please check the Firebase console for a link to create the required index. ' +
+                'The query requiring an index is a collectionGroup query on "applications" with a filter on "userId".'
+            );
+        } else {
+            console.error('Failed to fetch user applications:', error);
+        }
         return [];
     }
-
-    const results = await Promise.all(applicationsSnapshot.docs.map(async (doc) => {
-        const applicationData = doc.data() as Omit<AdmissionApplication, 'id' | 'submittedAt'>;
-        const submittedAt = (doc.createTime as Timestamp)?.toDate().toISOString() || new Date().toISOString();
-        const application = { ...applicationData, id: doc.id, submittedAt } as AdmissionApplication;
-
-        const formRef = doc.ref.parent.parent;
-        if (!formRef) return null;
-
-        const formDoc = await formRef.get();
-        if (!formDoc.exists) return null;
-
-        const formData = formDoc.data() as Omit<AdmissionForm, 'id' | 'createdAt' | 'updatedAt'>;
-        const formCreatedAt = (formDoc.createTime as Timestamp)?.toDate().toISOString() || new Date().toISOString();
-        const formUpdatedAt = (formDoc.updateTime as Timestamp)?.toDate().toISOString() || undefined;
-
-        const form = { 
-            ...formData, 
-            id: formDoc.id, 
-            createdAt: formCreatedAt, 
-            updatedAt: formUpdatedAt 
-        } as AdmissionForm;
-
-        return { form, application };
-    }));
-
-    return results.filter((result): result is { form: AdmissionForm; application: AdmissionApplication } => result !== null);
 }
