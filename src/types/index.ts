@@ -35,6 +35,7 @@ export type AdmissionForm = {
     title: string;
     teacherName: string;
     className: string;
+    study: string;
     subject: string;
     year: string;
     startMonth: string;
@@ -90,3 +91,5 @@ export type Teacher = {
   createdAt: string; // Should be an ISO string
   updatedAt?: string;
 };
+
+    

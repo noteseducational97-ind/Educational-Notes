@@ -17,7 +17,7 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, ArrowLeft, Save, CreditCard, Phone, Wallet, User, Book, Sparkles, KeyRound, Shield, Image as ImageIcon } from 'lucide-react';
+import { Loader2, ArrowLeft, Save, CreditCard, Phone, Wallet, User, Book, Sparkles, KeyRound, Shield, Image as ImageIcon, BookOpen } from 'lucide-react';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -33,6 +33,8 @@ const monthOptions = [
 ];
 
 const paymentAppOptions = ['PhonePe', 'Google Pay', 'Bhim Upi'];
+const studyOptions = ['Science (HSC)', 'MHT-CET', 'NEET', 'JEE', 'Commerce (HSC)'];
+
 
 const upiHandles: { [key: string]: string } = {
     'PhonePe': '@ybl',
@@ -44,6 +46,7 @@ const upiHandles: { [key: string]: string } = {
 const FormSchema = z.object({
   title: z.string().min(3, 'Title is required.'),
   teacherName: z.string().min(1, 'Please select a teacher.'),
+  study: z.string().min(1, 'Study is required.'),
   subject: z.string().min(1, 'Subject is required.'),
   className: z.string().min(1, 'Class name is required.'),
   startMonth: z.string().min(1, 'Start month is required.'),
@@ -105,6 +108,7 @@ export default function EditAdmissionFormPage() {
     defaultValues: {
         title: '',
         teacherName: '',
+        study: '',
         className: '',
         yearFrom: currentYear.toString(),
         imageUrl: '',
@@ -264,14 +268,30 @@ export default function EditAdmissionFormPage() {
                             </FormItem>
                         )} />
                     </div>
-                     <div className="grid md:grid-cols-2 gap-4">
-                        <FormField control={form.control} name="subject" render={({ field }) => (
+                    <div className="grid md:grid-cols-2 gap-4">
+                         <FormField control={form.control} name="study" render={({ field }) => (
+                            <FormItem>
+                                <FormLabel className="flex items-center gap-2"><BookOpen/> Study / Exam</FormLabel>
+                                <Select onValueChange={field.onChange} value={field.value}>
+                                    <FormControl><SelectTrigger><SelectValue placeholder="Select a study type" /></SelectTrigger></FormControl>
+                                    <SelectContent>
+                                        {studyOptions.map(option => (
+                                            <SelectItem key={option} value={option}>{option}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                <FormMessage />
+                            </FormItem>
+                        )} />
+                         <FormField control={form.control} name="subject" render={({ field }) => (
                              <FormItem>
                                 <FormLabel className="flex items-center gap-2"><Book /> Subject</FormLabel>
                                 <FormControl><Input {...field} value={field.value || ''} /></FormControl>
                                 <FormMessage />
                             </FormItem>
                         )} />
+                    </div>
+                     <div className="grid md:grid-cols-2 gap-4">
                         <FormField control={form.control} name="className" render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Class Name</FormLabel>
@@ -423,3 +443,5 @@ export default function EditAdmissionFormPage() {
     </Form>
   );
 }
+
+    
