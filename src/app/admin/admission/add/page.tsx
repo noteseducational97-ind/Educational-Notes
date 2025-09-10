@@ -17,7 +17,7 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, ArrowLeft, Save, CreditCard, Phone, Wallet } from 'lucide-react';
+import { Loader2, ArrowLeft, Save, CreditCard, Phone, Wallet, User, Book } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
@@ -42,8 +42,9 @@ const upiHandles: { [key: string]: string } = {
 
 const FormSchema = z.object({
   title: z.string().min(3, 'Title is required.'),
-  className: z.string().min(1, 'Class name is required.'),
+  teacherName: z.string().min(1, 'Please select a teacher.'),
   subject: z.enum(['Physics', 'Chemistry']),
+  className: z.string().min(1, 'Class name is required.'),
   startMonth: z.string().min(1, 'Start month is required.'),
   yearFrom: z.string().min(4, 'From year is required.'),
   yearTo: z.string().min(4, 'To year is required.'),
@@ -86,6 +87,7 @@ export default function AddAdmissionFormPage() {
     resolver: zodResolver(FormSchema),
     defaultValues: {
         title: '',
+        teacherName: '',
         className: '',
         yearFrom: currentYear.toString(),
         yearTo: (currentYear + 2).toString(),
@@ -102,22 +104,27 @@ export default function AddAdmissionFormPage() {
   });
 
   const yearFrom = form.watch('yearFrom');
+  const teacherName = form.watch('teacherName');
   const className = form.watch('className');
-  const subject = form.watch('subject');
   const isDemoEnabled = form.watch('isDemoEnabled');
   const contactNo = form.watch('contactNo');
   const paymentApp = form.watch('paymentApp');
   
-  const generateDescription = (className: string, yearFrom: string, subject?: 'Physics' | 'Chemistry') => {
-    if (!subject) return '';
-    let teacher = "our expert teacher";
-    if(subject === 'Physics') {
-        teacher = "Pravin Sir";
-    } else if (subject === 'Chemistry') {
-        teacher = "Mangesh Sir";
-    }
-    return `Admission for ${className} (${yearFrom}) with ${teacher}. Join us to excel in your studies.`;
+  const generateDescription = (className: string, yearFrom: string, teacherName?: string) => {
+    if (!className || !yearFrom || !teacherName) return '';
+    return `Admission for ${className} (${yearFrom}) with ${teacherName}. Join us to excel in your studies.`;
   };
+
+  useEffect(() => {
+    if (teacherName && teachers.length > 0) {
+        const selectedTeacher = teachers.find(t => t.name === teacherName);
+        if (selectedTeacher) {
+            form.setValue('subject', selectedTeacher.subject as 'Physics' | 'Chemistry', { shouldValidate: true });
+            form.setValue('className', selectedTeacher.className, { shouldValidate: true });
+            form.setValue('contactNo', selectedTeacher.mobile || '', { shouldValidate: true });
+        }
+    }
+  }, [teacherName, teachers, form]);
   
   useEffect(() => {
     if (yearFrom) {
@@ -127,27 +134,13 @@ export default function AddAdmissionFormPage() {
   }, [yearFrom, form]);
 
   useEffect(() => {
-    if(className && yearFrom && subject) {
-        const newDescription = generateDescription(className, yearFrom, subject);
+    if(className && yearFrom && teacherName) {
+        const newDescription = generateDescription(className, yearFrom, teacherName);
         form.setValue('description', newDescription);
     }
-  }, [className, yearFrom, subject, form])
+  }, [className, yearFrom, teacherName, form])
 
  useEffect(() => {
-    if (subject && teachers.length > 0) {
-        const matchingTeacher = teachers.find(t => t.subject === subject);
-        if (matchingTeacher) {
-            if (matchingTeacher.className) {
-                form.setValue('className', matchingTeacher.className, { shouldValidate: true });
-            }
-            if (matchingTeacher.mobile) {
-                form.setValue('contactNo', matchingTeacher.mobile, { shouldValidate: true });
-            }
-        }
-    }
-  }, [subject, teachers, form]);
-  
-  useEffect(() => {
     if (contactNo) {
         form.setValue('upiNumber', contactNo, { shouldValidate: true });
     }
@@ -201,27 +194,37 @@ export default function AddAdmissionFormPage() {
                                 <FormMessage />
                             </FormItem>
                         )} />
-                         <FormField control={form.control} name="subject" render={({ field }) => (
-                             <FormItem>
-                                <FormLabel>Subject</FormLabel>
+                        <FormField control={form.control} name="teacherName" render={({ field }) => (
+                            <FormItem>
+                                <FormLabel className="flex items-center gap-2"><User /> Teacher</FormLabel>
                                 <Select onValueChange={field.onChange} value={field.value}>
-                                    <FormControl><SelectTrigger><SelectValue placeholder="Select subject" /></SelectTrigger></FormControl>
+                                    <FormControl><SelectTrigger><SelectValue placeholder="Select teacher" /></SelectTrigger></FormControl>
                                     <SelectContent>
-                                        <SelectItem value="Physics">Physics</SelectItem>
-                                        <SelectItem value="Chemistry">Chemistry</SelectItem>
+                                        {teachers.map(teacher => (
+                                            <SelectItem key={teacher.id} value={teacher.name}>{teacher.name}</SelectItem>
+                                        ))}
                                     </SelectContent>
                                 </Select>
                                 <FormMessage />
                             </FormItem>
                         )} />
                     </div>
-                     <FormField control={form.control} name="className" render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Class Name</FormLabel>
-                            <FormControl><Input placeholder="e.g. Class 11 / MHT-CET" {...field} value={field.value || ''} /></FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )} />
+                     <div className="grid md:grid-cols-2 gap-4">
+                        <FormField control={form.control} name="subject" render={({ field }) => (
+                             <FormItem>
+                                <FormLabel className="flex items-center gap-2"><Book /> Subject</FormLabel>
+                                <FormControl><Input {...field} value={field.value || ''} disabled /></FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )} />
+                        <FormField control={form.control} name="className" render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Class Name</FormLabel>
+                                <FormControl><Input placeholder="e.g. Class 11 / MHT-CET" {...field} value={field.value || ''} disabled/></FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )} />
+                    </div>
                      <div className="grid md:grid-cols-3 gap-4">
                         <FormField control={form.control} name="startMonth" render={({ field }) => (
                             <FormItem>

@@ -33,6 +33,7 @@ export type Chat = {
 export type AdmissionForm = {
     id: string;
     title: string;
+    teacherName: string;
     className: string;
     subject: 'Physics' | 'Chemistry';
     year: string;
