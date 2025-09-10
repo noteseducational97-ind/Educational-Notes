@@ -3,7 +3,7 @@
 
 import { useEffect, useState } from 'react';
 import Header from '@/components/layout/Header';
-import { Card, CardDescription, CardTitle } from '@/components/ui/card';
+import { Card, CardDescription, CardTitle, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Info, Calendar } from 'lucide-react';
 import Link from 'next/link';
@@ -11,6 +11,7 @@ import { getAdmissionForms } from '@/lib/firebase/admissions';
 import type { AdmissionForm } from '@/types';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -72,21 +73,30 @@ export default function AdmissionPage() {
                     {admissionForms.map((form) => (
                         <motion.div variants={itemVariants} key={form.id}>
                             <Card 
-                                className="flex flex-col justify-between bg-secondary/30 p-6 h-full transition-all hover:border-primary/50 hover:shadow-xl"
+                                className="flex flex-col justify-between bg-secondary/30 h-full transition-all hover:border-primary/50 hover:shadow-xl overflow-hidden"
                             >
-                                <div>
+                                <CardHeader className="p-0">
+                                    {form.imageUrl && (
+                                        <div className="aspect-video relative w-full">
+                                            <Image src={form.imageUrl} alt={form.title} layout="fill" objectFit="cover" />
+                                        </div>
+                                    )}
+                                </CardHeader>
+                                <CardContent className="p-6 flex-grow">
                                     <CardTitle className="text-2xl">{form.title}</CardTitle>
                                     <CardDescription className="mt-2">{form.description}</CardDescription>
                                     <div className="mt-4 flex items-center text-sm text-muted-foreground">
                                         <Calendar className="h-4 w-4 mr-2" />
                                         <span>Starts: {form.startMonth} {form.year}</span>
                                     </div>
+                                </CardContent>
+                                <div className="p-6 pt-0">
+                                    <Button asChild className="w-full mt-6">
+                                        <Link href={`/admission/${form.id}`}>
+                                            Apply Now <ArrowRight className="ml-2 h-4 w-4" />
+                                        </Link>
+                                    </Button>
                                 </div>
-                                <Button asChild className="w-full mt-6">
-                                <Link href={`/admission/${form.id}`}>
-                                    Apply Now <ArrowRight className="ml-2 h-4 w-4" />
-                                </Link>
-                                </Button>
                             </Card>
                         </motion.div>
                     ))}

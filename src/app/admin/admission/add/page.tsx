@@ -18,7 +18,7 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, ArrowLeft, Save, CreditCard, Phone, Wallet, User, Book, Sparkles, KeyRound, Shield } from 'lucide-react';
+import { Loader2, ArrowLeft, Save, CreditCard, Phone, Wallet, User, Book, Sparkles, KeyRound, Shield, Image as ImageIcon } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
@@ -50,6 +50,7 @@ const FormSchema = z.object({
   yearFrom: z.string().min(4, 'From year is required.'),
   yearTo: z.string().min(4, 'To year is required.'),
   description: z.string().min(100, 'Description must be at least 100 characters.'),
+  imageUrl: z.string().url('Please enter a valid image URL.').optional(),
   totalFees: z.coerce.number().min(0, 'Total fees must be a positive number.'),
   advanceFees: z.coerce.number().min(0, 'Advance fees must be a positive number.'),
   contactNo: z.string().optional(),
@@ -103,6 +104,7 @@ export default function AddAdmissionFormPage() {
         yearFrom: currentYear.toString(),
         yearTo: (currentYear + 2).toString(),
         description: '',
+        imageUrl: '',
         totalFees: undefined,
         advanceFees: undefined,
         contactNo: '',
@@ -226,6 +228,13 @@ export default function AddAdmissionFormPage() {
                     <CardDescription>Fill out the details to create a new admission process.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
+                    <FormField control={form.control} name="imageUrl" render={({ field }) => (
+                        <FormItem>
+                            <FormLabel className="flex items-center gap-2"><ImageIcon/> Image URL</FormLabel>
+                            <FormControl><Input placeholder="https://example.com/image.png or a Google Drive link" {...field} value={field.value ?? ''} /></FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )} />
                     <div className="grid md:grid-cols-2 gap-4">
                         <FormField control={form.control} name="title" render={({ field }) => (
                             <FormItem>
@@ -431,6 +440,3 @@ export default function AddAdmissionFormPage() {
     </Form>
   );
 }
-
-    
-    

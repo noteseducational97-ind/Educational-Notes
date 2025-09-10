@@ -39,6 +39,7 @@ export type AdmissionForm = {
     year: string;
     startMonth: string;
     description: string;
+    imageUrl?: string;
     isPasswordProtected?: boolean;
     password?: string;
     totalFees: number;

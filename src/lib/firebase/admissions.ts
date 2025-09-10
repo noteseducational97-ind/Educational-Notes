@@ -7,19 +7,23 @@ import { revalidatePath } from 'next/cache';
 import { Timestamp } from 'firebase-admin/firestore';
 
 
-const createSlug = (title: string, year: string) => {
-  const yearSuffix = year.replace(/[^0-9]/g, '');
-  return title
-    .toLowerCase()
-    .replace(/ /g, '-')
-    .replace(/[^\w-]+/g, '') + `-${yearSuffix}`;
+const transformGoogleDriveUrl = (url?: string): string | undefined => {
+    if (!url) return undefined;
+    if (url.includes("drive.google.com/file/d/")) {
+        const fileId = url.split('/d/')[1].split('/')[0];
+        return `https://lh3.googleusercontent.com/d/${fileId}`;
+    }
+    return url;
 };
 
 export async function addAdmissionForm(data: Omit<AdmissionForm, 'id' | 'createdAt'>) {
     const docRef = db.collection('admissionForms').doc();
     
+    const transformedImageUrl = transformGoogleDriveUrl(data.imageUrl);
+
     await docRef.set({
         ...data,
+        imageUrl: transformedImageUrl,
         id: docRef.id,
         createdAt: new Date(),
     });
@@ -67,8 +71,10 @@ export async function getAdmissionFormById(id: string): Promise<AdmissionForm | 
 }
 
 export async function updateAdmissionForm(id: string, data: Partial<Omit<AdmissionForm, 'id' | 'createdAt'>>) {
+    const transformedImageUrl = transformGoogleDriveUrl(data.imageUrl);
     await db.collection('admissionForms').doc(id).update({
         ...data,
+        imageUrl: transformedImageUrl,
         updatedAt: new Date(),
     });
     revalidatePath(`/admin/admission/edit/${id}`);
