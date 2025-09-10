@@ -33,7 +33,7 @@ const monthOptions = [
 ];
 
 const paymentAppOptions = ['PhonePe', 'Google Pay', 'Bhim Upi'];
-const studyOptions = ['HSC', 'MHT-CET'];
+const studyOptions = ['Science(HSC)', 'MHT-CET'];
 
 
 const upiHandles: { [key: string]: string } = {
@@ -443,5 +443,7 @@ export default function EditAdmissionFormPage() {
     </Form>
   );
 }
+
+    
 
     
