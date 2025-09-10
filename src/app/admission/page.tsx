@@ -3,16 +3,18 @@
 
 import { useEffect, useState } from 'react';
 import Header from '@/components/layout/Header';
-import { Card, CardDescription, CardTitle, CardContent, CardHeader } from '@/components/ui/card';
+import { Card, CardDescription, CardTitle, CardContent, CardHeader, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Info, Calendar, Book } from 'lucide-react';
+import { ArrowRight, Info, Calendar, Book, Receipt } from 'lucide-react';
 import Link from 'next/link';
-import { getAdmissionForms } from '@/lib/firebase/admissions';
-import type { AdmissionForm } from '@/types';
+import { getAdmissionForms, getApplicationsForUser } from '@/lib/firebase/admissions';
+import type { AdmissionForm, AdmissionApplication } from '@/types';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
+import { useAuth } from '@/hooks/use-auth';
+import { format } from 'date-fns';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -36,16 +38,27 @@ const itemVariants = {
 };
 
 export default function AdmissionPage() {
+    const { user, loading: authLoading } = useAuth();
     const [admissionForms, setAdmissionForms] = useState<AdmissionForm[]>([]);
+    const [joinedBatches, setJoinedBatches] = useState<{ form: AdmissionForm; application: AdmissionApplication }[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        getAdmissionForms()
-            .then(setAdmissionForms)
-            .finally(() => setLoading(false));
-    }, []);
+        const fetchData = async () => {
+            setLoading(true);
+            const forms = await getAdmissionForms();
+            setAdmissionForms(forms);
 
-    if (loading) {
+            if (user) {
+                const batches = await getApplicationsForUser(user.uid);
+                setJoinedBatches(batches);
+            }
+            setLoading(false);
+        };
+        fetchData();
+    }, [user]);
+
+    if (authLoading || loading) {
         return <LoadingSpinner />;
     }
 
@@ -66,6 +79,32 @@ export default function AdmissionPage() {
                 </p>
             </motion.div>
             
+            {user && joinedBatches.length > 0 && (
+                <motion.div variants={itemVariants} className="mb-12">
+                    <h2 className="text-3xl font-bold tracking-tight text-center mb-6">My Joined Batches</h2>
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                        {joinedBatches.map(({ form, application }) => (
+                            <Card key={form.id} className="flex flex-col justify-between bg-secondary/30">
+                                <CardHeader>
+                                    <CardTitle>{form.className}</CardTitle>
+                                    <CardDescription>Applied on: {format(new Date(application.submittedAt), 'PPP')}</CardDescription>
+                                </CardHeader>
+                                <CardContent>
+                                    {/* Description removed as requested */}
+                                </CardContent>
+                                <CardFooter>
+                                    <Button asChild className="w-full">
+                                        <Link href={`/admission/receipt/${form.id}/${application.id}`}>
+                                            View Receipt <ArrowRight className="ml-2 h-4 w-4" />
+                                        </Link>
+                                    </Button>
+                                </CardFooter>
+                            </Card>
+                        ))}
+                    </div>
+                </motion.div>
+            )}
+
             {admissionForms.length > 0 ? (
                  <motion.div 
                     variants={containerVariants}
