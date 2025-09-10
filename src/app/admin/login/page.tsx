@@ -12,7 +12,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Loader2, Shield, ArrowLeft } from 'lucide-react';
 
 const adminUsers: { [key: string]: string } = {
-    'admin': 'noteseducational97@gmail.com',
+    'admin': 'example@gmail.com',
 };
 
 const GoogleIcon = () => (
