@@ -47,7 +47,6 @@ const FormSchema = z.object({
   className: z.string().min(1, 'Class name is required.'),
   startMonth: z.string().min(1, 'Start month is required.'),
   yearFrom: z.string().min(4, 'From year is required.'),
-  yearTo: z.string().min(4, 'To year is required.'),
   imageUrl: z.string().url('Please enter a valid image URL.').optional(),
   totalFees: z.coerce.number().min(0, 'Total fees must be a positive number.'),
   advanceFees: z.coerce.number().min(0, 'Advance fees must be a positive number.'),
@@ -58,9 +57,6 @@ const FormSchema = z.object({
   isPasswordProtected: z.boolean().default(false),
   password: z.string().optional(),
   confirmPassword: z.string().optional(),
-}).refine(data => parseInt(data.yearTo) > parseInt(data.yearFrom), {
-    message: "'To' year must be after 'From' year.",
-    path: ['yearTo'],
 }).refine(data => {
     if (data.isPasswordProtected) {
         return data.password && data.password.length >= 6;
@@ -103,7 +99,6 @@ export default function AddAdmissionFormPage() {
         teacherName: '',
         className: '',
         yearFrom: currentYear.toString(),
-        yearTo: (currentYear + 2).toString(),
         imageUrl: '',
         totalFees: undefined,
         advanceFees: undefined,
@@ -134,14 +129,7 @@ export default function AddAdmissionFormPage() {
     }
   }, [teacherName, teachers, form]);
   
-  useEffect(() => {
-    if (yearFrom) {
-      const toYearValue = (parseInt(yearFrom, 10) + 2).toString();
-      form.setValue('yearTo', toYearValue);
-    }
-  }, [yearFrom, form]);
-
-
+  
  useEffect(() => {
     if (contactNo) {
         form.setValue('upiNumber', contactNo, { shouldValidate: true });
@@ -158,9 +146,10 @@ export default function AddAdmissionFormPage() {
   async function onSubmit(values: FormValues) {
     setIsSubmitting(true);
     try {
-      const year = `${values.yearFrom}-${values.yearTo.slice(-2)}`;
+      const yearTo = (parseInt(values.yearFrom, 10) + 2).toString();
+      const year = `${values.yearFrom}-${yearTo.slice(-2)}`;
       const description = generateDescription(values.className, values.teacherName, values.subject, year);
-      const { yearFrom, yearTo, confirmPassword, ...rest } = values;
+      const { yearFrom, confirmPassword, ...rest } = values;
 
       await addAdmissionForm({ ...rest, year, description });
 
@@ -235,7 +224,7 @@ export default function AddAdmissionFormPage() {
                             </FormItem>
                         )} />
                     </div>
-                     <div className="grid md:grid-cols-3 gap-4">
+                     <div className="grid md:grid-cols-2 gap-4">
                         <FormField control={form.control} name="startMonth" render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Start Month</FormLabel>
@@ -255,18 +244,6 @@ export default function AddAdmissionFormPage() {
                                     <FormControl><SelectTrigger><SelectValue placeholder="From" /></SelectTrigger></FormControl>
                                     <SelectContent>
                                         {yearOptions.map(year => <SelectItem key={year} value={year}>{year}</SelectItem>)}
-                                    </SelectContent>
-                                </Select>
-                                <FormMessage />
-                            </FormItem>
-                        )} />
-                        <FormField control={form.control} name="yearTo" render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>To Year</FormLabel>
-                                <Select onValueChange={field.onChange} value={field.value}>
-                                    <FormControl><SelectTrigger><SelectValue placeholder="To" /></SelectTrigger></FormControl>
-                                    <SelectContent>
-                                      {yearOptions.map(year => <SelectItem key={year} value={year}>{year}</SelectItem>)}
                                     </SelectContent>
                                 </Select>
                                 <FormMessage />
