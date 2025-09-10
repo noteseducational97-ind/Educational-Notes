@@ -240,22 +240,6 @@ export default function AddAdmissionFormPage() {
                                     <FormMessage />
                                 </FormItem>
                             )} />
-                             <FormField control={form.control} name="className" render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Class Name</FormLabel>
-                                    <FormControl><Input placeholder="e.g. Class 11 / MHT-CET" {...field} value={field.value || ''} /></FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )} />
-                        </div>
-                        <div className="grid md:grid-cols-2 gap-4">
-                             <FormField control={form.control} name="subject" render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel className="flex items-center gap-2"><Book /> Subject</FormLabel>
-                                    <FormControl><Input {...field} value={field.value || ''} /></FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )} />
                             <FormField control={form.control} name="teacherName" render={({ field }) => (
                                 <FormItem>
                                     <FormLabel className="flex items-center gap-2"><User /> Teacher</FormLabel>
@@ -267,6 +251,22 @@ export default function AddAdmissionFormPage() {
                                             ))}
                                         </SelectContent>
                                     </Select>
+                                    <FormMessage />
+                                </FormItem>
+                            )} />
+                        </div>
+                        <div className="grid md:grid-cols-2 gap-4">
+                             <FormField control={form.control} name="className" render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Class Name</FormLabel>
+                                    <FormControl><Input placeholder="e.g. Class 11 / MHT-CET" {...field} value={field.value || ''} /></FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )} />
+                             <FormField control={form.control} name="subject" render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel className="flex items-center gap-2"><Book /> Subject</FormLabel>
+                                    <FormControl><Input {...field} value={field.value || ''} /></FormControl>
                                     <FormMessage />
                                 </FormItem>
                             )} />
@@ -423,11 +423,5 @@ export default function AddAdmissionFormPage() {
     </Form>
   );
 }
-
-    
-
-    
-
-    
 
     
