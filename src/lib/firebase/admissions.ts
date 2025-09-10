@@ -6,6 +6,7 @@ import { db } from '@/lib/firebase/server';
 import type { AdmissionForm, AdmissionApplication } from '@/types';
 import { revalidatePath } from 'next/cache';
 import { Timestamp } from 'firebase-admin/firestore';
+import { sendSms } from '@/lib/sms';
 
 
 const transformGoogleDriveUrl = (url?: string): string | undefined => {
@@ -117,6 +118,11 @@ export async function submitAdmissionApplication(formId: string, applicationData
     throw new Error('Form ID is required.');
   }
 
+  const formDetails = await getAdmissionFormById(formId);
+  if (!formDetails) {
+    throw new Error('Admission form not found.');
+  }
+
   let screenshotUrl: string | null = null;
   // This part is tricky without a proper file object from the client.
   // When using server actions with file uploads, the file object would be available here.
@@ -136,6 +142,18 @@ export async function submitAdmissionApplication(formId: string, applicationData
     submittedAt: new Date(),
     id: applicationRef.id,
   });
+
+  // Send notification to teacher
+  if (formDetails.contactNo) {
+      try {
+          const message = `New admission for ${formDetails.title}: ${applicationData.fullName}.`;
+          await sendSms(formDetails.contactNo, message);
+      } catch (error) {
+          // Log the error but don't fail the entire submission if SMS fails
+          console.error(`Failed to send SMS for application ${applicationRef.id}:`, error);
+      }
+  }
+
   return { formId, applicationId: applicationRef.id };
 }
 
