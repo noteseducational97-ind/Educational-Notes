@@ -11,6 +11,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Download } from 'lucide-react';
 import Link from 'next/link';
+import PasswordPrompt from '@/components/auth/PasswordPrompt';
 
 export default function AdmissionApplicationsPage() {
   const params = useParams();
@@ -20,6 +21,7 @@ export default function AdmissionApplicationsPage() {
   const [formDetails, setFormDetails] = useState<AdmissionForm | null>(null);
   const [applications, setApplications] = useState<AdmissionApplication[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     if (!formId) return;
@@ -27,10 +29,7 @@ export default function AdmissionApplicationsPage() {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const [form, apps] = await Promise.all([
-          getAdmissionFormById(formId),
-          getApplicationsForForm(formId)
-        ]);
+        const form = await getAdmissionFormById(formId);
         
         if (!form) {
           router.push('/admin/admission');
@@ -38,7 +37,19 @@ export default function AdmissionApplicationsPage() {
         }
 
         setFormDetails(form);
-        setApplications(apps);
+
+        if (!form.isPasswordProtected) {
+          setIsAuthenticated(true);
+          const apps = await getApplicationsForForm(formId);
+          setApplications(apps);
+        } else {
+            const storedPassword = sessionStorage.getItem(`admission-password-${formId}`);
+            if (storedPassword === form.password) {
+                setIsAuthenticated(true);
+                const apps = await getApplicationsForForm(formId);
+                setApplications(apps);
+            }
+        }
       } catch (error) {
         console.error("Failed to fetch admission data:", error);
       } finally {
@@ -48,6 +59,18 @@ export default function AdmissionApplicationsPage() {
 
     fetchData();
   }, [formId, router]);
+  
+  const handleAuthSuccess = async () => {
+      setIsAuthenticated(true);
+      if(!formId) return;
+      setLoading(true);
+      try {
+        const apps = await getApplicationsForForm(formId);
+        setApplications(apps);
+      } finally {
+          setLoading(false);
+      }
+  }
 
   const handleExportCSV = () => {
     if (!applications.length || !formDetails) return;
@@ -87,7 +110,7 @@ export default function AdmissionApplicationsPage() {
   };
 
 
-  if (loading) {
+  if (loading && !isAuthenticated) {
     return <LoadingSpinner />;
   }
 
@@ -99,7 +122,7 @@ export default function AdmissionApplicationsPage() {
           <p className="text-muted-foreground">List of all submitted applications for this batch.</p>
         </div>
         <div className="flex gap-2 w-full sm:w-auto">
-            <Button onClick={handleExportCSV} disabled={applications.length === 0} className="flex-1 sm:flex-none">
+            <Button onClick={handleExportCSV} disabled={applications.length === 0 || !isAuthenticated} className="flex-1 sm:flex-none">
                 <Download className="mr-2 h-4 w-4" />
                 Export to CSV
             </Button>
@@ -112,46 +135,54 @@ export default function AdmissionApplicationsPage() {
         </div>
       </div>
 
-      <Card>
-        <CardContent>
-          {applications.length > 0 ? (
-            <div className="w-full overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Full Name</TableHead>
-                    <TableHead>Student Phone</TableHead>
-                    <TableHead>Parent Phone</TableHead>
-                    <TableHead>DOB</TableHead>
-                    <TableHead>Category</TableHead>
-                    <TableHead>Previous School</TableHead>
-                    <TableHead>Board</TableHead>
-                    <TableHead>Percentage</TableHead>
-                    <TableHead>Payment Mode</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {applications.map((app) => (
-                    <TableRow key={app.id}>
-                      <TableCell className="font-medium">{app.fullName}</TableCell>
-                      <TableCell>{app.studentPhone}</TableCell>
-                      <TableCell>{app.parentPhone}</TableCell>
-                      <TableCell>{app.dateOfBirth}</TableCell>
-                      <TableCell>{app.category}</TableCell>
-                      <TableCell>{app.previousSchool}</TableCell>
-                      <TableCell>{app.board}</TableCell>
-                      <TableCell>{app.percentage}</TableCell>
-                      <TableCell>{app.paymentMode}</TableCell>
+      {!isAuthenticated && formDetails && formId ? (
+          <PasswordPrompt 
+              formId={formId} 
+              correctPassword={formDetails.password} 
+              onSuccess={handleAuthSuccess} 
+          />
+      ) : (
+        <Card>
+          <CardContent>
+            {loading ? <LoadingSpinner className="min-h-[400px]" /> : applications.length > 0 ? (
+              <div className="w-full overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Full Name</TableHead>
+                      <TableHead>Student Phone</TableHead>
+                      <TableHead>Parent Phone</TableHead>
+                      <TableHead>DOB</TableHead>
+                      <TableHead>Category</TableHead>
+                      <TableHead>Previous School</TableHead>
+                      <TableHead>Board</TableHead>
+                      <TableHead>Percentage</TableHead>
+                      <TableHead>Payment Mode</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          ) : (
-            <p className="text-center text-muted-foreground py-12">No applications have been submitted for this batch yet.</p>
-          )}
-        </CardContent>
-      </Card>
+                  </TableHeader>
+                  <TableBody>
+                    {applications.map((app) => (
+                      <TableRow key={app.id}>
+                        <TableCell className="font-medium">{app.fullName}</TableCell>
+                        <TableCell>{app.studentPhone}</TableCell>
+                        <TableCell>{app.parentPhone}</TableCell>
+                        <TableCell>{app.dateOfBirth}</TableCell>
+                        <TableCell>{app.category}</TableCell>
+                        <TableCell>{app.previousSchool}</TableCell>
+                        <TableCell>{app.board}</TableCell>
+                        <TableCell>{app.percentage}</TableCell>
+                        <TableCell>{app.paymentMode}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            ) : (
+              <p className="text-center text-muted-foreground py-12">No applications have been submitted for this batch yet.</p>
+            )}
+          </CardContent>
+        </Card>
+      )}
     </>
   );
 }

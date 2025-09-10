@@ -23,6 +23,7 @@ import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
+import PasswordPrompt from '@/components/auth/PasswordPrompt';
 
 const currentYear = new Date().getFullYear();
 const yearOptions = Array.from({ length: 5 }, (_, i) => (currentYear + i).toString());
@@ -32,13 +33,12 @@ const monthOptions = [
     'July', 'August', 'September', 'October', 'November', 'December'
 ];
 
-const paymentAppOptions = ['PhonePe', 'Google Pay', 'Bhim Upi', 'Payz'];
+const paymentAppOptions = ['PhonePe', 'Google Pay', 'Bhim Upi'];
 
 const upiHandles: { [key: string]: string } = {
     'PhonePe': '@ybl',
     'Google Pay': '@okaxis',
     'Bhim Upi': '@upi',
-    'Payz': '@pz'
 };
 
 
@@ -94,6 +94,7 @@ export default function EditAdmissionFormPage() {
   const [formDetails, setFormDetails] = useState<AdmissionForm | null>(null);
   const [loading, setLoading] = useState(true);
   const [teachers, setTeachers] = useState<Teacher[]>([]);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const formId = Array.isArray(params.id) ? params.id[0] : params.id;
 
@@ -164,22 +165,35 @@ export default function EditAdmissionFormPage() {
       .then(data => {
         if (data) {
           setFormDetails(data);
-          const [yearFromValue, yearToSuffix] = data.year.split('-');
-          const yearToValue = yearFromValue.substring(0, 2) + yearToSuffix;
-          form.reset({
-            ...data,
-            password: data.password || '',
-            confirmPassword: data.password || '',
-            yearFrom: yearFromValue,
-            yearTo: yearToValue,
-          });
+           if (!data.isPasswordProtected) {
+              setIsAuthenticated(true);
+           } else {
+               const storedPassword = sessionStorage.getItem(`admission-password-${formId}`);
+               if (storedPassword === data.password) {
+                   setIsAuthenticated(true);
+               }
+           }
         } else {
           toast({ variant: 'destructive', title: 'Form not found' });
           router.push('/admin/admission');
         }
       })
       .finally(() => setLoading(false));
-  }, [formId, form, router, toast]);
+  }, [formId, router, toast]);
+  
+  useEffect(() => {
+      if(isAuthenticated && formDetails) {
+          const [yearFromValue, yearToSuffix] = formDetails.year.split('-');
+          const yearToValue = yearFromValue.substring(0, 2) + yearToSuffix;
+          form.reset({
+            ...formDetails,
+            password: formDetails.password || '',
+            confirmPassword: formDetails.password || '',
+            yearFrom: yearFromValue,
+            yearTo: yearToValue,
+          });
+      }
+  }, [isAuthenticated, formDetails, form]);
 
   const handleGenerateDescription = async () => {
     const { title, teacherName, subject, className, yearFrom, yearTo } = form.getValues();
@@ -247,6 +261,18 @@ export default function EditAdmissionFormPage() {
 
   if (loading) {
     return <LoadingSpinner />;
+  }
+  
+  if (!isAuthenticated && formDetails && formId) {
+      return (
+          <div className="flex min-h-screen flex-col items-center justify-center">
+            <PasswordPrompt 
+                formId={formId} 
+                correctPassword={formDetails.password} 
+                onSuccess={() => setIsAuthenticated(true)}
+            />
+          </div>
+      );
   }
 
   return (
@@ -463,6 +489,3 @@ export default function EditAdmissionFormPage() {
     </Form>
   );
 }
-
-    
-    

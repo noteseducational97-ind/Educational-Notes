@@ -22,6 +22,7 @@ import { getAdmissionFormById, submitAdmissionApplication } from '@/lib/firebase
 import type { AdmissionForm } from '@/types';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import PasswordPrompt from '@/components/auth/PasswordPrompt';
 
 
 const formSchema = z.object({
@@ -58,6 +59,7 @@ export default function AdmissionFormPage() {
     const [pageLoading, setPageLoading] = useState(true);
     const [formDetails, setFormDetails] = useState<AdmissionForm | null>(null);
     const [isAndroid, setIsAndroid] = useState(false);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
 
     const formId = Array.isArray(params.formId) ? params.formId[0] : params.formId;
 
@@ -65,7 +67,18 @@ export default function AdmissionFormPage() {
         if (!formId) return;
         setPageLoading(true);
         getAdmissionFormById(formId)
-            .then(setFormDetails)
+            .then(data => {
+                setFormDetails(data);
+                if (data && !data.isPasswordProtected) {
+                    setIsAuthenticated(true);
+                } else {
+                    // Check session storage
+                    const storedPassword = sessionStorage.getItem(`admission-password-${formId}`);
+                    if (storedPassword === data?.password) {
+                        setIsAuthenticated(true);
+                    }
+                }
+            })
             .finally(() => setPageLoading(false));
     }, [formId]);
 
@@ -148,267 +161,270 @@ export default function AdmissionFormPage() {
                         </Link>
                     </Button>
                     
-
-                    <FormProvider {...form}>
-                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                            <Card>
-                                <CardHeader>
-                                    <div className="text-center mb-4">
-                                        {coachingName && (
-                                            <h1 className="text-4xl font-bold tracking-tight text-primary">{coachingName}</h1>
-                                        )}
-                                        <p className="mt-2 text-lg text-muted-foreground">
-                                            Please fill out the form below to apply for {formDetails.title}.
-                                        </p>
-                                    </div>
-                                    <CardTitle className="flex items-center gap-2 pt-4 border-t"><User /> Personal Information</CardTitle>
-                                </CardHeader>
-                                <CardContent className="space-y-4">
-                                    <FormField name="fullName" render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Full Name</FormLabel>
-                                            <FormControl><Input placeholder="Enter your full name" {...field} /></FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )} />
-                                     <div className="grid md:grid-cols-2 gap-4">
-                                        <FormField name="dateOfBirth" render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Date of Birth</FormLabel>
-                                                <FormControl><Input type="date" {...field} /></FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )} />
-                                         <FormField
-                                            control={form.control}
-                                            name="gender"
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                <FormLabel>Gender</FormLabel>
-                                                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                                    <FormControl>
-                                                    <SelectTrigger>
-                                                        <SelectValue placeholder="Select your gender" />
-                                                    </SelectTrigger>
-                                                    </FormControl>
-                                                    <SelectContent>
-                                                    <SelectItem value="male">Male</SelectItem>
-                                                    <SelectItem value="female">Female</SelectItem>
-                                                    </SelectContent>
-                                                </Select>
-                                                <FormMessage />
-                                                </FormItem>
+                    {!isAuthenticated ? (
+                       <PasswordPrompt formId={formId} correctPassword={formDetails.password} onSuccess={() => setIsAuthenticated(true)} />
+                    ) : (
+                        <FormProvider {...form}>
+                            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                                <Card>
+                                    <CardHeader>
+                                        <div className="text-center mb-4">
+                                            {coachingName && (
+                                                <h1 className="text-4xl font-bold tracking-tight text-primary">{coachingName}</h1>
                                             )}
-                                        />
-                                    </div>
-                                    <div className="grid md:grid-cols-2 gap-4">
-                                        <FormField name="studentPhone" render={({ field }) => (
+                                            <p className="mt-2 text-lg text-muted-foreground">
+                                                Please fill out the form below to apply for {formDetails.title}.
+                                            </p>
+                                        </div>
+                                        <CardTitle className="flex items-center gap-2 pt-4 border-t"><User /> Personal Information</CardTitle>
+                                    </CardHeader>
+                                    <CardContent className="space-y-4">
+                                        <FormField name="fullName" render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel>Student Phone</FormLabel>
-                                                <FormControl><Input placeholder="Enter your phone number" {...field} /></FormControl>
+                                                <FormLabel>Full Name</FormLabel>
+                                                <FormControl><Input placeholder="Enter your full name" {...field} /></FormControl>
                                                 <FormMessage />
                                             </FormItem>
                                         )} />
-                                        <FormField name="address" render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Name Of Village or City</FormLabel>
-                                                <FormControl><Input placeholder="Enter the name of your village or city" {...field} /></FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )} />
-                                    </div>
-                                     <FormField
-                                        control={form.control}
-                                        name="category"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                            <FormLabel>Category</FormLabel>
-                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                                <FormControl>
-                                                <SelectTrigger>
-                                                    <SelectValue placeholder="Select your category" />
-                                                </SelectTrigger>
-                                                </FormControl>
-                                                <SelectContent>
-                                                    <SelectItem value="OBC">OBC</SelectItem>
-                                                    <SelectItem value="SC">SC</SelectItem>
-                                                    <SelectItem value="ST">ST</SelectItem>
-                                                    <SelectItem value="VJ">VJ</SelectItem>
-                                                    <SelectItem value="NT">NT</SelectItem>
-                                                    <SelectItem value="Other">Other</SelectItem>
-                                                </SelectContent>
-                                            </Select>
-                                            <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                </CardContent>
-                            </Card>
-
-                            <Card>
-                                <CardHeader>
-                                    <CardTitle className="flex items-center gap-2"><Home/> Parent Details</CardTitle>
-                                </CardHeader>
-                                <CardContent className="space-y-4">
-                                     <div className="grid md:grid-cols-2 gap-4">
-                                        <FormField name="fatherName" render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Father's Full Name</FormLabel>
-                                                <FormControl><Input placeholder="Enter father's name" {...field} /></FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )} />
-                                        <FormField name="fatherOccupation" render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Father's Occupation</FormLabel>
-                                                <FormControl><Input placeholder="Enter father's occupation" {...field} /></FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )} />
-                                        <FormField name="motherName" render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Mother's Full Name</FormLabel>
-                                                <FormControl><Input placeholder="Enter mother's name" {...field} /></FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )} />
-                                         <FormField name="parentPhone" render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Parent/Guardian Phone Number</FormLabel>
-                                                <FormControl><Input placeholder="Enter parent's phone number" {...field} /></FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )} />
-                                    </div>
-                                </CardContent>
-                            </Card>
-
-                            <Card>
-                                <CardHeader>
-                                    <CardTitle className="flex items-center gap-2"><GraduationCap /> Previous Academic Data</CardTitle>
-                                </CardHeader>
-                                <CardContent className="space-y-4">
-                                     <div className="grid md:grid-cols-3 gap-4">
-                                        <FormField name="previousSchool" render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Previous School Name</FormLabel>
-                                                <FormControl><Input placeholder="Enter school name" {...field} /></FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )} />
-                                        <FormField
-                                            control={form.control}
-                                            name="board"
-                                            render={({ field }) => (
+                                        <div className="grid md:grid-cols-2 gap-4">
+                                            <FormField name="dateOfBirth" render={({ field }) => (
                                                 <FormItem>
-                                                <FormLabel>Board</FormLabel>
-                                                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                                    <FormControl>
-                                                    <SelectTrigger>
-                                                        <SelectValue placeholder="Select board" />
-                                                    </SelectTrigger>
-                                                    </FormControl>
-                                                    <SelectContent>
-                                                    <SelectItem value="State Board">State Board</SelectItem>
-                                                    <SelectItem value="CBSE">CBSE</SelectItem>
-                                                    </SelectContent>
-                                                </Select>
-                                                <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        />
-                                         <FormField name="percentage" render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Class 10 Percentage</FormLabel>
-                                                <FormControl><Input placeholder="e.g., 90%" {...field} /></FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )} />
-                                    </div>
-                                </CardContent>
-                            </Card>
-                            
-                            <Card>
-                                <CardHeader>
-                                    <CardTitle className="flex items-center gap-2"><CreditCard /> Payment</CardTitle>
-                                </CardHeader>
-                                <CardContent className="space-y-6">
-                                     {formDetails.contactNo && (
-                                        <Alert variant="default" className="border-blue-500/50 text-blue-700">
-                                            <Phone className="h-4 w-4 !text-blue-600" />
-                                            <AlertTitle className="!text-blue-800 dark:!text-blue-300">Contact for Inquiry</AlertTitle>
-                                            <AlertDescription className="!text-blue-700 dark:!text-blue-400">
-                                                For any questions about admission, please call: {formDetails.contactNo}
-                                            </AlertDescription>
-                                        </Alert>
-                                    )}
-                                    <div className="space-y-4">
-                                        <FormField
-                                            control={form.control}
-                                            name="paymentMode"
-                                            render={({ field }) => (
-                                                <FormItem className="space-y-3">
-                                                    <FormLabel>Payment Mode</FormLabel>
-                                                    <FormControl>
-                                                        <RadioGroup
-                                                            onValueChange={field.onChange}
-                                                            defaultValue={field.value}
-                                                            className="flex flex-col sm:flex-row gap-4"
-                                                        >
-                                                            <FormItem className="flex items-center space-x-3 space-y-0">
-                                                                <FormControl>
-                                                                <RadioGroupItem value="Online" />
-                                                                </FormControl>
-                                                                <FormLabel className="font-normal">
-                                                                Online
-                                                                </FormLabel>
-                                                            </FormItem>
-                                                            <FormItem className="flex items-center space-x-3 space-y-0">
-                                                                <FormControl>
-                                                                <RadioGroupItem value="Offline" />
-                                                                </FormControl>
-                                                                <FormLabel className="font-normal">
-                                                                Offline
-                                                                </FormLabel>
-                                                            </FormItem>
-                                                        </RadioGroup>
-                                                    </FormControl>
+                                                    <FormLabel>Date of Birth</FormLabel>
+                                                    <FormControl><Input type="date" {...field} /></FormControl>
                                                     <FormMessage />
                                                 </FormItem>
+                                            )} />
+                                            <FormField
+                                                control={form.control}
+                                                name="gender"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                    <FormLabel>Gender</FormLabel>
+                                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                        <FormControl>
+                                                        <SelectTrigger>
+                                                            <SelectValue placeholder="Select your gender" />
+                                                        </SelectTrigger>
+                                                        </FormControl>
+                                                        <SelectContent>
+                                                        <SelectItem value="male">Male</SelectItem>
+                                                        <SelectItem value="female">Female</SelectItem>
+                                                        </SelectContent>
+                                                    </Select>
+                                                    <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        </div>
+                                        <div className="grid md:grid-cols-2 gap-4">
+                                            <FormField name="studentPhone" render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Student Phone</FormLabel>
+                                                    <FormControl><Input placeholder="Enter your phone number" {...field} /></FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )} />
+                                            <FormField name="address" render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Name Of Village or City</FormLabel>
+                                                    <FormControl><Input placeholder="Enter the name of your village or city" {...field} /></FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )} />
+                                        </div>
+                                        <FormField
+                                            control={form.control}
+                                            name="category"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                <FormLabel>Category</FormLabel>
+                                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                    <FormControl>
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder="Select your category" />
+                                                    </SelectTrigger>
+                                                    </FormControl>
+                                                    <SelectContent>
+                                                        <SelectItem value="OBC">OBC</SelectItem>
+                                                        <SelectItem value="SC">SC</SelectItem>
+                                                        <SelectItem value="ST">ST</SelectItem>
+                                                        <SelectItem value="VJ">VJ</SelectItem>
+                                                        <SelectItem value="NT">NT</SelectItem>
+                                                        <SelectItem value="Other">Other</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                                <FormMessage />
+                                                </FormItem>
                                             )}
                                         />
-                                        
-                                        <div className="grid sm:grid-cols-2 gap-4 text-center">
-                                            <div className="bg-secondary/30 p-4 rounded-lg">
-                                                <p className="text-muted-foreground text-sm">Total Fees</p>
-                                                <p className="text-2xl font-bold">₹{formDetails.totalFees.toLocaleString()}</p>
-                                            </div>
-                                            <div className="bg-secondary/30 p-4 rounded-lg">
-                                                <p className="text-muted-foreground text-sm">Advance Fees</p>
-                                                <p className="text-2xl font-bold">₹{formDetails.advanceFees.toLocaleString()}</p>
-                                            </div>
-                                        </div>
-                                        {paymentMode === 'Online' && (
-                                            <div className="p-4 border rounded-lg bg-secondary/30 space-y-2">
-                                                <h3 className="text-lg font-semibold text-foreground">UPI Details</h3>
-                                                {formDetails.paymentApp && (
-                                                     <p className="text-muted-foreground">App: <span className="font-mono text-primary">{formDetails.paymentApp}</span></p>
-                                                )}
-                                                <p className="text-muted-foreground">UPI ID: <span className="font-mono text-primary">{formDetails.upiId}</span></p>
-                                                <p className="text-muted-foreground">UPI Number: <span className="font-mono text-primary">{formDetails.upiNumber}</span></p>
-                                            </div>
-                                        )}
-                                    </div>
-                                </CardContent>
-                            </Card>
+                                    </CardContent>
+                                </Card>
 
-                             <div className="flex justify-end">
-                                <Button type="submit" disabled={loading} size="lg">
-                                    {loading ? <Loader2 className="animate-spin" /> : <>Submit Application <ArrowRight className="ml-2"/></>}
-                                </Button>
-                            </div>
-                        </form>
-                    </FormProvider>
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle className="flex items-center gap-2"><Home/> Parent Details</CardTitle>
+                                    </CardHeader>
+                                    <CardContent className="space-y-4">
+                                        <div className="grid md:grid-cols-2 gap-4">
+                                            <FormField name="fatherName" render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Father's Full Name</FormLabel>
+                                                    <FormControl><Input placeholder="Enter father's name" {...field} /></FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )} />
+                                            <FormField name="fatherOccupation" render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Father's Occupation</FormLabel>
+                                                    <FormControl><Input placeholder="Enter father's occupation" {...field} /></FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )} />
+                                            <FormField name="motherName" render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Mother's Full Name</FormLabel>
+                                                    <FormControl><Input placeholder="Enter mother's name" {...field} /></FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )} />
+                                            <FormField name="parentPhone" render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Parent/Guardian Phone Number</FormLabel>
+                                                    <FormControl><Input placeholder="Enter parent's phone number" {...field} /></FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )} />
+                                        </div>
+                                    </CardContent>
+                                </Card>
+
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle className="flex items-center gap-2"><GraduationCap /> Previous Academic Data</CardTitle>
+                                    </CardHeader>
+                                    <CardContent className="space-y-4">
+                                        <div className="grid md:grid-cols-3 gap-4">
+                                            <FormField name="previousSchool" render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Previous School Name</FormLabel>
+                                                    <FormControl><Input placeholder="Enter school name" {...field} /></FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )} />
+                                            <FormField
+                                                control={form.control}
+                                                name="board"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                    <FormLabel>Board</FormLabel>
+                                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                        <FormControl>
+                                                        <SelectTrigger>
+                                                            <SelectValue placeholder="Select board" />
+                                                        </SelectTrigger>
+                                                        </FormControl>
+                                                        <SelectContent>
+                                                        <SelectItem value="State Board">State Board</SelectItem>
+                                                        <SelectItem value="CBSE">CBSE</SelectItem>
+                                                        </SelectContent>
+                                                    </Select>
+                                                    <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                            <FormField name="percentage" render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Class 10 Percentage</FormLabel>
+                                                    <FormControl><Input placeholder="e.g., 90%" {...field} /></FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )} />
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                                
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle className="flex items-center gap-2"><CreditCard /> Payment</CardTitle>
+                                    </CardHeader>
+                                    <CardContent className="space-y-6">
+                                        {formDetails.contactNo && (
+                                            <Alert variant="default" className="border-blue-500/50 text-blue-700">
+                                                <Phone className="h-4 w-4 !text-blue-600" />
+                                                <AlertTitle className="!text-blue-800 dark:!text-blue-300">Contact for Inquiry</AlertTitle>
+                                                <AlertDescription className="!text-blue-700 dark:!text-blue-400">
+                                                    For any questions about admission, please call: {formDetails.contactNo}
+                                                </AlertDescription>
+                                            </Alert>
+                                        )}
+                                        <div className="space-y-4">
+                                            <FormField
+                                                control={form.control}
+                                                name="paymentMode"
+                                                render={({ field }) => (
+                                                    <FormItem className="space-y-3">
+                                                        <FormLabel>Payment Mode</FormLabel>
+                                                        <FormControl>
+                                                            <RadioGroup
+                                                                onValueChange={field.onChange}
+                                                                defaultValue={field.value}
+                                                                className="flex flex-col sm:flex-row gap-4"
+                                                            >
+                                                                <FormItem className="flex items-center space-x-3 space-y-0">
+                                                                    <FormControl>
+                                                                    <RadioGroupItem value="Online" />
+                                                                    </FormControl>
+                                                                    <FormLabel className="font-normal">
+                                                                    Online
+                                                                    </FormLabel>
+                                                                </FormItem>
+                                                                <FormItem className="flex items-center space-x-3 space-y-0">
+                                                                    <FormControl>
+                                                                    <RadioGroupItem value="Offline" />
+                                                                    </FormControl>
+                                                                    <FormLabel className="font-normal">
+                                                                    Offline
+                                                                    </FormLabel>
+                                                                </FormItem>
+                                                            </RadioGroup>
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                            
+                                            <div className="grid sm:grid-cols-2 gap-4 text-center">
+                                                <div className="bg-secondary/30 p-4 rounded-lg">
+                                                    <p className="text-muted-foreground text-sm">Total Fees</p>
+                                                    <p className="text-2xl font-bold">₹{formDetails.totalFees.toLocaleString()}</p>
+                                                </div>
+                                                <div className="bg-secondary/30 p-4 rounded-lg">
+                                                    <p className="text-muted-foreground text-sm">Advance Fees</p>
+                                                    <p className="text-2xl font-bold">₹{formDetails.advanceFees.toLocaleString()}</p>
+                                                </div>
+                                            </div>
+                                            {paymentMode === 'Online' && (
+                                                <div className="p-4 border rounded-lg bg-secondary/30 space-y-2">
+                                                    <h3 className="text-lg font-semibold text-foreground">UPI Details</h3>
+                                                    {formDetails.paymentApp && (
+                                                        <p className="text-muted-foreground">App: <span className="font-mono text-primary">{formDetails.paymentApp}</span></p>
+                                                    )}
+                                                    <p className="text-muted-foreground">UPI ID: <span className="font-mono text-primary">{formDetails.upiId}</span></p>
+                                                    <p className="text-muted-foreground">UPI Number: <span className="font-mono text-primary">{formDetails.upiNumber}</span></p>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </CardContent>
+                                </Card>
+
+                                <div className="flex justify-end">
+                                    <Button type="submit" disabled={loading} size="lg">
+                                        {loading ? <Loader2 className="animate-spin" /> : <>Submit Application <ArrowRight className="ml-2"/></>}
+                                    </Button>
+                                </div>
+                            </form>
+                        </FormProvider>
+                    )}
                 </div>
             </main>
         </div>
