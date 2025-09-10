@@ -54,6 +54,7 @@ export type AdmissionForm = {
 
 export type AdmissionApplication = {
   id: string;
+  userId?: string;
   fullName: string;
   dateOfBirth: string;
   gender: string;

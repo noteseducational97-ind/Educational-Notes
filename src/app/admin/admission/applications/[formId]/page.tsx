@@ -12,6 +12,8 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft, Download } from 'lucide-react';
 import Link from 'next/link';
 import PasswordPrompt from '@/components/auth/PasswordPrompt';
+import { format } from 'date-fns';
+import ApplicationDetailDialog from './ApplicationDetailDialog';
 
 export default function AdmissionApplicationsPage() {
   const params = useParams();
@@ -22,6 +24,7 @@ export default function AdmissionApplicationsPage() {
   const [applications, setApplications] = useState<AdmissionApplication[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [selectedApplication, setSelectedApplication] = useState<AdmissionApplication | null>(null);
 
   useEffect(() => {
     if (!formId) return;
@@ -157,30 +160,14 @@ export default function AdmissionApplicationsPage() {
                   <TableHeader>
                     <TableRow>
                       <TableHead>Full Name</TableHead>
-                      <TableHead>Student Phone</TableHead>
-                      <TableHead>Parent Phone</TableHead>
-                      <TableHead>DOB</TableHead>
-                      <TableHead>Payment Mode</TableHead>
-                      <TableHead>Sender Name</TableHead>
-                      <TableHead>Amount</TableHead>
-                      <TableHead>Date</TableHead>
-                      <TableHead>Time</TableHead>
-                      <TableHead>Screenshot</TableHead>
+                      <TableHead>Submission Date</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {applications.map((app) => (
-                      <TableRow key={app.id}>
+                      <TableRow key={app.id} onClick={() => setSelectedApplication(app)} className="cursor-pointer">
                         <TableCell className="font-medium">{app.fullName}</TableCell>
-                        <TableCell>{app.studentPhone}</TableCell>
-                        <TableCell>{app.parentPhone}</TableCell>
-                        <TableCell>{app.dateOfBirth}</TableCell>
-                        <TableCell>{app.paymentMode}</TableCell>
-                        <TableCell>{app.senderName || '-'}</TableCell>
-                        <TableCell>{app.paymentAmount || '-'}</TableCell>
-                        <TableCell>{app.transactionDate || '-'}</TableCell>
-                        <TableCell>{app.transactionTime || '-'}</TableCell>
-                        <TableCell>{app.paymentScreenshot || 'N/A'}</TableCell>
+                        <TableCell>{format(new Date(app.submittedAt), 'PPP')}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -191,6 +178,13 @@ export default function AdmissionApplicationsPage() {
             )}
           </CardContent>
         </Card>
+      )}
+       {selectedApplication && (
+        <ApplicationDetailDialog
+          application={selectedApplication}
+          isOpen={!!selectedApplication}
+          onClose={() => setSelectedApplication(null)}
+        />
       )}
     </>
   );

@@ -17,6 +17,19 @@ const transformGoogleDriveUrl = (url?: string): string | undefined => {
     return url;
 };
 
+// A function to upload a file to Firebase Storage (or any other service)
+// and return the public URL. This is a placeholder and needs real implementation.
+async function uploadFileAndGetURL(file: any, path: string): Promise<string> {
+    // In a real app, you would use Firebase Admin SDK for Storage here
+    // For now, we'll just return a placeholder URL based on the file name
+    console.log(`Simulating upload for: ${file.name} to path: ${path}`);
+    
+    // This is NOT a real URL. Replace with actual upload logic.
+    // e.g., using bucket.upload() and then bucket.file().getSignedUrl()
+    return `https://storage.googleapis.com/your-bucket-name/${path}/${file.name}`;
+}
+
+
 export async function addAdmissionForm(data: Omit<AdmissionForm, 'id' | 'createdAt' | 'updatedAt'>) {
     const docRef = db.collection('admissionForms').doc();
     
@@ -101,9 +114,23 @@ export async function submitAdmissionApplication(formId: string, applicationData
   if (!formId) {
     throw new Error('Form ID is required.');
   }
+
+  let screenshotUrl: string | null = null;
+  // This part is tricky without a proper file object from the client.
+  // When using server actions with file uploads, the file object would be available here.
+  // For now, we'll assume applicationData.paymentScreenshot is a placeholder name.
+  if (applicationData.paymentScreenshot && typeof applicationData.paymentScreenshot === 'string') {
+      // This is a placeholder. In a real scenario, you'd get a File object.
+      // We are just creating a fake file object for the placeholder function.
+      const fakeFile = { name: applicationData.paymentScreenshot };
+      screenshotUrl = await uploadFileAndGetURL(fakeFile, `admissions/${formId}`);
+  }
+
+
   const applicationRef = db.collection('admissionForms').doc(formId).collection('applications').doc();
   await applicationRef.set({
     ...applicationData,
+    paymentScreenshot: screenshotUrl, // Save the public URL
     submittedAt: new Date(),
     id: applicationRef.id,
   });
