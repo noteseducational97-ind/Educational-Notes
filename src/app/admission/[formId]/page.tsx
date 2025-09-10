@@ -11,7 +11,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, User, Mail, Phone, Home, GraduationCap, ArrowRight, ArrowLeft, CreditCard, Info, Wallet } from 'lucide-react';
+import { Loader2, User, Mail, Phone, Home, GraduationCap, ArrowRight, ArrowLeft, CreditCard, Info, Wallet, Upload } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Textarea } from '@/components/ui/textarea';
@@ -47,7 +47,17 @@ const formSchema = z.object({
   
   // Payment
   paymentMode: z.string().optional(),
+  paymentScreenshot: z.any().optional(),
+}).refine(data => {
+    if (data.paymentMode === 'Online') {
+        return !!data.paymentScreenshot?.[0];
+    }
+    return true;
+}, {
+    message: 'Payment screenshot is required for online payments.',
+    path: ['paymentScreenshot'],
 });
+
 
 type FormValues = z.infer<typeof formSchema>;
 
@@ -110,7 +120,10 @@ export default function AdmissionFormPage() {
         if (!formId) return;
         setLoading(true);
         try {
-            await submitAdmissionApplication(formId, values);
+            // Note: In a real app, you would handle file uploads to a storage service.
+            // For this prototype, we are just passing the data along.
+            // The backend would need to be set up to handle the `paymentScreenshot` file.
+            await submitAdmissionApplication(formId, { ...values, paymentScreenshot: values.paymentScreenshot?.[0]?.name || null });
             toast({
                 title: 'Application Submitted!',
                 description: 'We have received your application and will contact you shortly.',
@@ -405,13 +418,30 @@ export default function AdmissionFormPage() {
                                                 </div>
                                             </div>
                                             {paymentMode === 'Online' && (
-                                                <div className="p-4 border rounded-lg bg-secondary/30 space-y-2">
+                                                <div className="p-4 border rounded-lg bg-secondary/30 space-y-4">
                                                     <h3 className="text-lg font-semibold text-foreground">UPI Details</h3>
                                                     {formDetails.paymentApp && (
                                                         <p className="text-muted-foreground">App: <span className="font-mono text-primary">{formDetails.paymentApp}</span></p>
                                                     )}
                                                     <p className="text-muted-foreground">UPI ID: <span className="font-mono text-primary">{formDetails.upiId}</span></p>
                                                     <p className="text-muted-foreground">UPI Number: <span className="font-mono text-primary">{formDetails.upiNumber}</span></p>
+                                                     <FormField
+                                                        control={form.control}
+                                                        name="paymentScreenshot"
+                                                        render={({ field }) => (
+                                                          <FormItem>
+                                                            <FormLabel className="flex items-center gap-2"><Upload /> Upload Screenshot of Payment</FormLabel>
+                                                            <FormControl>
+                                                              <Input 
+                                                                type="file" 
+                                                                accept="image/*"
+                                                                onChange={(e) => field.onChange(e.target.files)}
+                                                              />
+                                                            </FormControl>
+                                                            <FormMessage />
+                                                          </FormItem>
+                                                        )}
+                                                      />
                                                 </div>
                                             )}
                                         </div>

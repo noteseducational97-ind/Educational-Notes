@@ -68,6 +68,7 @@ export type AdmissionApplication = {
   board: string;
   percentage: string;
   paymentMode?: string;
+  paymentScreenshot?: string;
   submittedAt: string; // ISO string
 };
 

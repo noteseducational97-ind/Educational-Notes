@@ -77,7 +77,7 @@ export default function AdmissionApplicationsPage() {
 
     const headers = [
       'Full Name', 'Student Phone', 'Parent Phone', 'Date of Birth', 
-      'Category', 'Previous School', 'Board', 'Percentage', 'Payment Mode'
+      'Category', 'Previous School', 'Board', 'Percentage', 'Payment Mode', 'Payment Screenshot'
     ];
     
     const csvRows = [
@@ -92,6 +92,7 @@ export default function AdmissionApplicationsPage() {
         `"${app.board}"`,
         `"${app.percentage}"`,
         `"${app.paymentMode}"`,
+        `"${app.paymentScreenshot || ''}"`,
       ].join(','))
     ];
 
@@ -158,6 +159,7 @@ export default function AdmissionApplicationsPage() {
                       <TableHead>Board</TableHead>
                       <TableHead>Percentage</TableHead>
                       <TableHead>Payment Mode</TableHead>
+                      <TableHead>Screenshot</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -172,6 +174,7 @@ export default function AdmissionApplicationsPage() {
                         <TableCell>{app.board}</TableCell>
                         <TableCell>{app.percentage}</TableCell>
                         <TableCell>{app.paymentMode}</TableCell>
+                        <TableCell>{app.paymentScreenshot || 'N/A'}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
