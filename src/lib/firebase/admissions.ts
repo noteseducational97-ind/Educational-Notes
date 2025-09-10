@@ -16,12 +16,11 @@ const createSlug = (title: string, year: string) => {
 };
 
 export async function addAdmissionForm(data: Omit<AdmissionForm, 'id' | 'createdAt'>) {
-    const slug = createSlug(data.title, data.year);
-    const docRef = db.collection('admissionForms').doc(slug);
+    const docRef = db.collection('admissionForms').doc();
     
     await docRef.set({
         ...data,
-        id: slug,
+        id: docRef.id,
         createdAt: new Date(),
     });
 
