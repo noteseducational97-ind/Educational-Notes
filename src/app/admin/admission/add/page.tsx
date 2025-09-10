@@ -18,7 +18,7 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, ArrowLeft, Save, CreditCard, Phone, Wallet, User, Book, Sparkles, KeyRound } from 'lucide-react';
+import { Loader2, ArrowLeft, Save, CreditCard, Phone, Wallet, User, Book, Sparkles, KeyRound, Shield } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
@@ -44,7 +44,7 @@ const upiHandles: { [key: string]: string } = {
 const FormSchema = z.object({
   title: z.string().min(3, 'Title is required.'),
   teacherName: z.string().min(1, 'Please select a teacher.'),
-  subject: z.enum(['Physics', 'Chemistry']),
+  subject: z.string().min(1, 'Subject is required.'),
   className: z.string().min(1, 'Class name is required.'),
   startMonth: z.string().min(1, 'Start month is required.'),
   yearFrom: z.string().min(4, 'From year is required.'),
@@ -219,7 +219,7 @@ export default function AddAdmissionFormPage() {
 
   return (
     <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <Card>
                 <CardHeader>
                     <CardTitle>Create New Admission Form</CardTitle>
@@ -371,44 +371,6 @@ export default function AddAdmissionFormPage() {
                             )} />
                         </div>
                     </div>
-
-                     <div className="border-t pt-6 space-y-4">
-                        <FormField
-                            control={form.control}
-                            name="isPasswordProtected"
-                            render={({ field }) => (
-                                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                                    <FormControl>
-                                        <Checkbox
-                                            checked={field.value}
-                                            onCheckedChange={field.onChange}
-                                        />
-                                    </FormControl>
-                                    <div className="space-y-1 leading-none">
-                                        <FormLabel>Enable Batch Password</FormLabel>
-                                    </div>
-                                </FormItem>
-                            )}
-                        />
-                        {isPasswordProtected && (
-                            <div className="grid md:grid-cols-2 gap-4">
-                                <FormField control={form.control} name="password" render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel className="flex items-center gap-2"><KeyRound/> Password</FormLabel>
-                                        <FormControl><Input type="password" placeholder="Enter password" {...field} value={field.value ?? ''} /></FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )} />
-                                <FormField control={form.control} name="confirmPassword" render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel className="flex items-center gap-2"><KeyRound/> Confirm Password</FormLabel>
-                                        <FormControl><Input type="password" placeholder="Confirm password" {...field} value={field.value ?? ''} /></FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )} />
-                            </div>
-                        )}
-                    </div>
                 </CardContent>
                 <CardFooter className="flex justify-between gap-4 border-t pt-6">
                     <Button type="button" variant="outline" asChild>
@@ -420,7 +382,53 @@ export default function AddAdmissionFormPage() {
                     </Button>
                 </CardFooter>
             </Card>
+
+            <Card>
+                <CardHeader>
+                    <CardTitle className="flex items-center gap-2"><Shield /> Security</CardTitle>
+                    <CardDescription>Protect this admission form with a password.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                     <FormField
+                        control={form.control}
+                        name="isPasswordProtected"
+                        render={({ field }) => (
+                            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                                <FormControl>
+                                    <Checkbox
+                                        checked={field.value}
+                                        onCheckedChange={field.onChange}
+                                    />
+                                </FormControl>
+                                <div className="space-y-1 leading-none">
+                                    <FormLabel>Enable Batch Password</FormLabel>
+                                </div>
+                            </FormItem>
+                        )}
+                    />
+                    {isPasswordProtected && (
+                        <div className="grid md:grid-cols-2 gap-4">
+                            <FormField control={form.control} name="password" render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel className="flex items-center gap-2"><KeyRound/> Password</FormLabel>
+                                    <FormControl><Input type="password" placeholder="Enter password" {...field} value={field.value ?? ''} /></FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )} />
+                            <FormField control={form.control} name="confirmPassword" render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel className="flex items-center gap-2"><KeyRound/> Confirm Password</FormLabel>
+                                    <FormControl><Input type="password" placeholder="Confirm password" {...field} value={field.value ?? ''} /></FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )} />
+                        </div>
+                    )}
+                </CardContent>
+            </Card>
         </form>
     </Form>
   );
 }
+
+    

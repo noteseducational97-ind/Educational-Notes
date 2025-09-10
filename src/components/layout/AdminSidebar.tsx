@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Home, Download, Bookmark, Menu, LogIn, UserPlus, LayoutDashboard, Users, BookCopy, FileText, Wrench, GraduationCap, ArrowLeft, LogOut } from 'lucide-react';
+import { Home, Download, Bookmark, Menu, LogIn, UserPlus, LayoutDashboard, Users, BookCopy, FileText, Wrench, GraduationCap, ArrowLeft, LogOut, Shield } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { EducationalNotesLogo } from '../icons/EducationalNotesLogo';
 import { Button } from '../ui/button';
@@ -116,9 +116,9 @@ export default function AdminSidebar() {
       {/* Desktop Sidebar */}
       <aside className="hidden md:flex flex-col w-64 bg-background border-r border-border/40">
         <div className="flex h-16 items-center border-b px-6">
-            <Link href="/" className="flex items-center gap-2 font-semibold">
-                <EducationalNotesLogo className="h-6 w-6 text-primary" />
-                <span>Educational Notes</span>
+            <Link href="/admin" className="flex items-center gap-2 font-semibold">
+                <Shield className="h-6 w-6 text-primary" />
+                <span>Admin Panel</span>
             </Link>
         </div>
         <NavContent />
@@ -139,9 +139,9 @@ export function MobileAdminSidebar() {
       <SheetContent side="left" className="flex flex-col p-0 w-64">
         <SheetHeader className="border-b p-4">
            <SheetTitle asChild>
-                <Link href="/" className="flex items-center gap-2 font-semibold">
-                    <EducationalNotesLogo className="h-6 w-6 text-primary" />
-                    <span>Educational Notes</span>
+                <Link href="/admin" className="flex items-center gap-2 font-semibold">
+                    <Shield className="h-6 w-6 text-primary" />
+                    <span>Admin Panel</span>
                 </Link>
            </SheetTitle>
         </SheetHeader>
@@ -150,3 +150,5 @@ export function MobileAdminSidebar() {
     </Sheet>
   )
 }
+
+    
