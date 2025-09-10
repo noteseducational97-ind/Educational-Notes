@@ -15,7 +15,8 @@ export default async function ResourceDetailPage({ params, searchParams }: Props
     notFound();
   }
   
-  const fromAdmin = searchParams?.from === 'admin';
+  const { from } = searchParams;
+  const fromAdmin = from === 'admin';
 
   return <ResourceDetailClient resource={resource} fromAdmin={fromAdmin} />;
 }
