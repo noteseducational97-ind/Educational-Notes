@@ -13,7 +13,6 @@ import { Loader2, Shield, ArrowLeft } from 'lucide-react';
 
 const adminUsers: { [key: string]: string } = {
     'admin': 'noteseducational97@gmail.com',
-    'shree': 'shreecoachingclasses@gmail.com'
 };
 
 const GoogleIcon = () => (

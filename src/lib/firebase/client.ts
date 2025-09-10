@@ -6,12 +6,12 @@ import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig: FirebaseOptions = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  apiKey: "AIzaSyDk3U7INhihb-IO1BkA9iyWPsXRPfMRgDo",
+  authDomain: "educational-notesdup.firebaseapp.com",
+  projectId: "educational-notesdup",
+  storageBucket: "educational-notesdup.firebasestorage.app",
+  messagingSenderId: "768328933218",
+  appId: "1:768328933218:web:61c75bf8269acab41a963b"
 };
 
 // Check that all required environment variables are set
