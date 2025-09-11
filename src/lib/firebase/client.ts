@@ -6,12 +6,12 @@ import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig: FirebaseOptions = {
-  apiKey: "AIzaSyCm8CWW2NS1aGQII9EwMAfBDBxWh4mlddo",
-  authDomain: "authzen-698pc.firebaseapp.com",
-  projectId: "authzen-698pc",
-  storageBucket: "authzen-698pc.firebasestorage.app",
-  messagingSenderId: "645500335752",
-  appId: "1:645500335752:web:de594eb8789542776d913d"
+  apiKey: "AIzaSyDk3U7INhihb-IO1BkA9iyWPsXRPfMRgDo",
+  authDomain: "educational-notesdup.firebaseapp.com",
+  projectId: "educational-notesdup",
+  storageBucket: "educational-notesdup.firebasestorage.app",
+  messagingSenderId: "768328933218",
+  appId: "1:768328933218:web:61c75bf8269acab41a963b"
 };
 
 // Check that all required environment variables are set
