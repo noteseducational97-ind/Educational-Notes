@@ -107,7 +107,7 @@ export default function UploadedResourcesPage() {
         >
           <Card>
               <CardHeader>
-                  <CardTitle className="flex items-center gap-2"><BookCopy /> All Resources</CardTitle>
+                  <CardTitle className="flex items-center gap-2"><BookCopy /> All Uploaded Resources</CardTitle>
                   <CardDescription>
                   A complete list of all study materials in the system. `Public` is visible to everyone. `Private` is visible only to logged-in users.
                   </CardDescription>
