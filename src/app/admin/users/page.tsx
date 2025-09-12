@@ -1,3 +1,4 @@
+
 'use client';
 import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
@@ -66,7 +67,7 @@ export default function AdminUsersPage() {
     setLoadingData(true);
     listAllUsers()
       .then(allUsers => {
-        setUsers(allUsers.sort((a, b) => a.isAdmin === b.isAdmin ? 0 : a.isAdmin ? -1 : 1));
+        setUsers(allUsers);
       })
       .finally(() => setLoadingData(false));
   }, []);
