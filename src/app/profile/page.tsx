@@ -7,6 +7,7 @@ import { useAuth } from '@/hooks/use-auth';
 import Header from '@/components/layout/Header';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import ProfileCard from '@/components/profile/ProfileCard';
+import { motion } from 'framer-motion';
 
 export default function ProfilePage() {
   const { user, loading } = useAuth();
@@ -23,15 +24,17 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col bg-secondary/30">
       <Header />
-      <main className="flex-1">
-        <div className="container mx-auto px-4 py-8 md:px-6">
-            <h1 className="mb-6 text-3xl font-bold text-foreground animate-fade-in-up">My Profile</h1>
-            <div className="animate-fade-in-up [animation-delay:150ms]">
-                <ProfileCard />
-            </div>
-        </div>
+      <main className="flex flex-1 items-center justify-center p-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="w-full max-w-md"
+        >
+          <ProfileCard />
+        </motion.div>
       </main>
     </div>
   );
