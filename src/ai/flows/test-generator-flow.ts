@@ -38,31 +38,16 @@ const TestGeneratorOutputSchema = z.object({
 });
 export type TestGeneratorOutput = z.infer<typeof TestGeneratorOutputSchema>;
 
-export async function generateTest(input: TestGeneratorInput): Promise<TestGeneratorOutput> {
-  return testGeneratorFlow(input);
-}
-
-const mcqPrompt = ai.definePrompt({
-  name: 'mcqTestGeneratorPrompt',
-  input: { schema: TestGeneratorInputSchema },
-  output: { schema: TestGeneratorOutputSchema },
-  prompt: `You are an expert test creator for {{class}}. Based on the following content for the chapter titled "{{title}}" in the subject of {{subject}}, generate a multiple-choice question (MCQ) test with exactly {{questionCount}} questions. Each question must have 4 options, and you must indicate the correct answer.
+const mcqPrompt = `You are an expert test creator for {{class}}. Based on the following content for the chapter titled "{{title}}" in the subject of {{subject}}, generate a multiple-choice question (MCQ) test with exactly {{questionCount}} questions. Each question must have 4 options, and you must indicate the correct answer.
 
 Resource Content:
-{{{resourceContent}}}
-`,
-});
+{{{resourceContent}}}`;
 
-const regularPrompt = ai.definePrompt({
-  name: 'regularTestGeneratorPrompt',
-  input: { schema: TestGeneratorInputSchema },
-  output: { schema: TestGeneratorOutputSchema },
-  prompt: `You are an expert test creator for {{class}}. Based on the following content for the chapter titled "{{title}}" in the subject of {{subject}}, generate a regular question-and-answer test with exactly {{questionCount}} questions. Provide both the question and the correct answer for each.
+const regularPrompt = `You are an expert test creator for {{class}}. Based on the following content for the chapter titled "{{title}}" in the subject of {{subject}}, generate a regular question-and-answer test with exactly {{questionCount}} questions. Provide both the question and the correct answer for each.
 
 Resource Content:
-{{{resourceContent}}}
-`,
-});
+{{{resourceContent}}}`;
+
 
 const testGeneratorFlow = ai.defineFlow(
   {
@@ -71,12 +56,19 @@ const testGeneratorFlow = ai.defineFlow(
     outputSchema: TestGeneratorOutputSchema,
   },
   async (input) => {
-    if (input.testType === 'MCQ') {
-      const { output } = await mcqPrompt(input);
-      return output || {};
-    } else {
-      const { output } = await regularPrompt(input);
-      return output || {};
-    }
+    const prompt = ai.definePrompt({
+      name: `testGeneratorPrompt_${input.testType}`,
+      input: { schema: TestGeneratorInputSchema },
+      output: { schema: TestGeneratorOutputSchema },
+      prompt: input.testType === 'MCQ' ? mcqPrompt : regularPrompt,
+    });
+    
+    const { output } = await prompt(input);
+    return output || {};
   }
 );
+
+
+export async function generateTest(input: TestGeneratorInput): Promise<TestGeneratorOutput> {
+  return testGeneratorFlow(input);
+}
