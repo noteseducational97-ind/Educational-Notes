@@ -33,6 +33,7 @@ import {
 
 const adminNavLinks = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/admin/users', label: 'Users', icon: Users },
   { href: '/admin/downloads', label: 'Download', icon: Download },
   { href: '/admin/uploaded-resources', label: 'Manage Resources', icon: BookCopy },
   { href: '/admin/admission', label: 'Batches', icon: FileText },
