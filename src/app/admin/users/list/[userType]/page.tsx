@@ -1,6 +1,5 @@
-
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { useAuth } from '@/hooks/use-auth';
 import { listAllUsers, updateUserDisabledStatus, deleteUser as deleteUserAction, updateUserAdminStatus } from '../../actions';
@@ -66,17 +65,7 @@ export default function UserListPage() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
   
-  useEffect(() => {
-    if (!authLoading) {
-      if (!user || !isAdmin) {
-        router.push('/login');
-      } else {
-        fetchUsers();
-      }
-    }
-  }, [user, authLoading, isAdmin, router]);
-
-  const fetchUsers = () => {
+  const fetchUsers = useCallback(() => {
     setLoadingData(true);
     listAllUsers()
       .then(allUsers => {
@@ -87,7 +76,17 @@ export default function UserListPage() {
         }
       })
       .finally(() => setLoadingData(false));
-  };
+  }, [userType]);
+
+  useEffect(() => {
+    if (!authLoading) {
+      if (!user || !isAdmin) {
+        router.push('/login');
+      } else {
+        fetchUsers();
+      }
+    }
+  }, [user, authLoading, isAdmin, router, fetchUsers]);
 
   const handleToggleSelection = (user: User) => {
     setSelectedUsers(prev =>
