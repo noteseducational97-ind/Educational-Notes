@@ -74,6 +74,14 @@ export default function AdminUsersPage() {
         setLoadingData(true);
         listAllUsers()
           .then(setUsers)
+          .catch((error) => {
+              toast({
+                  variant: 'destructive',
+                  title: 'Error fetching users',
+                  description: 'Could not load user data. Please try again.',
+              });
+              console.error("Failed to fetch users:", error);
+          })
           .finally(() => setLoadingData(false));
       }
     }
