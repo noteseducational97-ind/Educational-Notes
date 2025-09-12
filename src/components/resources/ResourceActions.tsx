@@ -63,6 +63,7 @@ export default function ResourceActions({ resource, isTestable }: ResourceAction
                 <Link href={{
                   pathname: '/tools/test-generator',
                   query: { 
+                    resourceId: resource.id, // Pass the resource ID
                     content: resource.content,
                     title: resource.title,
                     subject: resource.subject.join(', '),

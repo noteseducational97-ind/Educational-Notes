@@ -8,13 +8,15 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
-import { Loader2, Sparkles } from 'lucide-react';
+import { Loader2, Sparkles, ArrowLeft } from 'lucide-react';
 import { generateTest, TestGeneratorOutput } from '@/ai/flows/test-generator-flow';
 import { useToast } from '@/hooks/use-toast';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import Link from 'next/link';
 
 export default function TestGeneratorClient() {
   const searchParams = useSearchParams();
+  const resourceId = searchParams.get('resourceId');
   const content = searchParams.get('content') || '';
   const title = searchParams.get('title') || '';
   const subject = searchParams.get('subject') || '';
@@ -63,6 +65,16 @@ export default function TestGeneratorClient() {
       <Header />
       <main className="flex-1 py-12">
         <div className="container mx-auto px-4 max-w-4xl">
+           {resourceId && (
+            <div className="mb-8">
+                <Button asChild variant="outline">
+                    <Link href={`/resources/${resourceId}`}>
+                        <ArrowLeft className="mr-2 h-4 w-4" />
+                        Back to Resource
+                    </Link>
+                </Button>
+            </div>
+           )}
           <div className="text-center mb-12">
             <h1 className="text-4xl font-bold tracking-tight text-primary">AI Test Generator</h1>
             <p className="mt-2 text-lg text-muted-foreground">
