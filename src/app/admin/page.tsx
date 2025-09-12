@@ -6,7 +6,7 @@ import { useAuth } from '@/hooks/use-auth';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Users, BookCopy, ArrowRight } from 'lucide-react';
+import { Users, BookCopy, ArrowRight, Book, FileText, Wrench, GraduationCap } from 'lucide-react';
 import Link from 'next/link';
 import { getAdminStats } from './actions';
 import { motion } from 'framer-motion';
@@ -71,10 +71,13 @@ export default function AdminDashboardPage() {
 
   return (
     <>
-        <h1 className="text-3xl font-bold text-foreground mb-6">Admin Dashboard</h1>
+        <div className="mb-8">
+            <h1 className="text-3xl font-bold text-foreground">Welcome back, {user.displayName || 'Admin'}!</h1>
+            <p className="text-muted-foreground">Here's a quick overview of your platform.</p>
+        </div>
         
         <motion.div 
-            className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-6"
+            className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-8"
             variants={containerVariants}
             initial="hidden"
             animate="visible"
@@ -84,7 +87,7 @@ export default function AdminDashboardPage() {
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium">Total Resources</CardTitle>
-                    <BookCopy className="h-4 w-4 text-muted-foreground" />
+                    <Book className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
                     {loadingStats ? <div className="h-8 w-16 bg-muted animate-pulse rounded-md" /> : <div className="text-2xl font-bold">{stats.resourceCount}</div>}
@@ -92,30 +95,54 @@ export default function AdminDashboardPage() {
                 </CardContent>
               </Card>
             </motion.div>
+             <motion.div variants={itemVariants}>
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Total Users</CardTitle>
+                    <Users className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                    {loadingStats ? <div className="h-8 w-16 bg-muted animate-pulse rounded-md" /> : <div className="text-2xl font-bold">{stats.userCount}</div>}
+                    <p className="text-xs text-muted-foreground">Registered on the platform</p>
+                </CardContent>
+              </Card>
+            </motion.div>
         </motion.div>
 
         <motion.div 
-            className="grid gap-6 md:grid-cols-2"
-            variants={containerVariants}
+            variants={itemVariants}
             initial="hidden"
             animate="visible"
             viewport={{ once: true, amount: 0.2 }}
         >
-          <motion.div variants={itemVariants}>
-            <Card>
-              <CardHeader>
-                <CardTitle>Manage Resources</CardTitle>
-                <CardDescription>Add, edit, or remove study materials from the library.</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Button asChild>
+          <Card>
+            <CardHeader>
+              <CardTitle>Quick Actions</CardTitle>
+              <CardDescription>Jump right into managing your platform's content and features.</CardDescription>
+            </CardHeader>
+            <CardContent className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+               <Button asChild variant="outline">
                   <Link href="/admin/uploaded-resources">
-                    Go to Resource Management <ArrowRight className="ml-2 h-4 w-4" />
+                    <BookCopy className="mr-2" /> Manage Resources
                   </Link>
                 </Button>
-              </CardContent>
-            </Card>
-          </motion.div>
+                <Button asChild variant="outline">
+                  <Link href="/admin/admission">
+                    <FileText className="mr-2" /> Manage Batches
+                  </Link>
+                </Button>
+                 <Button asChild variant="outline">
+                  <Link href="/admin/tools">
+                    <Wrench className="mr-2" /> Manage Tools
+                  </Link>
+                </Button>
+                 <Button asChild variant="outline">
+                  <Link href="/admin/teachers">
+                    <GraduationCap className="mr-2" /> Manage Teachers
+                  </Link>
+                </Button>
+            </CardContent>
+          </Card>
         </motion.div>
     </>
   );

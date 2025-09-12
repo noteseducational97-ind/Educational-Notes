@@ -134,7 +134,7 @@ export default function AdminAdmissionPage() {
             {forms.map((form) => (
                 <motion.div variants={itemVariants} key={form.id}>
                   <Card 
-                      className="flex flex-col"
+                      className="flex flex-col h-full transition-shadow duration-300 hover:shadow-xl"
                   >
                       <CardHeader>
                           <div className="flex justify-between items-start">
@@ -161,7 +161,7 @@ export default function AdminAdmissionPage() {
                           </Button>
                           <AlertDialog>
                               <AlertDialogTrigger asChild>
-                                  <Button variant="destructive" size="icon" disabled={deletingId === form.id}>
+                                  <Button variant="destructive-outline" size="icon" disabled={deletingId === form.id}>
                                       <Trash2 className="h-4 w-4" />
                                   </Button>
                               </AlertDialogTrigger>

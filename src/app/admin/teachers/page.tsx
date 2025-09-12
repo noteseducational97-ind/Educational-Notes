@@ -111,7 +111,7 @@ export default function AdminTeachersPage() {
             >
                 {teachers.map((teacher) => (
                   <motion.div variants={itemVariants} key={teacher.id}>
-                    <Card className="flex flex-col">
+                    <Card className="flex flex-col h-full transition-shadow duration-300 hover:shadow-xl">
                         <CardHeader>
                             <div>
                                 <CardTitle>{teacher.name}</CardTitle>
@@ -135,7 +135,7 @@ export default function AdminTeachersPage() {
                             </Button>
                              <AlertDialog>
                                 <AlertDialogTrigger asChild>
-                                    <Button variant="destructive" size="sm">
+                                    <Button variant="destructive-outline" size="sm">
                                         <Trash2 className="h-4 w-4 mr-2" /> Delete
                                     </Button>
                                 </AlertDialogTrigger>

@@ -145,7 +145,7 @@ export default function UploadedResourcesPage() {
                                   )}
                                   </TableCell>
                                   <TableCell>
-                                  <Badge variant={resource.visibility === 'private' ? 'destructive' : 'secondary'} className={cn(resource.visibility === 'public' && 'bg-primary/20 border-primary/50 text-primary-foreground')}>
+                                  <Badge variant={resource.visibility === 'private' ? 'destructive' : 'secondary'} className={cn(resource.visibility === 'public' && 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-300 dark:border-blue-700/50')}>
                                       {icon}
                                       {text}
                                   </Badge>
@@ -173,7 +173,7 @@ export default function UploadedResourcesPage() {
                                   </Button>
                                   <AlertDialog>
                                       <AlertDialogTrigger asChild>
-                                      <Button variant="destructive" size="icon" disabled={deletingId === resource.id}>
+                                      <Button variant="destructive-outline" size="icon" disabled={deletingId === resource.id}>
                                           <Trash2 className="h-4 w-4" />
                                       </Button>
                                       </AlertDialogTrigger>
