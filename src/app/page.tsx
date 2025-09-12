@@ -147,7 +147,7 @@ export default function Home() {
             className="w-full py-12 md:py-24 lg:py-32 bg-secondary/30"
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
+            viewport={{ once: false, amount: 0.2 }}
             variants={containerVariants}
         >
           <div className="container px-4 md:px-6 relative">
@@ -183,7 +183,7 @@ export default function Home() {
             className="w-full py-12 md:py-24 lg:py-32"
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
+            viewport={{ once: false, amount: 0.2 }}
             variants={containerVariants}
         >
           <div className="container px-4 md:px-6 relative">
@@ -224,7 +224,7 @@ export default function Home() {
             className="w-full py-12 md:py-24 lg:py-32 bg-secondary/30"
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
+            viewport={{ once: false, amount: 0.2 }}
             variants={containerVariants}
         >
             <div className="container px-4 md:px-6 relative">
@@ -271,7 +271,7 @@ export default function Home() {
             className="w-full py-12 md:py-24 lg:py-32 bg-background"
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, amount: 0.3 }}
+            viewport={{ once: false, amount: 0.3 }}
             variants={containerVariants}
         >
           <div
