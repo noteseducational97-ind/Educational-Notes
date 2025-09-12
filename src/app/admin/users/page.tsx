@@ -176,23 +176,27 @@ export default function AdminUsersPage() {
           <h1 className="text-3xl font-bold text-foreground">User Management</h1>
           <p className="text-muted-foreground">A complete list of all {users.length} users on the platform.</p>
         </div>
-        {isAnySelected && (
-          <div className="flex flex-wrap gap-2 w-full sm:w-auto justify-end">
-            <Button variant="outline" onClick={() => handleBulkToggleAdmin(true)} disabled={isProcessing}>
+        <motion.div 
+            className="flex flex-wrap gap-2 w-full sm:w-auto justify-end"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5 }}
+        >
+            <Button variant="outline" onClick={() => handleBulkToggleAdmin(true)} disabled={isProcessing || !isAnySelected}>
               <ShieldCheck className="h-4 w-4" /> <span className="sm:hidden lg:inline-block ml-2">Make Admin</span>
             </Button>
-            <Button variant="outline" onClick={() => handleBulkToggleAdmin(false)} disabled={isProcessing}>
+            <Button variant="outline" onClick={() => handleBulkToggleAdmin(false)} disabled={isProcessing || !isAnySelected}>
               <ShieldAlert className="h-4 w-4" /> <span className="sm:hidden lg:inline-block ml-2">Remove Admin</span>
             </Button>
-            <Button variant="outline" onClick={() => handleBulkToggleDisable(true)} disabled={isProcessing}>
+            <Button variant="outline" onClick={() => handleBulkToggleDisable(true)} disabled={isProcessing || !isAnySelected}>
               <Ban className="h-4 w-4" /> <span className="sm:hidden lg:inline-block ml-2">Disable</span>
             </Button>
-            <Button variant="outline" onClick={() => handleBulkToggleDisable(false)} disabled={isProcessing}>
+            <Button variant="outline" onClick={() => handleBulkToggleDisable(false)} disabled={isProcessing || !isAnySelected}>
               <Check className="h-4 w-4" /> <span className="sm:hidden lg:inline-block ml-2">Enable</span>
             </Button>
             <AlertDialog>
               <AlertDialogTrigger asChild>
-                <Button variant="destructive" disabled={isProcessing}>
+                <Button variant="destructive" disabled={isProcessing || !isAnySelected}>
                   <Trash2 className="h-4 w-4" /> <span className="sm:hidden lg:inline-block ml-2">Delete</span>
                 </Button>
               </AlertDialogTrigger>
@@ -211,8 +215,7 @@ export default function AdminUsersPage() {
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
-          </div>
-        )}
+        </motion.div>
       </div>
 
       {users.length > 0 ? (
