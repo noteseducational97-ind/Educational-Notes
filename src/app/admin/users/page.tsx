@@ -110,32 +110,6 @@ export default function AdminUsersPage() {
         <p className="text-muted-foreground">View and manage all user accounts.</p>
       </div>
 
-      <motion.div 
-        className="grid md:grid-cols-2 gap-8"
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-      >
-        <motion.div variants={itemVariants}>
-          <Card className="h-full flex flex-col">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2"><Users /> Registered Users</CardTitle>
-              <CardDescription>Standard users with no admin rights.</CardDescription>
-            </CardHeader>
-            <CardContent className="flex-grow">
-               {loadingData ? <div className="h-10 w-16 bg-muted animate-pulse rounded-md" /> : <p className="text-4xl font-bold">{regularUsers.length}</p>}
-               <p className="text-sm text-muted-foreground">Total Users</p>
-            </CardContent>
-            <CardFooter>
-                <Button asChild>
-                    <Link href="/admin/users/list/regular">
-                        View Users <ArrowRight className="ml-2 h-4 w-4" />
-                    </Link>
-                </Button>
-            </CardFooter>
-          </Card>
-        </motion.div>
-      </motion.div>
     </>
   );
 }
