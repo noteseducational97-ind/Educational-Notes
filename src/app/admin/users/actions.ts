@@ -6,13 +6,20 @@ import { revalidatePath } from 'next/cache';
 
 export const listAllUsers = async () => {
   try {
-    const userRecords = await adminAuth.listUsers();
-    
-    const userPromises = userRecords.users.map(async (user) => {
-      const userDocRef = db.collection('users').doc(user.uid);
-      const userDoc = await userDocRef.get();
-      const isAdmin = userDoc.exists && userDoc.data()?.isAdmin === true;
+    const listUsersResult = await adminAuth.listUsers();
+    const uids = listUsersResult.users.map(user => user.uid);
 
+    if (uids.length === 0) {
+      return [];
+    }
+
+    const userDocsSnapshot = await db.collection('users').where('uid', 'in', uids).get();
+    const adminStatusMap = new Map<string, boolean>();
+    userDocsSnapshot.forEach(doc => {
+      adminStatusMap.set(doc.id, doc.data()?.isAdmin === true);
+    });
+
+    const allUsers = listUsersResult.users.map(user => {
       return {
         uid: user.uid,
         email: user.email,
@@ -21,14 +28,15 @@ export const listAllUsers = async () => {
         emailVerified: user.emailVerified,
         disabled: user.disabled,
         creationTime: new Date(user.metadata.creationTime).toLocaleDateString(),
-        isAdmin: isAdmin,
+        isAdmin: adminStatusMap.get(user.uid) || false,
       };
     });
 
-    const allUsers = await Promise.all(userPromises);
     return allUsers;
+
   } catch (error) {
     console.error('Error listing users:', error);
+    // Return empty array or throw a more specific error
     return [];
   }
 };
@@ -38,8 +46,6 @@ export async function updateUserDisabledStatus(uid: string, disabled: boolean) {
   try {
     await adminAuth.updateUser(uid, { disabled });
     revalidatePath('/admin/users');
-    revalidatePath('/admin/users/list/admins');
-    revalidatePath('/admin/users/list/regular');
   } catch (error) {
     console.error('Error updating user status:', error);
     throw new Error('Failed to update user status.');
@@ -56,8 +62,6 @@ export async function deleteUser(uid: string) {
     await userDocRef.delete();
 
     revalidatePath('/admin/users');
-    revalidatePath('/admin/users/list/admins');
-    revalidatePath('/admin/users/list/regular');
     revalidatePath('/admin'); // To update stats
   } catch (error) {
     console.error('Error deleting user:', error);
@@ -70,8 +74,6 @@ export async function updateUserAdminStatus(uid: string, isAdmin: boolean) {
     const userDocRef = db.collection('users').doc(uid);
     await userDocRef.set({ isAdmin: isAdmin }, { merge: true });
     revalidatePath('/admin/users');
-    revalidatePath('/admin/users/list/admins');
-    revalidatePath('/admin/users/list/regular');
   } catch (error) {
     console.error('Error updating admin status:', error);
     throw new Error('Failed to update admin status.');
