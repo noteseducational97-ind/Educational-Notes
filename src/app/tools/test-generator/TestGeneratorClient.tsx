@@ -65,16 +65,16 @@ export default function TestGeneratorClient() {
       <Header />
       <main className="flex-1 py-12">
         <div className="container mx-auto px-4 max-w-4xl">
-           {resourceId && (
-            <div className="mb-8">
+           <div className="flex items-center justify-between mb-8">
+             {resourceId && (
                 <Button asChild variant="outline">
                     <Link href={`/resources/${resourceId}`}>
                         <ArrowLeft className="mr-2 h-4 w-4" />
                         Back to Resource
                     </Link>
                 </Button>
-            </div>
-           )}
+             )}
+           </div>
           <div className="text-center mb-12">
             <h1 className="text-4xl font-bold tracking-tight text-primary">AI Test Generator</h1>
             <p className="mt-2 text-lg text-muted-foreground">
