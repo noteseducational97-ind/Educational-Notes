@@ -19,6 +19,17 @@ import {
   SheetClose,
 } from '@/components/ui/sheet';
 import React from 'react';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 
 const adminNavLinks = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
@@ -100,10 +111,28 @@ const NavContent = ({ isMobile = false }: { isMobile?: boolean }) => {
                   Back to Home
               </Link>
           </Button>
-          <Button variant="destructive-outline" className="w-full" onClick={handleSignOut}>
-              <LogOut />
-              Log Out
-          </Button>
+          <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="destructive-outline" className="w-full">
+                    <LogOut />
+                    Log Out
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                  <AlertDialogHeader>
+                  <AlertDialogTitle>Are you sure you want to log out?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                      You will be returned to the home page.
+                  </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleSignOut}>
+                      Yes, log out
+                  </AlertDialogAction>
+                  </AlertDialogFooter>
+              </AlertDialogContent>
+          </AlertDialog>
       </div>
     </>
   );
@@ -150,5 +179,3 @@ export function MobileAdminSidebar() {
     </Sheet>
   )
 }
-
-    
