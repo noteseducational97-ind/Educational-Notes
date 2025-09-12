@@ -135,8 +135,8 @@ export default function AdminTeachersPage() {
                             </Button>
                              <AlertDialog>
                                 <AlertDialogTrigger asChild>
-                                    <Button variant="destructive-outline" size="sm">
-                                        <Trash2 className="h-4 w-4" />
+                                    <Button variant="destructive" size="sm">
+                                        <Trash2 className="h-4 w-4 mr-2" /> Delete
                                     </Button>
                                 </AlertDialogTrigger>
                                 <AlertDialogContent>
