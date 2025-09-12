@@ -114,6 +114,9 @@ export default function Home() {
           variants={containerVariants}
         >
           <div 
+            className="absolute inset-0 -z-10 h-full w-full bg-background bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] dark:bg-[radial-gradient(hsl(var(--primary)/.1)_1px,transparent_1px)]"
+          ></div>
+          <div 
             className="container px-4 md:px-6 relative"
           >
             <div className="flex flex-col items-center text-center space-y-6">
