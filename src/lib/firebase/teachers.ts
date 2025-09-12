@@ -5,16 +5,11 @@ import { db } from '@/lib/firebase/server';
 import type { Teacher } from '@/types';
 import { FieldValue, Timestamp } from 'firebase-admin/firestore';
 
-const createSlug = (name: string) => {
-    return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-};
-
 export async function addTeacher(data: Omit<Teacher, 'id' | 'createdAt'>): Promise<void> {
-    const slug = createSlug(data.name);
-    const teacherRef = db.collection('teachers').doc(slug);
+    const teacherRef = db.collection('teachers').doc();
     await teacherRef.set({
         ...data,
-        id: slug,
+        id: teacherRef.id,
         createdAt: FieldValue.serverTimestamp(),
     });
 }
@@ -35,8 +30,8 @@ export async function getTeachers(): Promise<Teacher[]> {
     });
 }
 
-export async function getTeacherById(id: string): Promise<Teacher | null> {
-    const doc = await db.collection('teachers').doc(id).get();
+export async function getTeacherById(teacherId: string): Promise<Teacher | null> {
+    const doc = await db.collection('teachers').doc(teacherId).get();
     if (!doc.exists) {
         return null;
     }
@@ -51,8 +46,8 @@ export async function getTeacherById(id: string): Promise<Teacher | null> {
     } as Teacher;
 }
 
-export async function updateTeacher(id: string, data: Partial<Omit<Teacher, 'id' | 'createdAt'>>): Promise<void> {
-    const teacherRef = db.collection('teachers').doc(id);
+export async function updateTeacher(teacherId: string, data: Partial<Omit<Teacher, 'id' | 'createdAt'>>): Promise<void> {
+    const teacherRef = db.collection('teachers').doc(teacherId);
     await teacherRef.update({
         ...data,
         updatedAt: FieldValue.serverTimestamp(),
