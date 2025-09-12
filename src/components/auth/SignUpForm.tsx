@@ -120,12 +120,19 @@ export default function SignUpForm() {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
 
-      await setDoc(doc(db, "users", user.uid), {
-        uid: user.uid,
-        displayName: user.displayName,
-        email: user.email,
-        createdAt: new Date(),
-      }, { merge: true });
+      // Check if user document already exists
+      const userDocRef = doc(db, 'users', user.uid);
+      const userDoc = await getDoc(userDocRef);
+
+      if (!userDoc.exists()) {
+        // Create user document if it doesn't exist
+        await setDoc(userDocRef, {
+            uid: user.uid,
+            displayName: user.displayName,
+            email: user.email,
+            createdAt: new Date(),
+        });
+      }
 
       await checkAdminAndRedirect(user);
     } catch (error: any) {
