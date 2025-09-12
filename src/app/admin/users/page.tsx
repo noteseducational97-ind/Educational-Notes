@@ -163,11 +163,11 @@ export default function AdminUsersPage() {
     }
   };
   
-  if (authLoading || loadingData) {
+  if (authLoading || !user || !isAdmin) {
     return <LoadingSpinner />;
   }
 
-  const areAllSelected = selectedUsers.length > 0 && selectedUsers.length === users.length;
+  const areAllSelected = users.length > 0 && selectedUsers.length === users.length;
   const isAnySelected = selectedUsers.length > 0;
 
   return (
@@ -219,14 +219,18 @@ export default function AdminUsersPage() {
         </motion.div>
       </div>
 
-      {users.length > 0 ? (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <Card>
-            <CardContent className="p-0">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <Card>
+          <CardContent className="p-0">
+            {loadingData ? (
+                <div className="flex justify-center items-center h-96">
+                    <LoadingSpinner className="min-h-0" />
+                </div>
+            ) : users.length > 0 ? (
               <div className="overflow-x-auto">
                 <Table>
                   <TableHeader>
@@ -287,14 +291,14 @@ export default function AdminUsersPage() {
                   </TableBody>
                 </Table>
               </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-      ) : (
-        <div className="text-center py-12 border-2 border-dashed rounded-lg">
-          <p className="text-muted-foreground">No users found on the platform.</p>
-        </div>
-      )}
+            ) : (
+                <div className="text-center py-12 border-2 border-dashed rounded-lg">
+                    <p className="text-muted-foreground">No users found on the platform.</p>
+                </div>
+            )}
+          </CardContent>
+        </Card>
+      </motion.div>
     </div>
   );
 }
