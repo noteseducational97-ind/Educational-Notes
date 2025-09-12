@@ -39,11 +39,15 @@ export const listAllUsers = async (): Promise<AppUser[]> => {
     }
 
     const uids = authUsers.map(user => user.uid);
-    const userDocsSnapshot = await db.collection('users').where('uid', 'in', uids).get();
+    // Fetch all user documents from Firestore in one go
+    const userDocsSnapshot = await db.collection('users').get();
     
     const adminStatusMap = new Map<string, boolean>();
     userDocsSnapshot.forEach(doc => {
-      adminStatusMap.set(doc.data().uid, doc.data()?.isAdmin === true);
+      // Ensure the document has data and an isAdmin field
+      if (doc.data()?.isAdmin === true) {
+        adminStatusMap.set(doc.id, true);
+      }
     });
 
     const allUsers: AppUser[] = authUsers.map(user => {
