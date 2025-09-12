@@ -119,41 +119,6 @@ export default function AdminUsersPage() {
         <motion.div variants={itemVariants}>
           <Card className="h-full flex flex-col">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2"><ShieldCheck /> Admin Accounts</CardTitle>
-              <CardDescription>Users with administrative privileges.</CardDescription>
-            </CardHeader>
-            <CardContent className="flex-grow space-y-4">
-                {owner && (
-                    <div className="flex items-center gap-4 rounded-lg bg-secondary/50 p-3">
-                        <Avatar>
-                            <AvatarImage src={owner.photoURL || ''} alt={owner.displayName || ''} />
-                            <AvatarFallback>{getInitials(owner.displayName)}</AvatarFallback>
-                        </Avatar>
-                        <div>
-                            <p className="font-semibold">{owner.displayName}</p>
-                            <p className="text-sm text-muted-foreground">{owner.email}</p>
-                            <Badge variant="destructive" className="mt-1">Owner</Badge>
-                        </div>
-                    </div>
-                )}
-                <div>
-                   {loadingData ? <div className="h-10 w-16 bg-muted animate-pulse rounded-md" /> : <p className="text-4xl font-bold">{adminUsers.length}</p>}
-                    <p className="text-sm text-muted-foreground">Total Admins</p>
-                </div>
-            </CardContent>
-            <CardFooter>
-              <Button asChild>
-                <Link href="/admin/users/list/admins">
-                    View Admins <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
-            </CardFooter>
-          </Card>
-        </motion.div>
-        
-        <motion.div variants={itemVariants}>
-          <Card className="h-full flex flex-col">
-            <CardHeader>
               <CardTitle className="flex items-center gap-2"><Users /> Registered Users</CardTitle>
               <CardDescription>Standard users with no admin rights.</CardDescription>
             </CardHeader>
