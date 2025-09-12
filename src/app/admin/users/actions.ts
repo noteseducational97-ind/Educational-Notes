@@ -4,22 +4,49 @@
 import { adminAuth, db } from '@/lib/firebase/admin';
 import { revalidatePath } from 'next/cache';
 
-export const listAllUsers = async () => {
+// This is the shape of the user object returned by Firebase Admin SDK
+type AuthUser = {
+    uid: string;
+    email?: string;
+    displayName?: string;
+    photoURL?: string;
+    emailVerified: boolean;
+    disabled: boolean;
+    metadata: {
+        creationTime: string;
+    };
+};
+
+// This is the shape of the user object we want to use in our app
+export type AppUser = {
+    uid: string;
+    email?: string;
+    displayName?: string;
+    photoURL?: string;
+    emailVerified: boolean;
+    disabled: boolean;
+    creationTime: string;
+    isAdmin: boolean;
+};
+
+export const listAllUsers = async (): Promise<AppUser[]> => {
   try {
     const listUsersResult = await adminAuth.listUsers();
-    const uids = listUsersResult.users.map(user => user.uid);
+    const authUsers: AuthUser[] = listUsersResult.users.map(userRecord => userRecord.toJSON() as AuthUser);
 
-    if (uids.length === 0) {
+    if (authUsers.length === 0) {
       return [];
     }
 
+    const uids = authUsers.map(user => user.uid);
     const userDocsSnapshot = await db.collection('users').where('uid', 'in', uids).get();
+    
     const adminStatusMap = new Map<string, boolean>();
     userDocsSnapshot.forEach(doc => {
-      adminStatusMap.set(doc.id, doc.data()?.isAdmin === true);
+      adminStatusMap.set(doc.data().uid, doc.data()?.isAdmin === true);
     });
 
-    const allUsers = listUsersResult.users.map(user => {
+    const allUsers: AppUser[] = authUsers.map(user => {
       return {
         uid: user.uid,
         email: user.email,
@@ -36,7 +63,6 @@ export const listAllUsers = async () => {
 
   } catch (error) {
     console.error('Error listing users:', error);
-    // Return empty array or throw a more specific error
     return [];
   }
 };
@@ -46,9 +72,10 @@ export async function updateUserDisabledStatus(uid: string, disabled: boolean) {
   try {
     await adminAuth.updateUser(uid, { disabled });
     revalidatePath('/admin/users');
+    return { success: true };
   } catch (error) {
     console.error('Error updating user status:', error);
-    throw new Error('Failed to update user status.');
+    return { success: false, error: 'Failed to update user status.' };
   }
 }
 
@@ -63,9 +90,10 @@ export async function deleteUser(uid: string) {
 
     revalidatePath('/admin/users');
     revalidatePath('/admin'); // To update stats
+    return { success: true };
   } catch (error) {
     console.error('Error deleting user:', error);
-    throw new Error('Failed to delete user.');
+    return { success: false, error: 'Failed to delete user.' };
   }
 }
 
@@ -74,8 +102,9 @@ export async function updateUserAdminStatus(uid: string, isAdmin: boolean) {
     const userDocRef = db.collection('users').doc(uid);
     await userDocRef.set({ isAdmin: isAdmin }, { merge: true });
     revalidatePath('/admin/users');
+    return { success: true };
   } catch (error) {
     console.error('Error updating admin status:', error);
-    throw new Error('Failed to update admin status.');
+    return { success: false, error: 'Failed to update admin status.' };
   }
 }

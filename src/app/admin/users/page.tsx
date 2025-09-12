@@ -3,12 +3,12 @@
 import { useEffect, useState, useCallback, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/use-auth';
-import { listAllUsers, updateUserDisabledStatus, deleteUser as deleteUserAction, updateUserAdminStatus } from './actions';
+import { listAllUsers, updateUserDisabledStatus, deleteUser as deleteUserAction, updateUserAdminStatus, AppUser } from './actions';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Users, Trash2, CheckCircle, Ban, Check, ShieldAlert, ShieldCheck, ShieldQuestion } from 'lucide-react';
+import { Users, Trash2, CheckCircle, Ban, ShieldCheck, ShieldAlert } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import {
   AlertDialog,
@@ -32,17 +32,8 @@ import {
 import { Card, CardContent } from '@/components/ui/card';
 import { motion } from 'framer-motion';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Skeleton } from '@/components/ui/skeleton';
 
-type User = {
-    uid: string;
-    email: string | undefined;
-    displayName: string | undefined;
-    photoURL: string | undefined;
-    emailVerified: boolean;
-    disabled: boolean;
-    creationTime: string;
-    isAdmin: boolean;
-}
 
 const getInitials = (name: string | null | undefined) => {
     if (!name) return 'U';
@@ -52,15 +43,33 @@ const getInitials = (name: string | null | undefined) => {
     .join('');
 };
 
+const UserRowSkeleton = () => (
+  <TableRow>
+    <TableCell className="px-4"><Skeleton className="h-4 w-4" /></TableCell>
+    <TableCell>
+      <div className="flex items-center gap-3">
+        <Skeleton className="h-10 w-10 rounded-full" />
+        <div>
+          <Skeleton className="h-4 w-24 mb-1" />
+          <Skeleton className="h-3 w-32" />
+        </div>
+      </div>
+    </TableCell>
+    <TableCell><Skeleton className="h-6 w-20 rounded-full" /></TableCell>
+    <TableCell><Skeleton className="h-6 w-20 rounded-full" /></TableCell>
+    <TableCell><Skeleton className="h-4 w-24" /></TableCell>
+  </TableRow>
+)
+
 export default function AdminUsersPage() {
   const { user: currentUser, loading: authLoading, isAdmin } = useAuth();
   const router = useRouter();
   const { toast } = useToast();
 
-  const [users, setUsers] = useState<User[]>([]);
+  const [users, setUsers] = useState<AppUser[]>([]);
   const [loadingData, setLoadingData] = useState(true);
   const [isProcessing, startTransition] = useTransition();
-  const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
+  const [selectedUsers, setSelectedUsers] = useState<AppUser[]>([]);
 
   const fetchUsers = useCallback(() => {
     setLoadingData(true);
@@ -68,8 +77,15 @@ export default function AdminUsersPage() {
       .then(allUsers => {
         setUsers(allUsers);
       })
+      .catch(err => {
+        toast({
+            variant: 'destructive',
+            title: 'Error fetching users',
+            description: 'Could not load the list of users. Please try again.',
+        });
+      })
       .finally(() => setLoadingData(false));
-  }, []);
+  }, [toast]);
 
   useEffect(() => {
     if (!authLoading) {
@@ -81,7 +97,7 @@ export default function AdminUsersPage() {
     }
   }, [currentUser, authLoading, isAdmin, router, fetchUsers]);
 
-  const handleToggleSelection = (user: User) => {
+  const handleToggleSelection = (user: AppUser) => {
     setSelectedUsers(prev =>
       prev.find(u => u.uid === user.uid)
         ? prev.filter(u => u.uid !== user.uid)
@@ -95,14 +111,20 @@ export default function AdminUsersPage() {
 
   const handleBulkAction = async (action: (uid: string, param?: any) => Promise<any>, successMessage: string, errorMessage: string, param?: any) => {
     startTransition(async () => {
-        try {
-            await Promise.all(selectedUsers.map(u => action(u.uid, param)));
-            toast({ title: 'Success', description: `${selectedUsers.length} ${successMessage}` });
-            fetchUsers();
-            setSelectedUsers([]);
-        } catch (error: any) {
-            toast({ variant: 'destructive', title: 'Error', description: errorMessage });
+        const results = await Promise.allSettled(selectedUsers.map(u => action(u.uid, param)));
+        
+        const successfulOps = results.filter(r => r.status === 'fulfilled').length;
+        const failedOps = results.length - successfulOps;
+        
+        if (successfulOps > 0) {
+            toast({ title: 'Success', description: `${successfulOps} ${successMessage}` });
         }
+        if (failedOps > 0) {
+             toast({ variant: 'destructive', title: 'Error', description: `${failedOps} operation(s) failed. ${errorMessage}` });
+        }
+
+        fetchUsers(); // Refetch data
+        setSelectedUsers([]); // Clear selection
     });
   };
 
@@ -118,7 +140,9 @@ export default function AdminUsersPage() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold text-foreground">User Management</h1>
-          <p className="text-muted-foreground">A complete list of all {users.length} user(s) on the platform.</p>
+          {loadingData ? <Skeleton className="h-5 w-48 mt-1" /> : (
+            <p className="text-muted-foreground">A complete list of all {users.length} user(s) on the platform.</p>
+          )}
         </div>
         <motion.div 
             className="flex flex-wrap gap-2 w-full sm:w-auto justify-end"
@@ -136,7 +160,7 @@ export default function AdminUsersPage() {
               <Ban /> <span className="sm:hidden lg:inline-block ml-2">Disable</span>
             </Button>
             <Button variant="outline" onClick={() => handleBulkAction(updateUserDisabledStatus, "user(s) enabled.", "Failed to enable users.", false)} disabled={isProcessing || !isAnySelected}>
-              <Check /> <span className="sm:hidden lg:inline-block ml-2">Enable</span>
+              <CheckCircle /> <span className="sm:hidden lg:inline-block ml-2">Enable</span>
             </Button>
             <AlertDialog>
               <AlertDialogTrigger asChild>
@@ -169,20 +193,16 @@ export default function AdminUsersPage() {
       >
         <Card>
           <CardContent className="p-0">
-            {loadingData ? (
-                <div className="flex justify-center items-center h-96">
-                    <LoadingSpinner className="min-h-0" />
-                </div>
-            ) : users.length > 0 ? (
               <div className="overflow-x-auto">
                 <Table>
                   <TableHeader>
                     <TableRow>
                       <TableHead className="px-4">
                         <Checkbox
-                          checked={areAllSelected}
+                          checked={areAllSelected && !loadingData}
                           onCheckedChange={(checked) => handleToggleAll(Boolean(checked))}
                           aria-label="Select all"
+                          disabled={loadingData}
                         />
                       </TableHead>
                       <TableHead>User</TableHead>
@@ -192,55 +212,62 @@ export default function AdminUsersPage() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {users.map((u) => (
-                      <TableRow 
-                        key={u.uid} 
-                        data-state={selectedUsers.find(su => su.uid === u.uid) ? "selected" : ""}
-                      >
-                        <TableCell className="px-4">
-                          <Checkbox
-                            checked={!!selectedUsers.find(su => su.uid === u.uid)}
-                            onCheckedChange={() => handleToggleSelection(u)}
-                            aria-label={`Select user ${u.displayName}`}
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex items-center gap-3">
-                            <Avatar>
-                              <AvatarImage src={u.photoURL ?? ''} alt={u.displayName ?? 'User'} />
-                              <AvatarFallback>{getInitials(u.displayName)}</AvatarFallback>
-                            </Avatar>
-                            <div>
-                              <p className="font-medium">{u.displayName || 'N/A'}</p>
-                              <p className="text-sm text-muted-foreground">{u.email}</p>
+                    {loadingData ? (
+                        Array.from({length: 3}).map((_, i) => <UserRowSkeleton key={i} />)
+                    ) : users.length > 0 ? (
+                        users.map((u) => (
+                        <TableRow 
+                            key={u.uid} 
+                            data-state={selectedUsers.find(su => su.uid === u.uid) ? "selected" : ""}
+                        >
+                            <TableCell className="px-4">
+                            <Checkbox
+                                checked={!!selectedUsers.find(su => su.uid === u.uid)}
+                                onCheckedChange={() => handleToggleSelection(u)}
+                                aria-label={`Select user ${u.displayName}`}
+                            />
+                            </TableCell>
+                            <TableCell>
+                            <div className="flex items-center gap-3">
+                                <Avatar>
+                                <AvatarImage src={u.photoURL ?? ''} alt={u.displayName ?? 'User'} />
+                                <AvatarFallback>{getInitials(u.displayName)}</AvatarFallback>
+                                </Avatar>
+                                <div>
+                                <p className="font-medium">{u.displayName || 'N/A'}</p>
+                                <p className="text-sm text-muted-foreground">{u.email}</p>
+                                </div>
                             </div>
-                          </div>
-                        </TableCell>
-                         <TableCell>
-                            <Badge variant={u.isAdmin ? 'default' : 'secondary'} className="capitalize">
-                                {u.isAdmin ? <ShieldCheck className="mr-1 h-3 w-3"/> : <Users className="mr-1 h-3 w-3"/>}
-                                {u.isAdmin ? 'Admin' : 'User'}
+                            </TableCell>
+                            <TableCell>
+                                <Badge variant={u.isAdmin ? 'default' : 'secondary'} className="capitalize">
+                                    {u.isAdmin ? <ShieldCheck className="mr-1 h-3 w-3"/> : <Users className="mr-1 h-3 w-3"/>}
+                                    {u.isAdmin ? 'Admin' : 'User'}
+                                </Badge>
+                            </TableCell>
+                            <TableCell>
+                            <Badge variant={u.disabled ? 'destructive' : 'secondary'} className={!u.disabled ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 border-green-300 dark:border-green-700/50" : ""}>
+                                {u.disabled ? <Ban className="mr-1 h-3 w-3"/> : <CheckCircle className="mr-1 h-3 w-3"/>}
+                                {u.disabled ? 'Disabled' : 'Active'}
                             </Badge>
-                         </TableCell>
-                        <TableCell>
-                          <Badge variant={u.disabled ? 'destructive' : 'secondary'} className={!u.disabled ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 border-green-300 dark:border-green-700/50" : ""}>
-                            {u.disabled ? <Ban className="mr-1 h-3 w-3"/> : <CheckCircle className="mr-1 h-3 w-3"/>}
-                            {u.disabled ? 'Disabled' : 'Active'}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>{u.creationTime}</TableCell>
-                      </TableRow>
-                    ))}
+                            </TableCell>
+                            <TableCell>{u.creationTime}</TableCell>
+                        </TableRow>
+                        ))
+                    ) : (
+                        <TableRow>
+                            <TableCell colSpan={5}>
+                                <div className="text-center py-12">
+                                    <Users className="mx-auto h-12 w-12 text-muted-foreground" />
+                                    <h3 className="mt-2 text-sm font-semibold text-foreground">No users found</h3>
+                                    <p className="mt-1 text-sm text-muted-foreground">No users have registered on the platform yet.</p>
+                                </div>
+                            </TableCell>
+                        </TableRow>
+                    )}
                   </TableBody>
                 </Table>
               </div>
-            ) : (
-                <div className="text-center py-12 border-2 border-dashed rounded-lg">
-                    <Users className="mx-auto h-12 w-12 text-muted-foreground" />
-                    <h3 className="mt-2 text-sm font-semibold text-foreground">No users found</h3>
-                    <p className="mt-1 text-sm text-muted-foreground">No users have registered on the platform yet.</p>
-                </div>
-            )}
           </CardContent>
         </Card>
       </motion.div>
