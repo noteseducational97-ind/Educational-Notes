@@ -95,18 +95,6 @@ export default function AdminDashboardPage() {
                 </CardContent>
               </Card>
             </motion.div>
-             <motion.div variants={itemVariants}>
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Total Users</CardTitle>
-                    <Users className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                    {loadingStats ? <div className="h-8 w-16 bg-muted animate-pulse rounded-md" /> : <div className="text-2xl font-bold">{stats.userCount}</div>}
-                    <p className="text-xs text-muted-foreground">Registered on the platform</p>
-                </CardContent>
-              </Card>
-            </motion.div>
         </motion.div>
 
         <motion.div 

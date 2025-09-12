@@ -174,7 +174,7 @@ export default function AdminUsersPage() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold text-foreground">User Management</h1>
-          <p className="text-muted-foreground">A complete list of all users on the platform.</p>
+          <p className="text-muted-foreground">A complete list of all {users.length} users on the platform.</p>
         </div>
         {isAnySelected && (
           <div className="flex flex-wrap gap-2 w-full sm:w-auto justify-end">
