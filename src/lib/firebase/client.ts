@@ -9,7 +9,7 @@ const firebaseConfig: FirebaseOptions = {
   apiKey: "AIzaSyCXs29ewiUFUbbdbdS7EX3BGdlpFdZMB8U",
   authDomain: "educational-notes97.firebaseapp.com",
   projectId: "educational-notes97",
-  storageBucket: "educational-notes97.appspot.com",
+  storageBucket: "educational-notes97.firebasestorage.app",
   messagingSenderId: "1073752372395",
   appId: "1:1073752372395:web:72bc8c94978f2ff32cb3ee",
   measurementId: "G-Z8CD6PBYZZ"
