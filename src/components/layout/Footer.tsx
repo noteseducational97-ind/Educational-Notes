@@ -4,7 +4,7 @@ import { EducationalNotesLogo } from '@/components/icons/EducationalNotesLogo';
 
 export default function Footer() {
   return (
-    <footer className="w-full border-t border-border/40 bg-background/95 backdrop-blur-sm hidden md:block" style={{ marginTop: '-15px' }}>
+    <footer className="w-full border-t border-border/40 bg-background/95 backdrop-blur-sm hidden md:block">
       <div className="container mx-auto flex flex-col items-center justify-between gap-4 px-4 py-6 md:px-6 sm:flex-row">
         <Link href="/" className="flex items-center space-x-2">
           <EducationalNotesLogo className="h-6 w-6 text-primary" />
