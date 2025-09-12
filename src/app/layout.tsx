@@ -4,7 +4,6 @@ import './globals.css';
 import { AuthProvider } from '@/providers/auth-provider';
 import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
-import Footer from '@/components/layout/Footer';
 import { Inter } from 'next/font/google';
 import BottomNav from '@/components/layout/BottomNav';
 import { ThemeProvider } from '@/providers/theme-provider';
@@ -39,7 +38,6 @@ export default function RootLayout({
               <div className="flex-1 pb-20 md:pb-0">
                 {children}
               </div>
-              <Footer />
               <BottomNav />
             </div>
             <Toaster />
