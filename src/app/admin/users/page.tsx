@@ -1,6 +1,5 @@
-
 'use client';
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/use-auth';
 import { listAllUsers } from './actions';
@@ -62,6 +61,23 @@ export default function AdminUsersPage() {
   const [users, setUsers] = useState<User[]>([]);
   const [loadingData, setLoadingData] = useState(true);
   
+  const fetchUsers = useCallback(async () => {
+      setLoadingData(true);
+      try {
+          const allUsers = await listAllUsers();
+          setUsers(allUsers);
+      } catch (error) {
+          toast({
+              variant: 'destructive',
+              title: 'Error fetching users',
+              description: 'Could not load user data. Please try again.',
+          });
+          console.error("Failed to fetch users:", error);
+      } finally {
+          setLoadingData(false);
+      }
+  }, [toast]);
+  
   useEffect(() => {
     if (!authLoading) {
       if (!user) {
@@ -71,21 +87,10 @@ export default function AdminUsersPage() {
         toast({ variant: 'destructive', title: 'Permission Denied', description: 'You do not have permission to access the admin panel.' });
         router.push('/');
       } else {
-        setLoadingData(true);
-        listAllUsers()
-          .then(setUsers)
-          .catch((error) => {
-              toast({
-                  variant: 'destructive',
-                  title: 'Error fetching users',
-                  description: 'Could not load user data. Please try again.',
-              });
-              console.error("Failed to fetch users:", error);
-          })
-          .finally(() => setLoadingData(false));
+        fetchUsers();
       }
     }
-  }, [user, authLoading, isAdmin, router, toast]);
+  }, [user, authLoading, isAdmin, router, toast, fetchUsers]);
 
   const { adminUsers, regularUsers, owner } = useMemo(() => {
     const adminUsers = users.filter(u => u.isAdmin);
@@ -94,7 +99,7 @@ export default function AdminUsersPage() {
     return { adminUsers, regularUsers, owner };
   }, [users]);
   
-  if (authLoading || !user || !isAdmin || loadingData) {
+  if (authLoading || !user || !isAdmin) {
     return <LoadingSpinner />;
   }
   
@@ -132,7 +137,7 @@ export default function AdminUsersPage() {
                     </div>
                 )}
                 <div>
-                    <p className="text-4xl font-bold">{adminUsers.length}</p>
+                   {loadingData ? <div className="h-10 w-16 bg-muted animate-pulse rounded-md" /> : <p className="text-4xl font-bold">{adminUsers.length}</p>}
                     <p className="text-sm text-muted-foreground">Total Admins</p>
                 </div>
             </CardContent>
@@ -153,7 +158,7 @@ export default function AdminUsersPage() {
               <CardDescription>Standard users with no admin rights.</CardDescription>
             </CardHeader>
             <CardContent className="flex-grow">
-               <p className="text-4xl font-bold">{regularUsers.length}</p>
+               {loadingData ? <div className="h-10 w-16 bg-muted animate-pulse rounded-md" /> : <p className="text-4xl font-bold">{regularUsers.length}</p>}
                <p className="text-sm text-muted-foreground">Total Users</p>
             </CardContent>
             <CardFooter>
