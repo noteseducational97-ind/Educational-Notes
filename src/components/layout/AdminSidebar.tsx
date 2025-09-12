@@ -89,7 +89,7 @@ const NavContent = ({ isMobile = false }: { isMobile?: boolean }) => {
   const LinkComponent = isMobile ? MobileNavLink : NavLink;
 
   return (
-    <>
+    <div className="flex h-full flex-col">
       <div className="flex-1 overflow-y-auto py-4">
           <nav className={cn("px-4 space-y-2", isMobile && "grid")}>
           {adminNavLinks.map(({ href, label, icon: Icon }) => {
@@ -103,7 +103,7 @@ const NavContent = ({ isMobile = false }: { isMobile?: boolean }) => {
           })}
           </nav>
       </div>
-      <div className='p-4 mt-auto border-t space-y-2'>
+      <div className='p-4 border-t space-y-2' style={{ marginBottom: '15px' }}>
             <Button variant="outline" className="w-full" asChild>
               <Link href="/">
                   <ArrowLeft />
@@ -133,7 +133,7 @@ const NavContent = ({ isMobile = false }: { isMobile?: boolean }) => {
               </AlertDialogContent>
           </AlertDialog>
       </div>
-    </>
+    </div>
   );
 };
 
