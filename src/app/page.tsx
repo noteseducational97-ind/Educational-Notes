@@ -106,12 +106,15 @@ export default function Home() {
       <Header />
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="w-full py-20 md:py-32 lg:py-40 relative overflow-hidden">
-          <motion.div 
+        <motion.section 
+          className="w-full py-20 md:py-32 lg:py-40 relative overflow-hidden"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: false, amount: 0.2 }}
+          variants={containerVariants}
+        >
+          <div 
             className="container px-4 md:px-6 relative"
-            initial="hidden"
-            animate="visible"
-            variants={containerVariants}
           >
             <div className="flex flex-col items-center text-center space-y-6">
                 <motion.div variants={itemVariants} className="inline-block rounded-full bg-primary/10 px-4 py-2 text-sm font-semibold text-primary border border-primary/20 shadow-sm">
@@ -138,8 +141,8 @@ export default function Home() {
                     </Button>
                 </motion.div>
             </div>
-          </motion.div>
-        </section>
+          </div>
+        </motion.section>
 
         {/* Features Section */}
         <motion.section 
