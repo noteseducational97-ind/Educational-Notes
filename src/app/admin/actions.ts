@@ -174,13 +174,13 @@ export async function deleteResourceAction(id: string) {
 
 export async function getAdminStats() {
     try {
-        const usersPromise = adminAuth.listUsers();
+        const usersPromise = db.collection('users').count().get();
         const resourcesPromise = db.collection('resources').count().get();
 
-        const [usersResult, resourcesSnapshot] = await Promise.all([usersPromise, resourcesPromise]);
+        const [usersSnapshot, resourcesSnapshot] = await Promise.all([usersPromise, resourcesPromise]);
 
         return {
-            userCount: usersResult.users.length,
+            userCount: usersSnapshot.data().count,
             resourceCount: resourcesSnapshot.data().count,
         };
     } catch (error) {
