@@ -50,12 +50,12 @@ export default function ProfileCard() {
     <>
       <Card>
         <CardHeader>
-          <div className="flex items-center gap-4">
+          <div className="flex flex-col sm:flex-row items-center gap-4">
             <Avatar className="h-20 w-20">
               <AvatarImage src={user.photoURL ?? ''} alt={user.displayName ?? 'User'} />
               <AvatarFallback className="text-3xl">{getInitials(user.displayName)}</AvatarFallback>
             </Avatar>
-            <div>
+            <div className="text-center sm:text-left">
               <CardTitle className="text-3xl">{user.displayName}</CardTitle>
               <CardDescription className="text-lg">{user.email}</CardDescription>
             </div>

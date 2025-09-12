@@ -196,23 +196,23 @@ export default function UserListPage() {
                  <div className="flex flex-wrap gap-2 w-full sm:w-auto">
                     {userType === 'regular' ? (
                        <Button variant="outline" onClick={() => handleBulkToggleAdmin(true)} disabled={isProcessing}>
-                          <ShieldCheck /> Make Admin
+                          <ShieldCheck className="h-4 w-4" /> <span className="sm:hidden lg:inline-block">Make Admin</span>
                        </Button>
                     ) : (
                         <Button variant="outline" onClick={() => handleBulkToggleAdmin(false)} disabled={isProcessing}>
-                          <ShieldAlert /> Remove Admin
+                          <ShieldAlert className="h-4 w-4" /> <span className="sm:hidden lg:inline-block">Remove Admin</span>
                        </Button>
                     )}
                     <Button variant="outline" onClick={() => handleBulkToggleDisable(true)} disabled={isProcessing}>
-                       <Ban /> Disable
+                       <Ban className="h-4 w-4" /> <span className="sm:hidden lg:inline-block">Disable</span>
                     </Button>
                      <Button variant="outline" onClick={() => handleBulkToggleDisable(false)} disabled={isProcessing}>
-                       <Check /> Enable
+                       <Check className="h-4 w-4" /> <span className="sm:hidden lg:inline-block">Enable</span>
                     </Button>
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
                            <Button variant="destructive" disabled={isProcessing}>
-                              <Trash2 /> Delete
+                              <Trash2 className="h-4 w-4" /> <span className="sm:hidden lg:inline-block">Delete</span>
                            </Button>
                       </AlertDialogTrigger>
                       <AlertDialogContent>
@@ -243,56 +243,58 @@ export default function UserListPage() {
           >
             <Card>
               <CardContent className="p-0">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead padding="checkbox">
-                         <Checkbox
-                            checked={areAllSelected}
-                            onCheckedChange={(checked) => handleToggleAll(Boolean(checked))}
-                            aria-label="Select all"
-                          />
-                      </TableHead>
-                      <TableHead>User</TableHead>
-                      <TableHead>Created At</TableHead>
-                      <TableHead>Status</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {users.map((u) => (
-                      <TableRow 
-                        key={u.uid} 
-                        data-state={selectedUsers.find(su => su.uid === u.uid) ? "selected" : ""}
-                      >
-                        <TableCell padding="checkbox">
-                           <Checkbox
-                            checked={!!selectedUsers.find(su => su.uid === u.uid)}
-                            onCheckedChange={() => handleToggleSelection(u)}
-                            aria-label={`Select user ${u.displayName}`}
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex items-center gap-3">
-                            <Avatar>
-                              <AvatarImage src={u.photoURL ?? ''} alt={u.displayName ?? 'User'} />
-                              <AvatarFallback>{getInitials(u.displayName)}</AvatarFallback>
-                            </Avatar>
-                            <div>
-                              <p className="font-medium">{u.displayName || 'N/A'}</p>
-                              <p className="text-sm text-muted-foreground">{u.email}</p>
-                            </div>
-                          </div>
-                        </TableCell>
-                        <TableCell>{u.creationTime}</TableCell>
-                        <TableCell>
-                           <Badge variant={u.disabled ? 'destructive' : 'secondary'} className={!u.disabled ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 border-green-300 dark:border-green-700/50" : ""}>
-                            {u.disabled ? 'Disabled' : 'Active'}
-                          </Badge>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead className="px-2">
+                             <Checkbox
+                                checked={areAllSelected}
+                                onCheckedChange={(checked) => handleToggleAll(Boolean(checked))}
+                                aria-label="Select all"
+                              />
+                          </TableHead>
+                          <TableHead>User</TableHead>
+                          <TableHead>Created At</TableHead>
+                          <TableHead>Status</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {users.map((u) => (
+                          <TableRow 
+                            key={u.uid} 
+                            data-state={selectedUsers.find(su => su.uid === u.uid) ? "selected" : ""}
+                          >
+                            <TableCell className="px-2">
+                               <Checkbox
+                                checked={!!selectedUsers.find(su => su.uid === u.uid)}
+                                onCheckedChange={() => handleToggleSelection(u)}
+                                aria-label={`Select user ${u.displayName}`}
+                              />
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex items-center gap-3">
+                                <Avatar>
+                                  <AvatarImage src={u.photoURL ?? ''} alt={u.displayName ?? 'User'} />
+                                  <AvatarFallback>{getInitials(u.displayName)}</AvatarFallback>
+                                </Avatar>
+                                <div>
+                                  <p className="font-medium">{u.displayName || 'N/A'}</p>
+                                  <p className="text-sm text-muted-foreground">{u.email}</p>
+                                </div>
+                              </div>
+                            </TableCell>
+                            <TableCell>{u.creationTime}</TableCell>
+                            <TableCell>
+                               <Badge variant={u.disabled ? 'destructive' : 'secondary'} className={!u.disabled ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 border-green-300 dark:border-green-700/50" : ""}>
+                                {u.disabled ? 'Disabled' : 'Active'}
+                              </Badge>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                </div>
               </CardContent>
             </Card>
           </motion.div>

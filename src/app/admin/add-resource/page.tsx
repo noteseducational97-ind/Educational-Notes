@@ -229,24 +229,23 @@ export default function AddResourceAdminPage() {
                       )}
                   />
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <FormField
-                    control={form.control}
-                    name="category"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Category(s)</FormLabel>
-                            <MultiSelect
-                                options={categories.map(c => ({ value: c, label: c }))}
-                                onValueChange={field.onChange}
-                                defaultValue={field.value}
-                                placeholder="Select categories..."
-                            />
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                  />
-                </div>
+                
+                <FormField
+                  control={form.control}
+                  name="category"
+                  render={({ field }) => (
+                      <FormItem>
+                          <FormLabel>Category(s)</FormLabel>
+                          <MultiSelect
+                              options={categories.map(c => ({ value: c, label: c }))}
+                              onValueChange={field.onChange}
+                              defaultValue={field.value}
+                              placeholder="Select categories..."
+                          />
+                          <FormMessage />
+                      </FormItem>
+                  )}
+                />
                   <div className="space-y-4">
                     <FormField
                       control={form.control}
