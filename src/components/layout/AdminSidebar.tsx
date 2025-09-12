@@ -35,7 +35,6 @@ const adminNavLinks = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/admin/downloads', label: 'Download', icon: Download },
   { href: '/admin/uploaded-resources', label: 'Manage Resources', icon: BookCopy },
-  { href: '/admin/users', label: 'Manage Users', icon: Users },
   { href: '/admin/admission', label: 'Batches', icon: FileText },
   { href: '/admin/tools', label: 'Manage Tools', icon: Wrench },
   { href: '/admin/teachers', label: 'Teachers', icon: GraduationCap },
