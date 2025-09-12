@@ -116,21 +116,6 @@ export default function AdminDashboardPage() {
           <motion.div variants={itemVariants}>
             <Card>
               <CardHeader>
-                <CardTitle>Manage Users</CardTitle>
-                <CardDescription>View, enable, disable, or delete user accounts.</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Button asChild>
-                  <Link href="/admin/users">
-                    Go to User Management <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
-                </Button>
-              </CardContent>
-            </Card>
-          </motion.div>
-          <motion.div variants={itemVariants}>
-            <Card>
-              <CardHeader>
                 <CardTitle>Manage Resources</CardTitle>
                 <CardDescription>Add, edit, or remove study materials from the library.</CardDescription>
               </CardHeader>
