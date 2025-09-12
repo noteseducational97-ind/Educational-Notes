@@ -21,10 +21,6 @@ const ContentGeneratorOutputSchema = z.object({
 });
 export type ContentGeneratorOutput = z.infer<typeof ContentGeneratorOutputSchema>;
 
-export async function generateContent(input: ContentGeneratorInput): Promise<ContentGeneratorOutput> {
-  return contentGeneratorFlow(input);
-}
-
 const contentPrompt = ai.definePrompt({
   name: 'contentGeneratorPrompt',
   input: { schema: ContentGeneratorInputSchema },
@@ -50,3 +46,7 @@ const contentGeneratorFlow = ai.defineFlow(
     return output || { content: '' };
   }
 );
+
+export async function generateContent(input: ContentGeneratorInput): Promise<ContentGeneratorOutput> {
+  return contentGeneratorFlow(input);
+}
