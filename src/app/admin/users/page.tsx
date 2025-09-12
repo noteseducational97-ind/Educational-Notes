@@ -1,3 +1,4 @@
+
 'use client';
 import { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
@@ -10,6 +11,8 @@ import { Users, ShieldCheck, ArrowRight } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+
 
 type User = {
     uid: string;
@@ -43,6 +46,14 @@ const itemVariants = {
   },
 };
 
+const getInitials = (name: string | null | undefined) => {
+    if (!name) return 'U';
+    return name
+    .split(' ')
+    .map((n) => n[0])
+    .join('');
+};
+
 export default function AdminUsersPage() {
   const { user, loading: authLoading, isAdmin } = useAuth();
   const router = useRouter();
@@ -68,10 +79,11 @@ export default function AdminUsersPage() {
     }
   }, [user, authLoading, isAdmin, router, toast]);
 
-  const { adminUsers, regularUsers } = useMemo(() => {
+  const { adminUsers, regularUsers, owner } = useMemo(() => {
     const adminUsers = users.filter(u => u.isAdmin);
     const regularUsers = users.filter(u => !u.isAdmin);
-    return { adminUsers, regularUsers };
+    const owner = adminUsers.find(u => u.email === 'noteseducational97@gmail.com');
+    return { adminUsers, regularUsers, owner };
   }, [users]);
   
   if (authLoading || !user || !isAdmin || loadingData) {
@@ -97,9 +109,24 @@ export default function AdminUsersPage() {
               <CardTitle className="flex items-center gap-2"><ShieldCheck /> Admin Accounts</CardTitle>
               <CardDescription>Users with administrative privileges.</CardDescription>
             </CardHeader>
-            <CardContent className="flex-grow">
-              <p className="text-4xl font-bold">{adminUsers.length}</p>
-              <p className="text-sm text-muted-foreground">Total Admins</p>
+            <CardContent className="flex-grow space-y-4">
+                {owner && (
+                    <div className="flex items-center gap-4 rounded-lg bg-secondary/50 p-3">
+                        <Avatar>
+                            <AvatarImage src={owner.photoURL || ''} alt={owner.displayName || ''} />
+                            <AvatarFallback>{getInitials(owner.displayName)}</AvatarFallback>
+                        </Avatar>
+                        <div>
+                            <p className="font-semibold">{owner.displayName}</p>
+                            <p className="text-sm text-muted-foreground">{owner.email}</p>
+                            <Badge variant="destructive" className="mt-1">Owner</Badge>
+                        </div>
+                    </div>
+                )}
+                <div>
+                    <p className="text-4xl font-bold">{adminUsers.length}</p>
+                    <p className="text-sm text-muted-foreground">Total Admins</p>
+                </div>
             </CardContent>
             <CardFooter>
               <Button asChild>
