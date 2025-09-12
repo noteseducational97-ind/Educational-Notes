@@ -1,17 +1,37 @@
 'use client';
-import { useEffect, useState, useMemo, useCallback } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/use-auth';
-import { listAllUsers } from './actions';
+import { listAllUsers, updateUserDisabledStatus, deleteUser as deleteUserAction, updateUserAdminStatus } from './actions';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Users, ShieldCheck, ArrowRight } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
-import Link from 'next/link';
-import { motion } from 'framer-motion';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Users, Trash2, Edit, CheckCircle, ArrowLeft, Ban, Check, ShieldAlert, ShieldCheck, ShieldQuestion } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { motion } from 'framer-motion';
+import Link from 'next/link';
+import { Checkbox } from '@/components/ui/checkbox';
 
 type User = {
     uid: string;
@@ -23,27 +43,6 @@ type User = {
     creationTime: string;
     isAdmin: boolean;
 }
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-    },
-  },
-};
-
-const itemVariants = {
-  hidden: { y: 20, opacity: 0 },
-  visible: {
-    y: 0,
-    opacity: 1,
-    transition: {
-      duration: 0.5,
-    },
-  },
-};
 
 const getInitials = (name: string | null | undefined) => {
     if (!name) return 'U';
@@ -60,56 +59,238 @@ export default function AdminUsersPage() {
 
   const [users, setUsers] = useState<User[]>([]);
   const [loadingData, setLoadingData] = useState(true);
-  
-  const fetchUsers = useCallback(async () => {
-      setLoadingData(true);
-      try {
-          const allUsers = await listAllUsers();
-          setUsers(allUsers);
-      } catch (error) {
-          toast({
-              variant: 'destructive',
-              title: 'Error fetching users',
-              description: 'Could not load user data. Please try again.',
-          });
-          console.error("Failed to fetch users:", error);
-      } finally {
-          setLoadingData(false);
-      }
-  }, [toast]);
-  
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
+
+  const fetchUsers = useCallback(() => {
+    setLoadingData(true);
+    listAllUsers()
+      .then(allUsers => {
+        setUsers(allUsers.sort((a, b) => a.isAdmin === b.isAdmin ? 0 : a.isAdmin ? -1 : 1));
+      })
+      .finally(() => setLoadingData(false));
+  }, []);
+
   useEffect(() => {
     if (!authLoading) {
-      if (!user) {
-        toast({ variant: 'destructive', title: 'Unauthorized Access', description: 'Please log in to view this page.' });
+      if (!user || !isAdmin) {
         router.push('/login');
-      } else if (!isAdmin) {
-        toast({ variant: 'destructive', title: 'Permission Denied', description: 'You do not have permission to access the admin panel.' });
-        router.push('/');
       } else {
         fetchUsers();
       }
     }
-  }, [user, authLoading, isAdmin, router, toast, fetchUsers]);
+  }, [user, authLoading, isAdmin, router, fetchUsers]);
 
-  const { adminUsers, regularUsers, owner } = useMemo(() => {
-    const adminUsers = users.filter(u => u.isAdmin);
-    const regularUsers = users.filter(u => !u.isAdmin);
-    const owner = adminUsers.find(u => u.email === 'noteseducational97@gmail.com');
-    return { adminUsers, regularUsers, owner };
-  }, [users]);
+  const handleToggleSelection = (user: User) => {
+    setSelectedUsers(prev =>
+      prev.find(u => u.uid === user.uid)
+        ? prev.filter(u => u.uid !== user.uid)
+        : [...prev, user]
+    );
+  };
   
-  if (authLoading || !user || !isAdmin) {
-    return <LoadingSpinner />;
+  const handleToggleAll = (checked: boolean) => {
+      setSelectedUsers(checked ? users : []);
+  };
+
+  const handleBulkToggleDisable = async (disable: boolean) => {
+    setIsProcessing(true);
+    try {
+      await Promise.all(
+          selectedUsers.map(u => updateUserDisabledStatus(u.uid, disable))
+      );
+      toast({
+        title: 'Success',
+        description: `${selectedUsers.length} user(s) have been ${disable ? 'disabled' : 'enabled'}.`,
+      });
+      fetchUsers();
+      setSelectedUsers([]);
+    } catch (error: any) {
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: error.message,
+      });
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const handleBulkDelete = async () => {
+    setIsProcessing(true);
+    try {
+      await Promise.all(
+        selectedUsers.map(u => deleteUserAction(u.uid))
+      );
+      toast({
+        title: 'Success',
+        description: `${selectedUsers.length} user(s) have been permanently deleted.`,
+      });
+      fetchUsers();
+      setSelectedUsers([]);
+    } catch (error: any) {
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: error.message,
+      });
+    } finally {
+      setIsProcessing(false);
+    }
   }
   
+  const handleBulkToggleAdmin = async (makeAdmin: boolean) => {
+    setIsProcessing(true);
+    try {
+      await Promise.all(
+        selectedUsers.map(u => updateUserAdminStatus(u.uid, makeAdmin))
+      );
+      toast({
+        title: 'Success',
+        description: `${selectedUsers.length} user(s) have their admin status updated.`,
+      });
+      fetchUsers();
+      setSelectedUsers([]);
+    } catch (error: any) {
+      toast({
+        variant: 'destructive',
+        title: 'Error updating admin status',
+        description: error.message,
+      });
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+  
+  if (authLoading || loadingData) {
+    return <LoadingSpinner />;
+  }
+
+  const areAllSelected = selectedUsers.length > 0 && selectedUsers.length === users.length;
+  const isAnySelected = selectedUsers.length > 0;
+
   return (
-    <>
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-foreground">User Management</h1>
-        <p className="text-muted-foreground">View and manage all user accounts.</p>
+    <div className="space-y-8">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-foreground">User Management</h1>
+          <p className="text-muted-foreground">A complete list of all users on the platform.</p>
+        </div>
+        {isAnySelected && (
+          <div className="flex flex-wrap gap-2 w-full sm:w-auto justify-end">
+            <Button variant="outline" onClick={() => handleBulkToggleAdmin(true)} disabled={isProcessing}>
+              <ShieldCheck className="h-4 w-4" /> <span className="sm:hidden lg:inline-block ml-2">Make Admin</span>
+            </Button>
+            <Button variant="outline" onClick={() => handleBulkToggleAdmin(false)} disabled={isProcessing}>
+              <ShieldAlert className="h-4 w-4" /> <span className="sm:hidden lg:inline-block ml-2">Remove Admin</span>
+            </Button>
+            <Button variant="outline" onClick={() => handleBulkToggleDisable(true)} disabled={isProcessing}>
+              <Ban className="h-4 w-4" /> <span className="sm:hidden lg:inline-block ml-2">Disable</span>
+            </Button>
+            <Button variant="outline" onClick={() => handleBulkToggleDisable(false)} disabled={isProcessing}>
+              <Check className="h-4 w-4" /> <span className="sm:hidden lg:inline-block ml-2">Enable</span>
+            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="destructive" disabled={isProcessing}>
+                  <Trash2 className="h-4 w-4" /> <span className="sm:hidden lg:inline-block ml-2">Delete</span>
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This will permanently delete the selected {selectedUsers.length} user(s). This action cannot be undone.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleBulkDelete}>
+                    Yes, delete user(s)
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
+        )}
       </div>
 
-    </>
+      {users.length > 0 ? (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <Card>
+            <CardContent className="p-0">
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="px-4">
+                        <Checkbox
+                          checked={areAllSelected}
+                          onCheckedChange={(checked) => handleToggleAll(Boolean(checked))}
+                          aria-label="Select all"
+                        />
+                      </TableHead>
+                      <TableHead>User</TableHead>
+                      <TableHead>Role</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Created At</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {users.map((u) => (
+                      <TableRow 
+                        key={u.uid} 
+                        data-state={selectedUsers.find(su => su.uid === u.uid) ? "selected" : ""}
+                      >
+                        <TableCell className="px-4">
+                          <Checkbox
+                            checked={!!selectedUsers.find(su => su.uid === u.uid)}
+                            onCheckedChange={() => handleToggleSelection(u)}
+                            aria-label={`Select user ${u.displayName}`}
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-3">
+                            <Avatar>
+                              <AvatarImage src={u.photoURL ?? ''} alt={u.displayName ?? 'User'} />
+                              <AvatarFallback>{getInitials(u.displayName)}</AvatarFallback>
+                            </Avatar>
+                            <div>
+                              <p className="font-medium">{u.displayName || 'N/A'}</p>
+                              <p className="text-sm text-muted-foreground">{u.email}</p>
+                            </div>
+                          </div>
+                        </TableCell>
+                         <TableCell>
+                            <Badge variant={u.isAdmin ? 'default' : 'secondary'} className="capitalize">
+                                {u.isAdmin ? <ShieldCheck className="mr-1 h-3 w-3"/> : <Users className="mr-1 h-3 w-3"/>}
+                                {u.isAdmin ? 'Admin' : 'User'}
+                            </Badge>
+                         </TableCell>
+                        <TableCell>
+                          <Badge variant={u.disabled ? 'destructive' : 'secondary'} className={!u.disabled ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 border-green-300 dark:border-green-700/50" : ""}>
+                            {u.disabled ? <Ban className="mr-1 h-3 w-3"/> : <CheckCircle className="mr-1 h-3 w-3"/>}
+                            {u.disabled ? 'Disabled' : 'Active'}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>{u.creationTime}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+      ) : (
+        <div className="text-center py-12 border-2 border-dashed rounded-lg">
+          <p className="text-muted-foreground">No users found on the platform.</p>
+        </div>
+      )}
+    </div>
   );
 }
