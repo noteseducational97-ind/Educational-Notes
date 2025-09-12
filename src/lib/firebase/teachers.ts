@@ -1,7 +1,7 @@
 
 'use server';
 
-import { db } from '@/lib/firebase/server';
+import { db } from '@/lib/firebase/admin';
 import type { Teacher } from '@/types';
 import { FieldValue, Timestamp } from 'firebase-admin/firestore';
 

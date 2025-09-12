@@ -1,6 +1,7 @@
 
 import { initializeApp, getApps, cert, getApp, App } from 'firebase-admin/app';
 import { getAuth } from 'firebase-admin/auth';
+import { getFirestore } from 'firebase-admin/firestore';
 
 const serviceAccountString = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
 
@@ -20,15 +21,12 @@ if (serviceAccount.private_key) {
     serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, '\n');
 }
 
-
-let app: App;
-if (!getApps().length) {
-  app = initializeApp({
-    credential: cert(serviceAccount),
-    projectId: serviceAccount.project_id, // Explicitly set project ID
-  });
-} else {
-  app = getApp();
-}
+const app: App = getApps().length
+  ? getApp()
+  : initializeApp({
+      credential: cert(serviceAccount),
+      projectId: serviceAccount.project_id,
+    });
 
 export const adminAuth = getAuth(app);
+export const db = getFirestore(app);

@@ -1,7 +1,7 @@
 
 'use server';
 
-import { db } from '@/lib/firebase/server'; // Use server-side db
+import { db } from '@/lib/firebase/admin'; // Use server-side db
 import { revalidatePath } from 'next/cache';
 import type { Resource as ResourceType } from '@/types';
 import { FieldValue, Timestamp, FieldPath } from 'firebase-admin/firestore';

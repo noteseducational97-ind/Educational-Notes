@@ -2,7 +2,7 @@
 'use server';
 
 import { z } from 'zod';
-import { db } from '@/lib/firebase/server';
+import { db } from '@/lib/firebase/admin';
 import { revalidatePath } from 'next/cache';
 import { adminAuth } from '@/lib/firebase/admin';
 

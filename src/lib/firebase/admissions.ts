@@ -2,7 +2,7 @@
 
 'use server';
 
-import { db } from '@/lib/firebase/server';
+import { db } from '@/lib/firebase/admin';
 import type { AdmissionForm, AdmissionApplication } from '@/types';
 import { revalidatePath } from 'next/cache';
 import { Timestamp } from 'firebase-admin/firestore';

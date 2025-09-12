@@ -1,8 +1,7 @@
 
 'use server';
 
-import { adminAuth } from '@/lib/firebase/admin';
-import { db } from '@/lib/firebase/server';
+import { adminAuth, db } from '@/lib/firebase/admin';
 import { revalidatePath } from 'next/cache';
 
 export const listAllUsers = async () => {
@@ -78,5 +77,3 @@ export async function updateUserAdminStatus(uid: string, isAdmin: boolean) {
     throw new Error('Failed to update admin status.');
   }
 }
-
-

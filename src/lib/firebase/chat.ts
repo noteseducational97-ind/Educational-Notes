@@ -1,7 +1,7 @@
 
 'use server';
 
-import { db } from '@/lib/firebase/server';
+import { db } from '@/lib/firebase/admin';
 import type { Message, Chat } from '@/types';
 import { FieldValue, Timestamp } from 'firebase-admin/firestore';
 import { revalidatePath } from 'next/cache';
@@ -74,5 +74,3 @@ export async function deleteChat(userId: string, chatId: string): Promise<void> 
     await db.collection('users').doc(userId).collection('chats').doc(chatId).delete();
     // No path revalidation needed as history is fetched on client-side
 }
-
-    
