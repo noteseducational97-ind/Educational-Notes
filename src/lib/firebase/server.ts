@@ -14,7 +14,9 @@ let serviceAccount;
 try {
   serviceAccount = JSON.parse(serviceAccountString);
   // Replace escaped newlines in private_key
-  serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, '\n');
+  if (serviceAccount.private_key) {
+    serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, '\n');
+  }
 } catch (e) {
     throw new Error('Failed to parse FIREBASE_SERVICE_ACCOUNT_KEY. Make sure it is a valid JSON string.');
 }
