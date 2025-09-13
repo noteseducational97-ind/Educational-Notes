@@ -38,7 +38,6 @@ export const listAllUsers = async (): Promise<AppUser[]> => {
       return [];
     }
 
-    const uids = authUsers.map(user => user.uid);
     // Fetch all user documents from Firestore in one go
     const userDocsSnapshot = await db.collection('users').get();
     
