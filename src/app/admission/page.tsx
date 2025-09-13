@@ -107,6 +107,7 @@ export default function AdmissionPage() {
                                 </CardHeader>
                                 <CardContent className="p-6 flex-grow">
                                     <CardTitle className="text-2xl">{form.title}</CardTitle>
+                                    {form.description && <CardDescription className="mt-2">{form.description}</CardDescription>}
                                     <div className="mt-4">
                                       <Badge variant="secondary" className="flex items-center gap-1 w-fit">
                                           <Book className="h-3 w-3" />

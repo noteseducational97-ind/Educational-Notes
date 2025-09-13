@@ -22,6 +22,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
 import { motion } from 'framer-motion';
+import { generateAdmissionDescription } from '@/ai/flows/admission-description-flow';
 
 const currentYear = new Date().getFullYear();
 const yearOptions = Array.from({ length: 5 }, (_, i) => (currentYear + i).toString());
@@ -51,6 +52,7 @@ const FormSchema = z.object({
   className: z.string().min(1, 'Class name is required.'),
   startMonth: z.string().min(1, 'Start month is required.'),
   yearFrom: z.string().min(4, 'From year is required.'),
+  description: z.string().min(10, "A short description is required."),
   imageUrl: z.string().url('Please enter a valid image URL.').optional(),
   totalFees: z.coerce.number().min(0, 'Total fees must be a positive number.'),
   advanceFees: z.coerce.number().min(0, 'Advance fees must be a positive number.'),
@@ -81,10 +83,6 @@ const FormSchema = z.object({
 
 type FormValues = z.infer<typeof FormSchema>;
 
-const generateDescription = (className: string, teacherName: string, subject: string, year: string) => {
-    return `Enroll in the ${className} for ${subject} with ${teacherName} for the academic year ${year}. This batch offers comprehensive coverage of the syllabus, personalized attention, and proven strategies to excel in your exams. Secure your spot now and embark on a rewarding learning journey!`;
-}
-
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
@@ -111,6 +109,7 @@ export default function AddAdmissionFormPage() {
   const { toast } = useToast();
   
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
   const [teachers, setTeachers] = useState<Teacher[]>([]);
 
   useEffect(() => {
@@ -125,6 +124,7 @@ export default function AddAdmissionFormPage() {
         study: '',
         className: '',
         yearFrom: currentYear.toString(),
+        description: '',
         imageUrl: '',
         totalFees: undefined,
         advanceFees: undefined,
@@ -169,15 +169,55 @@ export default function AddAdmissionFormPage() {
     }
   }, [contactNo, paymentApp, form]);
 
+  const handleGenerateDescription = async () => {
+    const values = form.getValues();
+    const { title, teacherName, subject, className, yearFrom } = values;
+
+    if (!title || !teacherName || !subject || !className || !yearFrom) {
+      toast({
+        variant: 'destructive',
+        title: 'Missing Information',
+        description: 'Please fill in Title, Teacher, Subject, Class Name, and Year before generating.',
+      });
+      return;
+    }
+    
+    setIsGenerating(true);
+    try {
+      const yearTo = (parseInt(yearFrom, 10) + 2).toString().slice(-2);
+      const result = await generateAdmissionDescription({
+        title,
+        teacherName,
+        subject,
+        className,
+        year: `${yearFrom}-${yearTo}`,
+      });
+      if (result.description) {
+        form.setValue('description', result.description, { shouldValidate: true });
+        toast({
+          title: 'Description Generated!',
+          description: 'The description field has been filled in with an engaging summary.',
+        });
+      }
+    } catch (error) {
+       toast({
+        variant: 'destructive',
+        title: 'Generation Failed',
+        description: 'Could not generate a description at this time.',
+      });
+    } finally {
+        setIsGenerating(false);
+    }
+  };
+
   async function onSubmit(values: FormValues) {
     setIsSubmitting(true);
     try {
       const yearTo = (parseInt(values.yearFrom, 10) + 2).toString();
       const year = `${values.yearFrom}-${yearTo.slice(-2)}`;
-      const description = generateDescription(values.className, values.teacherName, values.subject, year);
       const { yearFrom, confirmPassword, ...rest } = values;
 
-      await addAdmissionForm({ ...rest, year, description });
+      await addAdmissionForm({ ...rest, year });
 
       toast({
         title: 'Success!',
@@ -225,6 +265,19 @@ export default function AddAdmissionFormPage() {
                                 <FormMessage />
                             </FormItem>
                         )} />
+                        <FormField control={form.control} name="description" render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Description</FormLabel>
+                                <FormControl>
+                                    <Textarea placeholder="A short, engaging summary for the admission card." {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )} />
+                        <Button type="button" variant="outline" size="sm" onClick={handleGenerateDescription} disabled={isGenerating}>
+                            {isGenerating ? <Loader2 className="animate-spin" /> : <Sparkles />}
+                            Generate with AI
+                        </Button>
                         <div className="grid md:grid-cols-2 gap-4">
                             <FormField control={form.control} name="study" render={({ field }) => (
                                 <FormItem>
