@@ -123,7 +123,7 @@ export default function AdmissionReceiptPage() {
         );
     }
     
-    let coachingName = formDetails.className || '';
+    const coachingName = formDetails.className || 'Educational Notes';
 
     return (
         <div className="flex min-h-screen flex-col bg-secondary/30">
@@ -247,3 +247,5 @@ export default function AdmissionReceiptPage() {
         </div>
     );
 }
+
+    

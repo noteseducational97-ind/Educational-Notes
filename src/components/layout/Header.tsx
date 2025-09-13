@@ -27,7 +27,7 @@ const navLinks = [
 ];
 
 
-export default function Header() {
+export default function Header({ className }: { className?: string }) {
   const pathname = usePathname();
   const { user, loading, isAdmin } = useAuth();
 
@@ -65,7 +65,7 @@ export default function Header() {
 
   return (
     <>
-      <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur-sm">
+      <header className={cn("sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur-sm", className)}>
         <div className="container mx-auto flex h-16 items-center px-4 md:px-6">
           <Link href="/" className="mr-6 flex items-center space-x-2">
             <EducationalNotesLogo className="h-6 w-6 text-primary" />
@@ -153,3 +153,5 @@ export default function Header() {
     </>
   );
 }
+
+    
