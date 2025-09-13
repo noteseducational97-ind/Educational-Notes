@@ -228,6 +228,9 @@ export default function AdmissionReceiptPage() {
                                     <div className="flex flex-col items-center justify-center bg-secondary/50 p-4 rounded-lg">
                                         <img src={qrCodeDataUrl} alt="Application QR Code" className="w-28 h-28" />
                                         <p className="text-xs text-muted-foreground mt-2">Scan for details</p>
+                                         <Button onClick={handlePrint} className="w-full mt-4 print-hidden">
+                                            <Printer className="mr-2 h-4 w-4" /> Save pdf
+                                        </Button>
                                     </div>
                                 )}
                             </div>
