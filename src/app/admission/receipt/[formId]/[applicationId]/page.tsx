@@ -137,7 +137,7 @@ export default function AdmissionReceiptPage() {
                             </Link>
                         </Button>
                         <Button onClick={handlePrint}>
-                            <Printer className="mr-2 h-4 w-4" /> Print / Save PDF
+                            <Printer className="mr-2 h-4 w-4" /> Save pdf
                         </Button>
                     </div>
 
