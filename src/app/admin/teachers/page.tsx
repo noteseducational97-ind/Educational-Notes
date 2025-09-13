@@ -4,8 +4,7 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { PlusCircle, Trash2, Edit, Calendar, GraduationCap } from 'lucide-react';
+import { PlusCircle, Trash2, Edit, Calendar, GraduationCap, Mail } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -125,7 +124,11 @@ export default function AdminTeachersPage() {
                             </div>
                         </CardHeader>
                         <CardContent className="flex-grow">
-                            <p className="text-muted-foreground">{teacher.description}</p>
+                             {teacher.email && (
+                                <a href={`mailto:${teacher.email}`} className="text-sm text-muted-foreground hover:text-primary flex items-center gap-2">
+                                    <Mail className="h-4 w-4"/> {teacher.email}
+                                </a>
+                             )}
                         </CardContent>
                         <CardFooter className="flex justify-end gap-2 border-t pt-4">
                             <Button variant="outline" size="sm" asChild>

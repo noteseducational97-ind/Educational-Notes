@@ -10,17 +10,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, ArrowLeft, Save, User, Book, Briefcase, FileText, GraduationCap, Calendar, Phone, School } from 'lucide-react';
+import { Loader2, ArrowLeft, Save, User, Book, Briefcase, FileText, GraduationCap, Calendar, Phone, School, Mail } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import type { Teacher } from '@/types';
 import { addTeacherAction } from '../actions';
-
-const generateDescription = (name: string, subject: string, experience: string): string => {
-    if (!name || !subject || !experience) return '';
-    const experienceYears = experience.match(/\d+/)?.[0] || 'many';
-    return `With over ${experienceYears} years of teaching experience, ${name} is a visionary in ${subject.toLowerCase()} education. Their ability to simplify complex concepts has made them a beloved mentor.`;
-};
-
 
 export default function AddTeacherPage() {
   const router = useRouter();
@@ -31,10 +24,10 @@ export default function AddTeacherPage() {
     education: '',
     className: '',
     subject: '',
+    email: '',
     mobile: '',
     experience: '',
     since: '',
-    description: '',
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -53,17 +46,8 @@ export default function AddTeacherPage() {
     }
   }, [teacher.since]);
   
-  useEffect(() => {
-      if (teacher.name && teacher.subject && teacher.experience) {
-        const newDescription = generateDescription(teacher.name, teacher.subject, teacher.experience);
-        if (newDescription) {
-            setTeacher(prev => ({ ...prev, description: newDescription }));
-        }
-      }
-  }, [teacher.name, teacher.subject, teacher.experience]);
-  
   const handleSave = async () => {
-    if (!teacher.name || !teacher.education || !teacher.subject || !teacher.experience || !teacher.description || !teacher.since) {
+    if (!teacher.name || !teacher.education || !teacher.subject || !teacher.experience || !teacher.since) {
         toast({
             variant: 'destructive',
             title: 'Missing Fields',
@@ -119,8 +103,8 @@ export default function AddTeacherPage() {
                         <Input id="subject" placeholder="e.g., Biology" value={teacher.subject} onChange={handleChange} />
                     </div>
                     <div className="space-y-2">
-                        <Label htmlFor="mobile" className="flex items-center gap-2"><Phone /> Mobile No.</Label>
-                        <Input id="mobile" placeholder="e.g., 9876543210" value={teacher.mobile} onChange={handleChange} />
+                        <Label htmlFor="email" className="flex items-center gap-2"><Mail /> Email</Label>
+                        <Input id="email" type="email" placeholder="e.g., teacher@example.com" value={teacher.email} onChange={handleChange} />
                     </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
@@ -133,9 +117,9 @@ export default function AddTeacherPage() {
                         <Input id="experience" placeholder="e.g., 10+ years" value={teacher.experience} onChange={handleChange} disabled />
                     </div>
                 </div>
-                <div className="space-y-2">
-                    <Label htmlFor="description" className="flex items-center gap-2"><FileText /> Description</Label>
-                    <Textarea id="description" placeholder="Describe the teacher's approach, qualifications, etc..." value={teacher.description} onChange={handleChange} />
+                 <div className="space-y-2">
+                    <Label htmlFor="mobile" className="flex items-center gap-2"><Phone /> Mobile No.</Label>
+                    <Input id="mobile" placeholder="e.g., 9876543210" value={teacher.mobile} onChange={handleChange} />
                 </div>
             </CardContent>
             <CardFooter className="flex justify-between gap-4 border-t pt-6">

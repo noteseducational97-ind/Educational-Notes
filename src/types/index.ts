@@ -84,12 +84,10 @@ export type Teacher = {
   education: string;
   className: string;
   subject: string;
+  email?: string;
   mobile?: string;
   experience: string;
   since: string;
-  description: string;
   createdAt: string; // Should be an ISO string
   updatedAt?: string;
 };
-
-    
