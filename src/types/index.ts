@@ -91,3 +91,11 @@ export type Teacher = {
   createdAt: string; // Should be an ISO string
   updatedAt?: string;
 };
+
+export type User = {
+  uid: string;
+  displayName?: string;
+  email?: string;
+  createdAt: string;
+  isAdmin: boolean;
+};

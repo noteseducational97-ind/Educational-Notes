@@ -188,3 +188,26 @@ export async function getAdminStats() {
         return { userCount: 0, resourceCount: 0 };
     }
 }
+
+export async function getUsers() {
+    try {
+        const userRecords = await adminAuth.listUsers();
+        const users = await Promise.all(
+            userRecords.users.map(async (user) => {
+                const userDoc = await db.collection('users').doc(user.uid).get();
+                const isAdmin = userDoc.exists && userDoc.data()?.isAdmin === true;
+                return {
+                    uid: user.uid,
+                    email: user.email,
+                    displayName: user.displayName,
+                    isAdmin: isAdmin,
+                    createdAt: user.metadata.creationTime,
+                };
+            })
+        );
+        return { users };
+    } catch (error) {
+        console.error("Error fetching users:", error);
+        return { error: 'Failed to fetch users.' };
+    }
+}

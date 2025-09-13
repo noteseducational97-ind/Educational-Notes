@@ -38,6 +38,7 @@ const adminNavLinks = [
   { href: '/admin/admission', label: 'Manage Batches', icon: FileText },
   { href: '/admin/tools', label: 'Manage Tools', icon: Wrench },
   { href: '/admin/teachers', label: 'Teachers', icon: GraduationCap },
+  { href: '/admin/join', label: 'Join Page', icon: Users },
 ];
 
 const NavLink = ({ href, children, isActive }: { href: string; children: React.ReactNode, isActive: boolean }) => (
