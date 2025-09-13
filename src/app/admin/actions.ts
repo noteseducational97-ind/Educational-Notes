@@ -5,6 +5,7 @@ import { z } from 'zod';
 import { db } from '@/lib/firebase/admin';
 import { revalidatePath } from 'next/cache';
 import { adminAuth } from '@/lib/firebase/admin';
+import type { User } from '@/types';
 
 const FormSchema = z.object({
   title: z.string().min(3, 'Title must be at least 3 characters.'),
@@ -189,7 +190,7 @@ export async function getAdminStats() {
     }
 }
 
-export async function getUsers() {
+export async function getUsers(): Promise<{ users: User[] | null; error: string | null }> {
     try {
         const userRecords = await adminAuth.listUsers();
         const users = await Promise.all(
@@ -205,9 +206,9 @@ export async function getUsers() {
                 };
             })
         );
-        return { users };
+        return { users, error: null };
     } catch (error) {
         console.error("Error fetching users:", error);
-        return { error: 'Failed to fetch users.' };
+        return { users: null, error: 'Failed to fetch users.' };
     }
 }
