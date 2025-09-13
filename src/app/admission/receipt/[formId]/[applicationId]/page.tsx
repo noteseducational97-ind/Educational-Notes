@@ -177,7 +177,11 @@ export default function AdmissionReceiptPage() {
                                     <h3 className="font-semibold mb-3 text-primary flex items-center gap-2"><CreditCard />Payment Details</h3>
                                     <div className="space-y-3">
                                         <ReceiptDetail label="Total Fees" value={`₹${formDetails.totalFees.toLocaleString()}`} />
-                                        <ReceiptDetail label="Advance Paid" value={`₹${formDetails.advanceFees.toLocaleString()}`} />
+                                        {application.paymentMode === 'Online' ? (
+                                            <ReceiptDetail label="Amount Paid" value={application.paymentAmount ? `₹${application.paymentAmount}` : 'N/A'} />
+                                        ) : (
+                                            <ReceiptDetail label="Advance to be Paid" value={`₹${formDetails.advanceFees.toLocaleString()}`} />
+                                        )}
                                         <ReceiptDetail label="Payment Mode" value={application.paymentMode} />
                                         
                                         {application.paymentMode === 'Online' && (
