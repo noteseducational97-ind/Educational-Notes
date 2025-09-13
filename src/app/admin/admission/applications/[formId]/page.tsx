@@ -9,7 +9,7 @@ import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Download } from 'lucide-react';
+import { ArrowLeft, Download, Receipt } from 'lucide-react';
 import Link from 'next/link';
 import PasswordPrompt from '@/components/auth/PasswordPrompt';
 import { format } from 'date-fns';
@@ -161,13 +161,22 @@ export default function AdmissionApplicationsPage() {
                     <TableRow>
                       <TableHead>Full Name</TableHead>
                       <TableHead>Submission Date</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {applications.map((app) => (
-                      <TableRow key={app.id} onClick={() => setSelectedApplication(app)} className="cursor-pointer">
-                        <TableCell className="font-medium">{app.fullName}</TableCell>
-                        <TableCell>{format(new Date(app.submittedAt), 'PPP')}</TableCell>
+                      <TableRow key={app.id}>
+                        <TableCell onClick={() => setSelectedApplication(app)} className="font-medium cursor-pointer hover:underline">{app.fullName}</TableCell>
+                        <TableCell onClick={() => setSelectedApplication(app)} className="cursor-pointer">{format(new Date(app.submittedAt), 'PPP')}</TableCell>
+                        <TableCell className="text-right">
+                            <Button asChild variant="secondary" size="sm">
+                                <Link href={`/admission/receipt/${formId}/${app.id}`} target="_blank">
+                                    <Receipt className="mr-2 h-4 w-4"/>
+                                    Download Receipt
+                                </Link>
+                            </Button>
+                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
