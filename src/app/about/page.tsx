@@ -143,7 +143,7 @@ export default function AboutPage() {
                        <CardHeader className="flex flex-col sm:flex-row items-center gap-6 p-6">
                           <div className="relative h-24 w-24 sm:h-32 sm:w-32 flex-shrink-0">
                                 <Image
-                                    src={`https://picsum.photos/seed/${teacher.id}/200`}
+                                    src={teacher.photoUrl || `https://picsum.photos/seed/${teacher.id}/200`}
                                     alt={teacher.name}
                                     className="rounded-full object-cover border-4 border-primary/20"
                                     layout="fill"

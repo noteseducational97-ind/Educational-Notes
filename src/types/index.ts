@@ -84,6 +84,7 @@ export type Teacher = {
   education: string;
   className: string;
   subject: string;
+  photoUrl?: string;
   email?: string;
   mobile?: string;
   experience: string;

@@ -4,7 +4,7 @@
 import { useParams, useRouter } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Save, User, Book, Briefcase, FileText, GraduationCap, Loader2, Calendar, Phone, School, Mail } from 'lucide-react';
+import { ArrowLeft, Save, User, Book, Briefcase, FileText, GraduationCap, Loader2, Calendar, Phone, School, Mail, Image as ImageIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import type { Teacher } from '@/types';
@@ -104,6 +104,10 @@ export default function EditTeacherPage() {
                     <CardDescription>Update details for {teacher.name}</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
+                    <div className="space-y-2">
+                        <Label htmlFor="photoUrl" className="flex items-center gap-2"><ImageIcon /> Photo URL</Label>
+                        <Input id="photoUrl" placeholder="https://example.com/teacher.jpg" value={teacher.photoUrl || ''} onChange={handleChange} />
+                    </div>
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <Label htmlFor="name" className="flex items-center gap-2"><User /> Name</Label>

@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, ArrowLeft, Save, User, Book, Briefcase, FileText, GraduationCap, Calendar, Phone, School, Mail } from 'lucide-react';
+import { Loader2, ArrowLeft, Save, User, Book, Briefcase, FileText, GraduationCap, Calendar, Phone, School, Mail, Image as ImageIcon } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import type { Teacher } from '@/types';
 import { addTeacherAction } from '../actions';
@@ -24,6 +24,7 @@ export default function AddTeacherPage() {
     education: '',
     className: '',
     subject: '',
+    photoUrl: '',
     email: '',
     mobile: '',
     experience: '',
@@ -83,6 +84,10 @@ export default function AddTeacherPage() {
               <CardDescription>Fill in the details below to add a new educator.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
+                <div className="space-y-2">
+                    <Label htmlFor="photoUrl" className="flex items-center gap-2"><ImageIcon /> Photo URL</Label>
+                    <Input id="photoUrl" placeholder="https://example.com/teacher.jpg" value={teacher.photoUrl} onChange={handleChange} />
+                </div>
                 <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                         <Label htmlFor="name" className="flex items-center gap-2"><User /> Name</Label>
