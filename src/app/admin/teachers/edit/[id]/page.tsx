@@ -14,6 +14,18 @@ import { useToast } from '@/hooks/use-toast';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { getTeacherById } from '@/lib/firebase/teachers';
 import { updateTeacherAction } from '../../actions';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+
 
 export default function EditTeacherPage() {
     const params = useParams();
@@ -151,10 +163,28 @@ export default function EditTeacherPage() {
                     <Button type="button" variant="outline" asChild>
                         <Link href="/admin/teachers"><ArrowLeft /> Back</Link>
                     </Button>
-                    <Button type="button" onClick={handleSave} disabled={isSubmitting}>
-                        {isSubmitting ? <Loader2 className="animate-spin" /> : <Save />}
-                        Save Changes
-                    </Button>
+                     <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                           <Button type="button" disabled={isSubmitting}>
+                                {isSubmitting ? <Loader2 className="animate-spin" /> : <Save />}
+                                Save Changes
+                            </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                                This action will update the details for "{teacher.name}".
+                            </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction onClick={handleSave}>
+                                Yes, save changes
+                            </AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
                 </CardFooter>
             </Card>
         </>
