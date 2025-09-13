@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
@@ -81,12 +80,12 @@ export default function AdmissionFormPage() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [isExtracting, setIsExtracting] = useState(false);
     const [extractedDetails, setExtractedDetails] = useState<PaymentDetailsOutput | null>(null);
-    const { user } = useAuth();
+    const { user, loading: authLoading } = useAuth();
 
     const formId = Array.isArray(params.formId) ? params.formId[0] : params.formId;
 
     useEffect(() => {
-        if (!formId) return;
+        if (authLoading || !formId) return;
 
         const checkExistingApplication = async () => {
             if (user) {
@@ -94,17 +93,18 @@ export default function AdmissionFormPage() {
                 const existingApplication = userApplications.find(app => app.form.id === formId);
                 if (existingApplication) {
                     router.replace(`/admission/receipt/${formId}/${existingApplication.application.id}`);
-                    return true;
+                    return true; // Indicates redirection is happening
                 }
             }
             return false;
         };
         
         const fetchFormDetails = async () => {
+            // If checkExistingApplication redirects, we don't need to proceed
+            if (await checkExistingApplication()) return;
+            
             setPageLoading(true);
             try {
-                if (await checkExistingApplication()) return;
-                
                 const data = await getAdmissionFormById(formId);
                 setFormDetails(data);
                 if (data && !data.isPasswordProtected) {
@@ -122,10 +122,9 @@ export default function AdmissionFormPage() {
             }
         };
 
-        if(user) {
-          fetchFormDetails();
-        }
-    }, [formId, user, router, toast]);
+        fetchFormDetails();
+
+    }, [formId, user, authLoading, router, toast]);
 
     useEffect(() => {
         // This check runs only on the client-side
@@ -218,7 +217,7 @@ export default function AdmissionFormPage() {
     
     const paymentMode = form.watch('paymentMode');
 
-    if(pageLoading || !user) {
+    if(pageLoading || authLoading) {
         return <LoadingSpinner />
     }
     
@@ -557,3 +556,5 @@ export default function AdmissionFormPage() {
         </div>
     );
 }
+
+    
