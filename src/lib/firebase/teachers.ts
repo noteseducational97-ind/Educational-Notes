@@ -12,10 +12,21 @@ const toISOString = (timestamp: Timestamp | string | undefined): string | undefi
     return undefined;
 };
 
+const transformGoogleDriveUrl = (url?: string): string | undefined => {
+    if (!url) return undefined;
+    if (url.includes("drive.google.com/file/d/")) {
+        const fileId = url.split('/d/')[1].split('/')[0];
+        return `https://lh3.googleusercontent.com/d/${fileId}`;
+    }
+    return url;
+};
+
 
 export async function addTeacher(data: Omit<Teacher, 'id' | 'createdAt'>): Promise<void> {
     const teacherRef = db.collection('teachers').doc();
-    const photoUrl = data.photoUrl || `https://avatar.iran.liara.run/public/boy?username=${teacherRef.id}`;
+    const transformedPhotoUrl = transformGoogleDriveUrl(data.photoUrl);
+    const photoUrl = transformedPhotoUrl || `https://avatar.iran.liara.run/public/boy?username=${teacherRef.id}`;
+    
     await teacherRef.set({
         ...data,
         photoUrl,
@@ -58,7 +69,9 @@ export async function getTeacherById(teacherId: string): Promise<Teacher | null>
 
 export async function updateTeacher(teacherId: string, data: Partial<Omit<Teacher, 'id' | 'createdAt'>>): Promise<void> {
     const teacherRef = db.collection('teachers').doc(teacherId);
-    const photoUrl = data.photoUrl || `https://avatar.iran.liara.run/public/boy?username=${teacherId}`;
+    const transformedPhotoUrl = transformGoogleDriveUrl(data.photoUrl);
+    const photoUrl = transformedPhotoUrl || `https://avatar.iran.liara.run/public/boy?username=${teacherId}`;
+
     await teacherRef.update({
         ...data,
         photoUrl,
