@@ -25,6 +25,7 @@ const PaymentDetailsOutputSchema = z.object({
   paymentAmount: z.string().optional().describe("The total amount of the payment."),
   transactionDate: z.string().optional().describe("The date of the transaction (e.g., '15 July 2024')."),
   transactionTime: z.string().optional().describe("The time of the transaction (e.g., '10:30 AM')."),
+  transactionId: z.string().optional().describe("The unique transaction ID, which could be labeled as UTR, UPI Ref No, Transaction ID, UPI Reference, RRN, TRN, UPI Transaction ID, or Google Transaction ID."),
 });
 export type PaymentDetailsOutput = z.infer<typeof PaymentDetailsOutputSchema>;
 
@@ -32,7 +33,9 @@ const extractionPrompt = ai.definePrompt({
     name: 'paymentDetailsExtractionPrompt',
     input: { schema: PaymentDetailsInputSchema },
     output: { schema: PaymentDetailsOutputSchema },
-    prompt: `You are an expert OCR and data extraction tool. Your task is to analyze the provided payment screenshot and extract the following details: sender's name, payment amount, transaction date, and transaction time.
+    prompt: `You are an expert OCR and data extraction tool. Your task is to analyze the provided payment screenshot and extract the following details: sender's name, payment amount, transaction date, transaction time, and the unique transaction ID.
+
+The transaction ID might be labeled as UTR, UPI Ref No, Transaction ID, UPI Reference, RRN, TRN, UPI Transaction ID, or Google Transaction ID. Extract this value.
 
 If any detail is not clearly visible, leave the corresponding field blank.
 

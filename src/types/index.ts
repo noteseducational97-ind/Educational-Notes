@@ -70,11 +70,11 @@ export type AdmissionApplication = {
   board: string;
   percentage: string;
   paymentMode?: string;
-  paymentScreenshot?: string;
   senderName?: string;
   paymentAmount?: string;
   transactionDate?: string;
   transactionTime?: string;
+  transactionId?: string;
   submittedAt: string; // ISO string
 };
 

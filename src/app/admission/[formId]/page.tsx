@@ -55,6 +55,7 @@ const formSchema = z.object({
   paymentAmount: z.string().optional(),
   transactionDate: z.string().optional(),
   transactionTime: z.string().optional(),
+  transactionId: z.string().optional(),
 }).refine(data => {
     if (data.paymentMode === 'Online') {
         return !!data.paymentScreenshot?.[0];
@@ -150,6 +151,7 @@ export default function AdmissionFormPage() {
                 form.setValue('paymentAmount', result.paymentAmount);
                 form.setValue('transactionDate', result.transactionDate);
                 form.setValue('transactionTime', result.transactionTime);
+                form.setValue('transactionId', result.transactionId);
                  toast({
                     title: "Details Extracted",
                     description: "Payment details have been read from the screenshot.",
@@ -175,10 +177,8 @@ export default function AdmissionFormPage() {
             if (user) {
                 applicationPayload.userId = user.uid;
             }
-            // Note: In a real app, you would handle file uploads to a storage service.
-            // For this prototype, we are just passing the data along.
-            // The backend would need to be set up to handle the `paymentScreenshot` file.
-            const result = await submitAdmissionApplication(formId, { ...applicationPayload, paymentScreenshot: values.paymentScreenshot?.[0] || null });
+            
+            const result = await submitAdmissionApplication(formId, applicationPayload);
             
             router.push(`/admission/success/${result.applicationId}?formId=${result.formId}&name=${encodeURIComponent(values.fullName)}`);
 
@@ -511,6 +511,7 @@ export default function AdmissionFormPage() {
                                                                   <p><strong>Amount:</strong> {extractedDetails.paymentAmount || 'Not found'}</p>
                                                                   <p><strong>Date:</strong> {extractedDetails.transactionDate || 'Not found'}</p>
                                                                   <p><strong>Time:</strong> {extractedDetails.transactionTime || 'Not found'}</p>
+                                                                  <p><strong>Transaction ID:</strong> {extractedDetails.transactionId || 'Not found'}</p>
                                                               </CardContent>
                                                           </Card>
                                                       )}

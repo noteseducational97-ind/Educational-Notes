@@ -84,6 +84,7 @@ export default function ApplicationDetailDialog({ application, isOpen, onClose }
                             <DetailItem label="Amount" value={application.paymentAmount} />
                             <DetailItem label="Date" value={application.transactionDate} />
                             <DetailItem label="Time" value={application.transactionTime} />
+                            <DetailItem label="Transaction ID" value={application.transactionId} />
                          </div>
                      </div>
                  )}

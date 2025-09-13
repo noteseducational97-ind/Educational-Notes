@@ -9,7 +9,7 @@ import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Download, Receipt, Trash2 } from 'lucide-react';
+import { ArrowLeft, Download, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import PasswordPrompt from '@/components/auth/PasswordPrompt';
 import { format } from 'date-fns';
@@ -126,8 +126,8 @@ export default function AdmissionApplicationsPage() {
     const headers = [
       'Full Name', 'Student Phone', 'Parent Phone', 'Date of Birth', 
       'Category', 'Previous School', 'Board', 'Percentage', 
-      'Payment Mode', 'Payment Screenshot', 
-      'Extracted Sender', 'Extracted Amount', 'Extracted Date', 'Extracted Time'
+      'Payment Mode',
+      'Extracted Sender', 'Extracted Amount', 'Extracted Date', 'Extracted Time', 'Transaction ID'
     ];
     
     const csvRows = [
@@ -142,11 +142,11 @@ export default function AdmissionApplicationsPage() {
         `"${app.board}"`,
         `"${app.percentage}"`,
         `"${app.paymentMode}"`,
-        `"${app.paymentScreenshot || ''}"`,
         `"${app.senderName || ''}"`,
         `"${app.paymentAmount || ''}"`,
         `"${app.transactionDate || ''}"`,
         `"${app.transactionTime || ''}"`,
+        `"${app.transactionId || ''}"`,
       ].join(','))
     ];
 
@@ -217,14 +217,13 @@ export default function AdmissionApplicationsPage() {
                         <TableCell className="text-right space-x-2">
                             <Button asChild variant="secondary" size="sm">
                                 <Link href={`/admission/receipt/${formId}/${app.id}`} target="_blank">
-                                    <Receipt className="mr-2 h-4 w-4"/>
-                                    Receipt
+                                    Download Receipt
                                 </Link>
                             </Button>
                             <AlertDialog>
                               <AlertDialogTrigger asChild>
                                   <Button variant="destructive-outline" size="sm" disabled={deletingId === app.id}>
-                                      <Trash2 className="h-4 w-4" />
+                                      <Trash2 className="h-4 w-4" /> Remove
                                   </Button>
                               </AlertDialogTrigger>
                               <AlertDialogContent>
