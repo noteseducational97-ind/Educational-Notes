@@ -178,12 +178,10 @@ export default function AdmissionFormPage() {
             // Note: In a real app, you would handle file uploads to a storage service.
             // For this prototype, we are just passing the data along.
             // The backend would need to be set up to handle the `paymentScreenshot` file.
-            const result = await submitAdmissionApplication(formId, { ...applicationPayload, paymentScreenshot: values.paymentScreenshot?.[0]?.name || null });
-            toast({
-                title: 'Application Submitted!',
-                description: 'We have received your application. Redirecting to your receipt...',
-            });
-            router.push(`/admission/receipt/${result.formId}/${result.applicationId}`);
+            const result = await submitAdmissionApplication(formId, { ...applicationPayload, paymentScreenshot: values.paymentScreenshot?.[0] || null });
+            
+            router.push(`/admission/success/${result.applicationId}?formId=${result.formId}&name=${encodeURIComponent(values.fullName)}`);
+
         } catch (error: any) {
              toast({
                 variant: 'destructive',

@@ -76,3 +76,20 @@
         text-wrap: balance;
     }
 }
+
+@media print {
+  @page {
+    size: A4 landscape;
+    margin: 0.5in;
+  }
+  .print-hidden {
+    display: none;
+  }
+  .print-receipt-container {
+    box-shadow: none !important;
+    border: none !important;
+  }
+  body {
+    background-color: #fff !important;
+  }
+}

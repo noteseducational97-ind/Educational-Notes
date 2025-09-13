@@ -127,11 +127,10 @@ export async function submitAdmissionApplication(formId: string, applicationData
   // This part is tricky without a proper file object from the client.
   // When using server actions with file uploads, the file object would be available here.
   // For now, we'll assume applicationData.paymentScreenshot is a placeholder name.
-  if (applicationData.paymentScreenshot && typeof applicationData.paymentScreenshot === 'string') {
+  if (applicationData.paymentScreenshot && typeof applicationData.paymentScreenshot === 'object') {
       // This is a placeholder. In a real scenario, you'd get a File object.
       // We are just creating a fake file object for the placeholder function.
-      const fakeFile = { name: applicationData.paymentScreenshot };
-      screenshotUrl = await uploadFileAndGetURL(fakeFile, `admissions/${formId}`);
+      screenshotUrl = await uploadFileAndGetURL(applicationData.paymentScreenshot, `admissions/${formId}`);
   }
 
 
