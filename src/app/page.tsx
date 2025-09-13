@@ -1,6 +1,7 @@
 
 'use client';
 
+import { useEffect } from 'react';
 import { useAuth } from '@/hooks/use-auth';
 import Header from '@/components/layout/Header';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
@@ -97,7 +98,14 @@ export default function Home() {
   const { user, loading } = useAuth();
   const router = useRouter();
 
-  if (loading) {
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push('/login');
+    }
+  }, [user, loading, router]);
+
+
+  if (loading || !user) {
     return <LoadingSpinner />;
   }
 
