@@ -5,6 +5,14 @@ import { db } from '@/lib/firebase/admin';
 import type { Teacher } from '@/types';
 import { FieldValue, Timestamp } from 'firebase-admin/firestore';
 
+const toISOString = (timestamp: Timestamp | string | undefined): string | undefined => {
+    if (!timestamp) return undefined;
+    if (typeof timestamp === 'string') return timestamp;
+    if (timestamp instanceof Timestamp) return timestamp.toDate().toISOString();
+    return undefined;
+};
+
+
 export async function addTeacher(data: Omit<Teacher, 'id' | 'createdAt'>): Promise<void> {
     const teacherRef = db.collection('teachers').doc();
     await teacherRef.set({
@@ -24,8 +32,8 @@ export async function getTeachers(): Promise<Teacher[]> {
         return { 
             id: doc.id, 
             ...data,
-            createdAt: (data.createdAt as Timestamp)?.toDate().toISOString() || new Date().toISOString(),
-            updatedAt: (data.updatedAt as Timestamp)?.toDate().toISOString() || undefined,
+            createdAt: toISOString(data.createdAt) || new Date().toISOString(),
+            updatedAt: toISOString(data.updatedAt),
         } as Teacher
     });
 }
@@ -41,8 +49,8 @@ export async function getTeacherById(teacherId: string): Promise<Teacher | null>
     return { 
         id: doc.id, 
         ...data,
-        createdAt: (data.createdAt as Timestamp)?.toDate().toISOString() || new Date().toISOString(),
-        updatedAt: (data.updatedAt as Timestamp)?.toDate().toISOString() || undefined,
+        createdAt: toISOString(data.createdAt) || new Date().toISOString(),
+        updatedAt: toISOString(data.updatedAt),
     } as Teacher;
 }
 
