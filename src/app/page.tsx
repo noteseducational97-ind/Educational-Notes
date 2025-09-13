@@ -266,12 +266,13 @@ export default function Home() {
                   <motion.div variants={itemVariants} key={teacher.id}>
                     <Card className="group flex flex-col h-full bg-background/50 border-border shadow-md overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-xl">
                        <CardHeader className="flex flex-col sm:flex-row items-center gap-6 p-6">
-                          <div className="relative h-24 w-24 sm:h-32 sm:w-32 flex-shrink-0">
+                          <div className="relative h-32 w-32 flex-shrink-0">
                                 <Image
-                                    src={teacher.photoUrl || `https://picsum.photos/seed/${teacher.id}/200`}
+                                    src={teacher.photoUrl || `https://avatar.iran.liara.run/public/boy?username=${teacher.id}`}
                                     alt={teacher.name}
+                                    width={128}
+                                    height={128}
                                     className="rounded-full object-cover border-4 border-primary/20"
-                                    layout="fill"
                                     data-ai-hint="person"
                                 />
                           </div>

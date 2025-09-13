@@ -15,8 +15,10 @@ const toISOString = (timestamp: Timestamp | string | undefined): string | undefi
 
 export async function addTeacher(data: Omit<Teacher, 'id' | 'createdAt'>): Promise<void> {
     const teacherRef = db.collection('teachers').doc();
+    const photoUrl = data.photoUrl || `https://avatar.iran.liara.run/public/boy?username=${teacherRef.id}`;
     await teacherRef.set({
         ...data,
+        photoUrl,
         id: teacherRef.id,
         createdAt: FieldValue.serverTimestamp(),
     });
@@ -56,8 +58,10 @@ export async function getTeacherById(teacherId: string): Promise<Teacher | null>
 
 export async function updateTeacher(teacherId: string, data: Partial<Omit<Teacher, 'id' | 'createdAt'>>): Promise<void> {
     const teacherRef = db.collection('teachers').doc(teacherId);
+    const photoUrl = data.photoUrl || `https://avatar.iran.liara.run/public/boy?username=${teacherId}`;
     await teacherRef.update({
         ...data,
+        photoUrl,
         updatedAt: FieldValue.serverTimestamp(),
     });
 }
