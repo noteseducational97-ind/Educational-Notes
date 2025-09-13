@@ -104,10 +104,6 @@ export default function EditTeacherPage() {
                     <CardDescription>Update details for {teacher.name}</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                    <div className="space-y-2">
-                        <Label htmlFor="photoUrl" className="flex items-center gap-2"><ImageIcon /> Photo URL</Label>
-                        <Input id="photoUrl" placeholder="https://example.com/teacher.jpg" value={teacher.photoUrl || ''} onChange={handleChange} />
-                    </div>
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <Label htmlFor="name" className="flex items-center gap-2"><User /> Name</Label>
@@ -117,6 +113,10 @@ export default function EditTeacherPage() {
                             <Label htmlFor="education" className="flex items-center gap-2"><GraduationCap /> Education</Label>
                             <Input id="education" placeholder="e.g., M.Sc., B.Ed." value={teacher.education || ''} onChange={handleChange} />
                         </div>
+                    </div>
+                     <div className="space-y-2">
+                        <Label htmlFor="photoUrl" className="flex items-center gap-2"><ImageIcon /> Photo URL</Label>
+                        <Input id="photoUrl" placeholder="https://example.com/teacher.jpg" value={teacher.photoUrl || ''} onChange={handleChange} />
                     </div>
                      <div className="space-y-2">
                         <Label htmlFor="className" className="flex items-center gap-2"><School /> Class Name</Label>
