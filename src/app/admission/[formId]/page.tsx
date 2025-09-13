@@ -523,7 +523,7 @@ export default function AdmissionFormPage() {
                                 </Card>
 
                                 <div className="flex justify-end">
-                                    <Button type="submit" disabled={loading || !form.formState.isValid} size="lg">
+                                    <Button type="submit" disabled={loading || isExtracting || !form.formState.isValid} size="lg">
                                         {loading ? <Loader2 className="animate-spin" /> : <>Submit Application <ArrowRight className="ml-2"/></>}
                                     </Button>
                                 </div>
@@ -535,4 +535,3 @@ export default function AdmissionFormPage() {
         </div>
     );
 }
-
