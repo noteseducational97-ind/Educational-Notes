@@ -20,20 +20,18 @@ export default function JoinPage() {
   const [loadingData, setLoadingData] = useState(true);
 
   useEffect(() => {
-    if (!authLoading) {
-      if (!authUser || !isAdmin) {
-        router.push('/');
-      } else {
-        getUsers()
-          .then(data => {
-            if (data.users) {
-              setUsers(data.users);
-            }
-          })
-          .finally(() => setLoadingData(false));
-      }
+    if (!authLoading && isAdmin) {
+      getUsers()
+        .then(data => {
+          if (data.users) {
+            setUsers(data.users);
+          }
+        })
+        .finally(() => setLoadingData(false));
+    } else if (!authLoading && !isAdmin) {
+      router.push('/');
     }
-  }, [authUser, authLoading, isAdmin, router]);
+  }, [authLoading, isAdmin, router]);
   
   if (authLoading || !isAdmin) {
     return <LoadingSpinner />;
