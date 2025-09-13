@@ -142,52 +142,6 @@ export default function AboutPage() {
         </motion.section>
 
         <motion.section 
-          id="mentors" 
-          className="w-full py-12 md:py-24 lg:py-32"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: false, amount: 0.2 }}
-          variants={containerVariants}
-        >
-            <div className="container px-4 md:px-6 relative">
-                <motion.div variants={itemVariants} className="flex flex-col items-center justify-center space-y-4 text-center mb-12">
-                    <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-balance">Meet Our Mentors</h2>
-                     <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed text-balance">
-                        Sponsored by Passionate Educators
-                    </p>
-                </motion.div>
-                <motion.div variants={containerVariants} className="grid md:grid-cols-2 gap-8">
-                     <motion.div variants={itemVariants}>
-                        <Card className="bg-secondary/30 border-border/50 shadow-lg">
-                          <CardHeader>
-                              <CardTitle className="text-2xl">Pravin Khachane (M.Sc., B.Ed.)</CardTitle>
-                              <CardDescription>Physics</CardDescription>
-                          </CardHeader>
-                          <CardContent>
-                              <p className="text-muted-foreground leading-relaxed">
-                                  With over 30 years of teaching experience, Pravin Sir is a visionary in science education. His ability to simplify complex physics concepts has made him a beloved mentor.
-                              </p>
-                          </CardContent>
-                        </Card>
-                     </motion.div>
-                    <motion.div variants={itemVariants}>
-                      <Card className="bg-secondary/30 border-border/50 shadow-lg">
-                        <CardHeader>
-                              <CardTitle className="text-2xl">Mangesh Shete (M.Sc., B.Ed.)</CardTitle>
-                              <CardDescription>Chemistry</CardDescription>
-                          </CardHeader>
-                        <CardContent>
-                              <p className="text-muted-foreground leading-relaxed">
-                                  A master of chemistry, Mangesh Sir has spent three decades nurturing curiosity and confidence. His empathetic approach continues to inspire thousands.
-                              </p>
-                          </CardContent>
-                      </Card>
-                    </motion.div>
-                </motion.div>
-            </div>
-        </motion.section>
-
-        <motion.section 
           id="contact" 
           className="w-full py-12 md:py-24 lg:py-32 bg-secondary/30"
           initial="hidden"
