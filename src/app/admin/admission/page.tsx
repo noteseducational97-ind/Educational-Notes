@@ -146,7 +146,7 @@ export default function AdminAdmissionPage() {
                           </div>
                       </CardHeader>
                       <CardContent className="flex-grow">
-                          <p className="text-muted-foreground">{form.description}</p>
+                          
                       </CardContent>
                       <CardFooter className="flex justify-end gap-2 border-t pt-4">
                           <Button variant="secondary" size="sm" asChild>
