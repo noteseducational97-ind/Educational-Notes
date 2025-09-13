@@ -33,7 +33,7 @@ const FormSchema = z.object({
   stream: z.array(z.string()).nonempty({ message: 'Select at least one stream.' }),
   category: z.array(z.string()).nonempty({ message: 'Select at least one category.' }),
   subject: z.array(z.string()).nonempty({ message: 'Select at least one subject.' }),
-  imageUrl: z.string().min(1, 'Please enter a valid image URL.'),
+  imageUrl: z.string().url().optional().or(z.literal('')),
   pdfUrl: z.string().optional(),
   viewPdfUrl: z.string().url('A valid view URL for the PDF is required.'),
   isComingSoon: z.boolean().default(false),
@@ -342,8 +342,8 @@ export default function EditResourceAdminPage() {
                     
                     <FormField control={form.control} name="imageUrl" render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Image URL</FormLabel>
-                          <FormControl><Input placeholder="https://picsum.photos/600/400" {...field} /></FormControl>
+                          <FormLabel>Image URL (Optional)</FormLabel>
+                          <FormControl><Input placeholder="https://picsum.photos/600/400" {...field} value={field.value ?? ''} /></FormControl>
                           <FormMessage />
                         </FormItem>
                       )}

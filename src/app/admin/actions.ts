@@ -12,7 +12,7 @@ const FormSchema = z.object({
   category: z.array(z.string()).nonempty({ message: 'Select at least one category.' }),
   subject: z.array(z.string()).nonempty({ message: 'Select at least one subject.' }),
   stream: z.array(z.string()).nonempty({ message: 'Select at least one stream.' }),
-  imageUrl: z.string().min(1, 'Please enter a valid image URL.'),
+  imageUrl: z.string().url().optional().or(z.literal('')),
   pdfUrl: z.string().optional(),
   viewPdfUrl: z.string().url('A valid view URL for the PDF is required.'),
   isComingSoon: z.boolean().default(false),
@@ -60,7 +60,7 @@ export async function addResourceAction(data: AddResourceInput) {
   }
   
   const { imageUrl, ...restOfData } = validatedFields.data;
-  const transformedImageUrl = transformGoogleDriveUrl(imageUrl);
+  const transformedImageUrl = imageUrl ? transformGoogleDriveUrl(imageUrl) : `https://picsum.photos/seed/${createSlug(validatedFields.data.title)}/600/400`;
 
   const slug = createSlug(validatedFields.data.title);
   const resourceRef = db.collection('resources').doc(slug);
@@ -107,7 +107,7 @@ export async function updateResourceAction(id: string, data: AddResourceInput) {
   }
   
   const { imageUrl, ...restOfData } = validatedFields.data;
-  const transformedImageUrl = transformGoogleDriveUrl(imageUrl);
+  const transformedImageUrl = imageUrl ? transformGoogleDriveUrl(imageUrl) : `https://picsum.photos/seed/${id}/600/400`;
 
   const resourceRef = db.collection('resources').doc(id);
 
