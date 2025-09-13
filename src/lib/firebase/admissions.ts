@@ -29,7 +29,7 @@ async function uploadFileAndGetURL(file: { name: string }, path: string): Promis
     // e.g., using bucket.upload() and then bucket.file().getSignedUrl()
     // Using a valid placeholder service to avoid "Invalid URL" errors.
     const seed = Math.random().toString(36).substring(7);
-    return `https://picsum.photos/seed/${seed}/400/225`;
+    return `https://i.ibb.co/C0SkCsc/Pay-Tm-Success-Page-Template-For-Blogger-And-Word-Press-Googles-Adsense-Approval-Trick.png`;
 }
 
 
@@ -135,8 +135,9 @@ export async function submitAdmissionApplication(formId: string, applicationData
 
 
   const applicationRef = db.collection('admissionForms').doc(formId).collection('applications').doc();
+  const { paymentScreenshot, ...restOfData } = applicationData;
   await applicationRef.set({
-    ...applicationData,
+    ...restOfData,
     paymentScreenshot: screenshotUrl, // Save the public URL
     submittedAt: new Date(),
     id: applicationRef.id,
