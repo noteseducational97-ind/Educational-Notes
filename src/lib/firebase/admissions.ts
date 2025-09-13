@@ -61,6 +61,7 @@ export async function getAdmissionForms(): Promise<AdmissionForm[]> {
             return {
                 ...data,
                 id: doc.id,
+                imageUrl: transformGoogleDriveUrl(data.imageUrl),
                 createdAt,
                 updatedAt,
             } as AdmissionForm;
@@ -85,6 +86,7 @@ export async function getAdmissionFormById(id: string): Promise<AdmissionForm | 
     return {
         ...data,
         id: doc.id,
+        imageUrl: transformGoogleDriveUrl(data.imageUrl),
         createdAt,
         updatedAt,
     } as AdmissionForm;
@@ -212,6 +214,7 @@ export async function getApplicationsForUser(userId: string): Promise<{ form: Ad
             const form = { 
                 ...formData, 
                 id: formDoc.id, 
+                imageUrl: transformGoogleDriveUrl(formData.imageUrl),
                 createdAt: formCreatedAt, 
                 updatedAt: formUpdatedAt 
             } as AdmissionForm;

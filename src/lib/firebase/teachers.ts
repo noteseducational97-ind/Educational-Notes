@@ -45,6 +45,7 @@ export async function getTeachers(): Promise<Teacher[]> {
         return { 
             id: doc.id, 
             ...data,
+            photoUrl: transformGoogleDriveUrl(data.photoUrl),
             createdAt: toISOString(data.createdAt) || new Date().toISOString(),
             updatedAt: toISOString(data.updatedAt),
         } as Teacher
@@ -62,6 +63,7 @@ export async function getTeacherById(teacherId: string): Promise<Teacher | null>
     return { 
         id: doc.id, 
         ...data,
+        photoUrl: transformGoogleDriveUrl(data.photoUrl),
         createdAt: toISOString(data.createdAt) || new Date().toISOString(),
         updatedAt: toISOString(data.updatedAt),
     } as Teacher;
