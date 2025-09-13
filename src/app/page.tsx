@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuth } from '@/hooks/use-auth';
 import Header from '@/components/layout/Header';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
@@ -25,9 +25,13 @@ import {
     Copy,
     Wrench,
     ClipboardEdit,
-    FileQuestion
+    FileQuestion,
+    GraduationCap
 } from 'lucide-react';
 import { EducationalNotesLogo } from '@/components/icons/EducationalNotesLogo';
+import type { Teacher } from '@/types';
+import { getTeachers } from '@/lib/firebase/teachers';
+import Image from 'next/image';
 
 const features = [
     {
@@ -97,6 +101,14 @@ const itemVariants = {
 export default function Home() {
   const { user, loading } = useAuth();
   const router = useRouter();
+  const [teachers, setTeachers] = useState<Teacher[]>([]);
+  const [loadingTeachers, setLoadingTeachers] = useState(true);
+
+  useEffect(() => {
+    getTeachers()
+      .then(setTeachers)
+      .finally(() => setLoadingTeachers(false));
+  }, []);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -231,6 +243,73 @@ export default function Home() {
             </motion.div>
           </div>
         </motion.section>
+
+        {/* Meet Our Mentors Section */}
+        {!loadingTeachers && teachers.length > 0 && (
+          <motion.section
+            id="mentors"
+            className="w-full py-12 md:py-24 lg:py-32 bg-secondary/30"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+            variants={containerVariants}
+          >
+            <div className="container px-4 md:px-6">
+              <motion.div variants={itemVariants} className="flex flex-col items-center justify-center space-y-4 text-center mb-12">
+                <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-balance">Meet Our Mentors</h2>
+                <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed text-balance">
+                  The experienced educators dedicated to your success.
+                </p>
+              </motion.div>
+              <motion.div variants={containerVariants} className="grid gap-8 sm:grid-cols-1 lg:grid-cols-2 max-w-4xl mx-auto">
+                {teachers.map((teacher) => (
+                  <motion.div variants={itemVariants} key={teacher.id}>
+                    <Card className="group flex flex-col h-full bg-background/50 border-border shadow-md overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-xl">
+                       <CardHeader className="flex flex-col sm:flex-row items-center gap-6 p-6">
+                          <div className="relative h-24 w-24 sm:h-32 sm:w-32 flex-shrink-0">
+                                <Image
+                                    src={`https://picsum.photos/seed/${teacher.id}/200`}
+                                    alt={teacher.name}
+                                    className="rounded-full object-cover border-4 border-primary/20"
+                                    layout="fill"
+                                    data-ai-hint="person"
+                                />
+                          </div>
+                          <div>
+                            <CardTitle className="text-2xl font-bold text-primary">{teacher.name}</CardTitle>
+                            <CardDescription className="text-base text-muted-foreground">{teacher.education}</CardDescription>
+                             <div className="mt-2 flex flex-wrap gap-2">
+                                <span className="inline-flex items-center gap-1 text-sm font-medium bg-primary/10 text-primary px-2 py-1 rounded-full">
+                                    <GraduationCap className="h-4 w-4" />
+                                    {teacher.subject}
+                                </span>
+                             </div>
+                          </div>
+                       </CardHeader>
+                       <CardContent className="p-6 pt-0 flex-grow">
+                            <p className="text-muted-foreground">
+                                Teaching at <strong>{teacher.className}</strong> since <strong>{teacher.since}</strong>, with over <strong>{teacher.experience}</strong> of experience.
+                            </p>
+                            <div className="mt-4 space-y-2 text-sm">
+                               {teacher.mobile && (
+                                 <div className="flex items-center gap-2 text-muted-foreground">
+                                    <Phone className="h-4 w-4"/> {teacher.mobile}
+                                 </div>
+                               )}
+                               {teacher.email && (
+                                 <a href={`mailto:${teacher.email}`} className="flex items-center gap-2 text-muted-foreground hover:text-primary">
+                                    <Mail className="h-4 w-4"/> {teacher.email}
+                                 </a>
+                               )}
+                            </div>
+                       </CardContent>
+                    </Card>
+                  </motion.div>
+                ))}
+              </motion.div>
+            </div>
+          </motion.section>
+        )}
 
         {/* CTA Section */}
         <motion.section 
