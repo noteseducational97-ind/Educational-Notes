@@ -21,7 +21,7 @@ const PaymentDetailsInputSchema = z.object({
 export type PaymentDetailsInput = z.infer<typeof PaymentDetailsInputSchema>;
 
 const PaymentDetailsOutputSchema = z.object({
-  senderName: z.string().optional().describe("The name of the person who sent the payment."),
+  senderName: z.string().optional().describe("The name of the person who sent the payment. In many cases, this will be the name of the person who received the money (labeled as 'To' in apps like Paytm)."),
   paymentAmount: z.string().optional().describe("The total amount of the payment."),
   transactionDate: z.string().optional().describe("The date of the transaction (e.g., '15 July 2024')."),
   transactionTime: z.string().optional().describe("The time of the transaction (e.g., '10:30 AM')."),
@@ -34,6 +34,8 @@ const extractionPrompt = ai.definePrompt({
     input: { schema: PaymentDetailsInputSchema },
     output: { schema: PaymentDetailsOutputSchema },
     prompt: `You are an expert OCR and data extraction tool. Your task is to analyze the provided payment screenshot and extract the following details: sender's name, payment amount, transaction date, transaction time, and the unique transaction ID.
+
+The user is uploading a screenshot of a payment they made. The 'senderName' field should be the name of the person who received the money. In many apps like Paytm, this will be labeled as "To".
 
 The transaction ID might be labeled as UTR, UPI Ref No, Transaction ID, UPI Reference, RRN, TRN, UPI Transaction ID, or Google Transaction ID. Extract this value.
 
