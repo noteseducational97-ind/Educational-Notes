@@ -122,7 +122,9 @@ export default function AdmissionFormPage() {
             }
         };
 
-        fetchFormDetails();
+        if(user) {
+          fetchFormDetails();
+        }
     }, [formId, user, router, toast]);
 
     useEffect(() => {
@@ -201,7 +203,7 @@ export default function AdmissionFormPage() {
             
             const result = await submitAdmissionApplication(formId, applicationPayload);
             
-            router.push(`/admission/success/${result.applicationId}?formId=${result.formId}&name=${encodeURIComponent(values.fullName)}`);
+            router.push(`/admission/receipt/${result.formId}/${result.applicationId}`);
 
         } catch (error: any) {
              toast({
@@ -216,7 +218,7 @@ export default function AdmissionFormPage() {
     
     const paymentMode = form.watch('paymentMode');
 
-    if(pageLoading) {
+    if(pageLoading || !user) {
         return <LoadingSpinner />
     }
     
