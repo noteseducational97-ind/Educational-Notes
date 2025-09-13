@@ -9,15 +9,29 @@ import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Download, Receipt } from 'lucide-react';
+import { ArrowLeft, Download, Receipt, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import PasswordPrompt from '@/components/auth/PasswordPrompt';
 import { format } from 'date-fns';
 import ApplicationDetailDialog from './ApplicationDetailDialog';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+import { useToast } from '@/hooks/use-toast';
+import { deleteApplicationAction } from '../../actions';
 
 export default function AdmissionApplicationsPage() {
   const params = useParams();
   const router = useRouter();
+  const { toast } = useToast();
   const formId = Array.isArray(params.formId) ? params.formId[0] : params.formId;
   
   const [formDetails, setFormDetails] = useState<AdmissionForm | null>(null);
@@ -25,6 +39,26 @@ export default function AdmissionApplicationsPage() {
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [selectedApplication, setSelectedApplication] = useState<AdmissionApplication | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  const fetchApplications = async () => {
+    if (!formId) return;
+    setLoading(true);
+    try {
+      const apps = await getApplicationsForForm(formId);
+      setApplications(apps);
+    } catch (error) {
+      console.error("Failed to fetch applications:", error);
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Could not load applications.',
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
   useEffect(() => {
     if (!formId) return;
@@ -43,14 +77,12 @@ export default function AdmissionApplicationsPage() {
 
         if (!form.isPasswordProtected) {
           setIsAuthenticated(true);
-          const apps = await getApplicationsForForm(formId);
-          setApplications(apps);
+          await fetchApplications();
         } else {
             const storedPassword = sessionStorage.getItem(`admission-password-${formId}`);
             if (storedPassword === form.password) {
                 setIsAuthenticated(true);
-                const apps = await getApplicationsForForm(formId);
-                setApplications(apps);
+                await fetchApplications();
             }
         }
       } catch (error) {
@@ -65,14 +97,27 @@ export default function AdmissionApplicationsPage() {
   
   const handleAuthSuccess = async () => {
       setIsAuthenticated(true);
-      if(!formId) return;
-      setLoading(true);
-      try {
-        const apps = await getApplicationsForForm(formId);
-        setApplications(apps);
-      } finally {
-          setLoading(false);
-      }
+      await fetchApplications();
+  }
+  
+  const handleDelete = async (applicationId: string, studentName: string) => {
+    if (!formId) return;
+    setDeletingId(applicationId);
+    const result = await deleteApplicationAction(formId, applicationId);
+    if (result.success) {
+      setApplications(prev => prev.filter(app => app.id !== applicationId));
+      toast({
+        title: 'Application Deleted',
+        description: `The application for "${studentName}" has been removed.`,
+      });
+    } else {
+      toast({
+        variant: 'destructive',
+        title: 'Error Deleting',
+        description: result.error,
+      });
+    }
+    setDeletingId(null);
   }
 
   const handleExportCSV = () => {
@@ -169,13 +214,34 @@ export default function AdmissionApplicationsPage() {
                       <TableRow key={app.id}>
                         <TableCell onClick={() => setSelectedApplication(app)} className="font-medium cursor-pointer hover:underline">{app.fullName}</TableCell>
                         <TableCell onClick={() => setSelectedApplication(app)} className="cursor-pointer">{format(new Date(app.submittedAt), 'PPP')}</TableCell>
-                        <TableCell className="text-right">
+                        <TableCell className="text-right space-x-2">
                             <Button asChild variant="secondary" size="sm">
                                 <Link href={`/admission/receipt/${formId}/${app.id}`} target="_blank">
                                     <Receipt className="mr-2 h-4 w-4"/>
-                                    Download Receipt
+                                    Receipt
                                 </Link>
                             </Button>
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                  <Button variant="destructive-outline" size="sm" disabled={deletingId === app.id}>
+                                      <Trash2 className="h-4 w-4" />
+                                  </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                  <AlertDialogHeader>
+                                  <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                      This action cannot be undone. This will permanently delete the application for "{app.fullName}".
+                                  </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <AlertDialogFooter>
+                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                  <AlertDialogAction onClick={() => handleDelete(app.id, app.fullName)}>
+                                      Yes, delete
+                                  </AlertDialogAction>
+                                  </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
                         </TableCell>
                       </TableRow>
                     ))}

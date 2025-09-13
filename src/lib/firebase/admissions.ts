@@ -233,3 +233,11 @@ export async function getApplicationsForUser(userId: string): Promise<{ form: Ad
         return [];
     }
 }
+
+export async function deleteApplication(formId: string, applicationId: string) {
+    if (!formId || !applicationId) {
+        throw new Error('Form ID and Application ID are required for deletion.');
+    }
+    await db.collection('admissionForms').doc(formId).collection('applications').doc(applicationId).delete();
+    revalidatePath(`/admin/admission/applications/${formId}`);
+}
