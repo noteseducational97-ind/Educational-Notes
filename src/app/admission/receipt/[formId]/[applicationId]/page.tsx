@@ -1,7 +1,8 @@
 
+
 'use client';
 
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState, useRef } from 'react';
 import Header from '@/components/layout/Header';
 import { Button } from '@/components/ui/button';
@@ -12,6 +13,7 @@ import { ArrowLeft, Printer, User, Home, Book, CreditCard, QrCode } from 'lucide
 import Link from 'next/link';
 import { format } from 'date-fns';
 import { EducationalNotesLogo } from '@/components/icons/EducationalNotesLogo';
+import { useAuth } from '@/hooks/use-auth';
 
 const ReceiptDetail = ({ label, value }: { label: string, value?: string | number | null }) => {
     if (value === null || value === undefined || value === '') return null;
@@ -25,41 +27,56 @@ const ReceiptDetail = ({ label, value }: { label: string, value?: string | numbe
 
 export default function AdmissionReceiptPage() {
     const params = useParams();
+    const router = useRouter();
+    const { user, isAdmin, loading: authLoading } = useAuth();
     const [formDetails, setFormDetails] = useState<AdmissionForm | null>(null);
     const [application, setApplication] = useState<AdmissionApplication | null>(null);
     const [loading, setLoading] = useState(true);
     const [qrCodeDataUrl, setQrCodeDataUrl] = useState('');
+    const [isAuthorized, setIsAuthorized] = useState(false);
 
     const formId = params.formId as string;
     const applicationId = params.applicationId as string;
 
     useEffect(() => {
-        if (!formId || !applicationId) return;
+        if (authLoading) return;
 
         const fetchData = async () => {
+            if (!formId || !applicationId) return;
+
             setLoading(true);
             try {
                 const [form, app] = await Promise.all([
                     getAdmissionFormById(formId),
                     getApplicationById(formId, applicationId),
                 ]);
-                setFormDetails(form);
-                setApplication(app);
 
-                // Dynamically import QR code library and generate QR code
-                const QRCode = (await import('qrcode')).default;
-                const qrData = JSON.stringify({
-                    applicationId: app?.id,
-                    name: app?.fullName,
-                    form: form?.title
-                });
-                const dataUrl = await QRCode.toDataURL(qrData, {
-                    errorCorrectionLevel: 'H',
-                    type: 'image/png',
-                    quality: 0.92,
-                    margin: 1,
-                });
-                setQrCodeDataUrl(dataUrl);
+                if (!form || !app) {
+                    throw new Error("Receipt details not found.");
+                }
+
+                // Authorization check
+                if (isAdmin || (user && user.uid === app.userId)) {
+                    setIsAuthorized(true);
+                    setFormDetails(form);
+                    setApplication(app);
+
+                    const QRCode = (await import('qrcode')).default;
+                    const qrData = JSON.stringify({
+                        applicationId: app?.id,
+                        name: app?.fullName,
+                        form: form?.title
+                    });
+                    const dataUrl = await QRCode.toDataURL(qrData, {
+                        errorCorrectionLevel: 'H',
+                        type: 'image/png',
+                        quality: 0.92,
+                        margin: 1,
+                    });
+                    setQrCodeDataUrl(dataUrl);
+                } else {
+                    setIsAuthorized(false);
+                }
 
             } catch (error) {
                 console.error("Failed to fetch receipt data:", error);
@@ -69,16 +86,30 @@ export default function AdmissionReceiptPage() {
         };
 
         fetchData();
-    }, [formId, applicationId]);
+    }, [formId, applicationId, user, isAdmin, authLoading]);
 
     const handlePrint = () => {
         window.print();
     };
     
-    if (loading) {
+    if (loading || authLoading) {
         return <LoadingSpinner />;
     }
 
+    if (!isAuthorized) {
+         return (
+            <div className="flex min-h-screen flex-col items-center justify-center">
+                <p className="text-2xl font-bold">Access Denied</p>
+                <p>You do not have permission to view this receipt.</p>
+                <Button asChild variant="link" className="mt-4">
+                    <Link href="/admission">
+                        <ArrowLeft className="mr-2 h-4 w-4" /> Go Back
+                    </Link>
+                </Button>
+            </div>
+        );
+    }
+    
     if (!formDetails || !application) {
         return (
             <div className="flex min-h-screen flex-col items-center justify-center">

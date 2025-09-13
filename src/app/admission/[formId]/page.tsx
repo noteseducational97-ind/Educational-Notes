@@ -19,7 +19,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import Image from 'next/image';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { getAdmissionFormById, submitAdmissionApplication } from '@/lib/firebase/admissions';
+import { getAdmissionFormById, submitAdmissionApplication, getApplicationsForUser } from '@/lib/firebase/admissions';
 import type { AdmissionForm } from '@/types';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -87,22 +87,43 @@ export default function AdmissionFormPage() {
 
     useEffect(() => {
         if (!formId) return;
-        setPageLoading(true);
-        getAdmissionFormById(formId)
-            .then(data => {
+
+        const checkExistingApplication = async () => {
+            if (user) {
+                const userApplications = await getApplicationsForUser(user.uid);
+                const existingApplication = userApplications.find(app => app.form.id === formId);
+                if (existingApplication) {
+                    router.replace(`/admission/receipt/${formId}/${existingApplication.application.id}`);
+                    return true;
+                }
+            }
+            return false;
+        };
+        
+        const fetchFormDetails = async () => {
+            setPageLoading(true);
+            try {
+                if (await checkExistingApplication()) return;
+                
+                const data = await getAdmissionFormById(formId);
                 setFormDetails(data);
                 if (data && !data.isPasswordProtected) {
                     setIsAuthenticated(true);
                 } else {
-                    // Check session storage
                     const storedPassword = sessionStorage.getItem(`admission-password-${formId}`);
                     if (storedPassword === data?.password) {
                         setIsAuthenticated(true);
                     }
                 }
-            })
-            .finally(() => setPageLoading(false));
-    }, [formId]);
+            } catch (error) {
+                 toast({ variant: 'destructive', title: 'Error', description: 'Could not load form details.' });
+            } finally {
+                setPageLoading(false);
+            }
+        };
+
+        fetchFormDetails();
+    }, [formId, user, router, toast]);
 
     useEffect(() => {
         // This check runs only on the client-side
