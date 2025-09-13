@@ -78,26 +78,13 @@ export default function ApplicationDetailDialog({ application, isOpen, onClose }
                 </div>
                  {application.paymentMode === 'Online' && (
                      <div className="mt-4 border-t pt-4">
-                         <h4 className="font-medium mb-2">Online Payment Info:</h4>
+                         <h4 className="font-medium mb-2">Extracted Online Payment Info:</h4>
                          <div className="grid grid-cols-2 gap-4">
                             <DetailItem label="Sender Name" value={application.senderName} />
                             <DetailItem label="Amount" value={application.paymentAmount} />
                             <DetailItem label="Date" value={application.transactionDate} />
                             <DetailItem label="Time" value={application.transactionTime} />
                          </div>
-                         {application.paymentScreenshot && (
-                            <div className="mt-4">
-                                <h4 className="font-medium mb-2">Payment Screenshot</h4>
-                                <div className="relative aspect-video w-full max-w-sm">
-                                    <Image
-                                        src={application.paymentScreenshot}
-                                        alt="Payment Screenshot"
-                                        layout="fill"
-                                        objectFit="contain"
-                                    />
-                                </div>
-                            </div>
-                         )}
                      </div>
                  )}
             </section>

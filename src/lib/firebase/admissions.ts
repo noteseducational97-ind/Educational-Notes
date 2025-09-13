@@ -26,7 +26,6 @@ async function uploadFileAndGetURL(file: { name: string }, path: string): Promis
     console.log(`Simulating upload for: ${file.name} to path: ${path}`);
     
     // This is NOT a real URL. Replace with actual upload logic.
-    // e.g., using bucket.upload() and then bucket.file().getSignedUrl()
     // Using a valid placeholder service to avoid "Invalid URL" errors.
     const seed = Math.random().toString(36).substring(7);
     return `https://i.ibb.co/C0SkCsc/Pay-Tm-Success-Page-Template-For-Blogger-And-Word-Press-Googles-Adsense-Approval-Trick.png`;
@@ -122,23 +121,15 @@ export async function submitAdmissionApplication(formId: string, applicationData
   if (!formDetails) {
     throw new Error('Admission form not found.');
   }
-
-  let screenshotUrl: string | null = null;
-  // This part is tricky without a proper file object from the client.
-  // When using server actions with file uploads, the file object would be available here.
-  // For now, we'll assume applicationData.paymentScreenshot is a placeholder name.
-  if (applicationData.paymentScreenshot && typeof applicationData.paymentScreenshot === 'object') {
-      // This is a placeholder. In a real scenario, you'd get a File object.
-      // We are just creating a fake file object for the placeholder function.
-      screenshotUrl = await uploadFileAndGetURL(applicationData.paymentScreenshot, `admissions/${formId}`);
-  }
-
+  
+  // The screenshot is used for client-side extraction but not stored.
+  // We remove it from the data that gets saved to Firestore.
+  const { paymentScreenshot, ...restOfData } = applicationData;
 
   const applicationRef = db.collection('admissionForms').doc(formId).collection('applications').doc();
-  const { paymentScreenshot, ...restOfData } = applicationData;
   await applicationRef.set({
     ...restOfData,
-    paymentScreenshot: screenshotUrl, // Save the public URL
+    paymentScreenshot: null, // Ensure screenshot URL is not saved
     submittedAt: new Date(),
     id: applicationRef.id,
   });
